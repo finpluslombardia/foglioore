@@ -29,6 +29,21 @@
             margin-bottom: 20px;
         }
 
+        /* Barra Filtri Mese/Anno */
+        .filter-bar {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-bar select { width: auto; flex: 1; margin: 0; }
+        .filter-bar button { width: auto; margin: 0; padding: 10px 20px; }
+
         /* Pannello Cambio Password */
         #password-panel-tools {
             margin-top: 30px;
@@ -104,6 +119,31 @@
         <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
 
         <h3>Riepilogo Ore</h3>
+        <div class="filter-bar">
+            <label><strong>Filtra per:</strong></label>
+            <select id="filtro-mese">
+                <option value="all">Tutti i Mesi</option>
+                <option value="1">Gennaio</option>
+                <option value="2">Febbraio</option>
+                <option value="3">Marzo</option>
+                <option value="4">Aprile</option>
+                <option value="5">Maggio</option>
+                <option value="6">Giugno</option>
+                <option value="7">Luglio</option>
+                <option value="8">Agosto</option>
+                <option value="9">Settembre</option>
+                <option value="10">Ottobre</option>
+                <option value="11">Novembre</option>
+                <option value="12">Dicembre</option>
+            </select>
+            <select id="filtro-anno">
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+            </select>
+            <button onclick="caricaDati()">Applica Filtro</button>
+        </div>
+
         <table>
             <thead>
                 <tr>
@@ -124,9 +164,8 @@
 
         <div id="password-panel-tools">
             <button class="toggle-pwd-btn" onclick="togglePasswordForm()">🔒 Cambia Password</button>
-            
             <div id="form-cambio-password" style="display: none; margin-top: 10px; background: #f8f9fa; padding: 10px; border-radius: 6px; border: 1px solid #ddd;">
-                <p style="margin: 0 0 10px 0; font-size: 0.9em;">Inserisci la nuova password (minimo 6 caratteri):</p>
+                <p style="margin: 0 0 10px 0; font-size: 0.9em;">Inserisci nuova password (min 6 caratteri):</p>
                 <input type="password" id="nuova-password" placeholder="Nuova Password">
                 <button onclick="salvaNuovaPassword()" style="background-color: #17a2b8;">Aggiorna Password</button>
             </div>
@@ -137,7 +176,6 @@
 </div>
 
 <script type="module">
-    // Aggiunto updatePassword agli import
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -162,7 +200,13 @@
     
     let rubricaGlobale = {}; 
 
-    document.getElementById('data-lavoro').valueAsDate = new Date();
+    // IMPOSTAZIONE DATE DEFAULT
+    const oggi = new Date();
+    document.getElementById('data-lavoro').valueAsDate = oggi;
+    // Imposta filtri al mese corrente
+    document.getElementById('filtro-mese').value = (oggi.getMonth() + 1).toString();
+    document.getElementById('filtro-anno').value = oggi.getFullYear().toString();
+
 
     // --- LOGIN ---
     window.login = async () => {
@@ -208,7 +252,7 @@
         }
     });
 
-    // --- FUNZIONI CAMBIO PASSWORD (NUOVE) ---
+    // --- PASSWORD ---
     window.togglePasswordForm = () => {
         const form = document.getElementById('form-cambio-password');
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
@@ -216,20 +260,15 @@
 
     window.salvaNuovaPassword = async () => {
         const newPass = document.getElementById('nuova-password').value;
-        if (newPass.length < 6) return alert("La password deve avere almeno 6 caratteri.");
-
+        if (newPass.length < 6) return alert("Minimo 6 caratteri.");
         try {
             await updatePassword(currentUser, newPass);
-            alert("Password aggiornata con successo!");
-            document.getElementById('nuova-password').value = "";
+            alert("Password aggiornata!");
             document.getElementById('form-cambio-password').style.display = 'none';
         } catch (error) {
-            console.error(error);
             if (error.code === 'auth/requires-recent-login') {
-                alert("Per sicurezza, devi aver effettuato l'accesso da poco per cambiare la password. Fai Logout, rientra e riprova subito.");
-            } else {
-                alert("Errore: " + error.message);
-            }
+                alert("Devi fare Logout e rientrare per cambiare la password.");
+            } else { alert("Errore: " + error.message); }
         }
     };
 
@@ -247,12 +286,10 @@
     window.salvaAnagrafica = async () => {
         const email = document.getElementById('new-user-email').value.trim().toLowerCase();
         const nome = document.getElementById('new-user-name').value.trim();
-
-        if(!email || !nome) return alert("Inserisci Email e Nome.");
-
+        if(!email || !nome) return alert("Dati mancanti.");
         try {
             await setDoc(doc(db, "anagrafica", email), { nome: nome });
-            alert(`Salvato: ${email} -> ${nome}`);
+            alert(`Salvato: ${nome}`);
             document.getElementById('new-user-email').value = "";
             document.getElementById('new-user-name').value = "";
             await aggiornaRubricaLocale(); 
@@ -267,7 +304,7 @@
         const ore = parseFloat(document.getElementById('ore').value);
         const note = document.getElementById('note').value;
 
-        if(!data || !mansione || !ore) return alert("Compila data, mansione e ore!");
+        if(!data || !mansione || !ore) return alert("Compila tutto!");
 
         try {
             await addDoc(collection(db, "turni"), {
@@ -282,15 +319,11 @@
             document.getElementById('ore').value = "";
             document.getElementById('note').value = "";
             caricaDati(); 
-        } catch (e) {
-            console.error("Errore salvataggio: ", e);
-            alert("Errore salvataggio.");
-        }
+        } catch (e) { console.error(e); alert("Errore salvataggio."); }
     };
 
-    // --- ELIMINA ---
     window.eliminaTurno = async (idDocumento) => {
-        if(confirm("Eliminare questa riga?")) {
+        if(confirm("Eliminare?")) {
             try {
                 await deleteDoc(doc(db, "turni", idDocumento));
                 caricaDati();
@@ -298,13 +331,18 @@
         }
     };
 
-    // --- CARICA DATI ---
-    async function caricaDati() {
+    // --- CARICA DATI (CON FILTRO MESE) ---
+    // Nota: Ho reso questa funzione accessibile globalmente per il bottone del filtro
+    window.caricaDati = async () => {
         const tbody = document.getElementById('tabella-ore');
         tbody.innerHTML = "<tr><td colspan='6'>Caricamento...</td></tr>";
         
         let totale = 0;
         let htmlRighe = "";
+
+        // Leggi i filtri
+        const meseScelto = document.getElementById('filtro-mese').value; // es "12" o "all"
+        const annoScelto = document.getElementById('filtro-anno').value; // es "2025"
 
         try {
             let q;
@@ -320,6 +358,19 @@
                 const row = docSnap.data();
                 const idDoc = docSnap.id;
                 const dataObj = new Date(row.data);
+                
+                // --- LOGICA FILTRO ---
+                const meseRow = (dataObj.getMonth() + 1).toString(); // +1 perché Gennaio è 0
+                const annoRow = dataObj.getFullYear().toString();
+
+                // Se il filtro non è "tutti" E (il mese non combacia O l'anno non combacia) -> SALTA
+                if (meseScelto !== "all") {
+                    if (meseRow !== meseScelto || annoRow !== annoScelto) {
+                        return; // Salta questa riga
+                    }
+                }
+                // ---------------------
+
                 const dataFormat = dataObj.toLocaleDateString('it-IT');
                 const nomeCollaboratore = rubricaGlobale[row.email] || row.email;
                 const noteTesto = row.note ? row.note : "-";
@@ -337,14 +388,14 @@
                 totale += row.ore;
             });
 
-            if(htmlRighe === "") tbody.innerHTML = "<tr><td colspan='6'>Nessun dato.</td></tr>";
+            if(htmlRighe === "") tbody.innerHTML = "<tr><td colspan='6'>Nessun dato per il periodo selezionato.</td></tr>";
             else tbody.innerHTML = htmlRighe;
             
             document.getElementById('totale-ore').innerText = totale;
 
         } catch (e) {
             console.error(e);
-            if(e.message.includes("index")) alert("⚠️ Manca Indice Firebase. Premi F12.");
+            if(e.message.includes("index")) alert("⚠️ Manca Indice Firebase.");
             tbody.innerHTML = "<tr><td colspan='6' style='color:red'>Errore caricamento.</td></tr>";
         }
     }
