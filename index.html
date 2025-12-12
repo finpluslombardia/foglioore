@@ -5,25 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione Ore Collaboratori</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background-color: #f4f4f9; color: #333; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 950px; margin: 0 auto; padding: 20px; background-color: #f4f4f9; color: #333; }
         .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h2, h3 { color: #2c3e50; }
         
         /* Input e Bottoni */
-        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        input, select, button { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
         input:focus, select:focus { border-color: #007bff; outline: none; }
         
-        button { background-color: #007bff; color: white; cursor: pointer; border: none; font-weight: bold; transition: background 0.3s; }
+        button { background-color: #007bff; color: white; cursor: pointer; border: none; font-weight: bold; transition: background 0.3s; margin-top: 10px; }
         button:hover { background-color: #0056b3; }
         
         .logout-btn { background-color: #dc3545; }
         .logout-btn:hover { background-color: #a71d2a; }
 
         /* Tasto Export Excel (Verde) */
-        .export-btn { background-color: #28a745; color: white; margin-left: auto; width: auto !important; }
+        .export-btn { background-color: #28a745; color: white; margin-left: auto; width: auto !important; margin-top: 0; }
         .export-btn:hover { background-color: #218838; }
 
-        /* Pannello Admin (Anagrafica) */
+        /* Pannello Admin */
         #admin-panel-tools {
             display: none; 
             background-color: #fff3cd;
@@ -48,34 +48,37 @@
         .filter-bar select { width: auto; flex: 1; min-width: 120px; margin: 0; }
         .filter-bar button { width: auto; margin: 0; padding: 10px 20px; }
 
-        /* Pannello Cambio Password */
-        #password-panel-tools {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+        /* Box Statistiche Mansioni */
+        #stats-box {
+            background-color: #e3f2fd;
+            border: 1px solid #bbdefb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 0.95em;
         }
-        .toggle-pwd-btn { background-color: #6c757d; font-size: 0.9em; width: auto; padding: 8px 15px; }
-        .toggle-pwd-btn:hover { background-color: #5a6268; }
+        .stat-item { display: inline-block; margin-right: 15px; font-weight: bold; color: #0277bd; }
 
-        /* Bottone Elimina */
-        .delete-btn {
-            background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; 
-            padding: 5px 10px; width: auto; font-size: 14px; border-radius: 4px; cursor: pointer;
-        }
-        .delete-btn:hover { background-color: #ef9a9a; color: white; }
+        /* Footer Password */
+        #password-panel-tools { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
+        .toggle-pwd-btn { background-color: #6c757d; font-size: 0.9em; width: auto; padding: 8px 15px; }
 
         /* Tabella */
         table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 14px; }
-        th, td { border-bottom: 1px solid #eee; padding: 12px; text-align: left; vertical-align: middle; }
+        th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; vertical-align: middle; }
         th { background-color: #f8f9fa; color: #666; font-weight: 600; }
         tr:hover { background-color: #f1f1f1; }
         
-        td.note-cell { color: #666; font-style: italic; font-size: 0.9em; }
+        td.note-cell { color: #666; font-style: italic; font-size: 0.85em; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         /* Utilità */
         #app-panel { display: none; } 
         .totale-box { margin-top: 20px; text-align: right; font-size: 1.2em; color: #28a745; }
         .admin-badge { background: #ffc107; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; color: black; display: none; margin-left: 10px; }
+        
+        /* Grid per inserimento orari */
+        .time-row { display: flex; gap: 10px; }
+        .time-row > div { flex: 1; }
     </style>
 </head>
 <body>
@@ -106,18 +109,41 @@
 
         <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
             <h3>Nuovo Inserimento</h3>
-            <input type="date" id="data-lavoro">
-            <select id="mansione">
-                <option value="" disabled selected>-- Seleziona Mansione --</option>
-                <option value="Assistente bagnanti">Assistente bagnanti</option>
-                <option value="Istruttore">Istruttore</option>
-                <option value="Fitness">Fitness</option>
-                <option value="Lezione individuale">Lezione individuale</option>
-                <option value="Segreteria">Segreteria</option>
-            </select>
-            <input type="number" id="ore" placeholder="Numero di ore (es. 4.5)" step="0.5">
+            <div class="time-row">
+                <div>
+                    <label style="font-size: 0.8em; font-weight: bold;">Data:</label>
+                    <input type="date" id="data-lavoro">
+                </div>
+                <div>
+                    <label style="font-size: 0.8em; font-weight: bold;">Mansione:</label>
+                    <select id="mansione">
+                        <option value="" disabled selected>-- Seleziona --</option>
+                        <option value="Assistente bagnanti">Assistente bagnanti</option>
+                        <option value="Istruttore">Istruttore</option>
+                        <option value="Fitness">Fitness</option>
+                        <option value="Lezione individuale">Lezione individuale</option>
+                        <option value="Segreteria">Segreteria</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="time-row">
+                <div>
+                    <label style="font-size: 0.8em; font-weight: bold;">Inizio:</label>
+                    <input type="time" id="ora-inizio" onchange="calcolaDifferenza()">
+                </div>
+                <div>
+                    <label style="font-size: 0.8em; font-weight: bold;">Fine:</label>
+                    <input type="time" id="ora-fine" onchange="calcolaDifferenza()">
+                </div>
+                <div>
+                    <label style="font-size: 0.8em; font-weight: bold;">Tot. Ore:</label>
+                    <input type="number" id="ore" placeholder="es. 4.5" step="0.5">
+                </div>
+            </div>
+
             <input type="text" id="note" placeholder="Note (opzionale - es. Sostituzione, Pulizia...)">
-            <button onclick="salvaOre()" style="margin-top: 15px;">Registra Ore</button>
+            <button onclick="salvaOre()">Registra Ore</button>
         </div>
 
         <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
@@ -146,7 +172,6 @@
                 <option value="2026">2026</option>
             </select>
             <button onclick="caricaDati()">Applica Filtro</button>
-            
             <button onclick="scaricaExcel()" class="export-btn">📥 Scarica Excel</button>
         </div>
 
@@ -156,17 +181,23 @@
                     <th>Data</th>
                     <th>Collaboratore</th>
                     <th>Mansione</th>
+                    <th>Orario</th>
                     <th>Ore</th>
                     <th>Note</th>
                     <th>Azioni</th>
                 </tr>
             </thead>
             <tbody id="tabella-ore">
-                <tr><td colspan="6">Caricamento...</td></tr>
+                <tr><td colspan="7">Caricamento...</td></tr>
             </tbody>
         </table>
         
-        <p class="totale-box"><strong>Totale visualizzato: <span id="totale-ore">0</span></strong></p>
+        <p class="totale-box"><strong>Totale Ore: <span id="totale-ore">0</span></strong></p>
+        
+        <div id="stats-box" style="display:none;">
+            <strong>Dettaglio per Mansione:</strong><br>
+            <div id="stats-content"></div>
+        </div>
 
         <div id="password-panel-tools">
             <button class="toggle-pwd-btn" onclick="togglePasswordForm()">🔒 Cambia Password</button>
@@ -205,13 +236,35 @@
     const ADMIN_EMAIL = "a.chiodini01@gmail.com"; 
     
     let rubricaGlobale = {}; 
-    let datiFiltratiPerExport = []; // Variabile per salvare i dati pronti per l'export
+    let datiFiltratiPerExport = []; 
 
-    // DATE DEFAULT
+    // DEFAULT DATE
     const oggi = new Date();
     document.getElementById('data-lavoro').valueAsDate = oggi;
     document.getElementById('filtro-mese').value = (oggi.getMonth() + 1).toString();
     document.getElementById('filtro-anno').value = oggi.getFullYear().toString();
+
+
+    // --- FUNZIONE CALCOLO AUTOMATICO ORE ---
+    window.calcolaDifferenza = () => {
+        const inizio = document.getElementById('ora-inizio').value;
+        const fine = document.getElementById('ora-fine').value;
+        
+        if(inizio && fine) {
+            // Creo date fittizie per calcolare la differenza
+            const d1 = new Date(`2000-01-01T${inizio}`);
+            const d2 = new Date(`2000-01-01T${fine}`);
+            let diffMs = d2 - d1;
+            
+            // Gestione turno notturno (es. 22:00 -> 02:00)
+            if (diffMs < 0) {
+                diffMs += 24 * 60 * 60 * 1000;
+            }
+            
+            const diffOre = diffMs / (1000 * 60 * 60); // Converti ms in ore
+            document.getElementById('ore').value = diffOre.toFixed(2); // Arrotonda 2 decimali
+        }
+    };
 
 
     // --- LOGIN ---
@@ -228,17 +281,14 @@
 
     window.logout = () => signOut(auth);
 
-    // --- GESTIONE UTENTE ---
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
             document.getElementById('login-panel').style.display = 'none';
             document.getElementById('app-panel').style.display = 'block';
-            
             await aggiornaRubricaLocale();
             let nomeDisplay = rubricaGlobale[user.email] || user.email;
             document.getElementById('welcome-msg').innerText = `Ciao, ${nomeDisplay}`;
-            
             if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()){
                 document.getElementById('admin-panel-tools').style.display = 'block';
                 document.getElementById('admin-indicator').style.display = 'inline-block';
@@ -296,18 +346,34 @@
         } catch (e) { alert("Errore salvataggio utente."); }
     };
 
+    // --- SALVA ORE (Nuovi campi Inizio/Fine) ---
     window.salvaOre = async () => {
         const data = document.getElementById('data-lavoro').value;
         const mansione = document.getElementById('mansione').value;
         const ore = parseFloat(document.getElementById('ore').value);
         const note = document.getElementById('note').value;
-        if(!data || !mansione || !ore) return alert("Compila tutto!");
+        const inizio = document.getElementById('ora-inizio').value;
+        const fine = document.getElementById('ora-fine').value;
+
+        if(!data || !mansione || !ore) return alert("Compila data, mansione e totale ore!");
+
         try {
             await addDoc(collection(db, "turni"), {
-                uid: currentUser.uid, email: currentUser.email, data: data, mansione: mansione, ore: ore, note: note || "", created_at: new Date()
+                uid: currentUser.uid, 
+                email: currentUser.email, 
+                data: data, 
+                mansione: mansione, 
+                ore: ore, 
+                oraInizio: inizio || "", // Salva orari opzionali
+                oraFine: fine || "",
+                note: note || "", 
+                created_at: new Date()
             });
+            // Reset
             document.getElementById('ore').value = "";
             document.getElementById('note').value = "";
+            document.getElementById('ora-inizio').value = "";
+            document.getElementById('ora-fine').value = "";
             caricaDati(); 
         } catch (e) { console.error(e); alert("Errore salvataggio."); }
     };
@@ -319,14 +385,15 @@
         }
     };
 
-    // --- CARICA DATI E POPOLA EXPORT ---
+    // --- CARICA DATI ---
     window.caricaDati = async () => {
         const tbody = document.getElementById('tabella-ore');
-        tbody.innerHTML = "<tr><td colspan='6'>Caricamento...</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='7'>Caricamento...</td></tr>";
         
         let totale = 0;
         let htmlRighe = "";
-        datiFiltratiPerExport = []; // Resetta i dati per l'export
+        datiFiltratiPerExport = []; 
+        let statsPerMansione = {}; // Oggetto per i conteggi parziali
 
         const meseScelto = document.getElementById('filtro-mese').value;
         const annoScelto = document.getElementById('filtro-anno').value;
@@ -354,67 +421,86 @@
                     if (meseRow !== meseScelto || annoRow !== annoScelto) return;
                 }
 
+                // CALCOLI
+                totale += row.ore;
+                
+                // Accumula per mansione
+                if(!statsPerMansione[row.mansione]) statsPerMansione[row.mansione] = 0;
+                statsPerMansione[row.mansione] += row.ore;
+
                 const dataFormat = dataObj.toLocaleDateString('it-IT');
                 const nomeCollaboratore = rubricaGlobale[row.email] || row.email;
-                const noteTesto = row.note ? row.note : "-";
+                const noteTesto = row.note ? row.note : "";
+                
+                // Formatta orario
+                let orarioDisplay = "-";
+                if(row.oraInizio && row.oraFine) {
+                    orarioDisplay = `${row.oraInizio} - ${row.oraFine}`;
+                }
 
-                // Aggiungi alla tabella
                 htmlRighe += `<tr>
                     <td>${dataFormat}</td>
                     <td><strong>${nomeCollaboratore}</strong></td>
                     <td>${row.mansione}</td>
-                    <td>${row.ore}</td>
-                    <td class="note-cell">${noteTesto}</td>
+                    <td style="font-size:0.9em; color:#555;">${orarioDisplay}</td>
+                    <td><strong>${row.ore}</strong></td>
+                    <td class="note-cell" title="${noteTesto}">${noteTesto}</td>
                     <td><button class="delete-btn" onclick="eliminaTurno('${idDoc}')">🗑️</button></td>
                 </tr>`;
                 
-                totale += row.ore;
-
-                // Salva per Export (puliamo le note da virgole che rompono i CSV)
+                // Salva per Export
                 datiFiltratiPerExport.push({
                     data: dataFormat,
                     nome: nomeCollaboratore,
                     mansione: row.mansione,
-                    ore: row.ore.toString().replace(".", ","), // Formato italiano decimali
+                    orario: orarioDisplay !== "-" ? orarioDisplay : "",
+                    ore: row.ore.toString().replace(".", ","), 
                     note: (row.note || "").replace(/;/g, " ").replace(/\n/g, " ")
                 });
             });
 
-            if(htmlRighe === "") tbody.innerHTML = "<tr><td colspan='6'>Nessun dato.</td></tr>";
+            // RENDERING TABELLA
+            if(htmlRighe === "") tbody.innerHTML = "<tr><td colspan='7'>Nessun dato per il periodo selezionato.</td></tr>";
             else tbody.innerHTML = htmlRighe;
             
-            document.getElementById('totale-ore').innerText = totale;
+            document.getElementById('totale-ore').innerText = totale.toFixed(1); // 1 decimale
+
+            // RENDERING STATISTICHE MANSIONI
+            const statsBox = document.getElementById('stats-box');
+            const statsContent = document.getElementById('stats-content');
+            statsContent.innerHTML = "";
+            
+            // Se ci sono dati, mostra il box
+            if(Object.keys(statsPerMansione).length > 0) {
+                statsBox.style.display = "block";
+                for (const [mansione, ore] of Object.entries(statsPerMansione)) {
+                    statsContent.innerHTML += `<span class="stat-item">${mansione}: ${ore.toFixed(1)} ore</span>`;
+                }
+            } else {
+                statsBox.style.display = "none";
+            }
 
         } catch (e) {
             console.error(e);
             if(e.message.includes("index")) alert("⚠️ Manca Indice Firebase.");
-            tbody.innerHTML = "<tr><td colspan='6' style='color:red'>Errore caricamento.</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='7' style='color:red'>Errore caricamento.</td></tr>";
         }
     }
 
-    // --- FUNZIONE EXPORT EXCEL (CSV) ---
+    // --- EXPORT ---
     window.scaricaExcel = () => {
-        if (datiFiltratiPerExport.length === 0) {
-            return alert("Nessun dato da scaricare. La tabella è vuota.");
-        }
-
-        // Intestazione CSV (usiamo punto e virgola che piace a Excel Italia)
-        let csvContent = "Data;Collaboratore;Mansione;Ore;Note\n";
-
+        if (datiFiltratiPerExport.length === 0) return alert("Nessun dato da scaricare.");
+        
+        let csvContent = "Data;Collaboratore;Mansione;Orario;Ore;Note\n";
         datiFiltratiPerExport.forEach(row => {
-            csvContent += `${row.data};${row.nome};${row.mansione};${row.ore};${row.note}\n`;
+            csvContent += `${row.data};${row.nome};${row.mansione};${row.orario};${row.ore};${row.note}\n`;
         });
 
-        // Crea il file blob per il download
-        // Aggiungiamo il BOM (\uFEFF) per dire a Excel che è UTF-8 (gestisce accenti)
         const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
-        
-        // Crea link nascosto e cliccalo
         const link = document.createElement("a");
         link.setAttribute("href", url);
         link.setAttribute("download", "riepilogo_ore.csv");
-        link.style.visibility = 'hidden';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
