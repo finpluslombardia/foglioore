@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione Ore Collaboratori</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f4f4f9; color: #333; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 900px; margin: 0 auto; padding: 20px; background-color: #f4f4f9; color: #333; }
         .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         h2, h3 { color: #2c3e50; }
         
@@ -37,6 +37,9 @@
         th, td { border-bottom: 1px solid #eee; padding: 12px; text-align: left; vertical-align: middle; }
         th { background-color: #f8f9fa; color: #666; font-weight: 600; }
         tr:hover { background-color: #f1f1f1; }
+        
+        /* Colonna note un po' più larga se possibile, o gestita auto */
+        td.note-cell { color: #666; font-style: italic; }
 
         /* Utilità */
         #app-panel, #loading { display: none; } 
@@ -62,17 +65,23 @@
     <div id="app-panel">
         <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
             <h3>Nuovo Inserimento</h3>
+            
+            <label style="font-size: 0.9em; font-weight: bold; margin-top: 10px; display:block;">Data e Mansione:</label>
             <input type="date" id="data-lavoro">
             <select id="mansione">
                 <option value="" disabled selected>-- Seleziona Mansione --</option>
-                <option value="Sviluppo Web">Sviluppo Web</option>
-                <option value="Grafica">Grafica</option>
-                <option value="Social Media">Social Media</option>
-                <option value="Amministrazione">Amministrazione</option>
-                <option value="Consulenza">Consulenza</option>
+                <option value="Assistente bagnanti">Assistente bagnanti</option>
+                <option value="Istruttore">Istruttore</option>
+                <option value="Fitness">Fitness</option>
+                <option value="Lezione individuale">Lezione individuale</option>
+                <option value="Segreteria">Segreteria</option>
             </select>
+
+            <label style="font-size: 0.9em; font-weight: bold; margin-top: 10px; display:block;">Dettagli:</label>
             <input type="number" id="ore" placeholder="Numero di ore (es. 4.5)" step="0.5">
-            <button onclick="salvaOre()">Registra Ore</button>
+            <input type="text" id="note" placeholder="Note (opzionale - es. Sostituzione, Pulizia...)">
+            
+            <button onclick="salvaOre()" style="margin-top: 15px;">Registra Ore</button>
         </div>
 
         <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
@@ -85,6 +94,7 @@
                     <th>Collaboratore</th>
                     <th>Mansione</th>
                     <th>Ore</th>
+                    <th>Note</th>
                     <th>Azioni</th>
                 </tr>
             </thead>
@@ -99,13 +109,12 @@
 </div>
 
 <script type="module">
-    // Importiamo le librerie dai server di Google (CDN) per il browser
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- LA TUA CONFIGURAZIONE FIREBASE ---
+    // --- CONFIGURAZIONE ---
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
       authDomain: "gestioneore-3bf5f.firebaseapp.com",
@@ -124,10 +133,10 @@
     
     let currentUser = null;
     
-    // *** LA TUA MAIL ADMIN ***
+    // *** MAIL ADMIN ***
     const ADMIN_EMAIL = "a.chiodini01@gmail.com"; 
 
-    // Imposta data odierna come default
+    // Imposta data odierna
     document.getElementById('data-lavoro').valueAsDate = new Date();
 
     // --- LOGIN ---
@@ -151,11 +160,7 @@
             currentUser = user;
             document.getElementById('login-panel').style.display = 'none';
             document.getElementById('app-panel').style.display = 'block';
-            
-            // Messaggio di benvenuto personalizzato
-            let welcomeText = `Ciao, ${user.email}`;
-            document.getElementById('welcome-msg').innerText = welcomeText;
-            
+            document.getElementById('welcome-msg').innerText = `Ciao, ${user.email}`;
             caricaDati(); 
         } else {
             currentUser = null;
@@ -166,13 +171,14 @@
         }
     });
 
-    // --- SALVA ORE ---
+    // --- SALVA ORE (Nuova versione con NOTE) ---
     window.salvaOre = async () => {
         const data = document.getElementById('data-lavoro').value;
         const mansione = document.getElementById('mansione').value;
         const ore = parseFloat(document.getElementById('ore').value);
+        const note = document.getElementById('note').value; // Prendiamo le note
 
-        if(!data || !mansione || !ore) return alert("Compila tutti i campi!");
+        if(!data || !mansione || !ore) return alert("Compila data, mansione e ore!");
 
         try {
             await addDoc(collection(db, "turni"), {
@@ -181,10 +187,12 @@
                 data: data,
                 mansione: mansione,
                 ore: ore,
+                note: note || "", // Se vuoto salva stringa vuota
                 created_at: new Date()
             });
-            // Reset campi e ricarica
+            // Reset campi
             document.getElementById('ore').value = "";
+            document.getElementById('note').value = ""; // Pulisci note
             caricaDati(); 
         } catch (e) {
             console.error("Errore salvataggio: ", e);
@@ -197,7 +205,7 @@
         if(confirm("Sei sicuro di voler eliminare questa voce?")) {
             try {
                 await deleteDoc(doc(db, "turni", idDocumento));
-                caricaDati(); // Ricarica la tabella
+                caricaDati();
             } catch (e) {
                 console.error("Errore eliminazione:", e);
                 alert("Impossibile eliminare.");
@@ -205,24 +213,21 @@
         }
     };
 
-    // --- CARICA DATI (LOGICA PRIVACY) ---
+    // --- CARICA DATI (Con colonna NOTE) ---
     async function caricaDati() {
         const tbody = document.getElementById('tabella-ore');
-        tbody.innerHTML = "<tr><td colspan='5'>Caricamento...</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='6'>Caricamento...</td></tr>";
         
         let totale = 0;
         let htmlRighe = "";
 
         try {
             let q;
-            // Verifica se sei l'admin (confronto minuscolo per sicurezza)
             if (currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                 document.getElementById('admin-indicator').style.display = 'inline-block';
-                // L'admin vede TUTTO
                 q = query(collection(db, "turni"), orderBy("data", "desc"));
             } else {
                 document.getElementById('admin-indicator').style.display = 'none';
-                // Il collaboratore vede SOLO LE SUE
                 q = query(collection(db, "turni"), where("uid", "==", currentUser.uid), orderBy("data", "desc"));
             }
             
@@ -234,12 +239,16 @@
 
                 const dataObj = new Date(row.data);
                 const dataFormat = dataObj.toLocaleDateString('it-IT');
+                
+                // Gestione Note: se non esistono (vecchi dati) mostra trattino
+                const noteTesto = row.note ? row.note : "-";
 
                 htmlRighe += `<tr>
                     <td>${dataFormat}</td>
                     <td><strong>${row.email}</strong></td>
                     <td>${row.mansione}</td>
                     <td>${row.ore}</td>
+                    <td class="note-cell">${noteTesto}</td>
                     <td>
                         <button class="delete-btn" onclick="eliminaTurno('${idDoc}')" title="Elimina riga">🗑️</button>
                     </td>
@@ -248,7 +257,7 @@
             });
 
             if(htmlRighe === "") {
-                tbody.innerHTML = "<tr><td colspan='5'>Nessun dato trovato.</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='6'>Nessun dato trovato.</td></tr>";
             } else {
                 tbody.innerHTML = htmlRighe;
             }
@@ -257,9 +266,9 @@
         } catch (e) {
             console.error("Errore caricamento: ", e);
             if(e.message.includes("index")) {
-                alert("⚠️ ATTENZIONE: Manca l'indice su Firebase. Apri la Console (F12), cerca il link rosso e cliccaci per crearlo.");
+                alert("⚠️ ATTENZIONE: Manca l'indice su Firebase. Apri la Console (F12) per il link.");
             }
-            tbody.innerHTML = "<tr><td colspan='5' style='color:red'>Errore nel caricamento.</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='6' style='color:red'>Errore nel caricamento.</td></tr>";
         }
     }
 </script>
