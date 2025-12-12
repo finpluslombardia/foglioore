@@ -3,152 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Gestione Ore Collaboratori</title>
-    <style>
-        /* --- RESET E BASE --- */
-        * { box-sizing: border-box; } /* Fondamentale per non far sbordare gli input */
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 950px; margin: 0 auto; padding: 10px; background-color: #f4f4f9; color: #333; }
-        .container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2, h3 { color: #2c3e50; margin-top: 0; }
-        
-        /* --- INPUT E BOTTONI --- */
-        /* Input a larghezza piena ma contenuti nel box */
-        input, select, button { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; -webkit-appearance: none; }
-        input:focus, select:focus { border-color: #007bff; outline: none; }
-        
-        button { background-color: #007bff; color: white; cursor: pointer; border: none; font-weight: bold; transition: background 0.3s; margin-top: 10px; }
-        button:hover { background-color: #0056b3; }
-        
-        .logout-btn { background-color: #dc3545; }
-        
-        /* Tasto Export */
-        .export-btn { background-color: #28a745; margin-top: 0; }
-        
-        /* Grid per inserimento orari (Desktop) */
-        .time-row { display: flex; gap: 15px; margin-bottom: 10px; }
-        .time-row > div { flex: 1; }
-        .time-row label { display: block; margin-bottom: 2px; font-size: 0.9em; font-weight: 600; color: #555; }
+    <title>Gestione Ore Team</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        /* Pannelli Vari */
-        #admin-panel-tools { display: none; background-color: #fff3cd; border: 1px solid #ffeeba; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        #stats-box { background-color: #e3f2fd; border: 1px solid #bbdefb; padding: 15px; border-radius: 8px; margin-top: 20px; font-size: 0.95em; overflow-x: auto; }
-        .stat-item { display: inline-block; margin-right: 15px; font-weight: bold; color: #0277bd; }
-        #password-panel-tools { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; }
-        .toggle-pwd-btn { background-color: #6c757d; width: auto; font-size: 0.9em; }
+    <style>
+        /* --- RESET & VARIABILI --- */
+        :root {
+            --primary: #2563eb;       /* Blu Moderno */
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;     /* Grigio Slate */
+            --success: #10b981;       /* Verde Smeraldo */
+            --danger: #ef4444;        /* Rosso Moderno */
+            --bg-body: #f1f5f9;       /* Sfondo pagina molto chiaro */
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * { box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            margin: 0; 
+            padding: 20px 10px; 
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased; /* Rende il font più nitido su Mac/iOS */
+        }
+
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            background: var(--bg-card); 
+            padding: 30px; 
+            border-radius: 16px; 
+            box-shadow: var(--shadow); 
+        }
+
+        h2, h3 { color: var(--text-main); font-weight: 700; margin-top: 0; letter-spacing: -0.02em; }
+        h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        h3 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-muted); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.05em; margin-top: 30px;}
+
+        /* --- INPUT & SELECT --- */
+        input, select { 
+            width: 100%; 
+            padding: 12px 16px; 
+            margin: 8px 0; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 10px; 
+            font-size: 15px; 
+            font-family: inherit;
+            background-color: #f8fafc;
+            transition: all 0.2s ease;
+            color: var(--text-main);
+        }
+        
+        input:focus, select:focus { 
+            border-color: var(--primary); 
+            background-color: #fff;
+            outline: none; 
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); 
+        }
+        
+        /* Etichette sopra gli input */
+        label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-left: 4px; }
+
+        /* --- BOTTONI --- */
+        button { 
+            width: 100%; 
+            padding: 14px; 
+            margin-top: 15px; 
+            border: none; 
+            border-radius: 50px; /* Pill shape */
+            font-size: 15px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: transform 0.1s, background-color 0.2s;
+            font-family: inherit;
+        }
+
+        button:active { transform: scale(0.98); }
+
+        /* Tipi di Bottoni */
+        .btn-primary { background-color: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        
+        .logout-btn { background-color: transparent; color: var(--danger); border: 2px solid #fecaca; margin-top: 40px; }
+        .logout-btn:hover { background-color: #fef2f2; }
+
+        .export-btn { background-color: var(--success); color: white; margin-top: 0; width: auto !important; padding: 10px 20px; font-size: 0.9rem; }
+        .export-btn:hover { background-color: #059669; }
+
+        .toggle-pwd-btn { background-color: #f1f5f9; color: var(--text-muted); width: auto; font-size: 0.9em; padding: 10px 20px; }
+        .toggle-pwd-btn:hover { background-color: #e2e8f0; color: var(--text-main); }
+
+        /* --- GRIDS & LAYOUT --- */
+        .time-row { display: flex; gap: 15px; margin-bottom: 15px; }
+        .time-row > div { flex: 1; }
+
+        /* Pannelli Speciali */
+        #admin-panel-tools { display: none; background: #fffbeb; border: 1px solid #fcd34d; padding: 20px; border-radius: 12px; margin-bottom: 25px; }
+        
+        #stats-box { 
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); 
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-top: 30px; 
+            color: #1e3a8a;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+        .stat-item { 
+            display: inline-block; 
+            margin-right: 20px; 
+            font-weight: 600; 
+            font-size: 0.95rem;
+            background: rgba(255,255,255,0.6);
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        /* --- TABELLA (Desktop) --- */
+        .table-container { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 14px; }
+        
+        th { 
+            background-color: #f8fafc; 
+            color: var(--text-muted); 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            font-size: 0.75rem; 
+            letter-spacing: 0.05em; 
+            padding: 15px 10px;
+            border-bottom: 2px solid #e2e8f0;
+            text-align: left;
+        }
+        
+        td { 
+            padding: 15px 10px; 
+            border-bottom: 1px solid #f1f5f9; 
+            vertical-align: middle;
+            color: var(--text-main);
+        }
+        tr:last-child td { border-bottom: none; }
+        
+        /* Stili celle */
+        td strong { font-weight: 600; }
+        .note-cell { color: var(--text-muted); font-style: italic; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9em; }
+
+        /* Totale */
+        .totale-box { 
+            margin-top: 20px; 
+            text-align: right; 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: var(--primary);
+            letter-spacing: -0.03em;
+        }
+
+        /* Badges & Icone */
+        .admin-badge { 
+            background: #fef3c7; 
+            color: #d97706; 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            font-size: 0.75rem; 
+            font-weight: 700; 
+            letter-spacing: 0.05em;
+            display: none; 
+        }
+
+        .action-btn-group { display: flex; gap: 8px; justify-content: flex-start; }
+        .action-icon {
+            background: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+        .edit-btn-icon:hover { background: #dbeafe; color: var(--primary); }
+        .delete-btn-icon:hover { background: #fee2e2; color: var(--danger); }
+        .save-btn { background: var(--success); color: white; width: auto; padding: 5px 12px; font-size: 0.8rem; margin: 0; }
+        .cancel-btn { background: var(--secondary); color: white; width: auto; padding: 5px 12px; font-size: 0.8rem; margin: 0; }
 
         /* Filtri */
-        .filter-bar { background-color: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #eee; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .filter-bar select { width: auto; flex: 1; min-width: 120px; margin: 0; }
-        .filter-bar button { width: auto; margin: 0; }
+        .filter-bar { 
+            display: flex; 
+            gap: 10px; 
+            align-items: flex-end; 
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px dashed #cbd5e1;
+        }
+        .filter-bar .input-group { flex: 1; }
+        .filter-bar button { margin: 0; padding: 12px 20px; height: 46px; border-radius: 10px;}
 
-        /* Icone */
-        .action-btn-group { display: flex; gap: 5px; }
-        .action-icon { background: #eee; border: 1px solid #ddd; border-radius: 4px; padding: 6px 10px; cursor: pointer; font-size: 1.1em; width: auto; margin: 0; flex:1; text-align: center; }
-        .edit-btn-icon:hover { background: #cce5ff; color: #004085; }
-        .delete-btn-icon:hover { background: #f8d7da; color: #721c24; }
-
-        /* TABELLA DESKTOP STANDARD */
-        table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 14px; }
-        th, td { border-bottom: 1px solid #eee; padding: 12px 10px; text-align: left; vertical-align: middle; }
-        th { background-color: #f8f9fa; color: #666; font-weight: 600; }
-        td.note-cell { color: #666; font-style: italic; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        
-        /* Input dentro la tabella (durante modifica) */
-        .table-input { padding: 8px; margin: 0; width: 100%; font-size: 14px; }
-
-        /* Utilità */
-        #app-panel { display: none; } 
-        .totale-box { margin-top: 20px; text-align: right; font-size: 1.4em; color: #28a745; }
-        .admin-badge { background: #ffc107; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; color: black; display: none; margin-left: 10px; }
-
-
-        /* ================================================= */
-        /* MEDIA QUERY: VERSIONE MOBILE (CARD VIEW)          */
-        /* ================================================= */
+        /* --- MOBILE (CARD VIEW) --- */
         @media only screen and (max-width: 600px) {
+            body { padding: 10px 5px; background-color: #f8fafc; }
+            .container { padding: 20px 15px; box-shadow: none; background: transparent; }
             
-            body { padding: 5px; }
-            .container { padding: 15px; margin-bottom: 20px; }
+            /* Input impilati */
+            .time-row { flex-direction: column; gap: 5px; margin-bottom: 20px; }
+            .filter-bar { flex-direction: column; align-items: stretch; background: white; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+            .filter-bar .export-btn { margin-top: 10px; }
 
-            /* Inserimento impilato */
-            .time-row { flex-direction: column; gap: 10px; }
-            .filter-bar { display: block; }
-            .filter-bar select, .filter-bar button { width: 100%; margin-bottom: 8px; }
+            /* Nascondi intestazioni tabella */
+            thead { display: none; }
             
-            /* NASCONDI L'INTESTAZIONE DELLA TABELLA */
-            table, thead, tbody, th, td, tr { display: block; }
-            thead tr { position: absolute; top: -9999px; left: -9999px; }
-
-            /* TRASFORMA LA RIGA IN UNA SCHEDA */
+            /* Trasforma righe in Cards */
             tr { 
-                margin-bottom: 15px; 
-                border: 1px solid #e0e0e0; 
-                border-radius: 8px; 
-                background: #fff;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-                padding: 10px;
+                display: block;
+                background: white;
+                margin-bottom: 15px;
+                border-radius: 16px;
+                box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+                padding: 15px;
+                border: 1px solid #f1f5f9;
             }
 
-            /* CELLE DELLA SCHEDA */
+            /* Celle diventano righe della card */
             td { 
-                border: none; 
-                border-bottom: 1px solid #f0f0f0; 
-                position: relative; 
-                padding-left: 40% !important; /* Spazio per l'etichetta */
-                text-align: right; /* Valore a destra */
-                padding-top: 8px;
-                padding-bottom: 8px;
-                min-height: 35px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 0;
+                border-bottom: 1px solid #f8fafc;
+                text-align: right;
             }
             
-            td:last-child { border-bottom: none; padding-left: 0 !important; text-align: center; margin-top: 10px;}
+            td:last-child { border-bottom: none; justify-content: flex-end; margin-top: 10px; padding-top: 0;}
 
-            /* ETICHETTE FINTE (Simuliamo le intestazioni) */
-            td:before { 
-                content: attr(data-label); /* Prende il testo dall'attributo HTML */
-                position: absolute;
-                left: 10px;
-                width: 35%;
-                padding-right: 10px; 
-                white-space: nowrap;
-                text-align: left;
-                font-weight: bold;
-                color: #555;
+            /* Label finta a sinistra */
+            td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--text-muted);
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                margin-right: 15px;
             }
 
-            /* Gestione Note lunghe su mobile */
-            td.note-cell { white-space: normal; text-align: right; max-width: none; }
+            /* Stili specifici mobile */
+            td strong { color: var(--text-main); font-size: 1.05rem; }
+            td.note-cell { white-space: normal; text-align: right; max-width: 200px; }
+            
+            /* Input durante l'editing su mobile */
+            .table-input { text-align: right; background: #f8fafc; border: 1px solid #e2e8f0; width: 60%; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div style="display: flex; align-items: center; justify-content: space-between;">
-        <h2 id="welcome-msg" style="font-size: 1.2em; margin:0;">Login</h2>
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+        <h2 id="welcome-msg">Benvenuto</h2>
         <span id="admin-indicator" class="admin-badge">ADMIN</span>
     </div>
 
-    <div id="login-panel" style="margin-top:20px;">
-        <p style="color: #666; margin-bottom: 15px;">Inserisci le tue credenziali:</p>
-        <input type="email" id="email" placeholder="Email aziendale">
-        <input type="password" id="password" placeholder="Password">
-        <button onclick="login()">Accedi</button>
+    <div id="login-panel" style="max-width: 400px; margin: 40px auto; text-align: center;">
+        <div style="margin-bottom: 30px;">
+            <h2 style="font-size: 1.8rem;">Accesso Team</h2>
+            <p style="color: var(--text-muted);">Inserisci le tue credenziali per continuare.</p>
+        </div>
+        <div style="text-align: left;">
+            <label>Email</label>
+            <input type="email" id="email" placeholder="nome@azienda.it">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="••••••••">
+        </div>
+        <button onclick="login()" class="btn-primary">Accedi</button>
     </div>
 
     <div id="app-panel">
 
         <div id="admin-panel-tools">
-            <h3 style="font-size:1.1em;">🛠️ Gestione Anagrafica</h3>
+            <h3 style="margin-top:0; color: #b45309;">🛠️ Gestione Anagrafica</h3>
             <div class="time-row" style="margin-bottom:0;">
-                <div><input type="email" id="new-user-email" placeholder="Email"></div>
+                <div><input type="email" id="new-user-email" placeholder="Email Collaboratore"></div>
                 <div><input type="text" id="new-user-name" placeholder="Nome Cognome"></div>
             </div>
-            <button onclick="salvaAnagrafica()" style="background-color: #ffc107; color: black; margin-top:5px;">Salva Utente</button>
+            <button onclick="salvaAnagrafica()" class="btn-primary" style="background-color: #f59e0b; box-shadow: none; color: black; margin-top: 10px;">Salva in Rubrica</button>
         </div>
 
-        <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <h3 style="margin-bottom: 15px; font-size:1.1em;">➕ Nuovo Turno</h3>
+        <div style="background: #f8fafc; padding: 25px; border-radius: 16px; margin-bottom: 30px; border: 1px solid #e2e8f0;">
+            <h2 style="font-size: 1.2rem; margin-bottom: 20px;">Nuovo Turno</h2>
             
             <div class="time-row">
                 <div>
@@ -158,7 +310,7 @@
                 <div>
                     <label>Mansione</label>
                     <select id="mansione">
-                        <option value="" disabled selected>-- Seleziona --</option>
+                        <option value="" disabled selected>Seleziona...</option>
                         <option value="Assistente bagnanti">Assistente bagnanti</option>
                         <option value="Istruttore">Istruttore</option>
                         <option value="Fitness">Fitness</option>
@@ -179,75 +331,86 @@
                 </div>
                 <div>
                     <label>Ore Totali</label>
-                    <input type="number" id="ore" placeholder="0.0" step="0.5">
+                    <input type="number" id="ore" placeholder="0.0" step="0.5" style="font-weight: bold; color: var(--primary);">
                 </div>
             </div>
 
-            <label style="margin-top:5px; display:block; font-size:0.9em; font-weight:600; color:#555;">Note</label>
-            <input type="text" id="note" placeholder="Opzionale...">
-            <button onclick="salvaOre()">Registra Ore</button>
+            <div>
+                <label>Note (Opzionale)</label>
+                <input type="text" id="note" placeholder="Es. Sostituzione, Pulizia extra...">
+            </div>
+            
+            <button onclick="salvaOre()" class="btn-primary">Registra Turno</button>
         </div>
 
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
-
-        <h3 style="font-size:1.1em;">📅 Riepilogo</h3>
+        <h3>Riepilogo Attività</h3>
         <div class="filter-bar">
-            <select id="filtro-mese">
-                <option value="all">Tutti i Mesi</option>
-                <option value="1">Gennaio</option>
-                <option value="2">Febbraio</option>
-                <option value="3">Marzo</option>
-                <option value="4">Aprile</option>
-                <option value="5">Maggio</option>
-                <option value="6">Giugno</option>
-                <option value="7">Luglio</option>
-                <option value="8">Agosto</option>
-                <option value="9">Settembre</option>
-                <option value="10">Ottobre</option>
-                <option value="11">Novembre</option>
-                <option value="12">Dicembre</option>
-            </select>
-            <select id="filtro-anno">
-                <option value="2024">2024</option>
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-            </select>
-            <button onclick="caricaDati()">Filtra</button>
+            <div class="input-group">
+                <select id="filtro-mese">
+                    <option value="all">Tutti i Mesi</option>
+                    <option value="1">Gennaio</option>
+                    <option value="2">Febbraio</option>
+                    <option value="3">Marzo</option>
+                    <option value="4">Aprile</option>
+                    <option value="5">Maggio</option>
+                    <option value="6">Giugno</option>
+                    <option value="7">Luglio</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Settembre</option>
+                    <option value="10">Ottobre</option>
+                    <option value="11">Novembre</option>
+                    <option value="12">Dicembre</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <select id="filtro-anno">
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                    <option value="2026">2026</option>
+                </select>
+            </div>
+            <button onclick="caricaDati()" style="background: var(--text-main); color: white; width: auto; margin:0; padding: 0 20px;">Filtra</button>
             <button onclick="scaricaExcel()" class="export-btn">📥 Excel</button>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Data</th>
-                    <th>Nome</th>
-                    <th>Mansione</th>
-                    <th>Orario</th>
-                    <th>Ore</th>
-                    <th>Note</th>
-                    <th>Azioni</th>
-                </tr>
-            </thead>
-            <tbody id="tabella-ore">
-                <tr><td colspan="7">Caricamento...</td></tr>
-            </tbody>
-        </table>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Collaboratore</th>
+                        <th>Mansione</th>
+                        <th>Orario</th>
+                        <th>Ore</th>
+                        <th>Note</th>
+                        <th style="text-align: right;">Azioni</th>
+                    </tr>
+                </thead>
+                <tbody id="tabella-ore">
+                    <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Caricamento dati...</td></tr>
+                </tbody>
+            </table>
+        </div>
         
-        <p class="totale-box">Totale: <span id="totale-ore">0</span> ore</p>
+        <div class="totale-box">
+            Totale: <span id="totale-ore">0</span> ore
+        </div>
         
         <div id="stats-box" style="display:none;">
             <div id="stats-content"></div>
         </div>
 
-        <div id="password-panel-tools">
-            <button class="toggle-pwd-btn" onclick="togglePasswordForm()">🔒 Cambia Password</button>
-            <div id="form-cambio-password" style="display: none; margin-top: 10px; background: #f8f9fa; padding: 10px; border-radius: 6px; border: 1px solid #ddd;">
-                <input type="password" id="nuova-password" placeholder="Nuova Password (min 6 car.)">
-                <button onclick="salvaNuovaPassword()" style="background-color: #17a2b8;">Conferma</button>
+        <div style="border-top: 1px solid #e2e8f0; margin-top: 40px; padding-top: 20px; text-align: center;">
+            <button class="toggle-pwd-btn" onclick="togglePasswordForm()">🔒 Gestisci Password</button>
+            
+            <div id="form-cambio-password" style="display: none; margin-top: 15px; background: #f1f5f9; padding: 20px; border-radius: 12px; max-width: 400px; margin-left: auto; margin-right: auto;">
+                <label style="text-align: left; display: block;">Nuova Password (min 6 car.)</label>
+                <input type="password" id="nuova-password" placeholder="••••••••">
+                <button onclick="salvaNuovaPassword()" class="btn-primary" style="margin-top: 10px;">Aggiorna</button>
             </div>
+            
+            <button class="logout-btn" onclick="logout()">Esci</button>
         </div>
-
-        <button class="logout-btn" onclick="logout()" style="margin-top: 15px;">Esci</button>
     </div>
 </div>
 
@@ -256,7 +419,7 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- CONFIGURAZIONE ---
+    // --- CONFIGURAZIONE (INSERISCI I TUOI DATI) ---
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
       authDomain: "gestioneore-3bf5f.firebaseapp.com",
@@ -284,8 +447,7 @@
     document.getElementById('filtro-mese').value = (oggi.getMonth() + 1).toString();
     document.getElementById('filtro-anno').value = oggi.getFullYear().toString();
 
-
-    // --- CALCOLO ORE ---
+    // --- LOGICA DI BUSINESS ---
     window.calcolaDifferenza = () => {
         const inizio = document.getElementById('ora-inizio').value;
         const fine = document.getElementById('ora-fine').value;
@@ -294,12 +456,10 @@
             const d2 = new Date(`2000-01-01T${fine}`);
             let diffMs = d2 - d1;
             if (diffMs < 0) { diffMs += 24 * 60 * 60 * 1000; }
-            const diffOre = diffMs / (1000 * 60 * 60); 
-            document.getElementById('ore').value = diffOre.toFixed(2);
+            document.getElementById('ore').value = (diffMs / (1000 * 60 * 60)).toFixed(2);
         }
     };
 
-    // --- AUTH ---
     window.login = async () => {
         const email = document.getElementById('email').value;
         const pass = document.getElementById('password').value;
@@ -323,12 +483,11 @@
             alert("Password aggiornata!");
             document.getElementById('form-cambio-password').style.display = 'none';
         } catch (error) {
-            if (error.code === 'auth/requires-recent-login') alert("Devi fare Logout e rientrare.");
+            if (error.code === 'auth/requires-recent-login') alert("Fai Logout e rientra per sicurezza.");
             else alert("Errore: " + error.message); 
         }
     };
 
-    // --- ANAGRAFICA ---
     async function aggiornaRubricaLocale() {
         rubricaGlobale = {}; 
         try {
@@ -358,7 +517,7 @@
             document.getElementById('app-panel').style.display = 'block';
             await aggiornaRubricaLocale();
             let nomeDisplay = rubricaGlobale[user.email] || user.email;
-            document.getElementById('welcome-msg').innerText = `Ciao, ${nomeDisplay.split(' ')[0]}`; // Solo nome
+            document.getElementById('welcome-msg').innerText = `Ciao, ${nomeDisplay.split(' ')[0]}`;
             
             if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()){
                 document.getElementById('admin-panel-tools').style.display = 'block';
@@ -372,12 +531,11 @@
             currentUser = null;
             document.getElementById('login-panel').style.display = 'block';
             document.getElementById('app-panel').style.display = 'none';
-            document.getElementById('welcome-msg').innerText = "Login";
+            document.getElementById('welcome-msg').innerText = "Benvenuto";
             document.getElementById('admin-indicator').style.display = 'none';
         }
     });
 
-    // --- CRUD OPERAZIONI ---
     window.salvaOre = async () => {
         const data = document.getElementById('data-lavoro').value;
         const mansione = document.getElementById('mansione').value;
@@ -386,7 +544,7 @@
         const inizio = document.getElementById('ora-inizio').value;
         const fine = document.getElementById('ora-fine').value;
 
-        if(!data || !mansione || !ore) return alert("Compila i campi obbligatori!");
+        if(!data || !mansione || !ore) return alert("Compila i campi principali!");
 
         try {
             await addDoc(collection(db, "turni"), {
@@ -402,7 +560,7 @@
     };
 
     window.eliminaTurno = async (idDocumento) => {
-        if(confirm("Eliminare?")) {
+        if(confirm("Sei sicuro di voler eliminare?")) {
             try { await deleteDoc(doc(db, "turni", idDocumento)); caricaDati(); } 
             catch (e) { alert("Errore eliminazione."); }
         }
@@ -420,14 +578,14 @@
 
         let mansioneOptions = Mansioni.map(m => `<option value="${m}" ${m === mansioneAttuale ? 'selected' : ''}>${m}</option>`).join('');
 
-        // Attenzione: qui aggiungiamo data-label anche agli input per mantenere il layout mobile corretto
+        // Attenzione: manteniamo data-label per il mobile
         row.cells[0].innerHTML = `<input type="date" id="edit-data-${idDoc}" class="table-input" value="${dataAttuale}">`;
         row.cells[2].innerHTML = `<select id="edit-mansione-${idDoc}" class="table-input">${mansioneOptions}</select>`;
         row.cells[3].innerHTML = `<div style="display:flex; gap:5px;"><input type="time" id="edit-inizio-${idDoc}" class="table-input" value="${orarioAttuale[0]||''}"><input type="time" id="edit-fine-${idDoc}" class="table-input" value="${orarioAttuale[1]||''}"></div>`;
         row.cells[4].innerHTML = `<input type="number" id="edit-ore-${idDoc}" class="table-input" value="${oreAttuali}" step="0.5">`;
         row.cells[5].innerHTML = `<input type="text" id="edit-note-${idDoc}" class="table-input" value="${noteAttuali}">`;
         
-        row.cells[6].innerHTML = `<div class="action-btn-group"><button class="action-icon edit-btn-icon" onclick="salvaModifiche('${idDoc}')" style="background:#d4edda; color:#155724;">💾</button><button class="action-icon delete-btn-icon" onclick="caricaDati()" style="background:#f8d7da; color:#721c24;">❌</button></div>`;
+        row.cells[6].innerHTML = `<div class="action-btn-group"><button class="save-btn" onclick="salvaModifiche('${idDoc}')">Salva</button><button class="cancel-btn" onclick="caricaDati()">Annulla</button></div>`;
 
         document.getElementById(`edit-inizio-${idDoc}`).onchange = () => calcolaModificaOre(idDoc);
         document.getElementById(`edit-fine-${idDoc}`).onchange = () => calcolaModificaOre(idDoc);
@@ -463,10 +621,9 @@
         } catch (e) { console.error(e); alert("Errore salvataggio."); }
     };
 
-    // --- CARICAMENTO E RENDER ---
     window.caricaDati = async () => {
         const tbody = document.getElementById('tabella-ore');
-        tbody.innerHTML = "<tr><td colspan='7'>Caricamento...</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='7' style='text-align:center'>Caricamento...</td></tr>";
         
         let totale = 0;
         let htmlRighe = "";
@@ -502,18 +659,17 @@
                 const noteTesto = row.note ? row.note : "";
                 let orarioDisplay = (row.oraInizio && row.oraFine) ? `${row.oraInizio} - ${row.oraFine}` : "-";
 
-                // NOTA: Qui inserisco data-label per il CSS Mobile
                 htmlRighe += `<tr id="riga-${idDoc}">
                     <td data-label="Data" data-val="${row.data}">${dataFormat}</td>
-                    <td data-label="Nome"><strong>${nomeCollaboratore}</strong></td>
+                    <td data-label="Collaboratore"><strong>${nomeCollaboratore}</strong></td>
                     <td data-label="Mansione" data-val="${row.mansione}">${row.mansione}</td>
                     <td data-label="Orario" data-val="${row.oraInizio || ''} - ${row.oraFine || ''}">${orarioDisplay}</td>
                     <td data-label="Ore"><strong>${row.ore}</strong></td>
                     <td data-label="Note" class="note-cell" title="${noteTesto}">${noteTesto || '-'}</td>
-                    <td data-label="">
-                        <div class="action-btn-group">
-                            <button class="action-icon edit-btn-icon" onclick="modificaTurno('${idDoc}')">✏️</button>
-                            <button class="action-icon delete-btn-icon" onclick="eliminaTurno('${idDoc}')">🗑️</button>
+                    <td data-label="" style="text-align:right">
+                        <div class="action-btn-group" style="justify-content: flex-end;">
+                            <button class="action-icon edit-btn-icon" onclick="modificaTurno('${idDoc}')" title="Modifica">✏️</button>
+                            <button class="action-icon delete-btn-icon" onclick="eliminaTurno('${idDoc}')" title="Elimina">🗑️</button>
                         </div>
                     </td>
                 </tr>`;
@@ -524,7 +680,7 @@
                 });
             });
 
-            if(htmlRighe === "") tbody.innerHTML = "<tr><td colspan='7'>Nessun dato.</td></tr>";
+            if(htmlRighe === "") tbody.innerHTML = "<tr><td colspan='7' style='text-align:center'>Nessun dato trovato.</td></tr>";
             else tbody.innerHTML = htmlRighe;
             
             document.getElementById('totale-ore').innerText = totale.toFixed(1);
@@ -541,7 +697,7 @@
         } catch (e) {
             console.error(e);
             if(e.message.includes("index")) alert("⚠️ Manca Indice Firebase.");
-            tbody.innerHTML = "<tr><td colspan='7' style='color:red'>Errore caricamento.</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='7' style='color:red; text-align:center'>Errore caricamento.</td></tr>";
         }
     }
 
