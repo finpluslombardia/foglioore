@@ -12,7 +12,7 @@
     <style>
         /* --- 1. RESET & VARIABILI --- */
         :root {
-            --primary: #007aff; 
+            --primary: #007aff; /* Apple Blue */
             --bg-body: #f2f2f7; 
             --bg-card: #ffffff;
             --text-main: #1c1c1e;
@@ -75,6 +75,9 @@
         .btn-warning { background: #ff9500; color: white; }
         .btn-secondary { background: #e5e5ea; color: var(--text-main); }
         .btn-danger { background: #ff3b30; color: white; }
+        
+        .link-text { color: var(--primary); cursor: pointer; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px; }
+        .link-text:hover { text-decoration: underline; }
 
         /* --- CALENDARIO APPLE COMPACT --- */
         .calendar-wrapper { 
@@ -92,7 +95,11 @@
         .cal-nav { background: none; border: none; color: var(--primary); font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
 
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 2px; text-align: center; }
-        .cal-weekday { font-size: 0.7rem; font-weight: 600; color: #8e8e93; text-transform: uppercase; margin-bottom: 8px; }
+        
+        .cal-weekday { 
+            font-size: 0.7rem; font-weight: 600; color: #8e8e93; 
+            text-transform: uppercase; margin-bottom: 8px; 
+        }
         
         .cal-day { 
             height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
@@ -124,7 +131,7 @@
         .action-icons { display: flex; gap: 8px; justify-content: flex-end; }
         .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px; width: auto; }
 
-        /* --- STATISTICHE MANSIONI (NUOVO) --- */
+        /* --- STATISTICHE MANSIONI --- */
         .stats-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 10px; }
         .stat-pill { 
             background: #fff; border: 1px solid #e5e5ea; padding: 4px 10px; border-radius: 20px; 
@@ -139,6 +146,9 @@
         .card-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 2px; }
         .card-sub { color: #86868b; font-size: 0.8rem; margin-bottom: 15px; }
         .card-stat { font-size: 1.8rem; font-weight: 800; color: var(--primary); text-align: right; }
+        
+        .edit-user-btn { background: #f2f2f7; border:none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #86868b; margin: 0; padding: 0; }
+        .edit-user-btn:hover { background: #e5e5ea; color: var(--primary); }
 
         /* Mobile */
         @media (max-width: 600px) {
@@ -322,7 +332,6 @@
         </div>
         <div style="text-align:right; font-weight:700; margin-top:10px">Totale: <span id="d-totale">0</span></div>
         <div id="d-stats-container" class="stats-container"></div>
-        
         <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:15px; width:auto">📥 Scarica Excel Utente</button>
     </div>
 
@@ -489,7 +498,7 @@
         toggleLoading('btn-login', true);
         try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { modal("Errore", err.message); toggleLoading('btn-login', false); }
     };
-    window.logout = () => signOut(auth);
+    window.logout = () => { clearTimeout(inactivityTimer); signOut(auth); };
     window.resetPwd = async () => {
         const e = document.getElementById('email').value;
         if(!e) return modal("Info", "Inserisci email sopra.");
@@ -501,13 +510,16 @@
     };
 
     onAuthStateChanged(auth, async (user) => {
+        toggleLoading('btn-login', false); // Stop spinner
         if(user) {
             currentUser = user;
             document.getElementById('logout-btn').classList.remove('hidden');
             
-            const snap = await getDocs(collection(db, "anagrafica"));
-            snap.forEach(d => rubrica[d.id] = d.data().nome);
-            document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.split(' ')[0] || 'User'}`;
+            try {
+                const snap = await getDocs(collection(db, "anagrafica"));
+                snap.forEach(d => rubrica[d.id] = d.data().nome);
+                document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.split(' ')[0] || 'User'}`;
+            } catch(e) { console.log("Rubrica error", e); }
 
             if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                 document.getElementById('admin-indicator').classList.remove('hidden');
@@ -515,16 +527,17 @@
                 loadAdminData();
             } else {
                 switchView('collaborator-view');
+                document.getElementById('c-data').valueAsDate = new Date();
+                syncCalFromFilter(); 
                 loadCollabData(); 
             }
         } else {
             currentUser = null;
             switchView('login-view');
-            toggleLoading('btn-login', false);
         }
     });
 
-    // COLLABORATOR
+    // COLLABORATOR ACTIONS
     window.calcDiff = () => {
         const i = document.getElementById('c-inizio').value, f = document.getElementById('c-fine').value;
         if(i && f) {
@@ -613,7 +626,6 @@
         });
         document.getElementById('c-totale').innerText = tot.toFixed(1);
         
-        // Render Stats
         Object.keys(breakdown).forEach(m => {
             statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`;
         });
