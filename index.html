@@ -19,16 +19,20 @@
         .logout-btn { background-color: #dc3545; margin-top: 30px; }
         .logout-btn:hover { background-color: #a71d2a; }
 
-        /* Bottone Elimina (Cestino) */
+        /* Pannello Admin (Anagrafica) */
+        #admin-panel-tools {
+            display: none; /* Nascosto di default */
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Bottone Elimina */
         .delete-btn {
-            background-color: #ffebee; 
-            color: #c62828; 
-            border: 1px solid #ffcdd2; 
-            padding: 5px 10px; 
-            width: auto; 
-            font-size: 14px; 
-            border-radius: 4px;
-            cursor: pointer;
+            background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; 
+            padding: 5px 10px; width: auto; font-size: 14px; border-radius: 4px; cursor: pointer;
         }
         .delete-btn:hover { background-color: #ef9a9a; color: white; }
 
@@ -38,11 +42,10 @@
         th { background-color: #f8f9fa; color: #666; font-weight: 600; }
         tr:hover { background-color: #f1f1f1; }
         
-        /* Colonna note un po' più larga se possibile, o gestita auto */
-        td.note-cell { color: #666; font-style: italic; }
+        td.note-cell { color: #666; font-style: italic; font-size: 0.9em; }
 
         /* Utilità */
-        #app-panel, #loading { display: none; } 
+        #app-panel { display: none; } 
         .totale-box { margin-top: 20px; text-align: right; font-size: 1.2em; color: #28a745; }
         .admin-badge { background: #ffc107; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; color: black; display: none; margin-left: 10px; }
     </style>
@@ -63,6 +66,17 @@
     </div>
 
     <div id="app-panel">
+
+        <div id="admin-panel-tools">
+            <h3>🛠️ Gestione Anagrafica (Solo Admin)</h3>
+            <p style="font-size:0.9em">Associa un nome a un'email. Se l'email esiste già, il nome verrà aggiornato.</p>
+            <div style="display: flex; gap: 10px;">
+                <input type="email" id="new-user-email" placeholder="Email Collaboratore" style="flex:1">
+                <input type="text" id="new-user-name" placeholder="Nome e Cognome" style="flex:1">
+            </div>
+            <button onclick="salvaAnagrafica()" style="background-color: #ffc107; color: black;">Salva Utente in Rubrica</button>
+        </div>
+
         <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
             <h3>Nuovo Inserimento</h3>
             
@@ -99,7 +113,8 @@
                 </tr>
             </thead>
             <tbody id="tabella-ore">
-                </tbody>
+                <tr><td colspan="6">Caricamento...</td></tr>
+            </tbody>
         </table>
         
         <p class="totale-box"><strong>Totale visualizzato: <span id="totale-ore">0</span></strong></p>
@@ -109,10 +124,10 @@
 </div>
 
 <script type="module">
+    // Importiamo setDoc e getDoc per gestire l'anagrafica
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     // --- CONFIGURAZIONE ---
     const firebaseConfig = {
@@ -125,18 +140,16 @@
       measurementId: "G-KT823H9DVR"
     };
 
-    // Inizializza Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
     
     let currentUser = null;
-    
-    // *** MAIL ADMIN ***
     const ADMIN_EMAIL = "a.chiodini01@gmail.com"; 
+    
+    // Variabile globale per tenere in memoria i nomi (scaricati dal DB)
+    let rubricaGlobale = {}; 
 
-    // Imposta data odierna
     document.getElementById('data-lavoro').valueAsDate = new Date();
 
     // --- LOGIN ---
@@ -151,17 +164,34 @@
         }
     };
 
-    // --- LOGOUT ---
     window.logout = () => signOut(auth);
 
     // --- GESTIONE UTENTE ---
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
             document.getElementById('login-panel').style.display = 'none';
             document.getElementById('app-panel').style.display = 'block';
-            document.getElementById('welcome-msg').innerText = `Ciao, ${user.email}`;
+            
+            // 1. Scarica prima la rubrica dal database
+            await aggiornaRubricaLocale();
+
+            // 2. Mostra nome utente loggato
+            let nomeDisplay = rubricaGlobale[user.email] || user.email;
+            document.getElementById('welcome-msg').innerText = `Ciao, ${nomeDisplay}`;
+            
+            // 3. Se sei Admin, mostra il pannello gestione anagrafica
+            if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()){
+                document.getElementById('admin-panel-tools').style.display = 'block';
+                document.getElementById('admin-indicator').style.display = 'inline-block';
+            } else {
+                document.getElementById('admin-panel-tools').style.display = 'none';
+                document.getElementById('admin-indicator').style.display = 'none';
+            }
+
+            // 4. Carica la tabella ore
             caricaDati(); 
+
         } else {
             currentUser = null;
             document.getElementById('login-panel').style.display = 'block';
@@ -171,49 +201,86 @@
         }
     });
 
-    // --- SALVA ORE (Nuova versione con NOTE) ---
+    // --- FUNZIONI ANAGRAFICA (Nuove!) ---
+    
+    // Scarica tutti i nomi dal DB e li mette in memoria
+    async function aggiornaRubricaLocale() {
+        rubricaGlobale = {}; // Reset
+        try {
+            const querySnapshot = await getDocs(collection(db, "anagrafica"));
+            querySnapshot.forEach((doc) => {
+                // Il documento ha ID=email e campo=nome
+                rubricaGlobale[doc.id] = doc.data().nome;
+            });
+        } catch (e) {
+            console.error("Errore lettura anagrafica:", e);
+        }
+    }
+
+    // Salva un nuovo nome nel DB
+    window.salvaAnagrafica = async () => {
+        const email = document.getElementById('new-user-email').value.trim().toLowerCase();
+        const nome = document.getElementById('new-user-name').value.trim();
+
+        if(!email || !nome) return alert("Inserisci sia Email che Nome.");
+
+        try {
+            // Usiamo setDoc con l'email come ID. Se esiste aggiorna, se no crea.
+            await setDoc(doc(db, "anagrafica", email), {
+                nome: nome
+            });
+            alert(`Salvato: ${email} -> ${nome}`);
+            
+            // Pulisci campi e ricarica tutto
+            document.getElementById('new-user-email').value = "";
+            document.getElementById('new-user-name').value = "";
+            await aggiornaRubricaLocale(); // Aggiorna memoria
+            caricaDati(); // Aggiorna tabella per mostrare i nomi nuovi
+        } catch (e) {
+            console.error("Errore salvataggio anagrafica:", e);
+            alert("Errore salvataggio utente.");
+        }
+    };
+
+    // --- SALVA ORE ---
     window.salvaOre = async () => {
         const data = document.getElementById('data-lavoro').value;
         const mansione = document.getElementById('mansione').value;
         const ore = parseFloat(document.getElementById('ore').value);
-        const note = document.getElementById('note').value; // Prendiamo le note
+        const note = document.getElementById('note').value;
 
         if(!data || !mansione || !ore) return alert("Compila data, mansione e ore!");
 
         try {
             await addDoc(collection(db, "turni"), {
                 uid: currentUser.uid,
-                email: currentUser.email,
+                email: currentUser.email, // Salviamo l'email, il nome lo recuperiamo al volo
                 data: data,
                 mansione: mansione,
                 ore: ore,
-                note: note || "", // Se vuoto salva stringa vuota
+                note: note || "", 
                 created_at: new Date()
             });
-            // Reset campi
             document.getElementById('ore').value = "";
-            document.getElementById('note').value = ""; // Pulisci note
+            document.getElementById('note').value = "";
             caricaDati(); 
         } catch (e) {
             console.error("Errore salvataggio: ", e);
-            alert("Errore salvataggio. Controlla console.");
+            alert("Errore salvataggio.");
         }
     };
 
-    // --- ELIMINA RIGA ---
+    // --- ELIMINA TURNI ---
     window.eliminaTurno = async (idDocumento) => {
-        if(confirm("Sei sicuro di voler eliminare questa voce?")) {
+        if(confirm("Eliminare questa riga?")) {
             try {
                 await deleteDoc(doc(db, "turni", idDocumento));
                 caricaDati();
-            } catch (e) {
-                console.error("Errore eliminazione:", e);
-                alert("Impossibile eliminare.");
-            }
+            } catch (e) { alert("Errore eliminazione."); }
         }
     };
 
-    // --- CARICA DATI (Con colonna NOTE) ---
+    // --- CARICA DATI ---
     async function caricaDati() {
         const tbody = document.getElementById('tabella-ore');
         tbody.innerHTML = "<tr><td colspan='6'>Caricamento...</td></tr>";
@@ -224,10 +291,8 @@
         try {
             let q;
             if (currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                document.getElementById('admin-indicator').style.display = 'inline-block';
                 q = query(collection(db, "turni"), orderBy("data", "desc"));
             } else {
-                document.getElementById('admin-indicator').style.display = 'none';
                 q = query(collection(db, "turni"), where("uid", "==", currentUser.uid), orderBy("data", "desc"));
             }
             
@@ -240,35 +305,33 @@
                 const dataObj = new Date(row.data);
                 const dataFormat = dataObj.toLocaleDateString('it-IT');
                 
-                // Gestione Note: se non esistono (vecchi dati) mostra trattino
+                // Cerca il nome nella rubrica scaricata (o usa l'email se non c'è)
+                const nomeCollaboratore = rubricaGlobale[row.email] || row.email;
+
                 const noteTesto = row.note ? row.note : "-";
 
                 htmlRighe += `<tr>
                     <td>${dataFormat}</td>
-                    <td><strong>${row.email}</strong></td>
+                    <td><strong>${nomeCollaboratore}</strong></td>
                     <td>${row.mansione}</td>
                     <td>${row.ore}</td>
                     <td class="note-cell">${noteTesto}</td>
                     <td>
-                        <button class="delete-btn" onclick="eliminaTurno('${idDoc}')" title="Elimina riga">🗑️</button>
+                        <button class="delete-btn" onclick="eliminaTurno('${idDoc}')" title="Elimina">🗑️</button>
                     </td>
                 </tr>`;
                 totale += row.ore;
             });
 
-            if(htmlRighe === "") {
-                tbody.innerHTML = "<tr><td colspan='6'>Nessun dato trovato.</td></tr>";
-            } else {
-                tbody.innerHTML = htmlRighe;
-            }
+            if(htmlRighe === "") tbody.innerHTML = "<tr><td colspan='6'>Nessun dato.</td></tr>";
+            else tbody.innerHTML = htmlRighe;
+            
             document.getElementById('totale-ore').innerText = totale;
 
         } catch (e) {
-            console.error("Errore caricamento: ", e);
-            if(e.message.includes("index")) {
-                alert("⚠️ ATTENZIONE: Manca l'indice su Firebase. Apri la Console (F12) per il link.");
-            }
-            tbody.innerHTML = "<tr><td colspan='6' style='color:red'>Errore nel caricamento.</td></tr>";
+            console.error(e);
+            if(e.message.includes("index")) alert("⚠️ Manca Indice Firebase. Apri Console (F12).");
+            tbody.innerHTML = "<tr><td colspan='6' style='color:red'>Errore caricamento.</td></tr>";
         }
     }
 </script>
