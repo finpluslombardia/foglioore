@@ -19,6 +19,10 @@
         .logout-btn { background-color: #dc3545; }
         .logout-btn:hover { background-color: #a71d2a; }
 
+        /* Tasto Export Excel (Verde) */
+        .export-btn { background-color: #28a745; color: white; margin-left: auto; width: auto !important; }
+        .export-btn:hover { background-color: #218838; }
+
         /* Pannello Admin (Anagrafica) */
         #admin-panel-tools {
             display: none; 
@@ -29,7 +33,7 @@
             margin-bottom: 20px;
         }
 
-        /* Barra Filtri Mese/Anno */
+        /* Barra Filtri */
         .filter-bar {
             background-color: #f8f9fa;
             padding: 15px;
@@ -41,7 +45,7 @@
             align-items: center;
             flex-wrap: wrap;
         }
-        .filter-bar select { width: auto; flex: 1; margin: 0; }
+        .filter-bar select { width: auto; flex: 1; min-width: 120px; margin: 0; }
         .filter-bar button { width: auto; margin: 0; padding: 10px 20px; }
 
         /* Pannello Cambio Password */
@@ -120,7 +124,7 @@
 
         <h3>Riepilogo Ore</h3>
         <div class="filter-bar">
-            <label><strong>Filtra per:</strong></label>
+            <label><strong>Filtra:</strong></label>
             <select id="filtro-mese">
                 <option value="all">Tutti i Mesi</option>
                 <option value="1">Gennaio</option>
@@ -142,6 +146,8 @@
                 <option value="2026">2026</option>
             </select>
             <button onclick="caricaDati()">Applica Filtro</button>
+            
+            <button onclick="scaricaExcel()" class="export-btn">📥 Scarica Excel</button>
         </div>
 
         <table>
@@ -199,11 +205,11 @@
     const ADMIN_EMAIL = "a.chiodini01@gmail.com"; 
     
     let rubricaGlobale = {}; 
+    let datiFiltratiPerExport = []; // Variabile per salvare i dati pronti per l'export
 
-    // IMPOSTAZIONE DATE DEFAULT
+    // DATE DEFAULT
     const oggi = new Date();
     document.getElementById('data-lavoro').valueAsDate = oggi;
-    // Imposta filtri al mese corrente
     document.getElementById('filtro-mese').value = (oggi.getMonth() + 1).toString();
     document.getElementById('filtro-anno').value = oggi.getFullYear().toString();
 
@@ -230,7 +236,6 @@
             document.getElementById('app-panel').style.display = 'block';
             
             await aggiornaRubricaLocale();
-
             let nomeDisplay = rubricaGlobale[user.email] || user.email;
             document.getElementById('welcome-msg').innerText = `Ciao, ${nomeDisplay}`;
             
@@ -241,7 +246,6 @@
                 document.getElementById('admin-panel-tools').style.display = 'none';
                 document.getElementById('admin-indicator').style.display = 'none';
             }
-
             caricaDati(); 
         } else {
             currentUser = null;
@@ -252,7 +256,6 @@
         }
     });
 
-    // --- PASSWORD ---
     window.togglePasswordForm = () => {
         const form = document.getElementById('form-cambio-password');
         form.style.display = form.style.display === 'none' ? 'block' : 'none';
@@ -266,20 +269,16 @@
             alert("Password aggiornata!");
             document.getElementById('form-cambio-password').style.display = 'none';
         } catch (error) {
-            if (error.code === 'auth/requires-recent-login') {
-                alert("Devi fare Logout e rientrare per cambiare la password.");
-            } else { alert("Errore: " + error.message); }
+            if (error.code === 'auth/requires-recent-login') alert("Devi fare Logout e rientrare per cambiare password.");
+            else alert("Errore: " + error.message); 
         }
     };
 
-    // --- ANAGRAFICA ---
     async function aggiornaRubricaLocale() {
         rubricaGlobale = {}; 
         try {
             const querySnapshot = await getDocs(collection(db, "anagrafica"));
-            querySnapshot.forEach((doc) => {
-                rubricaGlobale[doc.id] = doc.data().nome;
-            });
+            querySnapshot.forEach((doc) => { rubricaGlobale[doc.id] = doc.data().nome; });
         } catch (e) { console.error("Errore rubrica", e); }
     }
 
@@ -297,24 +296,15 @@
         } catch (e) { alert("Errore salvataggio utente."); }
     };
 
-    // --- SALVA ORE ---
     window.salvaOre = async () => {
         const data = document.getElementById('data-lavoro').value;
         const mansione = document.getElementById('mansione').value;
         const ore = parseFloat(document.getElementById('ore').value);
         const note = document.getElementById('note').value;
-
         if(!data || !mansione || !ore) return alert("Compila tutto!");
-
         try {
             await addDoc(collection(db, "turni"), {
-                uid: currentUser.uid,
-                email: currentUser.email,
-                data: data,
-                mansione: mansione,
-                ore: ore,
-                note: note || "", 
-                created_at: new Date()
+                uid: currentUser.uid, email: currentUser.email, data: data, mansione: mansione, ore: ore, note: note || "", created_at: new Date()
             });
             document.getElementById('ore').value = "";
             document.getElementById('note').value = "";
@@ -324,25 +314,22 @@
 
     window.eliminaTurno = async (idDocumento) => {
         if(confirm("Eliminare?")) {
-            try {
-                await deleteDoc(doc(db, "turni", idDocumento));
-                caricaDati();
-            } catch (e) { alert("Errore eliminazione."); }
+            try { await deleteDoc(doc(db, "turni", idDocumento)); caricaDati(); } 
+            catch (e) { alert("Errore eliminazione."); }
         }
     };
 
-    // --- CARICA DATI (CON FILTRO MESE) ---
-    // Nota: Ho reso questa funzione accessibile globalmente per il bottone del filtro
+    // --- CARICA DATI E POPOLA EXPORT ---
     window.caricaDati = async () => {
         const tbody = document.getElementById('tabella-ore');
         tbody.innerHTML = "<tr><td colspan='6'>Caricamento...</td></tr>";
         
         let totale = 0;
         let htmlRighe = "";
+        datiFiltratiPerExport = []; // Resetta i dati per l'export
 
-        // Leggi i filtri
-        const meseScelto = document.getElementById('filtro-mese').value; // es "12" o "all"
-        const annoScelto = document.getElementById('filtro-anno').value; // es "2025"
+        const meseScelto = document.getElementById('filtro-mese').value;
+        const annoScelto = document.getElementById('filtro-anno').value;
 
         try {
             let q;
@@ -359,36 +346,41 @@
                 const idDoc = docSnap.id;
                 const dataObj = new Date(row.data);
                 
-                // --- LOGICA FILTRO ---
-                const meseRow = (dataObj.getMonth() + 1).toString(); // +1 perché Gennaio è 0
+                // FILTRO
+                const meseRow = (dataObj.getMonth() + 1).toString();
                 const annoRow = dataObj.getFullYear().toString();
 
-                // Se il filtro non è "tutti" E (il mese non combacia O l'anno non combacia) -> SALTA
                 if (meseScelto !== "all") {
-                    if (meseRow !== meseScelto || annoRow !== annoScelto) {
-                        return; // Salta questa riga
-                    }
+                    if (meseRow !== meseScelto || annoRow !== annoScelto) return;
                 }
-                // ---------------------
 
                 const dataFormat = dataObj.toLocaleDateString('it-IT');
                 const nomeCollaboratore = rubricaGlobale[row.email] || row.email;
                 const noteTesto = row.note ? row.note : "-";
 
+                // Aggiungi alla tabella
                 htmlRighe += `<tr>
                     <td>${dataFormat}</td>
                     <td><strong>${nomeCollaboratore}</strong></td>
                     <td>${row.mansione}</td>
                     <td>${row.ore}</td>
                     <td class="note-cell">${noteTesto}</td>
-                    <td>
-                        <button class="delete-btn" onclick="eliminaTurno('${idDoc}')" title="Elimina">🗑️</button>
-                    </td>
+                    <td><button class="delete-btn" onclick="eliminaTurno('${idDoc}')">🗑️</button></td>
                 </tr>`;
+                
                 totale += row.ore;
+
+                // Salva per Export (puliamo le note da virgole che rompono i CSV)
+                datiFiltratiPerExport.push({
+                    data: dataFormat,
+                    nome: nomeCollaboratore,
+                    mansione: row.mansione,
+                    ore: row.ore.toString().replace(".", ","), // Formato italiano decimali
+                    note: (row.note || "").replace(/;/g, " ").replace(/\n/g, " ")
+                });
             });
 
-            if(htmlRighe === "") tbody.innerHTML = "<tr><td colspan='6'>Nessun dato per il periodo selezionato.</td></tr>";
+            if(htmlRighe === "") tbody.innerHTML = "<tr><td colspan='6'>Nessun dato.</td></tr>";
             else tbody.innerHTML = htmlRighe;
             
             document.getElementById('totale-ore').innerText = totale;
@@ -399,6 +391,34 @@
             tbody.innerHTML = "<tr><td colspan='6' style='color:red'>Errore caricamento.</td></tr>";
         }
     }
+
+    // --- FUNZIONE EXPORT EXCEL (CSV) ---
+    window.scaricaExcel = () => {
+        if (datiFiltratiPerExport.length === 0) {
+            return alert("Nessun dato da scaricare. La tabella è vuota.");
+        }
+
+        // Intestazione CSV (usiamo punto e virgola che piace a Excel Italia)
+        let csvContent = "Data;Collaboratore;Mansione;Ore;Note\n";
+
+        datiFiltratiPerExport.forEach(row => {
+            csvContent += `${row.data};${row.nome};${row.mansione};${row.ore};${row.note}\n`;
+        });
+
+        // Crea il file blob per il download
+        // Aggiungiamo il BOM (\uFEFF) per dire a Excel che è UTF-8 (gestisce accenti)
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        
+        // Crea link nascosto e cliccalo
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "riepilogo_ore.csv");
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 </script>
 
 </body>
