@@ -19,13 +19,13 @@
             --border-radius: 8px; 
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
 
-            /* COLORI MANSIONI (Pallini Calendario) */
+            /* COLORI PALLINI CALENDARIO */
             --dot-assistente: #ef4444;  /* Rosso */
             --dot-istruttore: #2563eb;  /* Blu */
             --dot-propaganda: #a855f7;  /* Viola */
             --dot-lezione: #0ea5e9;     /* Azzurro */
             --dot-fitness: #eab308;     /* Giallo */
-            --dot-segreteria: #94a3b8;  /* Grigio */
+            --dot-segreteria: #64748b;  /* Grigio */
         }
 
         *, *::before, *::after { box-sizing: border-box; -webkit-box-sizing: border-box; }
@@ -80,26 +80,29 @@
         .time-row { display: flex; gap: 10px; margin-bottom: 5px; } 
         .time-row > div { flex: 1; min-width: 0; } 
 
-        /* --- CALENDARIO (Nuovo Stile Apple) --- */
+        /* --- CALENDARIO MENSILE --- */
         .calendar-wrapper { margin-bottom: 20px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px; user-select: none; }
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
         .cal-title { font-weight: 700; font-size: 1rem; color: var(--text-main); text-transform: capitalize; }
         .cal-nav-btn { background: none; border: none; font-size: 1.2rem; color: var(--primary); cursor: pointer; padding: 0 10px; margin: 0; width: auto; }
         
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
+        /* Griglia 7 colonne fisse */
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
         .cal-day-name { font-size: 0.65rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; padding-bottom: 5px; }
         
         .cal-day { 
-            aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; 
-            padding-top: 6px; border-radius: 50%; cursor: pointer; position: relative; font-size: 0.9rem; color: var(--text-main);
-            transition: background 0.2s;
+            aspect-ratio: 1/1; /* Quadrati perfetti */
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; 
+            padding-top: 4px; border-radius: 8px; cursor: pointer; position: relative; font-size: 0.9rem; color: var(--text-main);
+            transition: background 0.2s; border: 1px solid transparent;
         }
         .cal-day:hover { background: #f1f5f9; }
         .cal-day.empty { pointer-events: none; }
-        .cal-day.today { color: var(--primary); font-weight: 800; }
-        .cal-day.selected { background: var(--text-main); color: white; }
+        .cal-day.today { border-color: var(--primary); font-weight: 700; color: var(--primary); }
+        .cal-day.selected { background: var(--text-main); color: white; border-color: var(--text-main); }
         
-        .cal-dots { display: flex; gap: 3px; margin-top: 2px; justify-content: center; flex-wrap: wrap; max-width: 80%; }
+        /* Pallini */
+        .cal-dots { display: flex; gap: 3px; margin-top: 4px; justify-content: center; flex-wrap: wrap; max-width: 80%; }
         .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
 
         /* Filtri */
@@ -146,17 +149,15 @@
         #toast { visibility: hidden; min-width: 200px; background: #1e293b; color: #fff; text-align: center; border-radius: 50px; padding: 10px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; font-size: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} } @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-        
         .spinner { width: 14px; height: 14px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
         .spinner-dark { border-color: var(--primary); width: 20px; height: 20px; margin: 0 auto; display: block; }
         .btn-loading .spinner { display: block; } .btn-loading span { display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 300px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-actions { display: flex; gap: 8px; margin-top: 15px; } .modal-actions button { margin: 0; flex:1; }
 
-        /* --- MOBILE SPECIFIC --- */
+        /* --- MOBILE --- */
         @media only screen and (max-width: 600px) {
             body { padding: 5px; font-size: 13px; }
             .container { padding: 10px; }
@@ -391,7 +392,7 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // CONFIG
+    // CONFIGURAZIONE ORIGINALE
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
       authDomain: "gestioneore-3bf5f.firebaseapp.com",
@@ -413,8 +414,8 @@
     let allTurni = []; 
     let detailUserEmail = null;
     let currentEditEmail = null;
-    let calDate = new Date(); // Data corrente per calendario
-    let selectedDay = null;   // Giorno cliccato nel calendario
+    let calDate = new Date(); // Data calendario
+    let selectedDay = null;   // Giorno selezionato
 
     const Mansioni = ["Assistente bagnanti", "Istruttore", "Fitness", "Propaganda", "Lezione individuale", "Segreteria"];
 
@@ -441,7 +442,7 @@
     };
     ['click', 'mousemove', 'keypress', 'touchstart'].forEach(e => document.addEventListener(e, resetInactivityTimer));
 
-    // CALENDARIO LOGIC
+    // CALENDAR RENDER
     const monthNames = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
     
     window.renderCalendar = () => {
@@ -449,7 +450,7 @@
         const y = calDate.getFullYear();
         document.getElementById('cal-month-name').innerText = `${monthNames[m]} ${y}`;
         
-        // Sync Dropdowns (se cambiato da frecce)
+        // Sync Dropdowns
         document.getElementById('c-filtro-mese').value = (m+1).toString();
         document.getElementById('c-filtro-anno').value = y.toString();
 
@@ -458,23 +459,19 @@
         const grid = document.getElementById('cal-days-grid');
         grid.innerHTML = "";
 
-        // Padding inizio mese (Lunedi first)
+        // Padding (Lunedì=0 in CSS logic adjustment)
+        // JS getDay(): 0=Dom, 1=Lun. Vogliamo Lun prima.
         let pad = firstDay === 0 ? 6 : firstDay - 1;
-        for(let i=0; i<pad; i++) {
-            grid.innerHTML += `<div class="cal-day empty"></div>`;
-        }
+        for(let i=0; i<pad; i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
 
-        // Giorni
         const today = new Date();
         for(let d=1; d<=daysInMonth; d++) {
             const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            // Trova turni
             const shifts = myTurni.filter(t => t.data === dateStr);
             
-            // Crea pallini
             let dotsHtml = "";
             shifts.forEach(s => {
-                let colorVar = "--bg-secondary";
+                let colorVar = "var(--secondary)";
                 if(s.mansione.includes("Assistente")) colorVar = "var(--dot-assistente)";
                 else if(s.mansione.includes("Istruttore")) colorVar = "var(--dot-istruttore)";
                 else if(s.mansione.includes("Fitness")) colorVar = "var(--dot-fitness)";
@@ -497,7 +494,7 @@
 
     window.changeCalMonth = (delta) => {
         calDate.setMonth(calDate.getMonth() + delta);
-        selectedDay = null; // Reset selezione giorno
+        selectedDay = null; 
         renderCalendar();
         renderCollabTable();
     };
@@ -512,10 +509,9 @@
     };
 
     window.selectDay = (d) => {
-        if(selectedDay === d) selectedDay = null; // Toggle off
-        else selectedDay = d;
-        renderCalendar(); // Per aggiornare stile selected
-        renderCollabTable(); // Filtra tabella
+        selectedDay = (selectedDay === d) ? null : d;
+        renderCalendar();
+        renderCollabTable();
     };
 
     // AUTH
@@ -547,7 +543,6 @@
             snap.forEach(d => rubrica[d.id] = d.data().nome);
             document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.split(' ')[0] || 'User'}`;
 
-            // Setta data oggi nel form
             document.getElementById('c-data').valueAsDate = new Date();
 
             if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
@@ -556,7 +551,7 @@
                 loadAdminData();
             } else {
                 document.getElementById('collaborator-view').classList.remove('hidden');
-                syncCalFromFilter(); // Init Calendar & Table
+                syncCalFromFilter(); 
                 loadCollabData();
             }
         } else {
@@ -614,7 +609,7 @@
         const snap = await getDocs(q);
         myTurni = [];
         snap.forEach(d => myTurni.push({id: d.id, ...d.data()}));
-        renderCalendar(); // Ridisegna calendario coi pallini
+        renderCalendar(); 
         renderCollabTable();
     }
 
@@ -630,7 +625,7 @@
             const matchDate = (m === 'all' || (d.getMonth()+1).toString() === m) && d.getFullYear().toString() === y;
             const matchRole = (r === 'all' || t.mansione === r);
             
-            // Filtro Calendario (Se cliccato un giorno)
+            // Filtro Calendario
             let matchDay = true;
             if(selectedDay !== null) {
                 matchDay = (d.getDate() === selectedDay);
@@ -661,7 +656,7 @@
         document.getElementById('c-totale').innerText = tot.toFixed(1);
     };
 
-    // ADMIN LOGIC
+    // ADMIN
     window.saveAnagrafica = async () => {
         const e = document.getElementById('adm-email').value.trim().toLowerCase();
         if(!e) return modal("Errore", "Manca email");
@@ -781,7 +776,7 @@
         document.getElementById('d-totale').innerText = tot.toFixed(1);
     }
 
-    // SHARED EDIT
+    // SHARED
     window.delRow = (id, isAdmin=false) => {
         modal("Conferma", "Eliminare?", async () => {
             await deleteDoc(doc(db, "turni", id));
@@ -827,77 +822,4 @@
         let csv = cols.join(";") + "\n";
 
         for(let i=1; i<=days; i++) {
-            const dStr = `${y}-${String(m).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-            const dayT = dataList.filter(t => t.data === dStr);
-            let r = { in:'', out:'', note:'', vals:{} };
-            cols.forEach(c => r.vals[c] = '');
-
-            if(dayT.length > 0) {
-                const sorted = dayT.sort((a,b) => a.oraInizio.localeCompare(b.oraInizio));
-                r.in = sorted[0].oraInizio; r.out = sorted[sorted.length-1].oraFine;
-                r.note = dayT.map(x => x.note).filter(x=>x).join(' | ').replace(/;/g,' ');
-                dayT.forEach(t => {
-                    let k=""; 
-                    if(t.mansione.includes("Assistente")) k="ASS. BAG.";
-                    else if(t.mansione.includes("Istruttore")) k="ISTRUTTORE";
-                    else if(t.mansione.includes("Fitness")) k="AQUAFIT.";
-                    else if(t.mansione.includes("Propaganda")) k="PROPAG.";
-                    else if(t.mansione.includes("Lezione")) k="LEZ. INDIV.";
-                    else if(t.mansione.includes("Segreteria")) k="SEGRETERIA";
-                    if(k) {
-                        let cur = parseFloat(r.vals[k].replace(',','.')||0);
-                        r.vals[k] = (cur+t.ore).toString().replace('.',',');
-                        colTotals[k] += t.ore;
-                    }
-                });
-            }
-            let rowStr = [];
-            cols.forEach(c => {
-                if(c==="Giorno") rowStr.push(i);
-                else if(c==="IN") rowStr.push(r.in);
-                else if(c==="OUT") rowStr.push(r.out);
-                else if(c==="NOTE") rowStr.push(r.note);
-                else rowStr.push(r.vals[c]);
-            });
-            csv += rowStr.join(";") + "\n";
-        }
-        let rowT = ["TOTALE","","", ...cols.slice(3).map(c => colTotals[c] ? colTotals[c].toString().replace('.',',') : "")];
-        csv += "\n" + rowT.join(";") + "\n";
-        
-        const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a"); a.href = url; a.download = filename;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    }
-
-    window.excelCollab = () => {
-        const selM = document.getElementById('c-filtro-mese');
-        const selY = document.getElementById('c-filtro-anno');
-        const mTxt = selM.options[selM.selectedIndex].text;
-        const name = (rubrica[currentUser.email]||currentUser.email.split('@')[0]).replace(/\s+/g,'');
-        generateCsv(myTurni, `Presenze_${name}_${mTxt}_${selY.value}.csv`);
-    };
-    window.excelAdminDetail = () => {
-        const selM = document.getElementById('a-filtro-mese');
-        const selY = document.getElementById('a-filtro-anno');
-        const mTxt = selM.options[selM.selectedIndex].text;
-        const name = (rubrica[detailUserEmail]||detailUserEmail).replace(/\s+/g,'');
-        const userTurni = allTurni.filter(t => t.email === detailUserEmail);
-        generateCsv(userTurni, `Presenze_${name}_${mTxt}_${selY.value}.csv`);
-    };
-    window.excelAdminGlobal = () => {
-        const selM = document.getElementById('a-filtro-mese');
-        const mTxt = selM.options[selM.selectedIndex].text;
-        let csv = "Data;Collaboratore;Mansione;Ore;Orario;Note\n";
-        allTurni.forEach(t => {
-            const n = rubrica[t.email] || t.email;
-            csv += `${t.data};${n};${t.mansione};${t.ore.toString().replace('.',',')};${t.oraInizio}-${t.oraFine};${t.note}\n`;
-        });
-        const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a"); a.href = url; a.download = `Report_Globale_${mTxt}_${document.getElementById('a-filtro-anno').value}.csv`;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    };
-</script>
-</body>
-</html>
+            const dStr = `${
