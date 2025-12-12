@@ -27,12 +27,14 @@
         /* Utilità */
         #app-panel, #loading { display: none; } 
         .totale-box { margin-top: 20px; text-align: right; font-size: 1.2em; color: #28a745; }
+        .admin-badge { background: #ffc107; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; color: black; display: none; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2 id="welcome-msg">Login Collaboratori</h2>
+    <span id="admin-indicator" class="admin-badge">ADMIN MODE</span>
 
     <div id="login-panel">
         <p style="color: #666; margin-bottom: 20px;">Inserisci le tue credenziali per accedere.</p>
@@ -59,7 +61,7 @@
 
         <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
 
-        <h3>Riepilogo Ore Registrate</h3>
+        <h3>Riepilogo Ore</h3>
         <table>
             <thead>
                 <tr>
@@ -73,20 +75,18 @@
                 </tbody>
         </table>
         
-        <p class="totale-box"><strong>Totale ore visualizzate: <span id="totale-ore">0</span></strong></p>
+        <p class="totale-box"><strong>Totale visualizzato: <span id="totale-ore">0</span></strong></p>
 
         <button class="logout-btn" onclick="logout()">Esci</button>
     </div>
 </div>
 
 <script type="module">
-    // Importiamo le librerie dai server di Google (CDN) per farle funzionare nel browser
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- LA TUA CONFIGURAZIONE FIREBASE ---
+    // --- CONFIGURAZIONE (Incolla qui i tuoi dati) ---
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
       authDomain: "gestioneore-3bf5f.firebaseapp.com",
@@ -99,55 +99,47 @@
 
     // Inizializza Firebase
     const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app); // Opzionale, ma l'ho lasciato visto che era nel tuo codice
     const auth = getAuth(app);
     const db = getFirestore(app);
     
     let currentUser = null;
 
-    // Imposta la data di oggi come default nel calendario
+    // Imposta data odierna
     document.getElementById('data-lavoro').valueAsDate = new Date();
 
-    // --- FUNZIONE LOGIN ---
+    // --- LOGIN ---
     window.login = async () => {
         const email = document.getElementById('email').value;
         const pass = document.getElementById('password').value;
         if(!email || !pass) return alert("Inserisci email e password");
-
         try {
             await signInWithEmailAndPassword(auth, email, pass);
-            // Non serve fare altro, onAuthStateChanged gestirà il cambio schermata
         } catch (error) {
-            console.error(error);
-            let msg = "Errore login.";
-            if(error.code === 'auth/invalid-credential') msg = "Email o Password errati.";
-            if(error.code === 'auth/too-many-requests') msg = "Troppi tentativi. Riprova più tardi.";
-            alert(msg);
+            alert("Errore login: " + error.message);
         }
     };
 
-    // --- FUNZIONE LOGOUT ---
+    // --- LOGOUT ---
     window.logout = () => signOut(auth);
 
-    // --- GESTORE STATO UTENTE (Loggato / Non loggato) ---
+    // --- STATO UTENTE ---
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // Utente LOGGATO
             currentUser = user;
             document.getElementById('login-panel').style.display = 'none';
             document.getElementById('app-panel').style.display = 'block';
             document.getElementById('welcome-msg').innerText = `Ciao, ${user.email}`;
-            caricaDati(); // Carica la tabella
+            caricaDati(); 
         } else {
-            // Utente NON LOGGATO
             currentUser = null;
             document.getElementById('login-panel').style.display = 'block';
             document.getElementById('app-panel').style.display = 'none';
             document.getElementById('welcome-msg').innerText = "Login Collaboratori";
+            document.getElementById('admin-indicator').style.display = 'none';
         }
     });
 
-    // --- SALVATAGGIO ORE NEL DATABASE ---
+    // --- SALVA ORE ---
     window.salvaOre = async () => {
         const data = document.getElementById('data-lavoro').value;
         const mansione = document.getElementById('mansione').value;
@@ -156,42 +148,51 @@
         if(!data || !mansione || !ore) return alert("Compila tutti i campi!");
 
         try {
-            // Scriviamo nel Database (collezione "turni")
             await addDoc(collection(db, "turni"), {
-                uid: currentUser.uid,        // ID univoco utente
-                email: currentUser.email,    // Email utente (per leggere chi è stato)
+                uid: currentUser.uid,
+                email: currentUser.email,
                 data: data,
                 mansione: mansione,
                 ore: ore,
-                created_at: new Date()       // Data precisa di inserimento
+                created_at: new Date()
             });
-            
-            alert("Ore registrate con successo!");
-            document.getElementById('ore').value = ""; // Pulisci campo ore
-            caricaDati(); // Ricarica tabella per vedere il nuovo dato
+            alert("Salvato!");
+            document.getElementById('ore').value = "";
+            caricaDati(); 
         } catch (e) {
             console.error("Errore salvataggio: ", e);
-            alert("C'è stato un problema nel salvare i dati. Controlla la console.");
+            alert("Errore salvataggio. Controlla console.");
         }
     };
 
-    // --- LETTURA DATI DAL DATABASE ---
+    // --- CARICA DATI (CON PRIVACY) ---
     async function caricaDati() {
         const tbody = document.getElementById('tabella-ore');
-        tbody.innerHTML = "<tr><td colspan='4'>Caricamento in corso...</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='4'>Caricamento...</td></tr>";
         
         let totale = 0;
         let htmlRighe = "";
 
+        // *** CAMBIA QUESTA CON LA TUA EMAIL DA AMMINISTRATORE ***
+        const ADMIN_EMAIL = "a.chiodini01@gmail.com"; 
+
         try {
-            // Scarica i dati ordinati per data (più recenti prima)
-            const q = query(collection(db, "turni"), orderBy("data", "desc"));
+            let q;
+            // Verifica se sei l'admin
+            if (currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                // SEI ADMIN: Vedi tutto
+                document.getElementById('admin-indicator').style.display = 'inline-block';
+                q = query(collection(db, "turni"), orderBy("data", "desc"));
+            } else {
+                // SEI UN COLLABORATORE: Vedi solo le tue ore
+                document.getElementById('admin-indicator').style.display = 'none';
+                q = query(collection(db, "turni"), where("uid", "==", currentUser.uid), orderBy("data", "desc"));
+            }
+            
             const querySnapshot = await getDocs(q);
             
             querySnapshot.forEach((doc) => {
                 const row = doc.data();
-                
-                // Formatta la data in stile italiano (giorno/mese/anno)
                 const dataObj = new Date(row.data);
                 const dataFormat = dataObj.toLocaleDateString('it-IT');
 
@@ -205,16 +206,22 @@
             });
 
             if(htmlRighe === "") {
-                tbody.innerHTML = "<tr><td colspan='4'>Nessun dato presente.</td></tr>";
+                tbody.innerHTML = "<tr><td colspan='4'>Nessun dato trovato.</td></tr>";
             } else {
                 tbody.innerHTML = htmlRighe;
             }
-            
             document.getElementById('totale-ore').innerText = totale;
 
         } catch (e) {
             console.error("Errore caricamento: ", e);
-            tbody.innerHTML = "<tr><td colspan='4' style='color:red'>Errore nel caricamento dati. Verifica i permessi database.</td></tr>";
+            
+            // Gestione errore Indice Mancante (Firebase)
+            if(e.message.includes("index")) {
+                alert("⚠️ ATTENZIONE: Manca l'indice su Firebase. Apri la Console del browser (F12) e clicca sul link nell'errore rosso per crearlo.");
+                tbody.innerHTML = "<tr><td colspan='4' style='color:red'>Errore Indice. Apri F12 e vedi console.</td></tr>";
+            } else {
+                tbody.innerHTML = "<tr><td colspan='4' style='color:red'>Errore nel caricamento.</td></tr>";
+            }
         }
     }
 </script>
