@@ -10,182 +10,159 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. RESET & VARIABILI (STILE COMPATTO) --- */
+        /* --- 1. RESET & VARIABILI --- */
         :root {
-            --primary: #2563eb; --primary-dark: #1d4ed8;
-            --secondary: #64748b; --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
-            --bg-body: #f1f5f9; --bg-card: #ffffff;
-            --text-main: #1e293b; --text-muted: #64748b;
-            --border-radius: 8px; 
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --primary: #2563eb; 
+            --bg-body: #f5f5f7; /* Grigio Apple chiaro */
+            --bg-card: #ffffff;
+            --text-main: #1d1d1f;
+            --text-muted: #86868b;
+            --border-radius: 12px; 
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
 
-            /* COLORI PALLINI CALENDARIO */
-            --dot-assistente: #ef4444;  /* Rosso */
-            --dot-istruttore: #2563eb;  /* Blu */
-            --dot-propaganda: #a855f7;  /* Viola */
-            --dot-lezione: #0ea5e9;     /* Azzurro */
-            --dot-fitness: #eab308;     /* Giallo */
-            --dot-segreteria: #94a3b8;  /* Grigio */
+            /* COLORI PALLINI (Apple Style) */
+            --dot-assistente: #ff3b30;  /* Rosso */
+            --dot-istruttore: #007aff;  /* Blu */
+            --dot-propaganda: #af52de;  /* Viola */
+            --dot-lezione: #5ac8fa;     /* Azzurro */
+            --dot-fitness: #ffcc00;     /* Giallo */
+            --dot-segreteria: #8e8e93;  /* Grigio */
         }
 
-        *, *::before, *::after { box-sizing: border-box; -webkit-box-sizing: border-box; }
+        *, *::before, *::after { box-sizing: border-box; }
         
         body { 
-            font-family: 'Inter', sans-serif; background-color: var(--bg-body); 
-            color: var(--text-main); margin: 0; padding: 8px; 
-            line-height: 1.3; font-size: 13px;
-            -webkit-font-smoothing: antialiased;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); margin: 0; padding: 15px; 
+            font-size: 14px; -webkit-font-smoothing: antialiased;
         }
 
         .container { 
-            max-width: 950px; margin: 0 auto; background: var(--bg-card); 
-            padding: 15px; border-radius: 10px; box-shadow: var(--shadow); 
+            max-width: 900px; margin: 0 auto; background: var(--bg-card); 
+            padding: 20px; border-radius: 18px; box-shadow: var(--shadow); 
         }
 
-        h2, h3 { color: var(--text-main); font-weight: 700; margin-top: 0; letter-spacing: -0.02em; }
-        h2 { font-size: 1.3rem; margin-bottom: 5px; } 
-        h3 { color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; margin-top: 15px; margin-bottom: 8px;}
+        h2 { font-size: 1.5rem; font-weight: 700; margin: 0 0 10px 0; } 
+        h3 { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 25px 0 10px 0; font-weight: 600; }
 
-        /* --- INPUT & SELECT --- */
+        /* --- INPUT & FORM --- */
+        .form-box { background: #fbfbfd; padding: 20px; border-radius: 16px; border: 1px solid #d2d2d7; margin-bottom: 20px; }
+        
+        .time-row { display: flex; gap: 15px; margin-bottom: 15px; } 
+        .time-row > div { flex: 1; } 
+
+        label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
+        
         input, select { 
-            display: block; width: 100%; max-width: 100%; 
-            padding: 8px 10px; margin: 4px 0; 
-            border: 1px solid #cbd5e1; border-radius: 6px; 
-            font-size: 13px; background-color: #f8fafc; color: var(--text-main); 
-            -webkit-appearance: none; appearance: none; min-width: 0;
+            width: 100%; padding: 10px 12px; border: 1px solid #d2d2d7; border-radius: 8px; 
+            font-size: 14px; background: #fff; color: var(--text-main); outline: none; appearance: none;
         }
-        input[type="date"], input[type="time"] { min-height: 36px; }
-        input:focus, select:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 2px rgba(37,99,235,0.1); }
-        label { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-left: 2px; display: block; margin-top: 4px; }
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0,122,255,0.1); }
 
         /* --- BOTTONI --- */
         button { 
-            width: 100%; padding: 9px; margin-top: 8px; border: none; border-radius: 6px; 
-            font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
-            display: flex; justify-content: center; align-items: center; gap: 6px;
+            width: 100%; padding: 12px; border: none; border-radius: 10px; 
+            font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; gap: 8px;
+            transition: transform 0.1s;
         }
-        .btn-primary { background-color: var(--primary); color: white; }
-        .btn-primary:hover { background-color: var(--primary-dark); }
-        .btn-secondary { background-color: #e2e8f0; color: var(--text-main); }
-        .btn-success { background-color: var(--success); color: white; }
-        .btn-warning { background-color: var(--warning); color: white; }
-        .btn-danger { background-color: var(--danger); color: white; }
+        button:active { transform: scale(0.98); }
+        .btn-primary { background: #007aff; color: white; }
+        .btn-success { background: #34c759; color: white; }
+        .btn-warning { background: #ff9500; color: white; }
+        .btn-secondary { background: #e5e5ea; color: var(--text-main); }
         
-        .link-text { color: var(--primary); cursor: pointer; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px; }
-        .link-text:hover { text-decoration: underline; }
+        /* --- CALENDARIO APPLE STYLE --- */
+        .calendar-wrapper { 
+            background: #ffffff; border-radius: 16px; padding: 15px; 
+            border: 1px solid #e5e5ea; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 20px;
+        }
+        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 0 10px; }
+        .cal-title { font-size: 1.1rem; font-weight: 700; text-transform: capitalize; color: #1d1d1f; }
+        .cal-nav { background: none; border: none; color: #007aff; font-size: 1.2rem; cursor: pointer; padding: 5px 10px; width: auto; }
 
-        /* --- LAYOUT UTILS --- */
-        .hidden { display: none !important; }
-        .form-box { background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e2e8f0; }
-        .time-row { display: flex; gap: 10px; margin-bottom: 5px; } 
-        .time-row > div { flex: 1; min-width: 0; } 
+        .cal-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; margin-bottom: 5px; }
+        .cal-weekday { font-size: 0.7rem; font-weight: 600; color: #86868b; text-transform: uppercase; }
 
-        /* --- CALENDARIO MENSILE (Style Apple) --- */
-        .calendar-wrapper { margin-bottom: 20px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px; user-select: none; }
-        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
-        .cal-title { font-weight: 700; font-size: 1rem; color: var(--text-main); text-transform: capitalize; }
-        .cal-nav-btn { background: none; border: none; font-size: 1.2rem; color: var(--primary); cursor: pointer; padding: 0 10px; margin: 0; width: auto; }
-        
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-        .cal-day-name { font-size: 0.65rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; padding-bottom: 5px; }
+        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 8px; }
         
         .cal-day { 
-            aspect-ratio: 1/1; 
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; 
-            padding-top: 4px; border-radius: 8px; cursor: pointer; position: relative; font-size: 0.9rem; color: var(--text-main);
-            transition: background 0.2s; border: 1px solid transparent;
+            aspect-ratio: 1/1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+            padding-top: 6px; cursor: pointer; border-radius: 50%; position: relative;
+            font-size: 1rem; color: #1d1d1f; margin: 2px;
         }
-        .cal-day:hover { background: #f1f5f9; }
+        .cal-day:hover { background-color: #f2f2f7; }
         .cal-day.empty { pointer-events: none; }
-        .cal-day.today { border-color: var(--primary); font-weight: 700; color: var(--primary); }
-        .cal-day.selected { background: var(--text-main); color: white; border-color: var(--text-main); }
+        
+        /* Giorno Corrente (Cerchio Rosso pieno se non selezionato, o stile outline) */
+        .cal-day.today { color: #ff3b30; font-weight: 700; }
+        .cal-day.today span { background: rgba(255, 59, 48, 0.1); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+
+        /* Giorno Selezionato (Cerchio Nero pieno) */
+        .cal-day.selected span { background: #1d1d1f; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
         
         /* Pallini */
-        .cal-dots { display: flex; gap: 2px; margin-top: 4px; justify-content: center; flex-wrap: wrap; max-width: 80%; }
+        .cal-dots { display: flex; gap: 2px; margin-top: 4px; height: 6px; justify-content: center; }
         .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
 
-        /* Filtri */
-        .filter-bar { 
-            display: flex; gap: 8px; align-items: flex-end; background: #f8fafc; 
-            padding: 10px; border-radius: 8px; border: 1px dashed #cbd5e1; flex-wrap: wrap; margin-bottom: 10px;
-        }
-        .filter-bar .input-group { flex: 1; min-width: 100px; }
-        .filter-bar button { margin: 0; padding: 0 12px; height: 38px; border-radius: 6px; width: auto;}
+        /* --- FILTRI --- */
+        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; background: #f5f5f7; padding: 12px; border-radius: 12px; align-items: center; }
+        .filter-bar select { flex: 1; min-width: 120px; background: white; border: none; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .filter-bar button { width: auto; padding: 8px 16px; font-size: 13px; margin: 0; }
 
-        /* --- TABELLA (STYLE COMPATTO) --- */
-        .table-container { overflow-x: auto; margin-top: 5px; border-radius:6px; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; } 
-        th { background: #f1f5f9; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
-        td { padding: 8px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; color: var(--text-main); }
+        /* --- TABELLA --- */
+        .table-wrap { overflow-x: auto; margin-top: 10px; border: 1px solid #e5e5ea; border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; }
+        th { text-align: left; padding: 12px; border-bottom: 1px solid #e5e5ea; color: #86868b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #f5f5f7; color: #1d1d1f; vertical-align: middle; }
         tr:last-child td { border-bottom: none; }
-        td strong { font-weight: 600; color: #0f172a; }
-        .note-cell { color: var(--text-muted); font-style: italic; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85em; }
-        .totale-box { margin-top: 10px; text-align: right; font-size: 1.1rem; font-weight: 700; color: var(--primary); }
-        .admin-badge { background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 0.65rem; font-weight: 700; margin-left: 8px;}
+        td strong { font-weight: 600; }
+        
+        .action-icons { display: flex; gap: 8px; justify-content: flex-end; }
+        .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px; width: auto; }
+        .icon-btn:hover { transform: scale(1.1); }
 
-        /* Azioni */
-        .action-btn-group { display: flex; gap: 4px; justify-content: flex-end; }
-        .action-icon { background: #f1f5f9; border: none; border-radius: 4px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; }
-        .icon-edit:hover { background: #dbeafe; color: var(--primary); }
-        .icon-del:hover { background: #fee2e2; color: var(--danger); }
-        .icon-dup:hover { background: #d1fae5; color: var(--success); }
-        .table-input { padding: 4px; margin: 0; font-size: 12px; width: 100%; } 
+        /* --- ADMIN CARDS --- */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 15px; margin-top: 20px; }
+        .user-card { background: white; border: 1px solid #e5e5ea; border-radius: 16px; padding: 20px; cursor: pointer; transition: transform 0.2s; position: relative; }
+        .user-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .card-name { font-weight: 700; font-size: 1.1rem; }
+        .card-sub { color: #86868b; font-size: 0.8rem; margin-bottom: 15px; }
+        .card-stat { font-size: 1.8rem; font-weight: 800; color: #007aff; text-align: right; }
+        
+        /* Mobile */
+        @media (max-width: 600px) {
+            .container { padding: 15px; box-shadow: none; background: transparent; }
+            .form-box, .calendar-wrapper { padding: 15px; }
+            .time-row { flex-direction: column; gap: 10px; }
+            .filter-bar { flex-direction: column; align-items: stretch; }
+            .filter-bar button { width: 100%; }
+            /* Card view per tabella mobile */
+            thead { display: none; }
+            tr { display: block; background: white; border: 1px solid #e5e5ea; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+            td { display: flex; justify-content: space-between; padding: 5px 0; border: none; text-align: right; }
+            td:before { content: attr(data-label); color: #86868b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; text-align: left; }
+            .table-input { text-align: right; width: 60%; }
+        }
 
-        /* --- ADMIN DASHBOARD (GRID) --- */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: 15px; }
-        .user-card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; cursor: pointer; border-left: 4px solid var(--primary); position: relative; }
-        .user-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2px; }
-        .card-name { font-weight: 700; font-size: 1.05rem; color: var(--text-main); }
-        .card-sub { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; display: block;}
-        .card-stat-box { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid #f1f5f9; padding-top: 8px; }
-        .card-label { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;}
-        .card-stat { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
-        .edit-user-btn { background: #f1f5f9; border:none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748b; margin: 0; padding: 0; }
-        .edit-user-btn:hover { background: #e2e8f0; color: var(--primary); }
-
-        /* --- UTILS --- */
-        #toast { visibility: hidden; min-width: 200px; background: #1e293b; color: #fff; text-align: center; border-radius: 50px; padding: 10px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; font-size: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        /* Utils */
+        #toast { visibility: hidden; min-width: 250px; background: #333; color: #fff; text-align: center; border-radius: 50px; padding: 12px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} } @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-        .spinner { width: 14px; height: 14px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
-        .spinner-dark { border-color: var(--primary); width: 20px; height: 20px; margin: 0 auto; display: block; }
-        .btn-loading .spinner { display: block; } .btn-loading span { display: none; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); z-index: 3000; display: none; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 300px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
-        .modal-actions { display: flex; gap: 8px; margin-top: 15px; } .modal-actions button { margin: 0; flex:1; }
-
-        /* --- MOBILE SPECIFIC --- */
-        @media only screen and (max-width: 600px) {
-            body { padding: 5px; font-size: 13px; }
-            .container { padding: 10px; }
-            .form-box { padding: 12px; margin-bottom: 15px; }
-            .time-row { flex-direction: column; gap: 8px; margin-bottom: 10px; }
-            .time-row > div { width: 100%; }
-            .filter-bar { flex-direction: column; align-items: stretch; padding: 10px; }
-            .filter-bar button { width: 100%; margin-top: 5px; }
-            
-            .table-container { border: none; }
-            thead { display: none; }
-            tr { display: block; background: white; margin-bottom: 8px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); padding: 10px; border: 1px solid #e2e8f0; }
-            td { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #f1f5f9; text-align: right; min-height: 24px; }
-            td:last-child { border-bottom: none; margin-top: 5px; padding-top: 0; justify-content: flex-end;}
-            td::before { content: attr(data-label); font-weight: 600; color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; margin-right: 10px; text-align: left; }
-            td strong { font-size: 0.9rem; color: #0f172a; }
-            .table-input { text-align: right; width: 60% !important; padding: 6px; background: #f8fafc; }
-            .cards-grid { grid-template-columns: 1fr; }
-        }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 3000; display: none; justify-content: center; align-items: center; }
+        .modal-box { background: white; padding: 25px; border-radius: 18px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .spinner { width: 16px; height: 16px; border: 2px solid white; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s infinite linear; display: inline-block; }
+        @keyframes spin { to {transform: rotate(360deg);} }
     </style>
 </head>
 <body>
 
-<div id="toast">Messaggio...</div>
+<div id="toast">Notifica</div>
 <div id="custom-modal" class="modal-overlay">
     <div class="modal-box">
-        <h3 id="modal-title" style="margin-top:0; font-size:1.1rem">Avviso</h3>
-        <p id="modal-msg" style="color:#64748b; margin-bottom:0; font-size:0.9rem">Testo...</p>
-        <div class="modal-actions">
+        <h3 id="modal-title">Avviso</h3>
+        <p id="modal-msg" style="color:#666; margin-bottom:20px">Testo</p>
+        <div style="display:flex; gap:10px">
             <button id="modal-cancel" class="btn-secondary" onclick="closeModal()">Annulla</button>
             <button id="modal-confirm" class="btn-primary">OK</button>
         </div>
@@ -193,26 +170,22 @@
 </div>
 
 <div class="container">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
-        <div>
-            <h2 id="welcome-msg" style="margin:0; font-size:1.2rem">Login</h2>
-            <span id="admin-indicator" class="admin-badge hidden">ADMIN</span>
-        </div>
-        <button id="logout-btn" onclick="logout()" class="btn-secondary hidden" style="width: auto; padding: 6px 12px; margin:0; font-size: 0.75rem;">Esci</button>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+        <h2 id="welcome-msg" style="margin:0">Login</h2>
+        <button id="logout-btn" onclick="logout()" class="btn-secondary hidden" style="width:auto; padding:8px 16px;">Esci</button>
     </div>
 
     <div id="login-view">
-        <div class="form-box" style="max-width: 300px; margin: 20px auto; text-align: center; background: white; border: none; padding:0;">
-            <h2 style="font-size: 1.4rem; margin-bottom: 20px;">Accesso Team</h2>
-            <input type="email" id="email" placeholder="Email aziendale">
-            <input type="password" id="password" placeholder="Password">
-            <button id="btn-login" onclick="login()" class="btn-primary" style="margin-top:15px;"><span>Accedi</span><div class="spinner"></div></button>
-            <a onclick="resetPwd()" class="link-text">Password dimenticata?</a>
+        <div class="form-box" style="max-width:350px; margin:40px auto; text-align:center;">
+            <h2 style="margin-bottom:20px">Accesso</h2>
+            <input type="email" id="email" placeholder="Email" style="margin-bottom:10px">
+            <input type="password" id="password" placeholder="Password" style="margin-bottom:20px">
+            <button id="btn-login" onclick="login()" class="btn-primary">Accedi</button>
+            <p onclick="resetPwd()" style="color:#007aff; cursor:pointer; font-size:0.85rem; margin-top:15px">Password dimenticata?</p>
         </div>
     </div>
 
     <div id="collaborator-view" class="hidden">
-        
         <div class="form-box">
             <h3>➕ Nuovo Turno</h3>
             <div class="time-row">
@@ -231,144 +204,120 @@
             <div class="time-row">
                 <div><label>Inizio</label><input type="time" id="c-inizio" onchange="calcDiff()"></div>
                 <div><label>Fine</label><input type="time" id="c-fine" onchange="calcDiff()"></div>
-                <div><label>Ore</label><input type="number" id="c-ore" placeholder="0.0" step="0.5" style="font-weight:bold; color:var(--primary)"></div>
+                <div><label>Ore</label><input type="number" id="c-ore" placeholder="0.0" step="0.5" style="color:var(--primary); font-weight:700"></div>
             </div>
-            <label>Note</label><input type="text" id="c-note" placeholder="Opzionale...">
-            <button id="btn-salva" onclick="salvaOre()" class="btn-primary"><span>Registra Turno</span><div class="spinner"></div></button>
+            <label>Note</label><input type="text" id="c-note" placeholder="Opzionale">
+            <button id="btn-salva" onclick="salvaOre()" class="btn-primary" style="margin-top:15px">Registra Turno</button>
         </div>
 
-        <h3>📅 I miei Turni</h3>
+        <h3>📅 I Miei Turni</h3>
         
         <div class="calendar-wrapper">
             <div class="cal-header">
-                <button class="cal-nav-btn" onclick="changeCalMonth(-1)">❮</button>
-                <div class="cal-title" id="cal-month-name">Mese Anno</div>
-                <button class="cal-nav-btn" onclick="changeCalMonth(1)">❯</button>
+                <button class="cal-nav" onclick="changeMonth(-1)">❮</button>
+                <div class="cal-title" id="cal-title">Mese Anno</div>
+                <button class="cal-nav" onclick="changeMonth(1)">❯</button>
             </div>
-            <div class="cal-grid" style="margin-bottom:5px;">
-                <div class="cal-day-name">Lun</div><div class="cal-day-name">Mar</div><div class="cal-day-name">Mer</div>
-                <div class="cal-day-name">Gio</div><div class="cal-day-name">Ven</div><div class="cal-day-name">Sab</div>
-                <div class="cal-day-name">Dom</div>
+            <div class="cal-weekdays">
+                <div class="cal-weekday">Lun</div><div class="cal-weekday">Mar</div><div class="cal-weekday">Mer</div>
+                <div class="cal-weekday">Gio</div><div class="cal-weekday">Ven</div><div class="cal-weekday">Sab</div>
+                <div class="cal-weekday">Dom</div>
             </div>
-            <div id="cal-days-grid" class="cal-grid"></div>
+            <div id="cal-grid" class="cal-grid"></div>
         </div>
 
         <div class="filter-bar">
-            <div class="input-group">
-                <select id="c-filtro-mansione" onchange="renderCollabTable()">
-                    <option value="all">Tutte le Mansioni</option>
-                    <option value="Assistente bagnanti">Assistente bagnanti</option>
-                    <option value="Istruttore">Istruttore</option>
-                    <option value="Fitness">Fitness</option>
-                    <option value="Propaganda">Propaganda</option>
-                    <option value="Lezione individuale">Lezione individuale</option>
-                    <option value="Segreteria">Segreteria</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <select id="c-filtro-mese" onchange="syncCalFromFilter()">
-                    <option value="all">Tutti i Mesi</option>
-                    <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
-                    <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
-                    <option value="7">Luglio</option><option value="8">Agosto</option><option value="9">Settembre</option>
-                    <option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <select id="c-filtro-anno" onchange="syncCalFromFilter()"><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
-            </div>
-            <button onclick="excelCollab()" class="btn-success">📥 Excel</button>
+            <select id="c-filtro-mansione" onchange="renderCollabTable()">
+                <option value="all">Tutte le Mansioni</option>
+                <option value="Assistente bagnanti">Assistente bagnanti</option>
+                <option value="Istruttore">Istruttore</option>
+                <option value="Fitness">Fitness</option>
+                <option value="Propaganda">Propaganda</option>
+                <option value="Lezione individuale">Lezione individuale</option>
+                <option value="Segreteria">Segreteria</option>
+            </select>
+            <select id="c-filtro-mese" onchange="syncCalFromFilter()">
+                <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
+                <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
+                <option value="7">Luglio</option><option value="8">Agosto</option><option value="9">Settembre</option>
+                <option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
+            </select>
+            <select id="c-filtro-anno" onchange="syncCalFromFilter()">
+                <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
+            </select>
+            <button onclick="excelCollab()" class="btn-success">Excel</button>
         </div>
-        
-        <div class="table-container">
+
+        <div class="table-wrap">
             <table>
                 <thead><tr><th>Data</th><th>Mansione</th><th>Orario</th><th>Ore</th><th>Note</th><th style="text-align:right">Azioni</th></tr></thead>
                 <tbody id="collab-tbody"></tbody>
             </table>
         </div>
-        <div class="totale-box">Totale: <span id="c-totale">0</span> ore</div>
+        <div style="text-align:right; font-size:1.2rem; font-weight:700; margin-top:10px; color:var(--primary)">Totale: <span id="c-totale">0</span></div>
         
-        <div style="text-align:center; margin-top:20px; border-top:1px solid #e2e8f0; padding-top:15px;">
-            <button onclick="document.getElementById('pwd-modal').style.display='flex'" class="btn-secondary" style="width:auto; margin:0 auto; font-size:0.8rem">🔒 Password</button>
+        <div style="text-align:center; margin-top:30px">
+            <button onclick="document.getElementById('pwd-modal').style.display='flex'" class="btn-secondary" style="width:auto; margin:0 auto; font-size:0.8rem">Cambia Password</button>
         </div>
     </div>
 
     <div id="admin-view" class="hidden">
-        
-        <div class="form-box" style="background:#fffbeb; border-color:#fcd34d; padding:12px;">
-            <h3 style="color:#b45309; margin-bottom:8px; margin-top:0">🛠️ Anagrafica</h3>
+        <div class="form-box" style="background:#fffbeb; border-color:#fcd34d">
+            <h3 style="color:#b45309; margin-top:0">🛠️ Anagrafica</h3>
             <div class="time-row" style="margin-bottom:0">
-                <div><input type="email" id="adm-email" placeholder="Email"></div>
-                <div><input type="text" id="adm-name" placeholder="Nome Cognome"></div>
+                <input type="email" id="adm-email" placeholder="Email">
+                <input type="text" id="adm-name" placeholder="Nome Cognome">
             </div>
-            <button id="btn-anagrafica" onclick="saveAnagrafica()" class="btn-warning" style="margin-top:8px; color:white">
-                <span>Salva in Rubrica</span><div class="spinner"></div>
-            </button>
+            <button onclick="saveAnagrafica()" class="btn-warning" style="margin-top:10px">Salva</button>
         </div>
 
-        <h3 id="admin-title">Riepilogo</h3>
+        <h3 style="margin-top:30px">Riepilogo</h3>
         <div class="filter-bar">
-            <div class="input-group">
-                <select id="a-sort-order">
-                    <option value="alpha">Alfabetico (A-Z)</option>
-                    <option value="recent">Ultimo Inserimento</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <select id="a-filtro-mansione">
-                    <option value="all">Tutte le Mansioni</option>
-                    <option value="Assistente bagnanti">Assistente bagnanti</option>
-                    <option value="Istruttore">Istruttore</option>
-                    <option value="Fitness">Fitness</option>
-                    <option value="Propaganda">Propaganda</option>
-                    <option value="Lezione individuale">Lezione individuale</option>
-                    <option value="Segreteria">Segreteria</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <select id="a-filtro-mese">
-                    <option value="all">Tutti i Mesi</option>
-                    <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
-                    <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
-                    <option value="7">Luglio</option><option value="8">Agosto</option><option value="9">Settembre</option>
-                    <option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <select id="a-filtro-anno"><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
-            </div>
+            <select id="a-sort-order"><option value="alpha">A-Z</option><option value="recent">Recenti</option></select>
+            <select id="a-filtro-mansione">
+                <option value="all">Tutte</option>
+                <option value="Assistente bagnanti">Assistente bagnanti</option>
+                <option value="Istruttore">Istruttore</option>
+                <option value="Fitness">Fitness</option>
+                <option value="Propaganda">Propaganda</option>
+                <option value="Lezione individuale">Lezione individuale</option>
+                <option value="Segreteria">Segreteria</option>
+            </select>
+            <select id="a-filtro-mese">
+                <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
+                <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
+                <option value="7">Luglio</option><option value="8">Agosto</option><option value="9">Settembre</option>
+                <option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
+            </select>
+            <select id="a-filtro-anno"><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
             <button onclick="loadAdminData()" class="btn-primary">Aggiorna</button>
-            <button onclick="excelAdminGlobal()" class="btn-success">📥 Excel Globale</button>
+            <button onclick="excelAdminGlobal()" class="btn-success">Excel Global</button>
         </div>
 
-        <div id="admin-dashboard">
-            <div id="cards-container" class="cards-grid"></div>
-        </div>
+        <div id="cards-container" class="cards-grid"></div>
 
         <div id="admin-detail" class="hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; background:#eff6ff; padding:10px; border-radius:8px;">
-                <h3 style="margin:0; color:var(--primary); font-size:1rem" id="detail-user-name">Utente</h3>
-                <button onclick="closeDetail()" class="btn-secondary" style="width:auto; padding:6px 12px; margin:0">⬅️ Indietro</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin:20px 0 10px 0; background:#e5e5ea; padding:10px; border-radius:10px">
+                <h3 style="margin:0" id="detail-name">Utente</h3>
+                <button onclick="closeDetail()" class="btn-secondary" style="width:auto; padding:5px 10px; margin:0">Indietro</button>
             </div>
-            
-            <div class="table-container">
+            <div class="table-wrap">
                 <table>
                     <thead><tr><th>Data</th><th>Mansione</th><th>Orario</th><th>Ore</th><th>Note</th><th style="text-align:right">Azioni</th></tr></thead>
                     <tbody id="detail-tbody"></tbody>
                 </table>
             </div>
-            <div class="totale-box">Totale Utente: <span id="d-totale">0</span> ore</div>
-            <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:15px;">📥 Scarica Foglio Ore</button>
+            <div style="text-align:right; font-weight:700; margin-top:10px">Totale: <span id="d-totale">0</span></div>
+            <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:15px; width:auto">Scarica Excel Utente</button>
         </div>
     </div>
-
 </div>
 
 <div id="pwd-modal" class="modal-overlay" style="display:none">
     <div class="modal-box">
         <h3>Nuova Password</h3>
-        <input type="password" id="new-pwd" placeholder="Minimo 6 caratteri">
-        <div class="modal-actions">
+        <input type="password" id="new-pwd" placeholder="Min 6 caratteri" style="margin-bottom:20px">
+        <div style="display:flex; gap:10px">
             <button class="btn-secondary" onclick="document.getElementById('pwd-modal').style.display='none'">Chiudi</button>
             <button class="btn-primary" onclick="changePwd()">Salva</button>
         </div>
@@ -378,8 +327,8 @@
 <div id="edit-user-modal" class="modal-overlay" style="display:none">
     <div class="modal-box">
         <h3>Modifica Nome</h3>
-        <input type="text" id="edit-name-input" placeholder="Nome Cognome">
-        <div class="modal-actions">
+        <input type="text" id="edit-name-input" placeholder="Nome" style="margin-bottom:20px">
+        <div style="display:flex; gap:10px">
             <button class="btn-secondary" onclick="document.getElementById('edit-user-modal').style.display='none'">Annulla</button>
             <button class="btn-primary" onclick="saveEditUser()">Salva</button>
         </div>
@@ -391,7 +340,6 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
       authDomain: "gestioneore-3bf5f.firebaseapp.com",
@@ -413,91 +361,84 @@
     let allTurni = []; 
     let detailUserEmail = null;
     let currentEditEmail = null;
-    let calDate = new Date(); // Data corrente per calendario
-    let selectedDay = null;   // Giorno cliccato nel calendario
+    
+    // Calendar State
+    let calDate = new Date(); // Start with TODAY
+    let selectedDay = null;
 
     const Mansioni = ["Assistente bagnanti", "Istruttore", "Fitness", "Propaganda", "Lezione individuale", "Segreteria"];
 
-    // UI HELPER
-    window.toast = (msg) => { const t = document.getElementById("toast"); t.innerText=msg; t.className="show"; setTimeout(()=>t.className="", 3000); };
+    // Utils
+    window.toast = (msg) => { const t = document.getElementById("toast"); t.innerText=msg; t.className="show"; setTimeout(()=>t.className="",3000); };
     window.modal = (t,m,cb) => {
         document.getElementById('modal-title').innerText=t; document.getElementById('modal-msg').innerText=m;
-        const b = document.getElementById('modal-confirm');
-        const nb = b.cloneNode(true); b.parentNode.replaceChild(nb,b);
+        const b = document.getElementById('modal-confirm'); const nb = b.cloneNode(true); b.parentNode.replaceChild(nb,b);
         nb.onclick = () => { if(cb) cb(); closeModal(); };
         document.getElementById('custom-modal').style.display='flex';
     };
     window.closeModal = () => document.getElementById('custom-modal').style.display='none';
-    const toggleLoading = (id, loading) => {
-        const b = document.getElementById(id); if(b) { loading ? b.classList.add('btn-loading') : b.classList.remove('btn-loading'); b.disabled = loading; }
-    };
+    const toggleLoading = (id,l) => { const b=document.getElementById(id); if(b){ l?b.innerHTML='<div class="spinner"></div>':b.innerText=b.id==='btn-login'?'Accedi':'Registra Turno'; b.disabled=l; }};
 
-    // AUTO LOGOUT
-    let inactivityTimer;
-    const resetInactivityTimer = () => {
-        if (!currentUser) return;
-        clearTimeout(inactivityTimer);
-        inactivityTimer = setTimeout(() => { modal("Sessione Scaduta", "Disconnesso per inattività.", logout); logout(); }, 3600000);
-    };
-    ['click', 'mousemove', 'keypress', 'touchstart'].forEach(e => document.addEventListener(e, resetInactivityTimer));
+    // INIT DROPDOWNS TO TODAY (Fix Undefined NaN)
+    const today = new Date();
+    document.getElementById('c-data').valueAsDate = today;
+    document.getElementById('c-filtro-mese').value = today.getMonth() + 1;
+    document.getElementById('c-filtro-anno').value = today.getFullYear();
+    document.getElementById('a-filtro-mese').value = today.getMonth() + 1;
+    document.getElementById('a-filtro-anno').value = today.getFullYear();
 
-    // CALENDARIO LOGIC
+    // CALENDAR LOGIC
     const monthNames = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
     
     window.renderCalendar = () => {
         const m = calDate.getMonth();
         const y = calDate.getFullYear();
-        document.getElementById('cal-month-name').innerText = `${monthNames[m]} ${y}`;
+        document.getElementById('cal-title').innerText = `${monthNames[m]} ${y}`;
         
-        // Sync Dropdowns (se cambiato da frecce)
-        document.getElementById('c-filtro-mese').value = (m+1).toString();
-        document.getElementById('c-filtro-anno').value = y.toString();
+        // Sync selects
+        document.getElementById('c-filtro-mese').value = m + 1;
+        document.getElementById('c-filtro-anno').value = y;
 
         const firstDay = new Date(y, m, 1).getDay(); // 0=Dom
         const daysInMonth = new Date(y, m + 1, 0).getDate();
-        const grid = document.getElementById('cal-days-grid');
+        const grid = document.getElementById('cal-grid');
         grid.innerHTML = "";
 
-        // Padding inizio mese (Lunedi first)
+        // Pad (Lunedi=0 per noi, JS Dom=0)
         let pad = firstDay === 0 ? 6 : firstDay - 1;
-        for(let i=0; i<pad; i++) {
-            grid.innerHTML += `<div class="cal-day empty"></div>`;
-        }
+        for(let i=0; i<pad; i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
 
-        // Giorni
-        const today = new Date();
+        const now = new Date();
         for(let d=1; d<=daysInMonth; d++) {
             const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            // Trova turni
             const shifts = myTurni.filter(t => t.data === dateStr);
             
-            // Crea pallini
-            let dotsHtml = "";
+            let dots = "";
             shifts.forEach(s => {
-                let colorVar = "--bg-secondary";
-                if(s.mansione.includes("Assistente")) colorVar = "var(--dot-assistente)";
-                else if(s.mansione.includes("Istruttore")) colorVar = "var(--dot-istruttore)";
-                else if(s.mansione.includes("Fitness")) colorVar = "var(--dot-fitness)";
-                else if(s.mansione.includes("Propaganda")) colorVar = "var(--dot-propaganda)";
-                else if(s.mansione.includes("Lezione")) colorVar = "var(--dot-lezione)";
-                else if(s.mansione.includes("Segreteria")) colorVar = "var(--dot-segreteria)";
-                dotsHtml += `<div class="cal-dot" style="background:${colorVar}"></div>`;
+                let col = "#ccc";
+                if(s.mansione.includes("Assistente")) col = "var(--dot-assistente)";
+                else if(s.mansione.includes("Istruttore")) col = "var(--dot-istruttore)";
+                else if(s.mansione.includes("Fitness")) col = "var(--dot-fitness)";
+                else if(s.mansione.includes("Propaganda")) col = "var(--dot-propaganda)";
+                else if(s.mansione.includes("Lezione")) col = "var(--dot-lezione)";
+                else if(s.mansione.includes("Segreteria")) col = "var(--dot-segreteria)";
+                dots += `<div class="cal-dot" style="background:${col}"></div>`;
             });
 
-            const isToday = (d === today.getDate() && m === today.getMonth() && y === today.getFullYear());
-            const isSel = (selectedDay === d);
+            const isToday = (d === now.getDate() && m === now.getMonth() && y === now.getFullYear());
+            const isSel = (d === selectedDay);
             
-            const dayDiv = document.createElement('div');
-            dayDiv.className = `cal-day ${isToday?'today':''} ${isSel?'selected':''}`;
-            dayDiv.innerHTML = `<span>${d}</span><div class="cal-dots">${dotsHtml}</div>`;
-            dayDiv.onclick = () => selectDay(d);
-            grid.appendChild(dayDiv);
+            const div = document.createElement('div');
+            div.className = `cal-day ${isToday ? 'today' : ''} ${isSel ? 'selected' : ''}`;
+            div.innerHTML = `<span>${d}</span><div class="cal-dots">${dots}</div>`;
+            div.onclick = () => { selectedDay = (selectedDay === d) ? null : d; renderCalendar(); renderCollabTable(); };
+            grid.appendChild(div);
         }
     };
 
-    window.changeCalMonth = (delta) => {
+    window.changeMonth = (delta) => {
         calDate.setMonth(calDate.getMonth() + delta);
-        selectedDay = null; // Reset selezione giorno
+        selectedDay = null;
         renderCalendar();
         renderCollabTable();
     };
@@ -511,35 +452,27 @@
         renderCollabTable();
     };
 
-    window.selectDay = (d) => {
-        if(selectedDay === d) selectedDay = null; // Toggle off
-        else selectedDay = d;
-        renderCalendar(); // Per aggiornare stile selected
-        renderCollabTable(); // Filtra tabella
-    };
-
-    // AUTH
+    // AUTH & CORE
     window.login = async () => {
-        const e = document.getElementById('email').value, p = document.getElementById('password').value;
-        if(!e || !p) return modal("Errore", "Inserisci dati.");
+        const e=document.getElementById('email').value, p=document.getElementById('password').value;
+        if(!e||!p) return modal("Errore", "Inserisci dati.");
         toggleLoading('btn-login', true);
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { modal("Errore Login", err.message); toggleLoading('btn-login', false); }
+        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { modal("Errore", err.message); toggleLoading('btn-login', false); }
     };
-    window.logout = () => { clearTimeout(inactivityTimer); signOut(auth); };
+    window.logout = () => signOut(auth);
     window.resetPwd = async () => {
-        const email = document.getElementById('email').value;
-        if(!email) return modal("Info", "Inserisci la tua email sopra poi clicca qui.");
-        try { await sendPasswordResetEmail(auth, email); modal("Inviata", "Controlla la posta."); } catch(e) { modal("Errore", e.message); }
+        const e = document.getElementById('email').value;
+        if(!e) return modal("Info", "Inserisci email sopra.");
+        try { await sendPasswordResetEmail(auth, e); modal("Fatto", "Controlla la posta."); } catch(err) { modal("Errore", err.message); }
     };
     window.changePwd = async () => {
-        try { await updatePassword(currentUser, document.getElementById('new-pwd').value); toast("Password aggiornata"); document.getElementById('pwd-modal').style.display='none'; }
+        try { await updatePassword(currentUser, document.getElementById('new-pwd').value); toast("Password cambiata"); document.getElementById('pwd-modal').style.display='none'; }
         catch(e) { modal("Errore", e.message); }
     };
 
     onAuthStateChanged(auth, async (user) => {
         if(user) {
             currentUser = user;
-            resetInactivityTimer();
             document.getElementById('login-view').classList.add('hidden');
             document.getElementById('logout-btn').classList.remove('hidden');
             
@@ -547,17 +480,13 @@
             snap.forEach(d => rubrica[d.id] = d.data().nome);
             document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.split(' ')[0] || 'User'}`;
 
-            // Setta data oggi nel form
-            document.getElementById('c-data').valueAsDate = new Date();
-
             if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                 document.getElementById('admin-indicator').classList.remove('hidden');
                 document.getElementById('admin-view').classList.remove('hidden');
                 loadAdminData();
             } else {
                 document.getElementById('collaborator-view').classList.remove('hidden');
-                syncCalFromFilter(); // Init Calendar & Table
-                loadCollabData();
+                loadCollabData(); // Loads data then renders calendar
             }
         } else {
             currentUser = null;
@@ -565,12 +494,11 @@
             document.getElementById('collaborator-view').classList.add('hidden');
             document.getElementById('admin-view').classList.add('hidden');
             document.getElementById('logout-btn').classList.add('hidden');
-            document.getElementById('welcome-msg').innerText = "Login";
             toggleLoading('btn-login', false);
         }
     });
 
-    // COLLABORATOR
+    // COLLABORATOR ACTIONS
     window.calcDiff = () => {
         const i = document.getElementById('c-inizio').value, f = document.getElementById('c-fine').value;
         if(i && f) {
@@ -581,8 +509,8 @@
     };
 
     window.salvaOre = async () => {
-        const d = document.getElementById('c-data').value, m = document.getElementById('c-mansione').value, h = parseFloat(document.getElementById('c-ore').value);
-        if(!d || !m || !h) return modal("Attenzione", "Compila i campi.");
+        const d=document.getElementById('c-data').value, m=document.getElementById('c-mansione').value, h=parseFloat(document.getElementById('c-ore').value);
+        if(!d || !m || !h) return modal("Errore", "Compila i campi.");
         toggleLoading('btn-salva', true);
         try {
             await addDoc(collection(db, "turni"), {
@@ -590,7 +518,6 @@
                 oraInizio: document.getElementById('c-inizio').value, oraFine: document.getElementById('c-fine').value,
                 note: document.getElementById('c-note').value, created_at: new Date()
             });
-            localStorage.setItem('lastMansione', m);
             toast("Salvato!"); loadCollabData();
             document.getElementById('c-ore').value=""; document.getElementById('c-note').value="";
         } catch(e) { modal("Errore", e.message); }
@@ -605,8 +532,8 @@
         document.getElementById('c-fine').value = t.oraFine;
         document.getElementById('c-ore').value = t.ore;
         document.getElementById('c-note').value = t.note;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        toast("Copiato! Inserisci la data.");
+        window.scrollTo({top:0, behavior:'smooth'});
+        toast("Dati copiati! Scegli la data.");
     };
 
     async function loadCollabData() {
@@ -614,7 +541,7 @@
         const snap = await getDocs(q);
         myTurni = [];
         snap.forEach(d => myTurni.push({id: d.id, ...d.data()}));
-        renderCalendar(); // Ridisegna calendario coi pallini
+        renderCalendar(); // Init visual components after data load
         renderCollabTable();
     }
 
@@ -624,18 +551,12 @@
         const tbody = document.getElementById('collab-tbody');
         tbody.innerHTML = "";
         let tot = 0;
-        
+
         const filtered = myTurni.filter(t => {
             const d = new Date(t.data);
-            const matchDate = (m === 'all' || (d.getMonth()+1).toString() === m) && d.getFullYear().toString() === y;
-            const matchRole = (r === 'all' || t.mansione === r);
-            
-            // Filtro Calendario (Se cliccato un giorno)
-            let matchDay = true;
-            if(selectedDay !== null) {
-                matchDay = (d.getDate() === selectedDay);
-            }
-
+            const matchDate = (m == 'all' || (d.getMonth()+1) == m) && d.getFullYear() == y;
+            const matchRole = (r == 'all' || t.mansione == r);
+            const matchDay = selectedDay ? (d.getDate() === selectedDay) : true;
             return matchDate && matchRole && matchDay;
         });
 
@@ -649,10 +570,10 @@
                     <td data-label="Ore"><strong>${t.ore}</strong></td>
                     <td data-label="Note">${t.note||''}</td>
                     <td class="actions-cell">
-                        <div class="action-btn-group">
-                            <button class="action-icon icon-dup" onclick="duplicaTurno('${t.id}')">📄</button>
-                            <button class="action-icon icon-edit" onclick="editRow('${t.id}')">✏️</button>
-                            <button class="action-icon icon-del" onclick="delRow('${t.id}')">🗑️</button>
+                        <div class="action-icons">
+                            <button class="icon-btn" onclick="duplicaTurno('${t.id}')">📄</button>
+                            <button class="icon-btn" onclick="editRow('${t.id}')">✏️</button>
+                            <button class="icon-btn" onclick="delRow('${t.id}')">🗑️</button>
                         </div>
                     </td>
                 </tr>
@@ -661,143 +582,25 @@
         document.getElementById('c-totale').innerText = tot.toFixed(1);
     };
 
-    // ADMIN LOGIC
-    window.saveAnagrafica = async () => {
-        const e = document.getElementById('adm-email').value.trim().toLowerCase();
-        if(!e) return modal("Errore", "Manca email");
-        toggleLoading('btn-anagrafica', true);
-        try {
-            await setDoc(doc(db, "anagrafica", e), { nome: document.getElementById('adm-name').value });
-            toast("Rubrica aggiornata"); loadAdminData();
-        } catch(err) { modal("Errore", err.message); }
-        toggleLoading('btn-anagrafica', false);
-    };
-
-    window.openEditUser = (email, nome) => {
-        currentEditEmail = email;
-        document.getElementById('edit-name-input').value = nome;
-        document.getElementById('edit-user-modal').style.display = 'flex';
-    };
-
-    window.saveEditUser = async () => {
-        if(!currentEditEmail) return;
-        try {
-            await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: document.getElementById('edit-name-input').value }, { merge: true });
-            rubrica[currentEditEmail] = document.getElementById('edit-name-input').value; 
-            toast("Nome modificato");
-            document.getElementById('edit-user-modal').style.display = 'none';
-            loadAdminData(); 
-        } catch(e) { modal("Errore", e.message); }
-    };
-
-    window.loadAdminData = async () => {
-        const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
-        const role = document.getElementById('a-filtro-mansione').value;
-        const sort = document.getElementById('a-sort-order').value;
-        
-        const q = query(collection(db, "turni"), orderBy("data", "desc"));
-        const snap = await getDocs(q);
-        allTurni = [];
-        const stats = {};
-
-        snap.forEach(d => {
-            const t = d.data();
-            const dateObj = new Date(t.data);
-            if ((m === 'all' || (dateObj.getMonth()+1).toString() === m) && dateObj.getFullYear().toString() === y && (role === 'all' || t.mansione === role)) {
-                allTurni.push({ id: d.id, ...t });
-                if(!stats[t.email]) { stats[t.email] = { ore: 0, nome: rubrica[t.email] || t.email, lastInput: 0 }; }
-                stats[t.email].ore += t.ore;
-                const ts = t.created_at ? t.created_at.seconds : new Date(t.data).getTime()/1000;
-                if(ts > stats[t.email].lastInput) stats[t.email].lastInput = ts;
-            }
-        });
-
-        let cards = Object.entries(stats).map(([email, data]) => ({ email, ...data }));
-        if (sort === 'alpha') cards.sort((a, b) => a.nome.localeCompare(b.nome));
-        else if (sort === 'recent') cards.sort((a, b) => b.lastInput - a.lastInput);
-
-        const grid = document.getElementById('cards-container');
-        grid.innerHTML = "";
-        if(cards.length === 0) grid.innerHTML = "<p style='color:#666'>Nessun dato.</p>";
-
-        cards.forEach(u => {
-            grid.innerHTML += `
-                <div class="user-card" onclick="openDetail('${u.email}')">
-                    <div class="card-header">
-                        <div class="card-name">${u.nome}</div>
-                        <button class="edit-user-btn" onclick="event.stopPropagation(); openEditUser('${u.email}', '${u.nome}')">✏️</button>
-                    </div>
-                    <div class="card-sub">${u.email}</div>
-                    <div class="card-stat-box"><span class="card-label">TOTALE</span><span class="card-stat">${u.ore.toFixed(1)}</span></div>
-                </div>
-            `;
-        });
-        if(!document.getElementById('admin-detail').classList.contains('hidden')) renderAdminDetailTable();
-    };
-
-    window.openDetail = (email) => {
-        detailUserEmail = email;
-        document.getElementById('admin-dashboard').classList.add('hidden');
-        document.getElementById('admin-detail').classList.remove('hidden');
-        document.getElementById('admin-title').innerText = "Dettaglio";
-        document.getElementById('detail-user-name').innerText = rubrica[email] || email;
-        renderAdminDetailTable();
-    };
-
-    window.closeDetail = () => {
-        document.getElementById('admin-dashboard').classList.remove('hidden');
-        document.getElementById('admin-detail').classList.add('hidden');
-        document.getElementById('admin-title').innerText = "Riepilogo";
-        detailUserEmail = null;
-    };
-
-    function renderAdminDetailTable() {
-        const tbody = document.getElementById('detail-tbody');
-        tbody.innerHTML = "";
-        let tot = 0;
-        const userTurni = allTurni.filter(t => t.email === detailUserEmail);
-        userTurni.forEach(t => {
-            tot += t.ore;
-            tbody.innerHTML += `
-                <tr id="arow-${t.id}">
-                    <td data-label="Data"><input type="date" id="ed-d-${t.id}" value="${t.data}" class="table-input"></td>
-                    <td data-label="Mansione">
-                        <select id="ed-m-${t.id}" class="table-input">
-                            ${Mansioni.map(m => `<option ${m===t.mansione?'selected':''}>${m}</option>`).join('')}
-                        </select>
-                    </td>
-                    <td data-label="Orario"><div style="display:flex; gap:2px"><input type="time" id="ed-i-${t.id}" value="${t.oraInizio}" class="table-input"><input type="time" id="ed-f-${t.id}" value="${t.oraFine}" class="table-input"></div></td>
-                    <td data-label="Ore"><input type="number" id="ed-h-${t.id}" value="${t.ore}" step="0.5" class="table-input" style="width:50px"></td>
-                    <td data-label="Note"><input type="text" id="ed-n-${t.id}" value="${t.note}" class="table-input"></td>
-                    <td class="actions-cell">
-                        <div class="action-btn-group">
-                            <button class="action-icon icon-edit" onclick="saveEdit('${t.id}', true)">💾</button>
-                            <button class="action-icon icon-del" onclick="delRow('${t.id}', true)">🗑️</button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-        });
-        document.getElementById('d-totale').innerText = tot.toFixed(1);
-    }
-
     // SHARED EDIT
     window.delRow = (id, isAdmin=false) => {
-        modal("Conferma", "Eliminare?", async () => {
+        modal("Eliminare?", "Confermi cancellazione?", async () => {
             await deleteDoc(doc(db, "turni", id));
-            toast("Eliminato"); isAdmin ? loadAdminData() : loadCollabData();
+            toast("Eliminato");
+            isAdmin ? loadAdminData() : loadCollabData();
         });
     };
-    window.editRow = (id) => {
-        const tr = document.getElementById('row-'+id);
-        const t = myTurni.find(x => x.id === id);
+    window.editRow = (id, isAdmin=false) => {
+        const tr = document.getElementById((isAdmin?'arow-':'row-')+id);
+        const src = isAdmin ? allTurni : myTurni;
+        const t = src.find(x => x.id === id);
         tr.innerHTML = `
             <td data-label="Data"><input type="date" id="ed-d-${id}" value="${t.data}" class="table-input"></td>
-            <td data-label="Mansione"><select id="ed-m-${id}" class="table-input">${Mansioni.map(m => `<option ${m===t.mansione?'selected':''}>${m}</option>`).join('')}</select></td>
+            <td data-label="Mansione"><select id="ed-m-${id}" class="table-input">${Mansioni.map(m=>`<option ${m==t.mansione?'selected':''}>${m}</option>`).join('')}</select></td>
             <td data-label="Orario"><div style="display:flex; gap:2px"><input type="time" id="ed-i-${id}" value="${t.oraInizio}" class="table-input"><input type="time" id="ed-f-${id}" value="${t.oraFine}" class="table-input"></div></td>
             <td data-label="Ore"><input type="number" id="ed-h-${id}" value="${t.ore}" step="0.5" class="table-input" style="width:50px"></td>
             <td data-label="Note"><input type="text" id="ed-n-${id}" value="${t.note}" class="table-input"></td>
-            <td class="actions-cell"><button class="btn-success" style="padding:5px" onclick="saveEdit('${id}', false)">OK</button></td>
+            <td class="actions-cell"><button class="btn-success" onclick="saveEdit('${id}', ${isAdmin})" style="padding:5px">OK</button></td>
         `;
     };
     window.saveEdit = async (id, isAdmin) => {
@@ -814,30 +617,110 @@
         } catch(e) { modal("Errore", e.message); }
     };
 
-    // EXPORT
-    function generateCsv(dataList, filename) {
-        if(dataList.length === 0) return modal("Info", "Nessun dato.");
-        const y = parseInt(document.getElementById(currentUser.email===ADMIN_EMAIL ? 'a-filtro-anno':'c-filtro-anno').value);
-        const m = parseInt(document.getElementById(currentUser.email===ADMIN_EMAIL ? 'a-filtro-mese':'c-filtro-mese').value);
-        if(isNaN(m)) return modal("Info", "Seleziona un mese.");
+    // ADMIN
+    window.saveAnagrafica = async () => {
+        const e = document.getElementById('adm-email').value.trim().toLowerCase();
+        if(!e) return modal("Errore", "Manca email.");
+        try { await setDoc(doc(db, "anagrafica", e), { nome: document.getElementById('adm-name').value }); toast("OK"); loadAdminData(); } 
+        catch(e) { modal("Errore", e.message); }
+    };
+    window.saveEditUser = async () => {
+        if(!currentEditEmail) return;
+        try { 
+            const n = document.getElementById('edit-name-input').value;
+            await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: n }, { merge: true });
+            rubrica[currentEditEmail] = n; toast("Nome aggiornato"); 
+            document.getElementById('edit-user-modal').style.display='none'; loadAdminData();
+        } catch(e) { modal("Errore", e.message); }
+    };
+    window.openEditUser = (e,n) => { currentEditEmail=e; document.getElementById('edit-name-input').value=n; document.getElementById('edit-user-modal').style.display='flex'; };
 
+    window.loadAdminData = async () => {
+        const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
+        const role = document.getElementById('a-filtro-mansione').value, sort = document.getElementById('a-sort-order').value;
+        
+        const q = query(collection(db, "turni"), orderBy("data", "desc"));
+        const snap = await getDocs(q);
+        allTurni = []; const stats = {};
+
+        snap.forEach(d => {
+            const t = d.data(); const date = new Date(t.data);
+            if((m=='all'||(date.getMonth()+1)==m) && date.getFullYear()==y && (role=='all'||t.mansione==role)) {
+                allTurni.push({id:d.id, ...t});
+                if(!stats[t.email]) stats[t.email] = { ore:0, nome: rubrica[t.email]||t.email, last:0 };
+                stats[t.email].ore += t.ore;
+                const ts = t.created_at ? t.created_at.seconds : date.getTime()/1000;
+                if(ts > stats[t.email].last) stats[t.email].last = ts;
+            }
+        });
+
+        let cards = Object.entries(stats).map(([e,d]) => ({email:e, ...d}));
+        if(sort === 'alpha') cards.sort((a,b) => a.nome.localeCompare(b.nome));
+        else cards.sort((a,b) => b.last - a.last);
+
+        const grid = document.getElementById('cards-container'); grid.innerHTML = "";
+        cards.forEach(u => {
+            grid.innerHTML += `
+                <div class="user-card" onclick="openDetail('${u.email}')">
+                    <div style="display:flex; justify-content:space-between">
+                        <div class="card-name">${u.nome}</div>
+                        <button style="background:none; border:none; padding:0; width:auto; cursor:pointer" onclick="event.stopPropagation(); openEditUser('${u.email}','${u.nome}')">✏️</button>
+                    </div>
+                    <div class="card-sub">${u.email}</div>
+                    <div class="card-stat">${u.ore.toFixed(1)}</div>
+                </div>
+            `;
+        });
+        if(!document.getElementById('admin-detail').classList.contains('hidden')) renderAdminDetailTable();
+    };
+
+    window.openDetail = (e) => { detailUserEmail=e; document.getElementById('admin-dashboard').classList.add('hidden'); document.getElementById('admin-detail').classList.remove('hidden'); document.getElementById('detail-name').innerText=rubrica[e]||e; renderAdminDetailTable(); };
+    window.closeDetail = () => { detailUserEmail=null; document.getElementById('admin-dashboard').classList.remove('hidden'); document.getElementById('admin-detail').classList.add('hidden'); };
+
+    function renderAdminDetailTable() {
+        const tbody = document.getElementById('detail-tbody'); tbody.innerHTML=""; let tot=0;
+        allTurni.filter(t=>t.email===detailUserEmail).forEach(t => {
+            tot+=t.ore;
+            tbody.innerHTML += `
+                <tr id="arow-${t.id}">
+                    <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
+                    <td data-label="Mansione">${t.mansione}</td>
+                    <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
+                    <td data-label="Ore"><strong>${t.ore}</strong></td>
+                    <td data-label="Note">${t.note||''}</td>
+                    <td class="actions-cell">
+                        <div class="action-icons">
+                            <button class="icon-btn" onclick="editRow('${t.id}', true)">✏️</button>
+                            <button class="icon-btn" onclick="delRow('${t.id}', true)">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        document.getElementById('d-totale').innerText = tot.toFixed(1);
+    }
+
+    // EXPORT
+    function generateCsv(data, filename) {
+        if(data.length === 0) return modal("Info", "Nessun dato.");
+        const y = document.getElementById(currentUser.email===ADMIN_EMAIL ? 'a-filtro-anno':'c-filtro-anno').value;
+        const m = document.getElementById(currentUser.email===ADMIN_EMAIL ? 'a-filtro-mese':'c-filtro-mese').value;
         const days = new Date(y, m, 0).getDate();
         const cols = ["Giorno","IN","OUT","ASS. BAG.","ISTRUTTORE","AQUAFIT.","PROPAG.","LEZ. INDIV.","SEGRETERIA","NOTE"];
-        const colTotals = {}; cols.forEach(c => colTotals[c]=0);
+        const tots = {}; cols.forEach(c => tots[c]=0);
         let csv = cols.join(";") + "\n";
 
         for(let i=1; i<=days; i++) {
             const dStr = `${y}-${String(m).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-            const dayT = dataList.filter(t => t.data === dStr);
-            let r = { in:'', out:'', note:'', vals:{} };
-            cols.forEach(c => r.vals[c] = '');
-
-            if(dayT.length > 0) {
-                const sorted = dayT.sort((a,b) => a.oraInizio.localeCompare(b.oraInizio));
-                r.in = sorted[0].oraInizio; r.out = sorted[sorted.length-1].oraFine;
-                r.note = dayT.map(x => x.note).filter(x=>x).join(' | ').replace(/;/g,' ');
-                dayT.forEach(t => {
-                    let k=""; 
+            const dt = data.filter(t => t.data === dStr);
+            let r = { in:'', out:'', note:'', vals:{} }; cols.forEach(c => r.vals[c]='');
+            
+            if(dt.length > 0) {
+                dt.sort((a,b) => a.oraInizio.localeCompare(b.oraInizio));
+                r.in = dt[0].oraInizio; r.out = dt[dt.length-1].oraFine;
+                r.note = dt.map(x=>x.note).join(' | ').replace(/;/g,' ');
+                dt.forEach(t => {
+                    let k="";
                     if(t.mansione.includes("Assistente")) k="ASS. BAG.";
                     else if(t.mansione.includes("Istruttore")) k="ISTRUTTORE";
                     else if(t.mansione.includes("Fitness")) k="AQUAFIT.";
@@ -847,23 +730,21 @@
                     if(k) {
                         let cur = parseFloat(r.vals[k].replace(',','.')||0);
                         r.vals[k] = (cur+t.ore).toString().replace('.',',');
-                        colTotals[k] += t.ore;
+                        tots[k] += t.ore;
                     }
                 });
             }
-            let rowStr = [];
+            let row = [];
             cols.forEach(c => {
-                if(c==="Giorno") rowStr.push(i);
-                else if(c==="IN") rowStr.push(r.in);
-                else if(c==="OUT") rowStr.push(r.out);
-                else if(c==="NOTE") rowStr.push(r.note);
-                else rowStr.push(r.vals[c]);
+                if(c=="Giorno") row.push(i); else if(c=="IN") row.push(r.in); else if(c=="OUT") row.push(r.out); else if(c=="NOTE") row.push(r.note); else row.push(r.vals[c]);
             });
-            csv += rowStr.join(";") + "\n";
+            csv += row.join(";") + "\n";
         }
-        let rowT = ["TOTALE","","", ...cols.slice(3).map(c => colTotals[c] ? colTotals[c].toString().replace('.',',') : "")];
-        csv += "\n" + rowT.join(";") + "\n";
         
+        // Total row
+        let tr = ["TOTALE","","", ...cols.slice(3).map(c => tots[c] ? tots[c].toString().replace('.',',') : "")];
+        csv += "\n" + tr.join(";") + "\n";
+
         const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a"); a.href = url; a.download = filename;
@@ -871,23 +752,17 @@
     }
 
     window.excelCollab = () => {
-        const selM = document.getElementById('c-filtro-mese');
-        const selY = document.getElementById('c-filtro-anno');
-        const mTxt = selM.options[selM.selectedIndex].text;
-        const name = (rubrica[currentUser.email]||currentUser.email.split('@')[0]).replace(/\s+/g,'');
-        generateCsv(myTurni, `Presenze_${name}_${mTxt}_${selY.value}.csv`);
+        const sm = document.getElementById('c-filtro-mese'); const sy = document.getElementById('c-filtro-anno');
+        const n = (rubrica[currentUser.email]||currentUser.email.split('@')[0]).replace(/\s+/g,'');
+        generateCsv(myTurni, `Presenze_${n}_${sm.options[sm.selectedIndex].text}_${sy.value}.csv`);
     };
     window.excelAdminDetail = () => {
-        const selM = document.getElementById('a-filtro-mese');
-        const selY = document.getElementById('a-filtro-anno');
-        const mTxt = selM.options[selM.selectedIndex].text;
-        const name = (rubrica[detailUserEmail]||detailUserEmail).replace(/\s+/g,'');
-        const userTurni = allTurni.filter(t => t.email === detailUserEmail);
-        generateCsv(userTurni, `Presenze_${name}_${mTxt}_${selY.value}.csv`);
+        const sm = document.getElementById('a-filtro-mese'); const sy = document.getElementById('a-filtro-anno');
+        const n = (rubrica[detailUserEmail]||detailUserEmail).replace(/\s+/g,'');
+        generateCsv(allTurni.filter(t=>t.email===detailUserEmail), `Presenze_${n}_${sm.options[sm.selectedIndex].text}_${sy.value}.csv`);
     };
     window.excelAdminGlobal = () => {
-        const selM = document.getElementById('a-filtro-mese');
-        const mTxt = selM.options[selM.selectedIndex].text;
+        const sm = document.getElementById('a-filtro-mese');
         let csv = "Data;Collaboratore;Mansione;Ore;Orario;Note\n";
         allTurni.forEach(t => {
             const n = rubrica[t.email] || t.email;
@@ -895,7 +770,7 @@
         });
         const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
         const url = URL.createObjectURL(blob);
-        const a = document.createElement("a"); a.href = url; a.download = `Report_Globale_${mTxt}_${document.getElementById('a-filtro-anno').value}.csv`;
+        const a = document.createElement("a"); a.href = url; a.download = `Report_Globale_${sm.options[sm.selectedIndex].text}.csv`;
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
     };
 </script>
