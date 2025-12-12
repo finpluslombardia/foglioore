@@ -10,127 +10,95 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- RESET & VARIABILI --- */
+        /* --- RESET & STILI BASE --- */
         :root {
-            --primary: #2563eb; --primary-dark: #1d4ed8; --secondary: #64748b;     
-            --success: #10b981; --danger: #ef4444; --warning: #f59e0b;       
-            --bg-body: #f8fafc; --bg-card: #ffffff;
-            --text-main: #0f172a; --text-muted: #64748b;
-            --border-radius: 12px; 
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --primary: #2563eb; --primary-dark: #1d4ed8;
+            --bg-body: #f1f5f9; --bg-card: #ffffff;
+            --text-main: #1e293b; --text-muted: #64748b;
         }
-
         *, *::before, *::after { box-sizing: border-box; -webkit-box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; padding: 10px; font-size: 14px; -webkit-font-smoothing: antialiased; }
         
-        body { 
-            font-family: 'Inter', sans-serif; background-color: var(--bg-body); 
-            color: var(--text-main); margin: 0; padding: 20px 10px; line-height: 1.5; font-size: 14px;
-        }
+        .container { max-width: 950px; margin: 0 auto; background: var(--bg-card); padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h2, h3 { margin-top: 0; font-weight: 700; color: var(--text-main); }
+        h2 { font-size: 1.4rem; } h3 { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 15px; }
 
-        .container { 
-            max-width: 950px; margin: 0 auto; background: var(--bg-card); 
-            padding: 25px; border-radius: 16px; box-shadow: var(--shadow); 
-        }
+        /* --- INPUT & BUTTONS --- */
+        input, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; font-size: 14px; -webkit-appearance: none; }
+        input[type="date"], input[type="time"] { min-height: 40px; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: #e2e8f0; color: var(--text-main); }
+        .btn-warning { background: #f59e0b; color: white; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-success { background: #10b981; color: white; }
 
-        h2, h3 { color: var(--text-main); font-weight: 700; margin-top: 0; }
-        h2 { font-size: 1.5rem; margin-bottom: 0.5rem; } 
-        h3 { color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; margin-top: 25px; margin-bottom: 15px;}
-
-        /* --- INPUT --- */
-        input, select { 
-            display: block; width: 100%; padding: 10px 12px; margin: 5px 0; 
-            border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; 
-            background-color: #fff; color: var(--text-main);
-            -webkit-appearance: none; appearance: none;
-        }
-        input:focus, select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-        label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-left: 2px; }
-
-        /* --- BOTTONI --- */
-        button { 
-            width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 8px; 
-            font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
-        }
-        .btn-primary { background-color: var(--primary); color: white; }
-        .btn-primary:hover { background-color: var(--primary-dark); }
-        .btn-danger { background-color: var(--danger); color: white; }
-        .btn-secondary { background-color: #e2e8f0; color: var(--text-main); }
-        .btn-warning { background-color: var(--warning); color: #fff; }
-
-        /* --- DASHBOARD ADMIN (CARDS) --- */
-        .cards-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 20px;
-        }
-        .collab-card {
-            background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s; cursor: pointer;
-            position: relative; overflow: hidden;
-        }
-        .collab-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.05); border-color: var(--primary); }
-        .collab-card::before { content:''; position: absolute; left: 0; top: 0; height: 100%; width: 4px; background: var(--primary); }
+        /* --- LAYOUT UTILS --- */
+        .hidden { display: none !important; }
+        .flex-row { display: flex; gap: 10px; margin-bottom: 10px; }
+        .flex-row > div { flex: 1; min-width: 0; }
+        .form-box { background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
         
-        .card-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 5px; color: var(--text-main); }
-        .card-email { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
-        .card-stats { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 10px; }
-        .card-hours { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
-        .card-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        /* --- ADMIN DASHBOARD (CARDS) --- */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 20px; }
+        .user-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; cursor: pointer; transition: 0.2s; border-left: 4px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .user-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .card-name { font-weight: 700; font-size: 1.1rem; }
+        .card-stat { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-top: 10px; }
+        .card-sub { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
 
-        /* --- HEADER NAVIGATION (Admin) --- */
-        .nav-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; background: #eff6ff; padding: 15px; border-radius: 10px; }
-        .back-btn { background: none; color: var(--primary); padding: 0; width: auto; margin: 0; font-size: 0.9rem; }
-        .back-btn:hover { text-decoration: underline; background: none; }
+        /* --- FILTRI --- */
+        .filter-bar { display: flex; gap: 8px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px dashed #cbd5e1; flex-wrap: wrap; margin-bottom: 15px; }
+        .filter-bar select { min-width: 110px; flex: 1; }
+        .filter-bar button { width: auto; padding: 0 15px; margin: 5px 0 0 0; }
 
-        /* --- TABELLA --- */
-        .table-container { overflow-x: auto; margin-top: 10px; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; } 
-        th { background: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; padding: 12px; border-bottom: 2px solid #e2e8f0; text-align: left; }
-        td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; color: var(--text-main); }
-        td strong { font-weight: 600; color: #0f172a; }
-        .note-cell { color: var(--text-muted); font-style: italic; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85em; }
-        
-        /* --- UTILS --- */
-        #admin-panel-tools, #insert-panel, #admin-details-view, #admin-dashboard-view { display: none; }
-        .spinner { width: 16px; height: 16px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        .spinner-dark { border-color: var(--primary); }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .btn-loading .spinner { display: block; } .btn-loading span { display: none; }
-        
-        .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; background: #f8fafc; padding: 12px; border-radius: 10px; border: 1px dashed #cbd5e1; align-items: flex-end; }
-        .filter-bar .input-group { flex: 1; min-width: 120px; }
-        .filter-bar button { margin: 0; height: 42px; width: auto; padding: 0 20px; }
+        /* --- TABELLA (Desktop) --- */
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; margin-top: 10px; }
+        th { background: #f1f5f9; padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        td { padding: 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        .totale-row { text-align: right; font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-top: 10px; }
+        .action-icons { display: flex; gap: 5px; justify-content: flex-end; }
+        .icon-btn { width: 30px; height: 30px; border-radius: 6px; border: none; background: #f1f5f9; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+        .icon-btn:hover { background: #e2e8f0; }
 
-        /* Toast & Modal (Identici a prima) */
-        #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 2000; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 14px; }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 1000; display: none; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 16px; width: 90%; max-width: 350px; text-align: center; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
-        .action-icon { background: #f1f5f9; border: none; border-radius: 6px; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; margin-right: 5px; }
-
-        /* --- MOBILE --- */
-        @media only screen and (max-width: 600px) {
-            body { padding: 10px 5px; }
-            .container { padding: 15px; }
-            .form-row { flex-direction: column; }
-            .cards-grid { grid-template-columns: 1fr; }
+        /* --- MOBILE CARD VIEW --- */
+        @media (max-width: 600px) {
+            body { padding: 5px; } .container { padding: 15px; }
+            .flex-row { flex-direction: column; gap: 5px; }
+            .filter-bar { flex-direction: column; } .filter-bar button { width: 100%; }
             
-            /* Tabella Mobile (Card View) */
             thead { display: none; }
-            tr { display: block; background: white; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: 12px; border: 1px solid #e2e8f0; }
-            td { display: flex; justify-content: space-between; padding: 6px 0; border: none; text-align: right; }
-            td::before { content: attr(data-label); font-weight: 600; color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; text-align: left; }
-            .nav-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            tr { display: block; background: white; margin-bottom: 10px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+            td { display: flex; justify-content: space-between; padding: 5px 0; border: none; text-align: right; }
+            td:before { content: attr(data-label); font-weight: 600; color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; margin-right: 10px; }
+            td.actions-cell { margin-top: 10px; padding-top: 10px; border-top: 1px solid #f1f5f9; justify-content: flex-end; }
+            /* Fix input overflow mobile */
+            .table-input { width: 60% !important; text-align: right; }
         }
+
+        /* --- UTILS --- */
+        #toast { visibility: hidden; min-width: 250px; background: #333; color: #fff; text-align: center; border-radius: 50px; padding: 12px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; font-size: 13px; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        
+        .spinner { width: 16px; height: 16px; border: 2px solid white; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* Modale */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 3000; display: none; justify-content: center; align-items: center; }
+        .modal-box { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; } .modal-actions button { margin: 0; }
     </style>
 </head>
 <body>
 
-<div id="toast">Messaggio...</div>
+<div id="toast">Notifica</div>
 <div id="custom-modal" class="modal-overlay">
     <div class="modal-box">
         <h3 id="modal-title" style="margin-top:0">Avviso</h3>
-        <p id="modal-msg">Messaggio...</p>
+        <p id="modal-msg" style="color:#64748b">Testo...</p>
         <div class="modal-actions">
             <button id="modal-cancel" class="btn-secondary" onclick="closeModal()">Annulla</button>
             <button id="modal-confirm" class="btn-primary">OK</button>
@@ -140,120 +108,132 @@
 
 <div class="container">
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-        <div>
-            <h2 id="welcome-msg" style="margin:0">Benvenuto</h2>
-            <p id="user-role-label" style="margin:0; font-size:0.85rem; color:var(--text-muted)">Login richiesto</p>
-        </div>
-        <button onclick="logout()" class="btn-secondary" style="width: auto; padding: 8px 15px; margin:0; font-size: 0.8rem;">Esci</button>
+        <h2 id="app-title" style="margin:0">Login</h2>
+        <button id="logout-btn" onclick="logout()" class="btn-secondary hidden" style="width: auto; padding: 6px 12px; margin:0; font-size: 0.8rem;">Esci</button>
     </div>
 
-    <div id="login-panel" style="max-width: 350px; margin: 40px auto; text-align: center;">
-        <h2 style="font-size: 1.5rem; margin-bottom: 20px;">Accesso Team</h2>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Password">
-        <button id="btn-login" onclick="login()" class="btn-primary"><span>Accedi</span><div class="spinner"></div></button>
+    <div id="login-view">
+        <div class="form-box" style="max-width: 350px; margin: 20px auto; text-align: center;">
+            <h3>Accesso</h3>
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()" class="btn-primary">Accedi</button>
+        </div>
     </div>
 
-    <div id="main-app" style="display:none;">
-        
-        <div id="admin-panel-tools">
-            <h3>Gestione Rubrica</h3>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <input type="email" id="new-user-email" placeholder="Email" style="flex:1">
-                <input type="text" id="new-user-name" placeholder="Nome Cognome" style="flex:1">
-                <button onclick="salvaAnagrafica()" class="btn-warning" style="width:auto; margin:5px 0;">Salva</button>
+    <div id="collaborator-view" class="hidden">
+        <div class="form-box">
+            <h3>➕ Nuovo Turno</h3>
+            <div class="flex-row">
+                <div><label>Data</label><input type="date" id="c-data"></div>
+                <div><label>Mansione</label>
+                    <select id="c-mansione">
+                        <option value="Assistente bagnanti">Assistente bagnanti</option>
+                        <option value="Istruttore">Istruttore</option>
+                        <option value="Fitness">Fitness</option>
+                        <option value="Propaganda">Propaganda</option>
+                        <option value="Lezione individuale">Lezione individuale</option>
+                        <option value="Segreteria">Segreteria</option>
+                    </select>
+                </div>
             </div>
+            <div class="flex-row">
+                <div><label>Inizio</label><input type="time" id="c-inizio" onchange="calcDiff()"></div>
+                <div><label>Fine</label><input type="time" id="c-fine" onchange="calcDiff()"></div>
+                <div><label>Ore</label><input type="number" id="c-ore" placeholder="0.0" step="0.5" style="font-weight:bold; color:var(--primary)"></div>
+            </div>
+            <label>Note</label><input type="text" id="c-note" placeholder="Opzionale">
+            <button onclick="salvaOre()" class="btn-primary">Registra Turno</button>
         </div>
 
-        <div id="insert-panel">
-            <div style="background:#f1f5f9; padding:20px; border-radius:12px; margin-bottom:20px;">
-                <h3 style="margin-top:0; color:var(--text-main)">Nuovo Turno</h3>
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <div style="flex:1"><label>Data</label><input type="date" id="data-lavoro"></div>
-                    <div style="flex:1"><label>Mansione</label>
-                        <select id="mansione">
-                            <option value="Assistente bagnanti">Assistente bagnanti</option>
-                            <option value="Istruttore">Istruttore</option>
-                            <option value="Fitness">Fitness</option>
-                            <option value="Propaganda">Propaganda</option>
-                            <option value="Lezione individuale">Lezione individuale</option>
-                            <option value="Segreteria">Segreteria</option>
-                        </select>
-                    </div>
-                </div>
-                <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                    <div style="flex:1"><label>Inizio</label><input type="time" id="ora-inizio" onchange="calcolaDifferenza()"></div>
-                    <div style="flex:1"><label>Fine</label><input type="time" id="ora-fine" onchange="calcolaDifferenza()"></div>
-                    <div style="flex:1"><label>Ore</label><input type="number" id="ore" placeholder="0.0" step="0.5" style="font-weight:bold; color:var(--primary)"></div>
-                </div>
-                <label>Note</label><input type="text" id="note" placeholder="Opzionale...">
-                <button id="btn-salva" onclick="salvaOre()" class="btn-primary"><span>Registra Turno</span><div class="spinner"></div></button>
-            </div>
-        </div>
-
-        <h3 id="riepilogo-title">Riepilogo</h3>
+        <h3>📅 I miei Turni</h3>
         <div class="filter-bar">
-            <div class="input-group">
-                <select id="filtro-mese">
-                    <option value="all">Tutti i Mesi</option>
-                    <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
-                    <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
-                    <option value="7">Luglio</option><option value="8">Agosto</option><option value="9">Settembre</option>
-                    <option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
-                </select>
+            <select id="c-filtro-mese" onchange="renderCollabTable()">
+                <option value="all">Tutti i Mesi</option>
+                <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
+                <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
+                <option value="7">Luglio</option><option value="8">Agosto</option><option value="9">Settembre</option>
+                <option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
+            </select>
+            <select id="c-filtro-anno" onchange="renderCollabTable()"><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
+            <button onclick="excelCollab()" class="btn-success">📥 Excel</button>
+        </div>
+        
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Data</th><th>Mansione</th><th>Orario</th><th>Ore</th><th>Note</th><th style="text-align:right">Azioni</th></tr></thead>
+                <tbody id="collab-tbody"></tbody>
+            </table>
+        </div>
+        <div class="totale-row">Totale: <span id="c-totale">0</span></div>
+        <button onclick="openPwdModal()" class="btn-secondary" style="margin-top:30px; width:auto">🔒 Cambia Password</button>
+    </div>
+
+    <div id="admin-view" class="hidden">
+        
+        <div class="form-box" style="background:#fffbeb; border-color:#fcd34d">
+            <h3 style="color:#b45309; margin-bottom:5px">🛠️ Anagrafica</h3>
+            <div class="flex-row" style="margin-bottom:0">
+                <div><input type="email" id="adm-email" placeholder="Email"></div>
+                <div><input type="text" id="adm-name" placeholder="Nome Cognome"></div>
+                <div><button onclick="saveAnagrafica()" class="btn-warning" style="margin-top:5px">Salva</button></div>
             </div>
-            <div class="input-group">
-                <select id="filtro-anno">
-                    <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
-                </select>
-            </div>
-            <button onclick="aggiornaVista()" class="btn-secondary" style="margin:0; height:42px;">Filtra</button>
-            <button onclick="scaricaExcel()" class="btn-success" style="margin:0; height:42px; background:var(--success); color:white">📥 Excel</button>
         </div>
 
-        <div id="admin-dashboard-view">
-            <div id="cards-container" class="cards-grid">
-                </div>
+        <div class="filter-bar" style="background:#eff6ff; border-color:#bfdbfe">
+            <select id="a-filtro-mese">
+                <option value="all">Tutti i Mesi</option>
+                <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
+                <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
+                <option value="7">Luglio</option><option value="8">Agosto</option><option value="9">Settembre</option>
+                <option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
+            </select>
+            <select id="a-filtro-anno"><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
+            <button onclick="loadAdminData()" class="btn-primary" style="width:auto">Aggiorna</button>
+            <button onclick="excelAdminGlobal()" class="btn-success" style="width:auto">📥 Excel Globale</button>
         </div>
 
-        <div id="details-view" style="display:none;">
+        <div id="admin-dashboard">
+            <h3 id="dash-title">Riepilogo Collaboratori</h3>
+            <div id="cards-container" class="cards-grid"></div>
+        </div>
+
+        <div id="admin-detail" class="hidden">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
+                <h3 style="margin:0; color:var(--primary)" id="detail-name">Nome Utente</h3>
+                <button onclick="closeDetail()" class="btn-secondary" style="width:auto; padding:6px 12px; margin:0">⬅️ Indietro</button>
+            </div>
             
-            <div id="admin-nav-header" class="nav-header" style="display:none;">
-                <div>
-                    <h3 style="margin:0; color:var(--primary)" id="detail-user-name">Mario Rossi</h3>
-                    <span style="font-size:0.8rem; color:#666">Dettaglio Turni</span>
-                </div>
-                <button onclick="tornaAllaDashboard()" class="back-btn">⬅️ Torna alla lista</button>
-            </div>
-
-            <div class="table-container">
+            <div class="table-wrap">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Cosa</th>
-                            <th>Orario</th>
-                            <th>Ore</th>
-                            <th>Note</th>
-                            <th style="text-align:right">Azioni</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabella-ore"></tbody>
+                    <thead><tr><th>Data</th><th>Mansione</th><th>Orario</th><th>Ore</th><th>Note</th><th style="text-align:right">Azioni</th></tr></thead>
+                    <tbody id="detail-tbody"></tbody>
                 </table>
             </div>
-            <div style="text-align:right; margin-top:20px; font-size:1.2rem; font-weight:700; color:var(--primary)">
-                Totale: <span id="totale-ore">0</span> ore
-            </div>
+            <div class="totale-row">Totale Utente: <span id="d-totale">0</span></div>
+            <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:20px; width:auto">📥 Scarica Foglio Ore Utente</button>
         </div>
+    </div>
 
-    </div> </div>
+</div>
+
+<div id="pwd-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h3>Nuova Password</h3>
+        <input type="password" id="new-pwd" placeholder="Minimo 6 caratteri">
+        <div class="modal-actions">
+            <button class="btn-secondary" onclick="document.getElementById('pwd-modal').style.display='none'">Chiudi</button>
+            <button class="btn-primary" onclick="changePwd()">Salva</button>
+        </div>
+    </div>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // --- CONFIGURAZIONE ---
+    // CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
       authDomain: "gestioneore-3bf5f.firebaseapp.com",
@@ -268,438 +248,381 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     
-    let currentUser = null;
     const ADMIN_EMAIL = "a.chiodini01@gmail.com"; 
-    
-    // STATO APPLICAZIONE
-    let rubricaGlobale = {}; 
-    let allTurniCache = []; // Cache di tutti i turni scaricati (per Admin)
-    let adminSelectedUserEmail = null; // Email utente selezionato dall'admin
-    let isViewDashboard = true; // Se true, admin vede le card. Se false, vede tabella.
+    let currentUser = null;
+    let rubrica = {}; 
+    let myTurni = []; // Dati collaboratore
+    let allTurni = []; // Dati admin (tutti)
+    let detailUserEmail = null; // Email utente in dettaglio (admin)
 
-    // SETUP DATE
+    // INIT DATE
     const oggi = new Date();
-    document.getElementById('data-lavoro').valueAsDate = oggi;
-    document.getElementById('filtro-mese').value = (oggi.getMonth() + 1).toString();
-    document.getElementById('filtro-anno').value = oggi.getFullYear().toString();
+    document.getElementById('c-data').valueAsDate = oggi;
+    const curMonth = (oggi.getMonth()+1).toString();
+    const curYear = oggi.getFullYear().toString();
+    document.getElementById('c-filtro-mese').value = curMonth;
+    document.getElementById('c-filtro-anno').value = curYear;
+    document.getElementById('a-filtro-mese').value = curMonth;
+    document.getElementById('a-filtro-anno').value = curYear;
 
-    // --- UI HELPERS ---
-    window.showToast = (msg) => {
-        const x = document.getElementById("toast"); x.innerText = msg; x.className = "show";
-        setTimeout(() => x.className = x.className.replace("show", ""), 3000);
-    }
-    
-    window.showModal = (title, msg, onConfirm) => {
-        document.getElementById('modal-title').innerText = title;
-        document.getElementById('modal-msg').innerText = msg;
-        const btnOk = document.getElementById('modal-confirm');
-        const newBtn = btnOk.cloneNode(true);
-        btnOk.parentNode.replaceChild(newBtn, btnOk);
-        newBtn.onclick = () => { if(onConfirm) onConfirm(); closeModal(); };
-        const modal = document.getElementById('custom-modal');
-        modal.style.display = 'flex'; setTimeout(() => modal.classList.add('active'), 10);
+    // --- UTILS ---
+    window.toast = (msg) => { const t = document.getElementById("toast"); t.innerText=msg; t.className="show"; setTimeout(()=>t.className="", 3000); };
+    window.modal = (t,m,cb) => {
+        document.getElementById('modal-title').innerText=t; document.getElementById('modal-msg').innerText=m;
+        const b = document.getElementById('modal-confirm');
+        const nb = b.cloneNode(true); b.parentNode.replaceChild(nb,b);
+        nb.onclick = () => { if(cb) cb(); closeModal(); };
+        document.getElementById('custom-modal').style.display='flex';
     };
-    
-    window.closeModal = () => {
-        const m = document.getElementById('custom-modal'); m.classList.remove('active');
-        setTimeout(() => m.style.display = 'none', 300);
-    };
-
-    const toggleLoading = (id, loading) => {
-        const b = document.getElementById(id); if(b) { loading ? b.classList.add('btn-loading') : b.classList.remove('btn-loading'); b.disabled = loading; }
-    };
+    window.closeModal = () => document.getElementById('custom-modal').style.display='none';
+    window.openPwdModal = () => document.getElementById('pwd-modal').style.display='flex';
 
     // --- AUTH ---
     window.login = async () => {
-        const e = document.getElementById('email').value, p = document.getElementById('password').value;
-        if(!e || !p) return showModal("Errore", "Inserisci dati.");
-        toggleLoading('btn-login', true);
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { showModal("Errore Login", err.message); toggleLoading('btn-login', false); }
+        try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); }
+        catch(e) { modal("Errore", e.message); }
     };
     window.logout = () => signOut(auth);
+    window.changePwd = async () => {
+        try { await updatePassword(currentUser, document.getElementById('new-pwd').value); toast("Password aggiornata"); document.getElementById('pwd-modal').style.display='none'; }
+        catch(e) { modal("Errore", e.message); }
+    };
 
-    // --- CORE LOGIC ---
     onAuthStateChanged(auth, async (user) => {
-        if (user) {
+        if(user) {
             currentUser = user;
-            document.getElementById('login-panel').style.display = 'none';
-            document.getElementById('main-app').style.display = 'block';
-            document.getElementById('welcome-msg').innerText = `Ciao, ${user.email.split('@')[0]}`;
+            document.getElementById('login-view').classList.add('hidden');
+            document.getElementById('logout-btn').classList.remove('hidden');
             
-            // Carica Rubrica Nomi
-            await loadRubrica();
+            // Carica Rubrica
+            const snap = await getDocs(collection(db, "anagrafica"));
+            snap.forEach(d => rubrica[d.id] = d.data().nome);
+            
+            const nome = rubrica[user.email] || user.email.split('@')[0];
+            document.getElementById('app-title').innerText = `Ciao, ${nome}`;
 
-            if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                // ADMIN MODE
-                document.getElementById('admin-indicator').style.display = 'inline-block';
-                document.getElementById('user-role-label').innerText = "Amministratore";
-                document.getElementById('admin-panel-tools').style.display = 'block';
-                document.getElementById('insert-panel').style.display = 'none'; // Admin NON inserisce
-                isViewDashboard = true;
+            if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                document.getElementById('admin-view').classList.remove('hidden');
+                loadAdminData();
             } else {
-                // COLLABORATORE MODE
-                document.getElementById('admin-indicator').style.display = 'none';
-                document.getElementById('user-role-label').innerText = "Collaboratore";
-                document.getElementById('admin-panel-tools').style.display = 'none';
-                document.getElementById('insert-panel').style.display = 'block';
-                isViewDashboard = false;
+                document.getElementById('collaborator-view').classList.remove('hidden');
+                // Carica preferenza mansione
+                const last = localStorage.getItem('lastMansione');
+                if(last) document.getElementById('c-mansione').value = last;
+                loadCollabData();
             }
-            aggiornaVista();
         } else {
             currentUser = null;
-            document.getElementById('login-panel').style.display = 'block';
-            document.getElementById('main-app').style.display = 'none';
-            document.getElementById('admin-indicator').style.display = 'none';
-            toggleLoading('btn-login', false);
+            document.getElementById('login-view').classList.remove('hidden');
+            document.getElementById('collaborator-view').classList.add('hidden');
+            document.getElementById('admin-view').classList.add('hidden');
+            document.getElementById('logout-btn').classList.add('hidden');
+            document.getElementById('app-title').innerText = "Login";
         }
     });
 
-    async function loadRubrica() {
-        try {
-            const snap = await getDocs(collection(db, "anagrafica"));
-            snap.forEach(d => rubricaGlobale[d.id] = d.data().nome);
-        } catch(e){ console.error(e); }
-    }
-
-    window.salvaAnagrafica = async () => {
-        const e = document.getElementById('new-user-email').value.trim().toLowerCase();
-        const n = document.getElementById('new-user-name').value.trim();
-        if(!e || !n) return showModal("Errore", "Dati mancanti");
-        try {
-            await setDoc(doc(db, "anagrafica", e), { nome: n });
-            showToast("Rubrica aggiornata");
-            await loadRubrica();
-            aggiornaVista();
-        } catch(err) { showModal("Errore", err.message); }
+    // --- COLLABORATORE ---
+    window.calcDiff = () => {
+        const i = document.getElementById('c-inizio').value, f = document.getElementById('c-fine').value;
+        if(i && f) {
+            let d = (new Date(`1970-01-01T${f}`) - new Date(`1970-01-01T${i}`))/36e5;
+            if(d<0) d+=24;
+            document.getElementById('c-ore').value = d.toFixed(2);
+        }
     };
 
     window.salvaOre = async () => {
-        const d = document.getElementById('data-lavoro').value;
-        const m = document.getElementById('mansione').value;
-        const h = parseFloat(document.getElementById('ore').value);
-        const i = document.getElementById('ora-inizio').value;
-        const f = document.getElementById('ora-fine').value;
-        const n = document.getElementById('note').value;
-
-        if(!d || !m || !h) return showModal("Attenzione", "Compila Data, Mansione e Ore");
+        const d = document.getElementById('c-data').value, m = document.getElementById('c-mansione').value, h = parseFloat(document.getElementById('c-ore').value);
+        if(!d || !m || !h) return modal("Attenzione", "Compila i campi.");
         
-        toggleLoading('btn-salva', true);
         try {
             await addDoc(collection(db, "turni"), {
-                uid: currentUser.uid, email: currentUser.email, data: d, mansione: m, ore: h, 
-                oraInizio: i||"", oraFine: f||"", note: n||"", created_at: new Date()
+                uid: currentUser.uid, email: currentUser.email, data: d, mansione: m, ore: h,
+                oraInizio: document.getElementById('c-inizio').value, oraFine: document.getElementById('c-fine').value,
+                note: document.getElementById('c-note').value, created_at: new Date()
             });
-            showToast("Turno registrato!");
-            aggiornaVista();
-        } catch(e) { showModal("Errore", "Salvataggio fallito"); }
-        toggleLoading('btn-salva', false);
+            localStorage.setItem('lastMansione', m);
+            toast("Salvato!"); loadCollabData();
+            // Reset parziale
+            document.getElementById('c-ore').value=""; document.getElementById('c-note').value="";
+        } catch(e) { modal("Errore", e.message); }
     };
 
-    window.calcolaDifferenza = () => {
-        const i = document.getElementById('ora-inizio').value;
-        const f = document.getElementById('ora-fine').value;
-        if(i && f) {
-            let diff = (new Date(`1970-01-01T${f}`) - new Date(`1970-01-01T${i}`)) / 36e5;
-            if(diff < 0) diff += 24;
-            document.getElementById('ore').value = diff.toFixed(2);
-        }
-    };
+    async function loadCollabData() {
+        const q = query(collection(db, "turni"), where("uid", "==", currentUser.uid), orderBy("data", "desc"));
+        const snap = await getDocs(q);
+        myTurni = [];
+        snap.forEach(d => myTurni.push({id: d.id, ...d.data()}));
+        renderCollabTable();
+    }
 
-    // --- IL CUORE DELLA LOGICA ADMIN (DASHBOARD vs DETAILS) ---
-    window.aggiornaVista = async () => {
-        const isAdmin = currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-        const mese = document.getElementById('filtro-mese').value;
-        const anno = document.getElementById('filtro-anno').value;
-
-        // 1. SCARICA I DATI
-        let q;
-        if (isAdmin) {
-            // Admin scarica TUTTO per il periodo (ordinato)
-            q = query(collection(db, "turni"), orderBy("data", "desc"));
-        } else {
-            // Collaboratore scarica SOLO SUO
-            q = query(collection(db, "turni"), where("uid", "==", currentUser.uid), orderBy("data", "desc"));
-        }
-
-        try {
-            const snap = await getDocs(q);
-            allTurniCache = [];
-            snap.forEach(d => {
-                const r = d.data();
-                const dataObj = new Date(r.data);
-                // Filtro Mese/Anno lato client (più semplice per i filtri combinati)
-                if (mese !== 'all') {
-                    if ((dataObj.getMonth()+1).toString() !== mese || dataObj.getFullYear().toString() !== anno) return;
-                }
-                allTurniCache.push({ id: d.id, ...r });
-            });
-
-            // 2. DECIDI COSA MOSTRARE
-            if (isAdmin && isViewDashboard) {
-                renderAdminDashboard();
-            } else {
-                renderDetailedTable();
-            }
-
-        } catch (e) { 
-            console.error(e); 
-            if(e.message.includes("index")) showModal("Configurazione", "Manca indice Firebase"); 
-        }
-    };
-
-    // --- RENDER DASHBOARD ADMIN (LE SCHEDE) ---
-    function renderAdminDashboard() {
-        document.getElementById('admin-dashboard-view').style.display = 'block';
-        document.getElementById('details-view').style.display = 'none';
-        document.getElementById('riepilogo-title').innerText = "Riepilogo Collaboratori";
-
-        const container = document.getElementById('cards-container');
-        container.innerHTML = "";
-
-        // Aggrega per Email
-        const stats = {};
-        allTurniCache.forEach(t => {
-            if (!stats[t.email]) stats[t.email] = { ore: 0, nome: rubricaGlobale[t.email] || t.email };
-            stats[t.email].ore += t.ore;
+    window.renderCollabTable = () => {
+        const m = document.getElementById('c-filtro-mese').value, y = document.getElementById('c-filtro-anno').value;
+        const tbody = document.getElementById('collab-tbody');
+        tbody.innerHTML = "";
+        let tot = 0;
+        
+        const filtered = myTurni.filter(t => {
+            const d = new Date(t.data);
+            return (m === 'all' || (d.getMonth()+1).toString() === m) && d.getFullYear().toString() === y;
         });
 
-        // Crea Schede
+        filtered.forEach(t => {
+            tot += t.ore;
+            tbody.innerHTML += `
+                <tr id="row-${t.id}">
+                    <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
+                    <td data-label="Mansione">${t.mansione}</td>
+                    <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
+                    <td data-label="Ore"><strong>${t.ore}</strong></td>
+                    <td data-label="Note">${t.note||''}</td>
+                    <td class="actions-cell">
+                        <div class="action-icons">
+                            <button class="icon-btn" onclick="editRow('${t.id}')">✏️</button>
+                            <button class="icon-btn" style="color:red" onclick="delRow('${t.id}')">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        document.getElementById('c-totale').innerText = tot.toFixed(1);
+    };
+
+    // --- ADMIN ---
+    window.saveAnagrafica = async () => {
+        try {
+            await setDoc(doc(db, "anagrafica", document.getElementById('adm-email').value.trim().toLowerCase()), { nome: document.getElementById('adm-name').value });
+            toast("Anagrafica OK");
+            loadAdminData(); // Ricarica nomi
+        } catch(e) { modal("Errore", e.message); }
+    };
+
+    window.loadAdminData = async () => {
+        const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
+        const q = query(collection(db, "turni"), orderBy("data", "desc"));
+        const snap = await getDocs(q);
+        
+        // 1. Scarica TUTTO e filtra in memoria (più veloce per raggruppare)
+        allTurni = [];
+        const stats = {};
+
+        snap.forEach(d => {
+            const t = d.data();
+            const dateObj = new Date(t.data);
+            
+            // Filtro Mese/Anno
+            if ((m === 'all' || (dateObj.getMonth()+1).toString() === m) && dateObj.getFullYear().toString() === y) {
+                const fullT = { id: d.id, ...t };
+                allTurni.push(fullT);
+                
+                // Aggrega per Dashboard
+                if(!stats[t.email]) stats[t.email] = { ore: 0, nome: rubrica[t.email] || t.email };
+                stats[t.email].ore += t.ore;
+            }
+        });
+
+        // 2. Render Dashboard Card
+        const grid = document.getElementById('cards-container');
+        grid.innerHTML = "";
+        
+        if(Object.keys(stats).length === 0) grid.innerHTML = "<p style='color:#666; width:100%'>Nessun dato per il periodo selezionato.</p>";
+
         Object.keys(stats).forEach(email => {
-            const u = stats[email];
-            const card = document.createElement('div');
-            card.className = 'collab-card';
-            card.innerHTML = `
-                <div class="card-name">${u.nome.split('@')[0]}</div>
-                <div class="card-email">${email}</div>
-                <div class="card-stats">
-                    <span class="card-label">Totale Mese</span>
-                    <span class="card-hours">${u.ore.toFixed(1)}</span>
+            const s = stats[email];
+            grid.innerHTML += `
+                <div class="user-card" onclick="openDetail('${email}')">
+                    <div class="card-name">${s.nome}</div>
+                    <div class="card-sub">${email}</div>
+                    <div class="card-stat">${s.ore.toFixed(1)} ore</div>
                 </div>
             `;
-            card.onclick = () => openAdminDetails(email, u.nome);
-            container.appendChild(card);
         });
 
-        if(Object.keys(stats).length === 0) container.innerHTML = "<p style='color:#999'>Nessun turno inserito in questo mese.</p>";
-    }
-
-    // --- DRILL DOWN (APRI DETTAGLIO UTENTE) ---
-    window.openAdminDetails = (email, nome) => {
-        adminSelectedUserEmail = email;
-        isViewDashboard = false;
-        
-        // Setup UI Dettaglio
-        document.getElementById('admin-dashboard-view').style.display = 'none';
-        document.getElementById('details-view').style.display = 'block';
-        document.getElementById('admin-nav-header').style.display = 'flex';
-        document.getElementById('detail-user-name').innerText = nome || email;
-        document.getElementById('riepilogo-title').innerText = "Dettaglio Turni";
-
-        renderDetailedTable(); // Ridisegna tabella filtrando per questo user
-    };
-
-    window.tornaAllaDashboard = () => {
-        isViewDashboard = true;
-        adminSelectedUserEmail = null;
-        document.getElementById('riepilogo-title').innerText = "Riepilogo";
-        aggiornaVista(); // Ricarica dashboard
-    };
-
-    // --- RENDER TABELLA DETTAGLIATA (COMUNE) ---
-    function renderDetailedTable() {
-        document.getElementById('admin-dashboard-view').style.display = 'none';
-        document.getElementById('details-view').style.display = 'block';
-        const tbody = document.getElementById('tabella-ore');
-        tbody.innerHTML = "";
-        
-        let totale = 0;
-        const isAdmin = currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-
-        // Filtra: Se sono Admin in dettaglio, mostro solo l'user selezionato. Altrimenti mostro tutto quello che ho in cache (il mio)
-        let turniDaMostrare = allTurniCache;
-        if (isAdmin && adminSelectedUserEmail) {
-            turniDaMostrare = allTurniCache.filter(t => t.email === adminSelectedUserEmail);
+        // Se eravamo in un dettaglio, rinfrescalo
+        if(!document.getElementById('admin-detail').classList.contains('hidden')) {
+            renderAdminDetailTable();
         }
+    };
 
-        turniDaMostrare.forEach(t => {
-            totale += t.ore;
-            const dataFmt = new Date(t.data).toLocaleDateString('it-IT');
-            const orario = (t.oraInizio && t.oraFine) ? `${t.oraInizio} - ${t.oraFine}` : "-";
-            
-            // Genera Riga
-            const tr = document.createElement('tr');
-            tr.id = `riga-${t.id}`;
-            tr.innerHTML = `
-                <td data-label="Data" data-val="${t.data}">${dataFmt}</td>
-                <td data-label="Cosa" data-val="${t.mansione}">${t.mansione}</td>
-                <td data-label="Orario" data-val="${t.oraInizio}-${t.oraFine}">${orario}</td>
-                <td data-label="Ore"><strong>${t.ore}</strong></td>
-                <td data-label="Note" class="note-cell" title="${t.note}">${t.note || '-'}</td>
-                <td data-label="" style="text-align:right">
-                    <div class="action-btn-group">
-                        <button class="action-icon" onclick="modificaTurno('${t.id}')">✏️</button>
-                        <button class="action-icon" style="color:var(--danger)" onclick="eliminaTurno('${t.id}')">🗑️</button>
-                    </div>
-                </td>
+    window.openDetail = (email) => {
+        detailUserEmail = email;
+        document.getElementById('admin-dashboard').classList.add('hidden');
+        document.getElementById('admin-detail').classList.remove('hidden');
+        document.getElementById('detail-name').innerText = rubrica[email] || email;
+        renderAdminDetailTable();
+    };
+
+    window.closeDetail = () => {
+        document.getElementById('admin-dashboard').classList.remove('hidden');
+        document.getElementById('admin-detail').classList.add('hidden');
+        detailUserEmail = null;
+    };
+
+    function renderAdminDetailTable() {
+        const tbody = document.getElementById('detail-tbody');
+        tbody.innerHTML = "";
+        let tot = 0;
+        
+        // Filtra solo l'utente selezionato dalla cache admin
+        const userTurni = allTurni.filter(t => t.email === detailUserEmail);
+
+        userTurni.forEach(t => {
+            tot += t.ore;
+            tbody.innerHTML += `
+                <tr id="arow-${t.id}">
+                    <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
+                    <td data-label="Mansione">${t.mansione}</td>
+                    <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
+                    <td data-label="Ore"><strong>${t.ore}</strong></td>
+                    <td data-label="Note">${t.note||''}</td>
+                    <td class="actions-cell">
+                        <div class="action-icons">
+                            <button class="icon-btn" onclick="editRow('${t.id}', true)">✏️</button>
+                            <button class="icon-btn" style="color:red" onclick="delRow('${t.id}', true)">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
             `;
-            tbody.appendChild(tr);
         });
-
-        if (turniDaMostrare.length === 0) tbody.innerHTML = "<tr><td colspan='6' style='text-align:center; padding:20px; color:#999'>Nessun turno.</td></tr>";
-        document.getElementById('totale-ore').innerText = totale.toFixed(1);
+        document.getElementById('d-totale').innerText = tot.toFixed(1);
     }
 
-    // --- EDIT & DELETE (INLINE) ---
-    window.eliminaTurno = (id) => {
-        showModal("Conferma", "Eliminare il turno?", async () => {
-            try { await deleteDoc(doc(db, "turni", id)); showToast("Eliminato"); aggiornaVista(); } 
-            catch(e){ showModal("Errore", e.message); }
+    // --- EDIT & DELETE (COMUNI) ---
+    window.delRow = (id, isAdmin=false) => {
+        modal("Conferma", "Eliminare il turno?", async () => {
+            await deleteDoc(doc(db, "turni", id));
+            toast("Eliminato");
+            isAdmin ? loadAdminData() : loadCollabData();
         });
     };
 
-    window.modificaTurno = (id) => {
-        const tr = document.getElementById(`riga-${id}`);
-        const dataVal = tr.cells[0].getAttribute('data-val');
-        const mansVal = tr.cells[1].getAttribute('data-val');
-        const orari = tr.cells[2].getAttribute('data-val').split('-');
-        const oreVal = tr.cells[3].innerText;
-        const noteVal = tr.cells[4].getAttribute('title') || "";
-
+    window.editRow = (id, isAdmin=false) => {
+        // Logica inline edit semplificata
+        const prefix = isAdmin ? "arow-" : "row-";
+        const tr = document.getElementById(prefix+id);
+        // ... (Per brevità: qui riusiamo la logica di input in tabella, 
+        // ma per rendere il codice stabile e meno lungo, consiglio di 
+        // affidarsi alla modifica rapida Admin: cancella e rifai, o un semplice prompt)
+        // Implementazione completa Edit Inline:
+        const oldData = tr.cells[0].innerText; // Solo display
+        
+        // Semplice: chiediamo i nuovi valori con prompt o rendiamo i td editabili?
+        // Facciamo il rendering degli input nella riga
+        // Recuperiamo i dati "veri" dalla cache
+        const source = isAdmin ? allTurni : myTurni;
+        const t = source.find(x => x.id === id);
+        
         const mansioni = ["Assistente bagnanti", "Istruttore", "Fitness", "Propaganda", "Lezione individuale", "Segreteria"];
-        let opts = mansioni.map(m => `<option ${m===mansVal?'selected':''}>${m}</option>`).join('');
+        const opt = mansioni.map(m => `<option ${m===t.mansione?'selected':''}>${m}</option>`).join('');
 
         tr.innerHTML = `
-            <td data-label="Data"><input type="date" id="e-d-${id}" value="${dataVal}"></td>
-            <td data-label="Cosa"><select id="e-m-${id}">${opts}</select></td>
-            <td data-label="Orario"><div style="display:flex; gap:5px"><input type="time" id="e-i-${id}" value="${orari[0]||''}"><input type="time" id="e-f-${id}" value="${orari[1]||''}"></div></td>
-            <td data-label="Ore"><input type="number" id="e-h-${id}" value="${oreVal}" step="0.5"></td>
-            <td data-label="Note"><input type="text" id="e-n-${id}" value="${noteVal}"></td>
-            <td data-label="Azioni">
-                <button class="save-btn" onclick="salvaModifica('${id}')">💾</button>
-                <button class="cancel-btn" onclick="aggiornaVista()">❌</button>
-            </td>
+            <td data-label="Data"><input type="date" id="ed-d-${id}" value="${t.data}" style="width:100%"></td>
+            <td data-label="Mansione"><select id="ed-m-${id}">${opt}</select></td>
+            <td data-label="Orario"><div style="display:flex; gap:2px"><input type="time" id="ed-i-${id}" value="${t.oraInizio}"><input type="time" id="ed-f-${id}" value="${t.oraFine}"></div></td>
+            <td data-label="Ore"><input type="number" id="ed-h-${id}" value="${t.ore}" step="0.5" style="width:60px"></td>
+            <td data-label="Note"><input type="text" id="ed-n-${id}" value="${t.note}"></td>
+            <td class="actions-cell"><button class="btn-success" onclick="saveEdit('${id}', ${isAdmin})" style="padding:5px">OK</button></td>
         `;
-        // Auto calcolo in edit
-        const ricalcola = () => {
-            const i = document.getElementById(`e-i-${id}`).value;
-            const f = document.getElementById(`e-f-${id}`).value;
-            if(i && f) {
-                let d = (new Date(`1970-01-01T${f}`) - new Date(`1970-01-01T${i}`)) / 36e5;
-                if(d < 0) d += 24;
-                document.getElementById(`e-h-${id}`).value = d.toFixed(2);
-            }
-        };
-        document.getElementById(`e-i-${id}`).onchange = ricalcola;
-        document.getElementById(`e-f-${id}`).onchange = ricalcola;
     };
 
-    window.salvaModifica = async (id) => {
+    window.saveEdit = async (id, isAdmin) => {
         try {
             await updateDoc(doc(db, "turni", id), {
-                data: document.getElementById(`e-d-${id}`).value,
-                mansione: document.getElementById(`e-m-${id}`).value,
-                ore: parseFloat(document.getElementById(`e-h-${id}`).value),
-                oraInizio: document.getElementById(`e-i-${id}`).value,
-                oraFine: document.getElementById(`e-f-${id}`).value,
-                note: document.getElementById(`e-n-${id}`).value
+                data: document.getElementById(`ed-d-${id}`).value,
+                mansione: document.getElementById(`ed-m-${id}`).value,
+                ore: parseFloat(document.getElementById(`ed-h-${id}`).value),
+                oraInizio: document.getElementById(`ed-i-${id}`).value,
+                oraFine: document.getElementById(`ed-f-${id}`).value,
+                note: document.getElementById(`ed-n-${id}`).value
             });
-            showToast("Modifica salvata");
-            aggiornaVista();
-        } catch(e) { showModal("Errore", e.message); }
+            toast("Modificato");
+            isAdmin ? loadAdminData() : loadCollabData();
+        } catch(e) { modal("Errore", e.message); }
     };
 
-    // --- EXPORT ---
-    window.scaricaExcel = () => {
-        // Se siamo Admin in Dashboard, scarica un riepilogo generale. Se in dettaglio, scarica dettaglio.
-        // Per semplicità, qui manteniamo la logica PDF Grid per i dati ATTUALMENTE visibili o in cache.
+    // --- EXPORT (PDF STYLE) ---
+    function generateCsv(dataList, filename) {
+        if(dataList.length === 0) return modal("Info", "Nessun dato.");
         
-        // Filtriamo i dati da esportare in base alla vista
-        let datiExport = allTurniCache;
-        const isAdmin = currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-        
-        if (isAdmin && !isViewDashboard && adminSelectedUserEmail) {
-            datiExport = allTurniCache.filter(t => t.email === adminSelectedUserEmail);
-        } else if (!isAdmin) {
-            datiExport = allTurniCache; // Collaboratore vede già solo i suoi
-        } 
-        // Se Admin è in Dashboard, scarichiamo TUTTO il mese di TUTTI (utile per contabilità globale)
-
-        if(datiExport.length === 0) return showModal("Info", "Nessun dato.");
-
-        // Generazione CSV (Logica PDF Grid)
-        const cols = ["Giorno", "IN", "OUT", "ASS. BAG.", "ISTRUTTORE", "AQUAFIT.", "PROPAG.", "LEZ. INDIV.", "SEGRETERIA", "NOTE"];
-        let csv = cols.join(";") + (isAdmin && isViewDashboard ? ";COLLABORATORE" : "") + "\n"; // Aggiungo colonna nome se report globale
-
-        const y = parseInt(document.getElementById('filtro-anno').value);
-        const m = parseInt(document.getElementById('filtro-mese').value);
-        if(document.getElementById('filtro-mese').value === 'all') return showModal("Info", "Seleziona un mese.");
+        const y = parseInt(document.getElementById(currentUser.email === ADMIN_EMAIL ? 'a-filtro-anno' : 'c-filtro-anno').value);
+        const m = parseInt(document.getElementById(currentUser.email === ADMIN_EMAIL ? 'a-filtro-mese' : 'c-filtro-mese').value);
+        if(isNaN(m)) return modal("Info", "Seleziona un mese.");
 
         const days = new Date(y, m, 0).getDate();
-        const colTotals = {}; cols.forEach(c => colTotals[c] = 0);
+        const cols = ["Giorno","IN","OUT","ASS. BAG.","ISTRUTTORE","AQUAFIT.","PROPAG.","LEZ. INDIV.","SEGRETERIA","NOTE"];
+        const colTotals = {}; cols.forEach(c => colTotals[c]=0);
 
-        // Se report globale, iteriamo per ogni collaboratore? No, facciamo un listone per giorno se globale è complesso.
-        // Manteniamo la struttura "Giorno 1...30". Se ci sono più persone nello stesso giorno, servirebbero righe multiple o fogli separati.
-        // SOLUZIONE SEMPLICE: Se Admin Dashboard -> Scarica elenco piatto (Data;Nome;Mansione;Ore). Se Dettaglio -> Scarica Grid PDF.
-        
-        if (isAdmin && isViewDashboard) {
-            // REPORT GLOBALE PIATTO
-            csv = "Data;Collaboratore;Mansione;Ore;Orario;Note\n";
-            datiExport.forEach(t => {
-                csv += `${t.data};${rubricaGlobale[t.email]||t.email};${t.mansione};${t.ore.toString().replace('.',',')};${t.oraInizio}-${t.oraFine};${t.note}\n`;
-            });
-        } else {
-            // REPORT GRID PDF (Singolo Utente)
-            for(let i=1; i<=days; i++) {
-                const dateStr = `${y}-${String(m).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-                const dayTurni = datiExport.filter(t => t.data === dateStr);
-                
-                let inT="", outT="", noteT="", gridHours={};
-                cols.forEach(c => gridHours[c] = "");
+        let csv = cols.join(";") + "\n";
 
-                if(dayTurni.length > 0) {
-                    const sorted = dayTurni.sort((a,b) => a.oraInizio.localeCompare(b.oraInizio));
-                    inT = sorted[0].oraInizio;
-                    outT = sorted[sorted.length-1].oraFine;
-                    noteT = dayTurni.map(t => t.note).join(' ').replace(/;/g,' ');
+        for(let i=1; i<=days; i++) {
+            const dStr = `${y}-${String(m).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+            const dayT = dataList.filter(t => t.data === dStr);
+            
+            let r = { in:'', out:'', note:'', vals:{} };
+            cols.forEach(c => r.vals[c] = '');
 
-                    dayTurni.forEach(t => {
-                        let c = "";
-                        if(t.mansione.includes("Assistente")) c="ASS. BAG.";
-                        else if(t.mansione.includes("Istruttore")) c="ISTRUTTORE";
-                        else if(t.mansione.includes("Fitness")) c="AQUAFIT.";
-                        else if(t.mansione.includes("Propaganda")) c="PROPAG.";
-                        else if(t.mansione.includes("Lezione")) c="LEZ. INDIV.";
-                        else if(t.mansione.includes("Segreteria")) c="SEGRETERIA";
-                        
-                        if(c) {
-                            let old = parseFloat(gridHours[c].replace(',','.')||0);
-                            let val = old + t.ore;
-                            gridHours[c] = val.toString().replace('.',',');
-                            colTotals[c] += t.ore;
-                        }
-                    });
-                }
-                
-                let row = [];
-                cols.forEach(c => {
-                    if(c==="Giorno") row.push(i);
-                    else if(c==="IN") row.push(inT);
-                    else if(c==="OUT") row.push(outT);
-                    else if(c==="NOTE") row.push(noteT);
-                    else row.push(gridHours[c]);
+            if(dayT.length > 0) {
+                const sorted = dayT.sort((a,b) => a.oraInizio.localeCompare(b.oraInizio));
+                r.in = sorted[0].oraInizio;
+                r.out = sorted[sorted.length-1].oraFine;
+                r.note = dayT.map(x => x.note).filter(x=>x).join(' | ').replace(/;/g,' ');
+
+                dayT.forEach(t => {
+                    let k = "";
+                    if(t.mansione.includes("Assistente")) k="ASS. BAG.";
+                    else if(t.mansione.includes("Istruttore")) k="ISTRUTTORE";
+                    else if(t.mansione.includes("Fitness")) k="AQUAFIT.";
+                    else if(t.mansione.includes("Propaganda")) k="PROPAG.";
+                    else if(t.mansione.includes("Lezione")) k="LEZ. INDIV.";
+                    else if(t.mansione.includes("Segreteria")) k="SEGRETERIA";
+                    
+                    if(k) {
+                        let cur = parseFloat(r.vals[k].replace(',','.') || 0);
+                        r.vals[k] = (cur + t.ore).toString().replace('.',',');
+                        colTotals[k] += t.ore;
+                    }
                 });
-                csv += row.join(";") + "\n";
             }
-            // Totali
-            let rowTot = ["TOTALE","","", ...cols.slice(3).map(c => colTotals[c] ? colTotals[c].toString().replace('.',',') : "")];
-            csv += rowTot.join(";") + "\n";
+
+            let rowStr = [];
+            cols.forEach(c => {
+                if(c==="Giorno") rowStr.push(i);
+                else if(c==="IN") rowStr.push(r.in);
+                else if(c==="OUT") rowStr.push(r.out);
+                else if(c==="NOTE") rowStr.push(r.note);
+                else rowStr.push(r.vals[c]);
+            });
+            csv += rowStr.join(";") + "\n";
         }
+
+        // Totali
+        let rowT = ["TOTALE","","", ...cols.slice(3).map(c => colTotals[c] ? colTotals[c].toString().replace('.',',') : "")];
+        csv += "\n" + rowT.join(";") + "\n";
 
         const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
         const url = URL.createObjectURL(blob);
-        const a = document.createElement("a"); a.href = url; a.download = "Report_Ore.csv";
+        const a = document.createElement("a"); a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+
+    window.excelCollab = () => generateCsv(myTurni, "Mio_Foglio_Ore.csv");
+    window.excelAdminDetail = () => {
+        const userTurni = allTurni.filter(t => t.email === detailUserEmail);
+        generateCsv(userTurni, `Foglio_Ore_${detailUserEmail}.csv`);
+    };
+    window.excelAdminGlobal = () => {
+        // Export semplice piatto per il globale
+        let csv = "Data;Collaboratore;Mansione;Ore;Orario;Note\n";
+        allTurni.forEach(t => {
+            const nome = rubrica[t.email] || t.email;
+            csv += `${t.data};${nome};${t.mansione};${t.ore.toString().replace('.',',')};${t.oraInizio}-${t.oraFine};${t.note}\n`;
+        });
+        const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a"); a.href = url; a.download = "Report_Globale_Admin.csv";
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
     };
+
 </script>
 </body>
 </html>
