@@ -10,200 +10,135 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. RESET & VARIABILI (DESIGN SYSTEM) --- */
+        /* --- 1. RESET & VARIABILI (COMPACT STYLE) --- */
         :root {
-            --primary: #2563eb;       
-            --primary-dark: #1d4ed8;
-            --secondary: #64748b;     
-            --success: #10b981;       
-            --danger: #ef4444;        
-            --warning: #f59e0b;
-            --bg-body: #f1f5f9;       
-            --bg-card: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-radius: 10px; 
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --primary: #2563eb; --primary-dark: #1d4ed8;
+            --secondary: #64748b; --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+            --bg-body: #f1f5f9; --bg-card: #ffffff;
+            --text-main: #1e293b; --text-muted: #64748b;
+            --border-radius: 8px; 
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
         *, *::before, *::after { box-sizing: border-box; -webkit-box-sizing: border-box; }
         
         body { 
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
-            background-color: var(--bg-body); 
-            color: var(--text-main); 
-            margin: 0; padding: 15px; 
-            line-height: 1.5; font-size: 14px; 
+            font-family: 'Inter', sans-serif; background-color: var(--bg-body); 
+            color: var(--text-main); margin: 0; padding: 10px; 
+            line-height: 1.4; font-size: 13px; /* Font base compatto */
             -webkit-font-smoothing: antialiased;
         }
 
         .container { 
-            max-width: 950px; margin: 0 auto; 
-            background: var(--bg-card); 
-            padding: 25px; border-radius: 16px; box-shadow: var(--shadow); 
+            max-width: 950px; margin: 0 auto; background: var(--bg-card); 
+            padding: 15px; border-radius: 10px; box-shadow: var(--shadow); 
         }
 
         h2, h3 { color: var(--text-main); font-weight: 700; margin-top: 0; letter-spacing: -0.02em; }
-        h2 { font-size: 1.5rem; margin-bottom: 0.5rem; } 
-        h3 { color: var(--text-muted); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.05em; margin-top: 25px; margin-bottom: 10px;}
+        h2 { font-size: 1.3rem; margin-bottom: 0.5rem; } 
+        h3 { color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; margin-top: 15px; margin-bottom: 10px;}
 
-        /* --- INPUT & SELECT (FIX MOBILE) --- */
+        /* --- INPUT & SELECT (COMPACT) --- */
         input, select { 
-            display: block; width: 100%; max-width: 100%; 
-            padding: 10px 14px; margin: 5px 0; 
-            border: 1px solid #cbd5e1; border-radius: 8px; 
-            font-size: 15px; font-family: inherit;
-            background-color: #f8fafc; color: var(--text-main); 
+            display: block; width: 100%; padding: 8px 10px; margin: 4px 0; 
+            border: 1px solid #cbd5e1; border-radius: 6px; 
+            font-size: 13px; background-color: #f8fafc; color: var(--text-main); 
             -webkit-appearance: none; appearance: none; min-width: 0;
         }
-        
-        input[type="date"], input[type="time"] { 
-            -webkit-appearance: none; min-height: 42px; background-color: #f8fafc; 
-        }
+        input[type="date"], input[type="time"] { min-height: 36px; }
+        input:focus, select:focus { border-color: var(--primary); outline: none; background: #fff; }
+        label { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-left: 2px; display: block; margin-top: 4px; }
 
-        input:focus, select:focus { 
-            border-color: var(--primary); background-color: #fff; outline: none; 
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); 
-        }
-        
-        label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-left: 2px; display: block; margin-top: 5px; }
-
-        /* --- BOTTONI --- */
+        /* --- BOTTONI (COMPACT) --- */
         button { 
-            width: 100%; padding: 12px; margin-top: 10px; border: none; border-radius: 8px; 
-            font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
+            width: 100%; padding: 8px; margin-top: 8px; border: none; border-radius: 6px; 
+            font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 6px;
         }
         .btn-primary { background-color: var(--primary); color: white; }
-        .btn-primary:hover { background-color: var(--primary-dark); }
-        .btn-primary:active { transform: scale(0.98); }
-        
         .btn-secondary { background-color: #e2e8f0; color: var(--text-main); }
-        .btn-secondary:hover { background-color: #cbd5e1; }
-        
         .btn-success { background-color: var(--success); color: white; }
-        .btn-success:hover { background-color: #059669; }
-        
         .btn-warning { background-color: var(--warning); color: white; }
         .btn-danger { background-color: var(--danger); color: white; }
 
         /* --- LAYOUT UTILS --- */
         .hidden { display: none !important; }
-        
-        .form-box {
-            background: #f8fafc; padding: 20px; border-radius: 12px; 
-            margin-bottom: 25px; border: 1px solid #e2e8f0;
-        }
-
-        .time-row { display: flex; gap: 15px; margin-bottom: 10px; } 
+        .form-box { background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e2e8f0; }
+        .time-row { display: flex; gap: 10px; margin-bottom: 5px; } 
         .time-row > div { flex: 1; min-width: 0; } 
 
-        /* Filtri */
+        /* Filtri Compatti */
         .filter-bar { 
-            display: flex; gap: 10px; align-items: flex-end; background: #f8fafc; 
-            padding: 12px; border-radius: 10px; border: 1px dashed #cbd5e1; flex-wrap: wrap; margin-bottom: 15px;
+            display: flex; gap: 8px; align-items: flex-end; background: #f8fafc; 
+            padding: 8px; border-radius: 8px; border: 1px dashed #cbd5e1; flex-wrap: wrap; margin-bottom: 10px;
         }
-        .filter-bar .input-group { flex: 1; min-width: 110px; }
-        .filter-bar button { margin: 0; padding: 0 18px; height: 42px; border-radius: 8px; font-size: 13px; width: auto;}
+        .filter-bar .input-group { flex: 1; min-width: 100px; }
+        .filter-bar button { margin: 0; padding: 0 12px; height: 36px; border-radius: 6px; width: auto;}
 
-        /* --- TABELLA DESKTOP --- */
-        .table-container { overflow-x: auto; margin-top: 10px; border-radius: 8px; border: 1px solid #e2e8f0; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; } 
-        th { background: #f1f5f9; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; padding: 12px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
-        td { padding: 12px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; color: var(--text-main); }
-        tr:last-child td { border-bottom: none; }
-        
+        /* --- TABELLA (DENSE DESKTOP) --- */
+        .table-container { overflow-x: auto; margin-top: 5px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; } 
+        th { background: #f1f5f9; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; padding: 8px; border-bottom: 2px solid #e2e8f0; text-align: left; }
+        td { padding: 6px 8px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; color: var(--text-main); }
         td strong { font-weight: 600; color: #0f172a; }
         .note-cell { color: var(--text-muted); font-style: italic; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85em; }
         
-        .totale-box { margin-top: 15px; text-align: right; font-size: 1.3rem; font-weight: 700; color: var(--primary); }
-        .admin-badge { background: #fef3c7; color: #d97706; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; margin-left: 8px;}
+        .totale-box { margin-top: 10px; text-align: right; font-size: 1.1rem; font-weight: 700; color: var(--primary); }
+        .admin-badge { background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 0.65rem; font-weight: 700; margin-left: 8px;}
 
-        /* Azioni (Icone) */
-        .action-btn-group { display: flex; gap: 6px; justify-content: flex-end; }
-        .action-icon { 
-            background: #f1f5f9; border: none; border-radius: 6px; width: 32px; height: 32px; 
-            display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; transition: background 0.2s;
-        }
+        /* Azioni */
+        .action-btn-group { display: flex; gap: 4px; justify-content: flex-end; }
+        .action-icon { background: #f1f5f9; border: none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; }
         .icon-edit:hover { background: #dbeafe; color: var(--primary); }
         .icon-del:hover { background: #fee2e2; color: var(--danger); }
-        
-        /* Input in Tabella (Edit Mode) */
-        .table-input { padding: 6px; font-size: 13px; margin: 0; }
+        .table-input { padding: 4px; margin: 0; font-size: 12px; } /* Edit in table */
 
-        /* --- ADMIN DASHBOARD (CARDS) --- */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
-        .user-card { 
-            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; 
-            cursor: pointer; transition: 0.2s; border-left: 4px solid var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .user-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
-        .card-name { font-weight: 700; font-size: 1.1rem; color: var(--text-main); margin-bottom: 2px;}
-        .card-sub { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; }
-        .card-stat { font-size: 1.5rem; font-weight: 800; color: var(--primary); text-align: right; }
-        .card-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); float: left; margin-top: 8px; font-weight: 600;}
+        /* --- ADMIN CARDS --- */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin-top: 10px; }
+        .user-card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; cursor: pointer; border-left: 3px solid var(--primary); }
+        .user-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .card-name { font-weight: 700; font-size: 1rem; color: var(--text-main); }
+        .card-sub { font-size: 0.75rem; color: var(--text-muted); }
+        .card-stat { font-size: 1.2rem; font-weight: 800; color: var(--primary); text-align: right; margin-top: 5px;}
 
-        /* --- SPINNER & TOAST --- */
-        #toast { visibility: hidden; min-width: 250px; background: #1e293b; color: #fff; text-align: center; border-radius: 50px; padding: 14px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        /* --- UTILS --- */
+        #toast { visibility: hidden; min-width: 200px; background: #333; color: #fff; text-align: center; border-radius: 50px; padding: 10px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; font-size: 12px; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-        
-        .spinner { width: 16px; height: 16px; border: 2px solid #ffffff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
-        .spinner-dark { border-color: var(--primary); width: 24px; height: 24px; margin: 0 auto;}
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} } @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        .spinner { width: 14px; height: 14px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .spinner-dark { border-color: var(--primary); margin: 0 auto; width: 20px; height: 20px; }
         .btn-loading .spinner { display: block; } .btn-loading span { display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* --- MODALE --- */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); z-index: 3000; display: none; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 16px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
-        .modal-actions { display: flex; gap: 10px; margin-top: 25px; } .modal-actions button { margin: 0; flex:1; }
+        /* Modale */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); z-index: 3000; display: none; justify-content: center; align-items: center; }
+        .modal-box { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 300px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-actions { display: flex; gap: 8px; margin-top: 15px; } .modal-actions button { margin: 0; flex:1; }
 
         /* ================================================= */
-        /* MEDIA QUERY: MOBILE CARD VIEW (Il Design "Bello") */
+        /* MEDIA QUERY: MOBILE CARD VIEW (COMPACT FIX)       */
         /* ================================================= */
         @media only screen and (max-width: 600px) {
-            body { padding: 10px 5px; }
-            .container { padding: 15px; box-shadow: none; background: transparent; }
+            body { padding: 5px; font-size: 13px; }
+            .container { padding: 10px; }
             
-            .form-box { padding: 15px; margin-bottom: 20px; }
-            
-            /* Input in colonna */
-            .time-row { flex-direction: column; gap: 10px; margin-bottom: 15px; }
+            .form-box { padding: 12px; margin-bottom: 15px; }
+            .time-row { flex-direction: column; gap: 8px; margin-bottom: 10px; }
             .time-row > div { width: 100%; }
             
-            /* Filtri impilati */
-            .filter-bar { flex-direction: column; align-items: stretch; background: white; border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-            .filter-bar .input-group { width: 100%; }
+            .filter-bar { flex-direction: column; align-items: stretch; padding: 10px; }
             .filter-bar button { width: 100%; margin-top: 5px; }
 
-            /* TABELLA A CARD (Schede) */
-            .table-container { border: none; }
+            /* TABELLA A SCHEDE COMPATTE */
             thead { display: none; }
-            
-            tr { 
-                display: block; background: white; margin-bottom: 12px; 
-                border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-                padding: 15px; border: 1px solid #e2e8f0; 
-            }
-            
-            td { 
-                display: flex; justify-content: space-between; align-items: center; 
-                padding: 8px 0; border-bottom: 1px solid #f1f5f9; text-align: right; min-height: 30px; 
-            }
-            td:last-child { border-bottom: none; margin-top: 8px; padding-top: 0; justify-content: flex-end;}
-            
-            td::before { 
-                content: attr(data-label); font-weight: 600; color: #94a3b8; 
-                font-size: 0.75rem; text-transform: uppercase; margin-right: 15px; text-align: left; flex:1;
-            }
-            
-            td strong { font-size: 1rem; color: #0f172a; }
-            td.note-cell { white-space: normal; text-align: right; max-width: 180px; line-height: 1.3; font-size: 0.85rem; }
+            tr { display: block; background: white; margin-bottom: 8px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); padding: 10px; border: 1px solid #e2e8f0; }
+            td { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #f1f5f9; text-align: right; min-height: 24px; }
+            td:last-child { border-bottom: none; margin-top: 5px; padding-top: 0; justify-content: flex-end;}
+            td::before { content: attr(data-label); font-weight: 600; color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; margin-right: 10px; text-align: left; }
+            td strong { font-size: 0.9rem; color: #0f172a; }
             
             /* Input during edit on mobile */
-            .table-input { text-align: right; width: 65% !important; padding: 8px; background: #f8fafc; }
-            
+            .table-input { text-align: right; width: 60% !important; padding: 6px; background: #f8fafc; }
             .cards-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -213,8 +148,8 @@
 <div id="toast">Messaggio...</div>
 <div id="custom-modal" class="modal-overlay">
     <div class="modal-box">
-        <h3 id="modal-title" style="margin-top:0">Avviso</h3>
-        <p id="modal-msg" style="color:#64748b; margin-bottom:0">Testo...</p>
+        <h3 id="modal-title" style="margin-top:0; font-size:1.1rem">Avviso</h3>
+        <p id="modal-msg" style="color:#64748b; margin-bottom:0; font-size:0.9rem">Testo...</p>
         <div class="modal-actions">
             <button id="modal-cancel" class="btn-secondary" onclick="closeModal()">Annulla</button>
             <button id="modal-confirm" class="btn-primary">OK</button>
@@ -223,20 +158,20 @@
 </div>
 
 <div class="container">
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px;">
         <div>
-            <h2 id="welcome-msg" style="margin:0">Login</h2>
+            <h2 id="welcome-msg" style="margin:0; font-size:1.2rem">Login</h2>
             <span id="admin-indicator" class="admin-badge hidden">ADMIN</span>
         </div>
-        <button id="logout-btn" onclick="logout()" class="btn-secondary hidden" style="width: auto; padding: 8px 16px; margin:0; font-size: 0.85rem;">Esci</button>
+        <button id="logout-btn" onclick="logout()" class="btn-secondary hidden" style="width: auto; padding: 6px 12px; margin:0; font-size: 0.75rem;">Esci</button>
     </div>
 
     <div id="login-view">
-        <div class="form-box" style="max-width: 350px; margin: 40px auto; text-align: center; background: white; border: none; padding:0;">
-            <h2 style="font-size: 1.8rem; margin-bottom: 25px;">Accesso Team</h2>
+        <div class="form-box" style="max-width: 320px; margin: 30px auto; text-align: center; background: white; border: none;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 20px;">Accesso Team</h2>
             <input type="email" id="email" placeholder="Email aziendale">
             <input type="password" id="password" placeholder="Password">
-            <button id="btn-login" onclick="login()" class="btn-primary" style="margin-top:20px;"><span>Accedi</span><div class="spinner"></div></button>
+            <button id="btn-login" onclick="login()" class="btn-primary" style="margin-top:15px;"><span>Accedi</span><div class="spinner"></div></button>
         </div>
     </div>
 
@@ -301,20 +236,20 @@
         </div>
         <div class="totale-box">Totale: <span id="c-totale">0</span> ore</div>
         
-        <div style="text-align:center; margin-top:30px; border-top:1px solid #e2e8f0; padding-top:20px;">
-            <button onclick="document.getElementById('pwd-modal').style.display='flex'" class="btn-secondary" style="width:auto; margin:0 auto; font-size:0.85rem">🔒 Cambia Password</button>
+        <div style="text-align:center; margin-top:20px; border-top:1px solid #e2e8f0; padding-top:15px;">
+            <button onclick="document.getElementById('pwd-modal').style.display='flex'" class="btn-secondary" style="width:auto; margin:0 auto; font-size:0.8rem">🔒 Password</button>
         </div>
     </div>
 
     <div id="admin-view" class="hidden">
         
-        <div class="form-box" style="background:#fffbeb; border-color:#fcd34d">
-            <h3 style="color:#b45309; margin-bottom:10px">🛠️ Anagrafica</h3>
+        <div class="form-box" style="background:#fffbeb; border-color:#fcd34d; padding:12px;">
+            <h3 style="color:#b45309; margin-bottom:8px; margin-top:0">🛠️ Anagrafica</h3>
             <div class="time-row" style="margin-bottom:0">
                 <div><input type="email" id="adm-email" placeholder="Email"></div>
                 <div><input type="text" id="adm-name" placeholder="Nome Cognome"></div>
             </div>
-            <button id="btn-anagrafica" onclick="saveAnagrafica()" class="btn-warning" style="margin-top:15px; color:white">
+            <button id="btn-anagrafica" onclick="saveAnagrafica()" class="btn-warning" style="margin-top:8px; color:white">
                 <span>Salva in Rubrica</span><div class="spinner"></div>
             </button>
         </div>
@@ -342,9 +277,9 @@
         </div>
 
         <div id="admin-detail" class="hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; background:#eff6ff; padding:15px; border-radius:10px;">
-                <h3 style="margin:0; color:var(--primary)" id="detail-user-name">Utente</h3>
-                <button onclick="closeDetail()" class="btn-secondary" style="width:auto; padding:8px 16px; margin:0">⬅️ Indietro</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; background:#eff6ff; padding:10px; border-radius:8px;">
+                <h3 style="margin:0; color:var(--primary); font-size:1rem" id="detail-user-name">Utente</h3>
+                <button onclick="closeDetail()" class="btn-secondary" style="width:auto; padding:6px 12px; margin:0">⬅️ Indietro</button>
             </div>
             
             <div class="table-container">
@@ -354,7 +289,7 @@
                 </table>
             </div>
             <div class="totale-box">Totale Utente: <span id="d-totale">0</span> ore</div>
-            <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:20px;">📥 Scarica Foglio Ore Utente</button>
+            <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:15px;">📥 Scarica Foglio Ore</button>
         </div>
     </div>
 
@@ -583,10 +518,9 @@
             }
         });
 
-        // Render Dashboard
         const grid = document.getElementById('cards-container');
         grid.innerHTML = "";
-        if(Object.keys(stats).length === 0) grid.innerHTML = "<p style='color:#666'>Nessun dato.</p>";
+        if(Object.keys(stats).length === 0) grid.innerHTML = "<p style='color:#666; width:100%'>Nessun dato per il periodo.</p>";
 
         Object.keys(stats).forEach(email => {
             const s = stats[email];
@@ -600,7 +534,6 @@
             `;
         });
 
-        // Se nel dettaglio, aggiorna
         if(!document.getElementById('admin-detail').classList.contains('hidden')) {
             renderAdminDetailTable();
         }
