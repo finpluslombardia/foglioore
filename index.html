@@ -211,7 +211,8 @@
                         <option value="Assistente bagnanti">Assistente bagnanti</option>
                         <option value="Istruttore">Istruttore</option>
                         <option value="Fitness">Fitness</option>
-                        <option value="Propaganda">Propaganda</option> <option value="Lezione individuale">Lezione individuale</option>
+                        <option value="Propaganda">Propaganda</option> 
+                        <option value="Lezione individuale">Lezione individuale</option>
                         <option value="Segreteria">Segreteria</option>
                     </select>
                 </div>
@@ -250,7 +251,8 @@
                     <option value="Assistente bagnanti">Assistente bagnanti</option>
                     <option value="Istruttore">Istruttore</option>
                     <option value="Fitness">Fitness</option>
-                    <option value="Propaganda">Propaganda</option> <option value="Lezione individuale">Lezione individuale</option>
+                    <option value="Propaganda">Propaganda</option> 
+                    <option value="Lezione individuale">Lezione individuale</option>
                     <option value="Segreteria">Segreteria</option>
                 </select>
             </div>
@@ -667,6 +669,7 @@
         }
     }
 
+    // --- NUOVA LOGICA EXPORT CSV (FORMATO GRID PDF CON TOTALI) ---
     window.scaricaExcel = () => {
         const anno = parseInt(document.getElementById('filtro-anno').value);
         const meseIdx = parseInt(document.getElementById('filtro-mese').value);
@@ -675,6 +678,7 @@
             return showModal("Attenzione", "Seleziona un MESE specifico per scaricare il foglio presenze.");
         }
 
+        // Mappatura esatta basata sul PDF fornito
         const colonneMapping = [
             "Giorno", "IN", "OUT",
             "ASS. BAG.", "ISTRUTTORE", "AQUAFIT.", "PROPAG.", "LEZ. INDIV.", "SEGRETERIA",
@@ -685,9 +689,12 @@
 
         const giorniNelMese = new Date(anno, meseIdx, 0).getDate();
 
+        // Variabile per i totali di colonna
+        let totaliColonne = {};
+        colonneMapping.forEach(col => totaliColonne[col] = 0);
+
         for (let i = 1; i <= giorniNelMese; i++) {
             let dataString = `${anno}-${String(meseIdx).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-            
             let turniDelGiorno = turniRawExport.filter(t => t.data === dataString);
 
             let oraIn = "";
@@ -706,6 +713,7 @@
 
                 turniDelGiorno.forEach(turno => {
                     let m = turno.mansione;
+                    let h = parseFloat(turno.ore); // Valore numerico per somma
                     let col = "";
 
                     if (m === "Assistente bagnanti") col = "ASS. BAG.";
@@ -717,8 +725,11 @@
 
                     if (col) {
                         let currentVal = parseFloat(orePerColonna[col].replace(",", ".") || 0);
-                        let newVal = currentVal + parseFloat(turno.ore);
+                        let newVal = currentVal + h;
                         orePerColonna[col] = newVal.toString().replace(".", ",");
+                        
+                        // Accumulo nel totale generale
+                        totaliColonne[col] += h;
                     }
                 });
             }
@@ -728,12 +739,24 @@
                 if (col === "Giorno") rigaCSV.push(i);
                 else if (col === "IN") rigaCSV.push(oraIn);
                 else if (col === "OUT") rigaCSV.push(oraOut);
-                else if (col === "NOTE") rigaCSV.push(noteGiorno.replace(/;/g, " ")); 
+                else if (col === "NOTE") rigaCSV.push(noteGiorno.replace(/;/g, " "));
                 else rigaCSV.push(orePerColonna[col]);
             });
 
             csvContent += rigaCSV.join(";") + "\n";
         }
+
+        // --- AGGIUNTA RIGA TOTALI ---
+        let rigaTotali = [];
+        colonneMapping.forEach(col => {
+            if (col === "Giorno") rigaTotali.push("TOTALE");
+            else if (["IN", "OUT", "NOTE"].includes(col)) rigaTotali.push(""); // Celle vuote per colonne non numeriche
+            else {
+                let tot = totaliColonne[col];
+                rigaTotali.push(tot === 0 ? "" : tot.toString().replace(".", ","));
+            }
+        });
+        csvContent += "\n" + rigaTotali.join(";") + "\n";
 
         const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
