@@ -10,91 +10,187 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- RESET & STILI BASE --- */
+        /* --- 1. RESET & VARIABILI (Stile Moderno V4) --- */
         :root {
-            --primary: #2563eb; --primary-dark: #1d4ed8;
-            --bg-body: #f1f5f9; --bg-card: #ffffff;
-            --text-main: #1e293b; --text-muted: #64748b;
+            --primary: #2563eb;       
+            --primary-dark: #1d4ed8;
+            --secondary: #64748b;     
+            --success: #10b981;       
+            --danger: #ef4444;        
+            --warning: #f59e0b;
+            --bg-body: #f1f5f9;       
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-radius: 8px; 
+            --shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.08);
         }
-        *, *::before, *::after { box-sizing: border-box; -webkit-box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; padding: 10px; font-size: 14px; -webkit-font-smoothing: antialiased; }
-        
-        .container { max-width: 950px; margin: 0 auto; background: var(--bg-card); padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        h2, h3 { margin-top: 0; font-weight: 700; color: var(--text-main); }
-        h2 { font-size: 1.4rem; } h3 { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 15px; }
 
-        /* --- INPUT & BUTTONS --- */
-        input, select { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; font-size: 14px; -webkit-appearance: none; }
-        input[type="date"], input[type="time"] { min-height: 40px; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 8px; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-secondary { background: #e2e8f0; color: var(--text-main); }
-        .btn-warning { background: #f59e0b; color: white; }
-        .btn-danger { background: #ef4444; color: white; }
-        .btn-success { background: #10b981; color: white; }
+        *, *::before, *::after { box-sizing: border-box; -webkit-box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); 
+            margin: 0; padding: 10px; 
+            line-height: 1.4; font-size: 14px; 
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { 
+            max-width: 950px; margin: 0 auto; 
+            background: var(--bg-card); 
+            padding: 20px; border-radius: 12px; box-shadow: var(--shadow); 
+        }
+
+        h2, h3 { color: var(--text-main); font-weight: 700; margin-top: 0; }
+        h2 { font-size: 1.25rem; margin-bottom: 0.5rem; } 
+        h3 { color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; margin-top: 20px; margin-bottom: 10px;}
+
+        /* --- INPUT & SELECT (Fix Mobile V4) --- */
+        input, select { 
+            display: block; width: 100%; max-width: 100%; 
+            padding: 8px 12px; margin: 4px 0; 
+            border: 1px solid #cbd5e1; border-radius: 6px; 
+            font-size: 14px; font-family: inherit;
+            background-color: #f8fafc; color: var(--text-main); 
+            -webkit-appearance: none; appearance: none; min-width: 0;
+        }
+        
+        input[type="date"], input[type="time"] { 
+            -webkit-appearance: none; min-height: 38px; background-color: #f8fafc; 
+        }
+
+        input:focus, select:focus { 
+            border-color: var(--primary); background-color: #fff; outline: none; 
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); 
+        }
+        
+        label { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-left: 2px; display: block; margin-top: 4px; }
+
+        /* --- BOTTONI --- */
+        button { 
+            width: 100%; padding: 10px; margin-top: 10px; border: none; border-radius: 6px; 
+            font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-primary:hover { background-color: var(--primary-dark); }
+        .btn-secondary { background-color: #e2e8f0; color: var(--text-main); }
+        .btn-success { background-color: var(--success); color: white; }
+        .btn-warning { background-color: var(--warning); color: white; }
+        .btn-danger { background-color: var(--danger); color: white; }
 
         /* --- LAYOUT UTILS --- */
         .hidden { display: none !important; }
-        .flex-row { display: flex; gap: 10px; margin-bottom: 10px; }
-        .flex-row > div { flex: 1; min-width: 0; }
-        .form-box { background: #f8fafc; padding: 15px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
         
-        /* --- ADMIN DASHBOARD (CARDS) --- */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 20px; }
-        .user-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; cursor: pointer; transition: 0.2s; border-left: 4px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
-        .user-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .card-name { font-weight: 700; font-size: 1.1rem; }
-        .card-stat { font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-top: 10px; }
-        .card-sub { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; }
-
-        /* --- FILTRI --- */
-        .filter-bar { display: flex; gap: 8px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px dashed #cbd5e1; flex-wrap: wrap; margin-bottom: 15px; }
-        .filter-bar select { min-width: 110px; flex: 1; }
-        .filter-bar button { width: auto; padding: 0 15px; margin: 5px 0 0 0; }
-
-        /* --- TABELLA (Desktop) --- */
-        .table-wrap { overflow-x: auto; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; margin-top: 10px; }
-        th { background: #f1f5f9; padding: 10px; text-align: left; border-bottom: 2px solid #e2e8f0; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
-        td { padding: 10px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
-        .totale-row { text-align: right; font-size: 1.2rem; font-weight: 700; color: var(--primary); margin-top: 10px; }
-        .action-icons { display: flex; gap: 5px; justify-content: flex-end; }
-        .icon-btn { width: 30px; height: 30px; border-radius: 6px; border: none; background: #f1f5f9; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
-        .icon-btn:hover { background: #e2e8f0; }
-
-        /* --- MOBILE CARD VIEW --- */
-        @media (max-width: 600px) {
-            body { padding: 5px; } .container { padding: 15px; }
-            .flex-row { flex-direction: column; gap: 5px; }
-            .filter-bar { flex-direction: column; } .filter-bar button { width: 100%; }
-            
-            thead { display: none; }
-            tr { display: block; background: white; margin-bottom: 10px; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-            td { display: flex; justify-content: space-between; padding: 5px 0; border: none; text-align: right; }
-            td:before { content: attr(data-label); font-weight: 600; color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; margin-right: 10px; }
-            td.actions-cell { margin-top: 10px; padding-top: 10px; border-top: 1px solid #f1f5f9; justify-content: flex-end; }
-            /* Fix input overflow mobile */
-            .table-input { width: 60% !important; text-align: right; }
+        .form-box {
+            background: #f8fafc; padding: 15px; border-radius: 10px; 
+            margin-bottom: 20px; border: 1px solid #e2e8f0;
         }
 
-        /* --- UTILS --- */
-        #toast { visibility: hidden; min-width: 250px; background: #333; color: #fff; text-align: center; border-radius: 50px; padding: 12px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; font-size: 13px; }
+        .time-row { display: flex; gap: 10px; margin-bottom: 5px; } 
+        .time-row > div { flex: 1; min-width: 0; } 
+
+        /* Filtri */
+        .filter-bar { 
+            display: flex; gap: 8px; align-items: flex-end; background: #f8fafc; 
+            padding: 10px; border-radius: 8px; border: 1px dashed #cbd5e1; flex-wrap: wrap; margin-bottom: 15px;
+        }
+        .filter-bar .input-group { flex: 1; min-width: 100px; }
+        .filter-bar button { margin: 0; padding: 8px 15px; height: 38px; border-radius: 6px; font-size: 13px; width: auto;}
+
+        /* --- TABELLA DESKTOP --- */
+        .table-container { overflow-x: auto; margin-top: 10px; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; } 
+        th { background: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.7rem; padding: 10px 8px; border-bottom: 2px solid #e2e8f0; text-align: left; }
+        td { padding: 8px 8px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; color: var(--text-main); }
+        td strong { font-weight: 600; color: #0f172a; }
+        .note-cell { color: var(--text-muted); font-style: italic; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.85em; }
+        .totale-box { margin-top: 15px; text-align: right; font-size: 1.2rem; font-weight: 700; color: var(--primary); }
+        .admin-badge { background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 700; display: none; margin-left: 8px;}
+
+        /* Azioni (Icone) */
+        .action-btn-group { display: flex; gap: 5px; justify-content: flex-end; }
+        .action-icon { 
+            background: #f1f5f9; border: none; border-radius: 6px; width: 28px; height: 28px; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; 
+        }
+        .icon-edit:hover { background: #dbeafe; color: var(--primary); }
+        .icon-del:hover { background: #fee2e2; color: var(--danger); }
+
+        /* --- ADMIN DASHBOARD (CARDS) --- */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
+        .user-card { 
+            background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; 
+            cursor: pointer; transition: 0.2s; border-left: 4px solid var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .user-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.05); }
+        .card-name { font-weight: 700; font-size: 1.1rem; color: var(--text-main); }
+        .card-sub { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; }
+        .card-stat { font-size: 1.4rem; font-weight: 800; color: var(--primary); text-align: right; }
+        .card-label { font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted); float: left; margin-top: 8px;}
+
+        /* --- SPINNER & TOAST --- */
+        #toast { visibility: hidden; min-width: 250px; background: #333; color: #fff; text-align: center; border-radius: 50px; padding: 12px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
         @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
         
-        .spinner { width: 16px; height: 16px; border: 2px solid white; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .spinner { width: 14px; height: 14px; border: 2px solid #ffffff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
+        .btn-loading .spinner { display: block; } .btn-loading span { display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
-        /* Modale */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 3000; display: none; justify-content: center; align-items: center; }
+
+        /* --- MODALE --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-actions { display: flex; gap: 10px; margin-top: 20px; } .modal-actions button { margin: 0; }
+
+        /* ================================================= */
+        /* MEDIA QUERY: MOBILE CARD VIEW (Il ripristino V4)  */
+        /* ================================================= */
+        @media only screen and (max-width: 600px) {
+            body { padding: 5px; font-size: 13px; }
+            .container { padding: 12px; box-shadow: none; background: transparent; }
+            
+            .form-box { padding: 12px; margin-bottom: 20px; }
+            
+            /* Input in colonna */
+            .time-row { flex-direction: column; gap: 8px; margin-bottom: 12px; }
+            .time-row > div { width: 100%; }
+            .filter-bar { flex-direction: column; align-items: stretch; background: white; border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+            .filter-bar button { width: 100%; margin-top: 5px; }
+
+            /* TABELLA A CARD */
+            thead { display: none; }
+            tr { 
+                display: block; background: white; margin-bottom: 10px; 
+                border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+                padding: 10px; border: 1px solid #e2e8f0; 
+            }
+            td { 
+                display: flex; justify-content: space-between; align-items: center; 
+                padding: 6px 0; border-bottom: 1px solid #f1f5f9; text-align: right; min-height: 25px; 
+            }
+            td:last-child { border-bottom: none; margin-top: 5px; padding-top: 0; justify-content: flex-end;}
+            
+            td::before { 
+                content: attr(data-label); font-weight: 600; color: #94a3b8; 
+                font-size: 0.75rem; text-transform: uppercase; margin-right: 10px; text-align: left; 
+            }
+            
+            td strong { font-size: 0.95rem; color: #0f172a; }
+            td.note-cell { white-space: normal; text-align: right; max-width: 180px; line-height: 1.2; font-size: 0.8rem; }
+            
+            /* Input during edit on mobile */
+            .table-input { text-align: right; width: 60% !important; padding: 6px; }
+            .cards-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-<div id="toast">Notifica</div>
+<div id="toast">Messaggio...</div>
 <div id="custom-modal" class="modal-overlay">
     <div class="modal-box">
         <h3 id="modal-title" style="margin-top:0">Avviso</h3>
@@ -108,23 +204,26 @@
 
 <div class="container">
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
-        <h2 id="app-title" style="margin:0">Login</h2>
+        <div>
+            <h2 id="welcome-msg" style="margin:0">Login</h2>
+            <span id="admin-indicator" class="admin-badge hidden">ADMIN</span>
+        </div>
         <button id="logout-btn" onclick="logout()" class="btn-secondary hidden" style="width: auto; padding: 6px 12px; margin:0; font-size: 0.8rem;">Esci</button>
     </div>
 
     <div id="login-view">
-        <div class="form-box" style="max-width: 350px; margin: 20px auto; text-align: center;">
-            <h3>Accesso</h3>
+        <div class="form-box" style="max-width: 350px; margin: 40px auto; text-align: center;">
+            <h2 style="font-size: 1.5rem; margin-bottom: 20px;">Accesso Team</h2>
             <input type="email" id="email" placeholder="Email">
             <input type="password" id="password" placeholder="Password">
-            <button onclick="login()" class="btn-primary">Accedi</button>
+            <button id="btn-login" onclick="login()" class="btn-primary"><span>Accedi</span><div class="spinner"></div></button>
         </div>
     </div>
 
     <div id="collaborator-view" class="hidden">
         <div class="form-box">
             <h3>➕ Nuovo Turno</h3>
-            <div class="flex-row">
+            <div class="time-row">
                 <div><label>Data</label><input type="date" id="c-data"></div>
                 <div><label>Mansione</label>
                     <select id="c-mansione">
@@ -137,87 +236,100 @@
                     </select>
                 </div>
             </div>
-            <div class="flex-row">
+            <div class="time-row">
                 <div><label>Inizio</label><input type="time" id="c-inizio" onchange="calcDiff()"></div>
                 <div><label>Fine</label><input type="time" id="c-fine" onchange="calcDiff()"></div>
                 <div><label>Ore</label><input type="number" id="c-ore" placeholder="0.0" step="0.5" style="font-weight:bold; color:var(--primary)"></div>
             </div>
-            <label>Note</label><input type="text" id="c-note" placeholder="Opzionale">
-            <button onclick="salvaOre()" class="btn-primary">Registra Turno</button>
+            <label>Note</label><input type="text" id="c-note" placeholder="Opzionale...">
+            <button id="btn-salva" onclick="salvaOre()" class="btn-primary"><span>Registra Turno</span><div class="spinner"></div></button>
         </div>
 
         <h3>📅 I miei Turni</h3>
         <div class="filter-bar">
-            <select id="c-filtro-mese" onchange="renderCollabTable()">
-                <option value="all">Tutti i Mesi</option>
-                <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
-                <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
-                <option value="7">Luglio</option><option value="8">Agosto</option><option value="9">Settembre</option>
-                <option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
-            </select>
-            <select id="c-filtro-anno" onchange="renderCollabTable()"><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
+            <div class="input-group">
+                <select id="c-filtro-mese" onchange="renderCollabTable()">
+                    <option value="all">Tutti i Mesi</option>
+                    <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
+                    <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
+                    <option value="7">Luglio</option><option value="8">Agosto</option><option value="9">Settembre</option>
+                    <option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <select id="c-filtro-anno" onchange="renderCollabTable()"><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
+            </div>
             <button onclick="excelCollab()" class="btn-success">📥 Excel</button>
         </div>
         
-        <div class="table-wrap">
+        <div class="table-container">
             <table>
                 <thead><tr><th>Data</th><th>Mansione</th><th>Orario</th><th>Ore</th><th>Note</th><th style="text-align:right">Azioni</th></tr></thead>
                 <tbody id="collab-tbody"></tbody>
             </table>
         </div>
-        <div class="totale-row">Totale: <span id="c-totale">0</span></div>
-        <button onclick="openPwdModal()" class="btn-secondary" style="margin-top:30px; width:auto">🔒 Cambia Password</button>
+        <div class="totale-box">Totale: <span id="c-totale">0</span> ore</div>
+        
+        <div style="text-align:center; margin-top:30px; border-top:1px solid #e2e8f0; padding-top:15px;">
+            <button onclick="document.getElementById('pwd-modal').style.display='flex'" class="btn-secondary" style="width:auto; margin:0 auto; font-size:0.8rem">🔒 Cambia Password</button>
+        </div>
     </div>
 
     <div id="admin-view" class="hidden">
         
         <div class="form-box" style="background:#fffbeb; border-color:#fcd34d">
             <h3 style="color:#b45309; margin-bottom:5px">🛠️ Anagrafica</h3>
-            <div class="flex-row" style="margin-bottom:0">
+            <div class="time-row" style="margin-bottom:0">
                 <div><input type="email" id="adm-email" placeholder="Email"></div>
                 <div><input type="text" id="adm-name" placeholder="Nome Cognome"></div>
-                <div><button onclick="saveAnagrafica()" class="btn-warning" style="margin-top:5px">Salva</button></div>
             </div>
+            <button id="btn-anagrafica" onclick="saveAnagrafica()" class="btn-warning" style="margin-top:10px; color:#fff">
+                <span>Salva in Rubrica</span><div class="spinner"></div>
+            </button>
         </div>
 
-        <div class="filter-bar" style="background:#eff6ff; border-color:#bfdbfe">
-            <select id="a-filtro-mese">
-                <option value="all">Tutti i Mesi</option>
-                <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
-                <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
-                <option value="7">Luglio</option><option value="8">Agosto</option><option value="9">Settembre</option>
-                <option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
-            </select>
-            <select id="a-filtro-anno"><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
-            <button onclick="loadAdminData()" class="btn-primary" style="width:auto">Aggiorna</button>
-            <button onclick="excelAdminGlobal()" class="btn-success" style="width:auto">📥 Excel Globale</button>
+        <h3 id="admin-title">Riepilogo</h3>
+        <div class="filter-bar">
+            <div class="input-group">
+                <select id="a-filtro-mese">
+                    <option value="all">Tutti i Mesi</option>
+                    <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
+                    <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
+                    <option value="7">Luglio</option><option value="8">Agosto</option><option value="9">Settembre</option>
+                    <option value="10">Ottobre</option><option value="11">Novembre</option><option value="12">Dicembre</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <select id="a-filtro-anno"><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
+            </div>
+            <button onclick="loadAdminData()" class="btn-primary">Aggiorna</button>
+            <button onclick="excelAdminGlobal()" class="btn-success">📥 Excel Globale</button>
         </div>
 
         <div id="admin-dashboard">
-            <h3 id="dash-title">Riepilogo Collaboratori</h3>
             <div id="cards-container" class="cards-grid"></div>
         </div>
 
         <div id="admin-detail" class="hidden">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
-                <h3 style="margin:0; color:var(--primary)" id="detail-name">Nome Utente</h3>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; background:#eff6ff; padding:10px; border-radius:8px;">
+                <h3 style="margin:0; color:var(--primary)" id="detail-user-name">Utente</h3>
                 <button onclick="closeDetail()" class="btn-secondary" style="width:auto; padding:6px 12px; margin:0">⬅️ Indietro</button>
             </div>
             
-            <div class="table-wrap">
+            <div class="table-container">
                 <table>
                     <thead><tr><th>Data</th><th>Mansione</th><th>Orario</th><th>Ore</th><th>Note</th><th style="text-align:right">Azioni</th></tr></thead>
                     <tbody id="detail-tbody"></tbody>
                 </table>
             </div>
-            <div class="totale-row">Totale Utente: <span id="d-totale">0</span></div>
-            <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:20px; width:auto">📥 Scarica Foglio Ore Utente</button>
+            <div class="totale-box">Totale Utente: <span id="d-totale">0</span> ore</div>
+            <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:20px;">📥 Scarica Foglio Ore Utente</button>
         </div>
     </div>
 
 </div>
 
-<div id="pwd-modal" class="modal-overlay">
+<div id="pwd-modal" class="modal-overlay" style="display:none">
     <div class="modal-box">
         <h3>Nuova Password</h3>
         <input type="password" id="new-pwd" placeholder="Minimo 6 caratteri">
@@ -233,7 +345,7 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // CONFIG
+    // --- CONFIGURAZIONE ---
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
       authDomain: "gestioneore-3bf5f.firebaseapp.com",
@@ -254,6 +366,7 @@
     let myTurni = []; // Dati collaboratore
     let allTurni = []; // Dati admin (tutti)
     let detailUserEmail = null; // Email utente in dettaglio (admin)
+    const Mansioni = ["Assistente bagnanti", "Istruttore", "Fitness", "Propaganda", "Lezione individuale", "Segreteria"];
 
     // INIT DATE
     const oggi = new Date();
@@ -275,12 +388,17 @@
         document.getElementById('custom-modal').style.display='flex';
     };
     window.closeModal = () => document.getElementById('custom-modal').style.display='none';
-    window.openPwdModal = () => document.getElementById('pwd-modal').style.display='flex';
+    
+    const toggleLoading = (id, loading) => {
+        const b = document.getElementById(id); if(b) { loading ? b.classList.add('btn-loading') : b.classList.remove('btn-loading'); b.disabled = loading; }
+    };
 
     // --- AUTH ---
     window.login = async () => {
-        try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value); }
-        catch(e) { modal("Errore", e.message); }
+        const e = document.getElementById('email').value, p = document.getElementById('password').value;
+        if(!e || !p) return modal("Errore", "Inserisci dati.");
+        toggleLoading('btn-login', true);
+        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { modal("Errore Login", err.message); toggleLoading('btn-login', false); }
     };
     window.logout = () => signOut(auth);
     window.changePwd = async () => {
@@ -299,14 +417,14 @@
             snap.forEach(d => rubrica[d.id] = d.data().nome);
             
             const nome = rubrica[user.email] || user.email.split('@')[0];
-            document.getElementById('app-title').innerText = `Ciao, ${nome}`;
+            document.getElementById('welcome-msg').innerText = `Ciao, ${nome}`;
 
             if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                document.getElementById('admin-indicator').classList.remove('hidden');
                 document.getElementById('admin-view').classList.remove('hidden');
                 loadAdminData();
             } else {
                 document.getElementById('collaborator-view').classList.remove('hidden');
-                // Carica preferenza mansione
                 const last = localStorage.getItem('lastMansione');
                 if(last) document.getElementById('c-mansione').value = last;
                 loadCollabData();
@@ -317,7 +435,8 @@
             document.getElementById('collaborator-view').classList.add('hidden');
             document.getElementById('admin-view').classList.add('hidden');
             document.getElementById('logout-btn').classList.add('hidden');
-            document.getElementById('app-title').innerText = "Login";
+            document.getElementById('welcome-msg').innerText = "Login";
+            toggleLoading('btn-login', false);
         }
     });
 
@@ -335,6 +454,7 @@
         const d = document.getElementById('c-data').value, m = document.getElementById('c-mansione').value, h = parseFloat(document.getElementById('c-ore').value);
         if(!d || !m || !h) return modal("Attenzione", "Compila i campi.");
         
+        toggleLoading('btn-salva', true);
         try {
             await addDoc(collection(db, "turni"), {
                 uid: currentUser.uid, email: currentUser.email, data: d, mansione: m, ore: h,
@@ -343,9 +463,9 @@
             });
             localStorage.setItem('lastMansione', m);
             toast("Salvato!"); loadCollabData();
-            // Reset parziale
             document.getElementById('c-ore').value=""; document.getElementById('c-note').value="";
         } catch(e) { modal("Errore", e.message); }
+        toggleLoading('btn-salva', false);
     };
 
     async function loadCollabData() {
@@ -369,17 +489,18 @@
 
         filtered.forEach(t => {
             tot += t.ore;
+            const orario = (t.oraInizio && t.oraFine) ? `${t.oraInizio} - ${t.oraFine}` : "-";
             tbody.innerHTML += `
                 <tr id="row-${t.id}">
-                    <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
-                    <td data-label="Mansione">${t.mansione}</td>
-                    <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
+                    <td data-label="Data" data-val="${t.data}">${new Date(t.data).toLocaleDateString('it-IT')}</td>
+                    <td data-label="Mansione" data-val="${t.mansione}">${t.mansione}</td>
+                    <td data-label="Orario" data-val="${t.oraInizio}-${t.oraFine}">${orario}</td>
                     <td data-label="Ore"><strong>${t.ore}</strong></td>
-                    <td data-label="Note">${t.note||''}</td>
+                    <td data-label="Note" class="note-cell" title="${t.note}">${t.note||''}</td>
                     <td class="actions-cell">
-                        <div class="action-icons">
-                            <button class="icon-btn" onclick="editRow('${t.id}')">✏️</button>
-                            <button class="icon-btn" style="color:red" onclick="delRow('${t.id}')">🗑️</button>
+                        <div class="action-btn-group">
+                            <button class="action-icon icon-edit" onclick="editRow('${t.id}')">✏️</button>
+                            <button class="action-icon icon-del" onclick="delRow('${t.id}')">🗑️</button>
                         </div>
                     </td>
                 </tr>
@@ -390,11 +511,14 @@
 
     // --- ADMIN ---
     window.saveAnagrafica = async () => {
+        const e = document.getElementById('adm-email').value.trim().toLowerCase();
+        if(!e) return modal("Errore", "Manca email");
+        toggleLoading('btn-anagrafica', true);
         try {
-            await setDoc(doc(db, "anagrafica", document.getElementById('adm-email').value.trim().toLowerCase()), { nome: document.getElementById('adm-name').value });
-            toast("Anagrafica OK");
-            loadAdminData(); // Ricarica nomi
-        } catch(e) { modal("Errore", e.message); }
+            await setDoc(doc(db, "anagrafica", e), { nome: document.getElementById('adm-name').value });
+            toast("Rubrica aggiornata"); loadAdminData();
+        } catch(err) { modal("Errore", err.message); }
+        toggleLoading('btn-anagrafica', false);
     };
 
     window.loadAdminData = async () => {
@@ -402,30 +526,24 @@
         const q = query(collection(db, "turni"), orderBy("data", "desc"));
         const snap = await getDocs(q);
         
-        // 1. Scarica TUTTO e filtra in memoria (più veloce per raggruppare)
         allTurni = [];
         const stats = {};
 
         snap.forEach(d => {
             const t = d.data();
             const dateObj = new Date(t.data);
-            
-            // Filtro Mese/Anno
             if ((m === 'all' || (dateObj.getMonth()+1).toString() === m) && dateObj.getFullYear().toString() === y) {
                 const fullT = { id: d.id, ...t };
                 allTurni.push(fullT);
-                
-                // Aggrega per Dashboard
                 if(!stats[t.email]) stats[t.email] = { ore: 0, nome: rubrica[t.email] || t.email };
                 stats[t.email].ore += t.ore;
             }
         });
 
-        // 2. Render Dashboard Card
+        // Render Dashboard
         const grid = document.getElementById('cards-container');
         grid.innerHTML = "";
-        
-        if(Object.keys(stats).length === 0) grid.innerHTML = "<p style='color:#666; width:100%'>Nessun dato per il periodo selezionato.</p>";
+        if(Object.keys(stats).length === 0) grid.innerHTML = "<p style='color:#666'>Nessun dato.</p>";
 
         Object.keys(stats).forEach(email => {
             const s = stats[email];
@@ -433,12 +551,13 @@
                 <div class="user-card" onclick="openDetail('${email}')">
                     <div class="card-name">${s.nome}</div>
                     <div class="card-sub">${email}</div>
-                    <div class="card-stat">${s.ore.toFixed(1)} ore</div>
+                    <div class="card-label">Totale Mese</div>
+                    <div class="card-stat">${s.ore.toFixed(1)}</div>
                 </div>
             `;
         });
 
-        // Se eravamo in un dettaglio, rinfrescalo
+        // Se nel dettaglio, aggiorna
         if(!document.getElementById('admin-detail').classList.contains('hidden')) {
             renderAdminDetailTable();
         }
@@ -448,13 +567,15 @@
         detailUserEmail = email;
         document.getElementById('admin-dashboard').classList.add('hidden');
         document.getElementById('admin-detail').classList.remove('hidden');
-        document.getElementById('detail-name').innerText = rubrica[email] || email;
+        document.getElementById('admin-title').innerText = "Dettaglio";
+        document.getElementById('detail-user-name').innerText = rubrica[email] || email;
         renderAdminDetailTable();
     };
 
     window.closeDetail = () => {
         document.getElementById('admin-dashboard').classList.remove('hidden');
         document.getElementById('admin-detail').classList.add('hidden');
+        document.getElementById('admin-title').innerText = "Riepilogo";
         detailUserEmail = null;
     };
 
@@ -463,22 +584,22 @@
         tbody.innerHTML = "";
         let tot = 0;
         
-        // Filtra solo l'utente selezionato dalla cache admin
         const userTurni = allTurni.filter(t => t.email === detailUserEmail);
 
         userTurni.forEach(t => {
             tot += t.ore;
+            const orario = (t.oraInizio && t.oraFine) ? `${t.oraInizio} - ${t.oraFine}` : "-";
             tbody.innerHTML += `
                 <tr id="arow-${t.id}">
-                    <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
-                    <td data-label="Mansione">${t.mansione}</td>
-                    <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
+                    <td data-label="Data" data-val="${t.data}">${new Date(t.data).toLocaleDateString('it-IT')}</td>
+                    <td data-label="Mansione" data-val="${t.mansione}">${t.mansione}</td>
+                    <td data-label="Orario" data-val="${t.oraInizio}-${t.oraFine}">${orario}</td>
                     <td data-label="Ore"><strong>${t.ore}</strong></td>
-                    <td data-label="Note">${t.note||''}</td>
+                    <td data-label="Note" class="note-cell" title="${t.note}">${t.note||''}</td>
                     <td class="actions-cell">
-                        <div class="action-icons">
-                            <button class="icon-btn" onclick="editRow('${t.id}', true)">✏️</button>
-                            <button class="icon-btn" style="color:red" onclick="delRow('${t.id}', true)">🗑️</button>
+                        <div class="action-btn-group">
+                            <button class="action-icon icon-edit" onclick="editRow('${t.id}', true)">✏️</button>
+                            <button class="action-icon icon-del" onclick="delRow('${t.id}', true)">🗑️</button>
                         </div>
                     </td>
                 </tr>
@@ -487,7 +608,7 @@
         document.getElementById('d-totale').innerText = tot.toFixed(1);
     }
 
-    // --- EDIT & DELETE (COMUNI) ---
+    // --- EDIT & DELETE ---
     window.delRow = (id, isAdmin=false) => {
         modal("Conferma", "Eliminare il turno?", async () => {
             await deleteDoc(doc(db, "turni", id));
@@ -497,32 +618,36 @@
     };
 
     window.editRow = (id, isAdmin=false) => {
-        // Logica inline edit semplificata
         const prefix = isAdmin ? "arow-" : "row-";
         const tr = document.getElementById(prefix+id);
-        // ... (Per brevità: qui riusiamo la logica di input in tabella, 
-        // ma per rendere il codice stabile e meno lungo, consiglio di 
-        // affidarsi alla modifica rapida Admin: cancella e rifai, o un semplice prompt)
-        // Implementazione completa Edit Inline:
-        const oldData = tr.cells[0].innerText; // Solo display
         
-        // Semplice: chiediamo i nuovi valori con prompt o rendiamo i td editabili?
-        // Facciamo il rendering degli input nella riga
-        // Recuperiamo i dati "veri" dalla cache
+        // Recupera dati reali
         const source = isAdmin ? allTurni : myTurni;
         const t = source.find(x => x.id === id);
-        
-        const mansioni = ["Assistente bagnanti", "Istruttore", "Fitness", "Propaganda", "Lezione individuale", "Segreteria"];
-        const opt = mansioni.map(m => `<option ${m===t.mansione?'selected':''}>${m}</option>`).join('');
+        if(!t) return;
+
+        let opts = Mansioni.map(m => `<option ${m===t.mansione?'selected':''}>${m}</option>`).join('');
 
         tr.innerHTML = `
-            <td data-label="Data"><input type="date" id="ed-d-${id}" value="${t.data}" style="width:100%"></td>
-            <td data-label="Mansione"><select id="ed-m-${id}">${opt}</select></td>
-            <td data-label="Orario"><div style="display:flex; gap:2px"><input type="time" id="ed-i-${id}" value="${t.oraInizio}"><input type="time" id="ed-f-${id}" value="${t.oraFine}"></div></td>
-            <td data-label="Ore"><input type="number" id="ed-h-${id}" value="${t.ore}" step="0.5" style="width:60px"></td>
-            <td data-label="Note"><input type="text" id="ed-n-${id}" value="${t.note}"></td>
-            <td class="actions-cell"><button class="btn-success" onclick="saveEdit('${id}', ${isAdmin})" style="padding:5px">OK</button></td>
+            <td data-label="Data"><input type="date" id="ed-d-${id}" value="${t.data}" class="table-input"></td>
+            <td data-label="Mansione"><select id="ed-m-${id}" class="table-input">${opts}</select></td>
+            <td data-label="Orario"><div style="display:flex; gap:2px"><input type="time" id="ed-i-${id}" value="${t.oraInizio}" class="table-input"><input type="time" id="ed-f-${id}" value="${t.oraFine}" class="table-input"></div></td>
+            <td data-label="Ore"><input type="number" id="ed-h-${id}" value="${t.ore}" step="0.5" class="table-input" style="width:60px"></td>
+            <td data-label="Note"><input type="text" id="ed-n-${id}" value="${t.note}" class="table-input"></td>
+            <td class="actions-cell"><div class="action-btn-group"><button class="btn-success" onclick="saveEdit('${id}', ${isAdmin})" style="padding:5px">OK</button></div></td>
         `;
+        
+        const recalc = () => {
+            const i = document.getElementById(`ed-i-${id}`).value;
+            const f = document.getElementById(`ed-f-${id}`).value;
+            if(i && f) {
+                let d = (new Date(`1970-01-01T${f}`) - new Date(`1970-01-01T${i}`))/36e5;
+                if(d<0) d+=24;
+                document.getElementById(`ed-h-${id}`).value = d.toFixed(2);
+            }
+        };
+        document.getElementById(`ed-i-${id}`).onchange = recalc;
+        document.getElementById(`ed-f-${id}`).onchange = recalc;
     };
 
     window.saveEdit = async (id, isAdmin) => {
@@ -540,7 +665,7 @@
         } catch(e) { modal("Errore", e.message); }
     };
 
-    // --- EXPORT (PDF STYLE) ---
+    // --- EXPORT PDF GRID ---
     function generateCsv(dataList, filename) {
         if(dataList.length === 0) return modal("Info", "Nessun dato.");
         
@@ -549,6 +674,7 @@
         if(isNaN(m)) return modal("Info", "Seleziona un mese.");
 
         const days = new Date(y, m, 0).getDate();
+        // Mappatura PDF
         const cols = ["Giorno","IN","OUT","ASS. BAG.","ISTRUTTORE","AQUAFIT.","PROPAG.","LEZ. INDIV.","SEGRETERIA","NOTE"];
         const colTotals = {}; cols.forEach(c => colTotals[c]=0);
 
@@ -610,8 +736,9 @@
         const userTurni = allTurni.filter(t => t.email === detailUserEmail);
         generateCsv(userTurni, `Foglio_Ore_${detailUserEmail}.csv`);
     };
+    
+    // Admin Export Globale: Piatto per analisi
     window.excelAdminGlobal = () => {
-        // Export semplice piatto per il globale
         let csv = "Data;Collaboratore;Mansione;Ore;Orario;Note\n";
         allTurni.forEach(t => {
             const nome = rubrica[t.email] || t.email;
