@@ -62,6 +62,11 @@
         .btn-success { background-color: var(--success); color: white; }
         .btn-warning { background-color: var(--warning); color: white; }
         .btn-danger { background-color: var(--danger); color: white; }
+        
+        .link-text { 
+            color: var(--primary); cursor: pointer; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px;
+        }
+        .link-text:hover { text-decoration: underline; }
 
         /* --- LAYOUT UTILS --- */
         .hidden { display: none !important; }
@@ -93,6 +98,7 @@
         .action-icon { background: #f1f5f9; border: none; border-radius: 4px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; }
         .icon-edit:hover { background: #dbeafe; color: var(--primary); }
         .icon-del:hover { background: #fee2e2; color: var(--danger); }
+        .icon-dup:hover { background: #d1fae5; color: var(--success); } /* Icona Duplica */
         .table-input { padding: 4px; margin: 0; font-size: 12px; width: 100%; } 
 
         /* --- ADMIN DASHBOARD (GRID DI SCHEDE) --- */
@@ -202,6 +208,8 @@
             <input type="email" id="email" placeholder="Email aziendale">
             <input type="password" id="password" placeholder="Password">
             <button id="btn-login" onclick="login()" class="btn-primary" style="margin-top:15px;"><span>Accedi</span><div class="spinner"></div></button>
+            
+            <a onclick="resetPwd()" class="link-text">Password dimenticata?</a>
         </div>
     </div>
 
@@ -366,7 +374,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     // CONFIGURAZIONE
@@ -434,6 +442,17 @@
         try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { modal("Errore Login", err.message); toggleLoading('btn-login', false); }
     };
     window.logout = () => { clearTimeout(inactivityTimer); signOut(auth); };
+    
+    // PASSWORD RESET
+    window.resetPwd = async () => {
+        const email = document.getElementById('email').value;
+        if(!email) return modal("Info", "Inserisci la tua email nel campo sopra poi clicca qui.");
+        try {
+            await sendPasswordResetEmail(auth, email);
+            modal("Inviata", "Controlla la tua casella di posta per resettare la password.");
+        } catch(e) { modal("Errore", e.message); }
+    };
+
     window.changePwd = async () => {
         try { await updatePassword(currentUser, document.getElementById('new-pwd').value); toast("Password aggiornata"); document.getElementById('pwd-modal').style.display='none'; }
         catch(e) { modal("Errore", e.message); }
@@ -500,6 +519,18 @@
         toggleLoading('btn-salva', false);
     };
 
+    window.duplicaTurno = (id) => {
+        const t = myTurni.find(x => x.id === id);
+        if(!t) return;
+        document.getElementById('c-mansione').value = t.mansione;
+        document.getElementById('c-inizio').value = t.oraInizio;
+        document.getElementById('c-fine').value = t.oraFine;
+        document.getElementById('c-ore').value = t.ore;
+        document.getElementById('c-note').value = t.note;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        toast("Dati copiati! Inserisci la data.");
+    };
+
     async function loadCollabData() {
         const q = query(collection(db, "turni"), where("uid", "==", currentUser.uid), orderBy("data", "desc"));
         const snap = await getDocs(q);
@@ -534,6 +565,7 @@
                     <td data-label="Note" class="note-cell" title="${t.note}">${t.note||''}</td>
                     <td class="actions-cell">
                         <div class="action-btn-group">
+                            <button class="action-icon icon-dup" onclick="duplicaTurno('${t.id}')">📄</button>
                             <button class="action-icon icon-edit" onclick="editRow('${t.id}')">✏️</button>
                             <button class="action-icon icon-del" onclick="delRow('${t.id}')">🗑️</button>
                         </div>
@@ -577,7 +609,7 @@
     window.loadAdminData = async () => {
         const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
         const role = document.getElementById('a-filtro-mansione').value;
-        const sortOrder = document.getElementById('a-sort-order').value; // NUOVO SORT
+        const sortOrder = document.getElementById('a-sort-order').value;
         const q = query(collection(db, "turni"), orderBy("data", "desc"));
         const snap = await getDocs(q);
         
@@ -606,7 +638,6 @@
                 }
                 stats[t.email].ore += t.ore;
                 
-                // Calcolo Ultimo Inserimento (recupera timestamp creazione o data)
                 const ts = t.created_at ? t.created_at.seconds : new Date(t.data).getTime()/1000;
                 if(ts > stats[t.email].lastInput) stats[t.email].lastInput = ts;
             }
@@ -621,7 +652,6 @@
             cardsArray.sort((a, b) => b.lastInput - a.lastInput);
         }
 
-        // RENDER GRID
         const grid = document.getElementById('cards-container');
         grid.innerHTML = "";
         
