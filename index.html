@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. RESET & VARIABILI (STILE COMPATTO) --- */
+        /* --- 1. RESET & VARIABILI (STILE COMPATTO V7) --- */
         :root {
             --primary: #2563eb; --primary-dark: #1d4ed8;
             --secondary: #64748b; --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
@@ -18,14 +18,6 @@
             --text-main: #1e293b; --text-muted: #64748b;
             --border-radius: 8px; 
             --shadow: 0 1px 3px rgba(0,0,0,0.1);
-
-            /* COLORI PALLINI CALENDARIO */
-            --dot-assistente: #ef4444;  /* Rosso */
-            --dot-istruttore: #2563eb;  /* Blu */
-            --dot-propaganda: #a855f7;  /* Viola */
-            --dot-lezione: #0ea5e9;     /* Azzurro */
-            --dot-fitness: #eab308;     /* Giallo */
-            --dot-segreteria: #64748b;  /* Grigio */
         }
 
         *, *::before, *::after { box-sizing: border-box; -webkit-box-sizing: border-box; }
@@ -46,7 +38,7 @@
         h2 { font-size: 1.3rem; margin-bottom: 5px; } 
         h3 { color: var(--text-muted); text-transform: uppercase; font-size: 0.75rem; margin-top: 15px; margin-bottom: 8px;}
 
-        /* --- INPUT & SELECT --- */
+        /* --- INPUT & SELECT (COMPATTI) --- */
         input, select { 
             display: block; width: 100%; max-width: 100%; 
             padding: 8px 10px; margin: 4px 0; 
@@ -58,7 +50,7 @@
         input:focus, select:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 2px rgba(37,99,235,0.1); }
         label { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); margin-left: 2px; display: block; margin-top: 4px; }
 
-        /* --- BOTTONI --- */
+        /* --- BOTTONI (COMPATTI) --- */
         button { 
             width: 100%; padding: 9px; margin-top: 8px; border: none; border-radius: 6px; 
             font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
@@ -71,7 +63,9 @@
         .btn-warning { background-color: var(--warning); color: white; }
         .btn-danger { background-color: var(--danger); color: white; }
         
-        .link-text { color: var(--primary); cursor: pointer; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px; }
+        .link-text { 
+            color: var(--primary); cursor: pointer; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px;
+        }
         .link-text:hover { text-decoration: underline; }
 
         /* --- LAYOUT UTILS --- */
@@ -79,31 +73,6 @@
         .form-box { background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e2e8f0; }
         .time-row { display: flex; gap: 10px; margin-bottom: 5px; } 
         .time-row > div { flex: 1; min-width: 0; } 
-
-        /* --- CALENDARIO MENSILE --- */
-        .calendar-wrapper { margin-bottom: 20px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 10px; user-select: none; }
-        .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
-        .cal-title { font-weight: 700; font-size: 1rem; color: var(--text-main); text-transform: capitalize; }
-        .cal-nav-btn { background: none; border: none; font-size: 1.2rem; color: var(--primary); cursor: pointer; padding: 0 10px; margin: 0; width: auto; }
-        
-        /* Griglia 7 colonne fisse */
-        .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
-        .cal-day-name { font-size: 0.65rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; padding-bottom: 5px; }
-        
-        .cal-day { 
-            aspect-ratio: 1/1; /* Quadrati perfetti */
-            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; 
-            padding-top: 4px; border-radius: 8px; cursor: pointer; position: relative; font-size: 0.9rem; color: var(--text-main);
-            transition: background 0.2s; border: 1px solid transparent;
-        }
-        .cal-day:hover { background: #f1f5f9; }
-        .cal-day.empty { pointer-events: none; }
-        .cal-day.today { border-color: var(--primary); font-weight: 700; color: var(--primary); }
-        .cal-day.selected { background: var(--text-main); color: white; border-color: var(--text-main); }
-        
-        /* Pallini */
-        .cal-dots { display: flex; gap: 3px; margin-top: 4px; justify-content: center; flex-wrap: wrap; max-width: 80%; }
-        .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
 
         /* Filtri */
         .filter-bar { 
@@ -129,35 +98,58 @@
         .action-icon { background: #f1f5f9; border: none; border-radius: 4px; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; }
         .icon-edit:hover { background: #dbeafe; color: var(--primary); }
         .icon-del:hover { background: #fee2e2; color: var(--danger); }
-        .icon-dup:hover { background: #d1fae5; color: var(--success); }
+        .icon-dup:hover { background: #d1fae5; color: var(--success); } /* Icona Duplica */
         .table-input { padding: 4px; margin: 0; font-size: 12px; width: 100%; } 
 
-        /* --- ADMIN DASHBOARD (GRID) --- */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; margin-top: 15px; }
-        .user-card { background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 15px; cursor: pointer; border-left: 4px solid var(--primary); position: relative; }
+        /* --- ADMIN DASHBOARD (GRID DI SCHEDE) --- */
+        .cards-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+            gap: 12px; 
+            margin-top: 15px; 
+        }
+        .user-card { 
+            background: white; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 10px; 
+            padding: 15px; 
+            cursor: pointer; 
+            transition: all 0.2s; 
+            border-left: 4px solid var(--primary); 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            position: relative;
+        }
         .user-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
+        
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2px; }
         .card-name { font-weight: 700; font-size: 1.05rem; color: var(--text-main); }
         .card-sub { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 12px; display: block;}
+        
         .card-stat-box { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid #f1f5f9; padding-top: 8px; }
         .card-label { font-size: 0.65rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600;}
         .card-stat { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
-        .edit-user-btn { background: #f1f5f9; border:none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748b; margin: 0; padding: 0; }
+
+        .edit-user-btn { 
+            background: #f1f5f9; border:none; border-radius: 4px; width: 24px; height: 24px; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748b; margin: 0; padding: 0;
+        }
         .edit-user-btn:hover { background: #e2e8f0; color: var(--primary); }
 
         /* --- UTILS --- */
         #toast { visibility: hidden; min-width: 200px; background: #1e293b; color: #fff; text-align: center; border-radius: 50px; padding: 10px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; font-size: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} } @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        
         .spinner { width: 14px; height: 14px; border: 2px solid #fff; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; }
         .spinner-dark { border-color: var(--primary); width: 20px; height: 20px; margin: 0 auto; display: block; }
         .btn-loading .spinner { display: block; } .btn-loading span { display: none; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(2px); z-index: 3000; display: none; justify-content: center; align-items: center; }
         .modal-box { background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 300px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-actions { display: flex; gap: 8px; margin-top: 15px; } .modal-actions button { margin: 0; flex:1; }
 
-        /* --- MOBILE --- */
+        /* --- MOBILE SPECIFIC --- */
         @media only screen and (max-width: 600px) {
             body { padding: 5px; font-size: 13px; }
             .container { padding: 10px; }
@@ -167,10 +159,18 @@
             .filter-bar { flex-direction: column; align-items: stretch; padding: 10px; }
             .filter-bar button { width: 100%; margin-top: 5px; }
             
+            /* Tabella a Schede su Mobile */
             .table-container { border: none; }
             thead { display: none; }
-            tr { display: block; background: white; margin-bottom: 8px; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); padding: 10px; border: 1px solid #e2e8f0; }
-            td { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #f1f5f9; text-align: right; min-height: 24px; }
+            tr { 
+                display: block; background: white; margin-bottom: 8px; 
+                border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+                padding: 10px; border: 1px solid #e2e8f0; 
+            }
+            td { 
+                display: flex; justify-content: space-between; align-items: center; 
+                padding: 4px 0; border-bottom: 1px solid #f1f5f9; text-align: right; min-height: 24px; 
+            }
             td:last-child { border-bottom: none; margin-top: 5px; padding-top: 0; justify-content: flex-end;}
             td::before { content: attr(data-label); font-weight: 600; color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; margin-right: 10px; text-align: left; }
             td strong { font-size: 0.9rem; color: #0f172a; }
@@ -208,12 +208,12 @@
             <input type="email" id="email" placeholder="Email aziendale">
             <input type="password" id="password" placeholder="Password">
             <button id="btn-login" onclick="login()" class="btn-primary" style="margin-top:15px;"><span>Accedi</span><div class="spinner"></div></button>
+            
             <a onclick="resetPwd()" class="link-text">Password dimenticata?</a>
         </div>
     </div>
 
     <div id="collaborator-view" class="hidden">
-        
         <div class="form-box">
             <h3>➕ Nuovo Turno</h3>
             <div class="time-row">
@@ -239,21 +239,6 @@
         </div>
 
         <h3>📅 I miei Turni</h3>
-        
-        <div class="calendar-wrapper">
-            <div class="cal-header">
-                <button class="cal-nav-btn" onclick="changeCalMonth(-1)">❮</button>
-                <div class="cal-title" id="cal-month-name">Mese Anno</div>
-                <button class="cal-nav-btn" onclick="changeCalMonth(1)">❯</button>
-            </div>
-            <div class="cal-grid" style="margin-bottom:5px;">
-                <div class="cal-day-name">Lun</div><div class="cal-day-name">Mar</div><div class="cal-day-name">Mer</div>
-                <div class="cal-day-name">Gio</div><div class="cal-day-name">Ven</div><div class="cal-day-name">Sab</div>
-                <div class="cal-day-name">Dom</div>
-            </div>
-            <div id="cal-days-grid" class="cal-grid"></div>
-        </div>
-
         <div class="filter-bar">
             <div class="input-group">
                 <select id="c-filtro-mansione" onchange="renderCollabTable()">
@@ -267,7 +252,7 @@
                 </select>
             </div>
             <div class="input-group">
-                <select id="c-filtro-mese" onchange="syncCalFromFilter()">
+                <select id="c-filtro-mese" onchange="renderCollabTable()">
                     <option value="all">Tutti i Mesi</option>
                     <option value="1">Gennaio</option><option value="2">Febbraio</option><option value="3">Marzo</option>
                     <option value="4">Aprile</option><option value="5">Maggio</option><option value="6">Giugno</option>
@@ -276,7 +261,7 @@
                 </select>
             </div>
             <div class="input-group">
-                <select id="c-filtro-anno" onchange="syncCalFromFilter()"><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
+                <select id="c-filtro-anno" onchange="renderCollabTable()"><option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option></select>
             </div>
             <button onclick="excelCollab()" class="btn-success">📥 Excel</button>
         </div>
@@ -392,7 +377,7 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // CONFIGURAZIONE ORIGINALE
+    // CONFIGURAZIONE
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
       authDomain: "gestioneore-3bf5f.firebaseapp.com",
@@ -414,12 +399,19 @@
     let allTurni = []; 
     let detailUserEmail = null;
     let currentEditEmail = null;
-    let calDate = new Date(); // Data calendario
-    let selectedDay = null;   // Giorno selezionato
-
     const Mansioni = ["Assistente bagnanti", "Istruttore", "Fitness", "Propaganda", "Lezione individuale", "Segreteria"];
 
-    // UI HELPER
+    // INIT
+    const oggi = new Date();
+    document.getElementById('c-data').valueAsDate = oggi;
+    const curMonth = (oggi.getMonth()+1).toString();
+    const curYear = oggi.getFullYear().toString();
+    document.getElementById('c-filtro-mese').value = curMonth;
+    document.getElementById('c-filtro-anno').value = curYear;
+    document.getElementById('a-filtro-mese').value = curMonth;
+    document.getElementById('a-filtro-anno').value = curYear;
+
+    // HELPER UI
     window.toast = (msg) => { const t = document.getElementById("toast"); t.innerText=msg; t.className="show"; setTimeout(()=>t.className="", 3000); };
     window.modal = (t,m,cb) => {
         document.getElementById('modal-title').innerText=t; document.getElementById('modal-msg').innerText=m;
@@ -442,78 +434,6 @@
     };
     ['click', 'mousemove', 'keypress', 'touchstart'].forEach(e => document.addEventListener(e, resetInactivityTimer));
 
-    // CALENDAR RENDER
-    const monthNames = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
-    
-    window.renderCalendar = () => {
-        const m = calDate.getMonth();
-        const y = calDate.getFullYear();
-        document.getElementById('cal-month-name').innerText = `${monthNames[m]} ${y}`;
-        
-        // Sync Dropdowns
-        document.getElementById('c-filtro-mese').value = (m+1).toString();
-        document.getElementById('c-filtro-anno').value = y.toString();
-
-        const firstDay = new Date(y, m, 1).getDay(); // 0=Dom
-        const daysInMonth = new Date(y, m + 1, 0).getDate();
-        const grid = document.getElementById('cal-days-grid');
-        grid.innerHTML = "";
-
-        // Padding (Lunedì=0 in CSS logic adjustment)
-        // JS getDay(): 0=Dom, 1=Lun. Vogliamo Lun prima.
-        let pad = firstDay === 0 ? 6 : firstDay - 1;
-        for(let i=0; i<pad; i++) grid.innerHTML += `<div class="cal-day empty"></div>`;
-
-        const today = new Date();
-        for(let d=1; d<=daysInMonth; d++) {
-            const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-            const shifts = myTurni.filter(t => t.data === dateStr);
-            
-            let dotsHtml = "";
-            shifts.forEach(s => {
-                let colorVar = "var(--secondary)";
-                if(s.mansione.includes("Assistente")) colorVar = "var(--dot-assistente)";
-                else if(s.mansione.includes("Istruttore")) colorVar = "var(--dot-istruttore)";
-                else if(s.mansione.includes("Fitness")) colorVar = "var(--dot-fitness)";
-                else if(s.mansione.includes("Propaganda")) colorVar = "var(--dot-propaganda)";
-                else if(s.mansione.includes("Lezione")) colorVar = "var(--dot-lezione)";
-                else if(s.mansione.includes("Segreteria")) colorVar = "var(--dot-segreteria)";
-                dotsHtml += `<div class="cal-dot" style="background:${colorVar}"></div>`;
-            });
-
-            const isToday = (d === today.getDate() && m === today.getMonth() && y === today.getFullYear());
-            const isSel = (selectedDay === d);
-            
-            const dayDiv = document.createElement('div');
-            dayDiv.className = `cal-day ${isToday?'today':''} ${isSel?'selected':''}`;
-            dayDiv.innerHTML = `<span>${d}</span><div class="cal-dots">${dotsHtml}</div>`;
-            dayDiv.onclick = () => selectDay(d);
-            grid.appendChild(dayDiv);
-        }
-    };
-
-    window.changeCalMonth = (delta) => {
-        calDate.setMonth(calDate.getMonth() + delta);
-        selectedDay = null; 
-        renderCalendar();
-        renderCollabTable();
-    };
-
-    window.syncCalFromFilter = () => {
-        const m = parseInt(document.getElementById('c-filtro-mese').value) - 1;
-        const y = parseInt(document.getElementById('c-filtro-anno').value);
-        calDate = new Date(y, m, 1);
-        selectedDay = null;
-        renderCalendar();
-        renderCollabTable();
-    };
-
-    window.selectDay = (d) => {
-        selectedDay = (selectedDay === d) ? null : d;
-        renderCalendar();
-        renderCollabTable();
-    };
-
     // AUTH
     window.login = async () => {
         const e = document.getElementById('email').value, p = document.getElementById('password').value;
@@ -522,11 +442,17 @@
         try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { modal("Errore Login", err.message); toggleLoading('btn-login', false); }
     };
     window.logout = () => { clearTimeout(inactivityTimer); signOut(auth); };
+    
+    // PASSWORD RESET
     window.resetPwd = async () => {
         const email = document.getElementById('email').value;
-        if(!email) return modal("Info", "Inserisci la tua email sopra poi clicca qui.");
-        try { await sendPasswordResetEmail(auth, email); modal("Inviata", "Controlla la posta."); } catch(e) { modal("Errore", e.message); }
+        if(!email) return modal("Info", "Inserisci la tua email nel campo sopra poi clicca qui.");
+        try {
+            await sendPasswordResetEmail(auth, email);
+            modal("Inviata", "Controlla la tua casella di posta per resettare la password.");
+        } catch(e) { modal("Errore", e.message); }
     };
+
     window.changePwd = async () => {
         try { await updatePassword(currentUser, document.getElementById('new-pwd').value); toast("Password aggiornata"); document.getElementById('pwd-modal').style.display='none'; }
         catch(e) { modal("Errore", e.message); }
@@ -541,9 +467,9 @@
             
             const snap = await getDocs(collection(db, "anagrafica"));
             snap.forEach(d => rubrica[d.id] = d.data().nome);
-            document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.split(' ')[0] || 'User'}`;
-
-            document.getElementById('c-data').valueAsDate = new Date();
+            
+            const nome = rubrica[user.email] || user.email.split('@')[0];
+            document.getElementById('welcome-msg').innerText = `Ciao, ${nome}`;
 
             if(user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                 document.getElementById('admin-indicator').classList.remove('hidden');
@@ -551,7 +477,8 @@
                 loadAdminData();
             } else {
                 document.getElementById('collaborator-view').classList.remove('hidden');
-                syncCalFromFilter(); 
+                const last = localStorage.getItem('lastMansione');
+                if(last) document.getElementById('c-mansione').value = last;
                 loadCollabData();
             }
         } else {
@@ -565,7 +492,7 @@
         }
     });
 
-    // COLLABORATOR
+    // LOGICA COLLABORATORE
     window.calcDiff = () => {
         const i = document.getElementById('c-inizio').value, f = document.getElementById('c-fine').value;
         if(i && f) {
@@ -601,7 +528,7 @@
         document.getElementById('c-ore').value = t.ore;
         document.getElementById('c-note').value = t.note;
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        toast("Copiato! Inserisci la data.");
+        toast("Dati copiati! Inserisci la data.");
     };
 
     async function loadCollabData() {
@@ -609,7 +536,6 @@
         const snap = await getDocs(q);
         myTurni = [];
         snap.forEach(d => myTurni.push({id: d.id, ...d.data()}));
-        renderCalendar(); 
         renderCollabTable();
     }
 
@@ -624,25 +550,19 @@
             const d = new Date(t.data);
             const matchDate = (m === 'all' || (d.getMonth()+1).toString() === m) && d.getFullYear().toString() === y;
             const matchRole = (r === 'all' || t.mansione === r);
-            
-            // Filtro Calendario
-            let matchDay = true;
-            if(selectedDay !== null) {
-                matchDay = (d.getDate() === selectedDay);
-            }
-
-            return matchDate && matchRole && matchDay;
+            return matchDate && matchRole;
         });
 
         filtered.forEach(t => {
             tot += t.ore;
+            const orario = (t.oraInizio && t.oraFine) ? `${t.oraInizio} - ${t.oraFine}` : "-";
             tbody.innerHTML += `
                 <tr id="row-${t.id}">
-                    <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
-                    <td data-label="Mansione">${t.mansione}</td>
-                    <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
+                    <td data-label="Data" data-val="${new Date(t.data).toLocaleDateString('it-IT')}">${new Date(t.data).toLocaleDateString('it-IT')}</td>
+                    <td data-label="Mansione" data-val="${t.mansione}">${t.mansione}</td>
+                    <td data-label="Orario" data-val="${t.oraInizio}-${t.oraFine}">${orario}</td>
                     <td data-label="Ore"><strong>${t.ore}</strong></td>
-                    <td data-label="Note">${t.note||''}</td>
+                    <td data-label="Note" class="note-cell" title="${t.note}">${t.note||''}</td>
                     <td class="actions-cell">
                         <div class="action-btn-group">
                             <button class="action-icon icon-dup" onclick="duplicaTurno('${t.id}')">📄</button>
@@ -656,7 +576,7 @@
         document.getElementById('c-totale').innerText = tot.toFixed(1);
     };
 
-    // ADMIN
+    // LOGICA ADMIN
     window.saveAnagrafica = async () => {
         const e = document.getElementById('adm-email').value.trim().toLowerCase();
         if(!e) return modal("Errore", "Manca email");
@@ -676,9 +596,10 @@
 
     window.saveEditUser = async () => {
         if(!currentEditEmail) return;
+        const newName = document.getElementById('edit-name-input').value;
         try {
-            await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: document.getElementById('edit-name-input').value }, { merge: true });
-            rubrica[currentEditEmail] = document.getElementById('edit-name-input').value; 
+            await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: newName }, { merge: true });
+            rubrica[currentEditEmail] = newName; 
             toast("Nome modificato");
             document.getElementById('edit-user-modal').style.display = 'none';
             loadAdminData(); 
@@ -688,34 +609,55 @@
     window.loadAdminData = async () => {
         const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
         const role = document.getElementById('a-filtro-mansione').value;
-        const sort = document.getElementById('a-sort-order').value;
-        
+        const sortOrder = document.getElementById('a-sort-order').value;
         const q = query(collection(db, "turni"), orderBy("data", "desc"));
         const snap = await getDocs(q);
+        
         allTurni = [];
         const stats = {};
 
         snap.forEach(d => {
             const t = d.data();
             const dateObj = new Date(t.data);
-            if ((m === 'all' || (dateObj.getMonth()+1).toString() === m) && dateObj.getFullYear().toString() === y && (role === 'all' || t.mansione === role)) {
-                allTurni.push({ id: d.id, ...t });
-                if(!stats[t.email]) { stats[t.email] = { ore: 0, nome: rubrica[t.email] || t.email, lastInput: 0 }; }
+            
+            // Filtro Admin
+            if ((m === 'all' || (dateObj.getMonth()+1).toString() === m) && 
+                dateObj.getFullYear().toString() === y &&
+                (role === 'all' || t.mansione === role)) {
+                
+                const fullT = { id: d.id, ...t };
+                allTurni.push(fullT);
+                
+                // Aggrega per Dashboard
+                if(!stats[t.email]) {
+                    stats[t.email] = { 
+                        ore: 0, 
+                        nome: rubrica[t.email] || t.email,
+                        lastInput: 0 
+                    };
+                }
                 stats[t.email].ore += t.ore;
+                
                 const ts = t.created_at ? t.created_at.seconds : new Date(t.data).getTime()/1000;
                 if(ts > stats[t.email].lastInput) stats[t.email].lastInput = ts;
             }
         });
 
-        let cards = Object.entries(stats).map(([email, data]) => ({ email, ...data }));
-        if (sort === 'alpha') cards.sort((a, b) => a.nome.localeCompare(b.nome));
-        else if (sort === 'recent') cards.sort((a, b) => b.lastInput - a.lastInput);
+        // ORDINAMENTO
+        let cardsArray = Object.entries(stats).map(([email, data]) => ({ email, ...data }));
+        
+        if (sortOrder === 'alpha') {
+            cardsArray.sort((a, b) => a.nome.localeCompare(b.nome));
+        } else if (sortOrder === 'recent') {
+            cardsArray.sort((a, b) => b.lastInput - a.lastInput);
+        }
 
         const grid = document.getElementById('cards-container');
         grid.innerHTML = "";
-        if(cards.length === 0) grid.innerHTML = "<p style='color:#666'>Nessun dato.</p>";
+        
+        if(cardsArray.length === 0) grid.innerHTML = "<p style='color:#666; width:100%'>Nessun dato trovato.</p>";
 
-        cards.forEach(u => {
+        cardsArray.forEach(u => {
             grid.innerHTML += `
                 <div class="user-card" onclick="openDetail('${u.email}')">
                     <div class="card-header">
@@ -723,11 +665,17 @@
                         <button class="edit-user-btn" onclick="event.stopPropagation(); openEditUser('${u.email}', '${u.nome}')">✏️</button>
                     </div>
                     <div class="card-sub">${u.email}</div>
-                    <div class="card-stat-box"><span class="card-label">TOTALE</span><span class="card-stat">${u.ore.toFixed(1)}</span></div>
+                    <div class="card-stat-box">
+                        <span class="card-label">TOTALE ORE</span>
+                        <span class="card-stat">${u.ore.toFixed(1)}</span>
+                    </div>
                 </div>
             `;
         });
-        if(!document.getElementById('admin-detail').classList.contains('hidden')) renderAdminDetailTable();
+
+        if(!document.getElementById('admin-detail').classList.contains('hidden')) {
+            renderAdminDetailTable();
+        }
     };
 
     window.openDetail = (email) => {
@@ -750,23 +698,22 @@
         const tbody = document.getElementById('detail-tbody');
         tbody.innerHTML = "";
         let tot = 0;
+        
         const userTurni = allTurni.filter(t => t.email === detailUserEmail);
+
         userTurni.forEach(t => {
             tot += t.ore;
+            const orario = (t.oraInizio && t.oraFine) ? `${t.oraInizio} - ${t.oraFine}` : "-";
             tbody.innerHTML += `
                 <tr id="arow-${t.id}">
-                    <td data-label="Data"><input type="date" id="ed-d-${t.id}" value="${t.data}" class="table-input"></td>
-                    <td data-label="Mansione">
-                        <select id="ed-m-${t.id}" class="table-input">
-                            ${Mansioni.map(m => `<option ${m===t.mansione?'selected':''}>${m}</option>`).join('')}
-                        </select>
-                    </td>
-                    <td data-label="Orario"><div style="display:flex; gap:2px"><input type="time" id="ed-i-${t.id}" value="${t.oraInizio}" class="table-input"><input type="time" id="ed-f-${t.id}" value="${t.oraFine}" class="table-input"></div></td>
-                    <td data-label="Ore"><input type="number" id="ed-h-${t.id}" value="${t.ore}" step="0.5" class="table-input" style="width:50px"></td>
-                    <td data-label="Note"><input type="text" id="ed-n-${t.id}" value="${t.note}" class="table-input"></td>
+                    <td data-label="Data" data-val="${new Date(t.data).toLocaleDateString('it-IT')}">${new Date(t.data).toLocaleDateString('it-IT')}</td>
+                    <td data-label="Mansione" data-val="${t.mansione}">${t.mansione}</td>
+                    <td data-label="Orario" data-val="${t.oraInizio}-${t.oraFine}">${orario}</td>
+                    <td data-label="Ore"><strong>${t.ore}</strong></td>
+                    <td data-label="Note" class="note-cell" title="${t.note}">${t.note||''}</td>
                     <td class="actions-cell">
                         <div class="action-btn-group">
-                            <button class="action-icon icon-edit" onclick="saveEdit('${t.id}', true)">💾</button>
+                            <button class="action-icon icon-edit" onclick="editRow('${t.id}', true)">✏️</button>
                             <button class="action-icon icon-del" onclick="delRow('${t.id}', true)">🗑️</button>
                         </div>
                     </td>
@@ -776,25 +723,46 @@
         document.getElementById('d-totale').innerText = tot.toFixed(1);
     }
 
-    // SHARED
+    // EDIT & DELETE
     window.delRow = (id, isAdmin=false) => {
-        modal("Conferma", "Eliminare?", async () => {
+        modal("Conferma", "Eliminare il turno?", async () => {
             await deleteDoc(doc(db, "turni", id));
-            toast("Eliminato"); isAdmin ? loadAdminData() : loadCollabData();
+            toast("Eliminato");
+            isAdmin ? loadAdminData() : loadCollabData();
         });
     };
-    window.editRow = (id) => {
-        const tr = document.getElementById('row-'+id);
-        const t = myTurni.find(x => x.id === id);
+
+    window.editRow = (id, isAdmin=false) => {
+        const prefix = isAdmin ? "arow-" : "row-";
+        const tr = document.getElementById(prefix+id);
+        const source = isAdmin ? allTurni : myTurni;
+        const t = source.find(x => x.id === id);
+        if(!t) return;
+
+        let opts = Mansioni.map(m => `<option ${m===t.mansione?'selected':''}>${m}</option>`).join('');
+
         tr.innerHTML = `
             <td data-label="Data"><input type="date" id="ed-d-${id}" value="${t.data}" class="table-input"></td>
-            <td data-label="Mansione"><select id="ed-m-${id}" class="table-input">${Mansioni.map(m => `<option ${m===t.mansione?'selected':''}>${m}</option>`).join('')}</select></td>
+            <td data-label="Mansione"><select id="ed-m-${id}" class="table-input">${opts}</select></td>
             <td data-label="Orario"><div style="display:flex; gap:2px"><input type="time" id="ed-i-${id}" value="${t.oraInizio}" class="table-input"><input type="time" id="ed-f-${id}" value="${t.oraFine}" class="table-input"></div></td>
-            <td data-label="Ore"><input type="number" id="ed-h-${id}" value="${t.ore}" step="0.5" class="table-input" style="width:50px"></td>
+            <td data-label="Ore"><input type="number" id="ed-h-${id}" value="${t.ore}" step="0.5" class="table-input" style="width:60px"></td>
             <td data-label="Note"><input type="text" id="ed-n-${id}" value="${t.note}" class="table-input"></td>
-            <td class="actions-cell"><button class="btn-success" style="padding:5px" onclick="saveEdit('${id}', false)">OK</button></td>
+            <td class="actions-cell"><div class="action-btn-group"><button class="btn-success" onclick="saveEdit('${id}', ${isAdmin})" style="padding:5px">OK</button></div></td>
         `;
+        
+        const recalc = () => {
+            const i = document.getElementById(`ed-i-${id}`).value;
+            const f = document.getElementById(`ed-f-${id}`).value;
+            if(i && f) {
+                let d = (new Date(`1970-01-01T${f}`) - new Date(`1970-01-01T${i}`))/36e5;
+                if(d<0) d+=24;
+                document.getElementById(`ed-h-${id}`).value = d.toFixed(2);
+            }
+        };
+        document.getElementById(`ed-i-${id}`).onchange = recalc;
+        document.getElementById(`ed-f-${id}`).onchange = recalc;
     };
+
     window.saveEdit = async (id, isAdmin) => {
         try {
             await updateDoc(doc(db, "turni", id), {
@@ -805,21 +773,119 @@
                 oraFine: document.getElementById(`ed-f-${id}`).value,
                 note: document.getElementById(`ed-n-${id}`).value
             });
-            toast("Modificato"); isAdmin ? loadAdminData() : loadCollabData();
+            toast("Modificato");
+            isAdmin ? loadAdminData() : loadCollabData();
         } catch(e) { modal("Errore", e.message); }
     };
 
     // EXPORT
     function generateCsv(dataList, filename) {
         if(dataList.length === 0) return modal("Info", "Nessun dato.");
-        const y = parseInt(document.getElementById(currentUser.email===ADMIN_EMAIL ? 'a-filtro-anno':'c-filtro-anno').value);
-        const m = parseInt(document.getElementById(currentUser.email===ADMIN_EMAIL ? 'a-filtro-mese':'c-filtro-mese').value);
+        
+        const y = parseInt(document.getElementById(currentUser.email === ADMIN_EMAIL ? 'a-filtro-anno' : 'c-filtro-anno').value);
+        const m = parseInt(document.getElementById(currentUser.email === ADMIN_EMAIL ? 'a-filtro-mese' : 'c-filtro-mese').value);
         if(isNaN(m)) return modal("Info", "Seleziona un mese.");
 
         const days = new Date(y, m, 0).getDate();
         const cols = ["Giorno","IN","OUT","ASS. BAG.","ISTRUTTORE","AQUAFIT.","PROPAG.","LEZ. INDIV.","SEGRETERIA","NOTE"];
         const colTotals = {}; cols.forEach(c => colTotals[c]=0);
+
         let csv = cols.join(";") + "\n";
 
         for(let i=1; i<=days; i++) {
-            const dStr = `${
+            const dStr = `${y}-${String(m).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+            const dayT = dataList.filter(t => t.data === dStr);
+            
+            let r = { in:'', out:'', note:'', vals:{} };
+            cols.forEach(c => r.vals[c] = '');
+
+            if(dayT.length > 0) {
+                const sorted = dayT.sort((a,b) => a.oraInizio.localeCompare(b.oraInizio));
+                r.in = sorted[0].oraInizio;
+                r.out = sorted[sorted.length-1].oraFine;
+                r.note = dayT.map(x => x.note).filter(x=>x).join(' | ').replace(/;/g,' ');
+
+                dayT.forEach(t => {
+                    let k = "";
+                    if(t.mansione.includes("Assistente")) k="ASS. BAG.";
+                    else if(t.mansione.includes("Istruttore")) k="ISTRUTTORE";
+                    else if(t.mansione.includes("Fitness")) k="AQUAFIT.";
+                    else if(t.mansione.includes("Propaganda")) k="PROPAG.";
+                    else if(t.mansione.includes("Lezione")) k="LEZ. INDIV.";
+                    else if(t.mansione.includes("Segreteria")) k="SEGRETERIA";
+                    
+                    if(k) {
+                        let cur = parseFloat(r.vals[k].replace(',','.') || 0);
+                        r.vals[k] = (cur + t.ore).toString().replace('.',',');
+                        colTotals[k] += t.ore;
+                    }
+                });
+            }
+
+            let rowStr = [];
+            cols.forEach(c => {
+                if(c==="Giorno") rowStr.push(i);
+                else if(c==="IN") rowStr.push(r.in);
+                else if(c==="OUT") rowStr.push(r.out);
+                else if(c==="NOTE") rowStr.push(r.note);
+                else rowStr.push(r.vals[c]);
+            });
+            csv += rowStr.join(";") + "\n";
+        }
+
+        let rowT = ["TOTALE","","", ...cols.slice(3).map(c => colTotals[c] ? colTotals[c].toString().replace('.',',') : "")];
+        csv += "\n" + rowT.join(";") + "\n";
+
+        const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a"); a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
+
+    // Export COLLAB
+    window.excelCollab = () => {
+        const selectMese = document.getElementById('c-filtro-mese');
+        const selectAnno = document.getElementById('c-filtro-anno');
+        const meseTesto = selectMese.options[selectMese.selectedIndex].text;
+        const annoTesto = selectAnno.value;
+        let nomeFile = "Mio_Foglio_Ore";
+        if(currentUser) {
+            const nomeUser = (rubrica[currentUser.email] || currentUser.email.split('@')[0]).replace(/\s+/g, '');
+            nomeFile = `Presenze_${nomeUser}_${meseTesto}_${annoTesto}.csv`;
+        }
+        generateCsv(myTurni, nomeFile);
+    };
+
+    // Export ADMIN DETTAGLIO
+    window.excelAdminDetail = () => {
+        const selectMese = document.getElementById('a-filtro-mese');
+        const selectAnno = document.getElementById('a-filtro-anno');
+        const meseTesto = selectMese.options[selectMese.selectedIndex].text;
+        const annoTesto = selectAnno.value;
+        const userTurni = allTurni.filter(t => t.email === detailUserEmail);
+        const nomeUser = (rubrica[detailUserEmail] || detailUserEmail).replace(/\s+/g, '');
+        const nomeFile = `Presenze_${nomeUser}_${meseTesto}_${annoTesto}.csv`;
+        generateCsv(userTurni, nomeFile);
+    };
+    
+    // Export ADMIN GLOBAL
+    window.excelAdminGlobal = () => {
+        const selectMese = document.getElementById('a-filtro-mese');
+        const selectAnno = document.getElementById('a-filtro-anno');
+        const meseTesto = selectMese.options[selectMese.selectedIndex].text;
+        const nomeFile = `Report_Globale_${meseTesto}_${selectAnno.value}.csv`;
+
+        let csv = "Data;Collaboratore;Mansione;Ore;Orario;Note\n";
+        allTurni.forEach(t => {
+            const nome = rubrica[t.email] || t.email;
+            csv += `${t.data};${nome};${t.mansione};${t.ore.toString().replace('.',',')};${t.oraInizio}-${t.oraFine};${t.note}\n`;
+        });
+        const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a"); a.href = url; a.download = nomeFile;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    };
+
+</script>
+</body>
+</html>
