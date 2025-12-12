@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. RESET & VARIABILI (STILE COMPATTO) --- */
+        /* --- 1. RESET & VARIABILI (STILE COMPATTO V7) --- */
         :root {
             --primary: #2563eb; --primary-dark: #1d4ed8;
             --secondary: #64748b; --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
@@ -169,8 +169,6 @@
             td::before { content: attr(data-label); font-weight: 600; color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; margin-right: 10px; text-align: left; }
             td strong { font-size: 0.9rem; color: #0f172a; }
             .table-input { text-align: right; width: 60% !important; padding: 6px; background: #f8fafc; }
-            
-            /* Griglia Schede Admin su Mobile */
             .cards-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -289,6 +287,12 @@
         <h3 id="admin-title">Riepilogo</h3>
         <div class="filter-bar">
             <div class="input-group">
+                <select id="a-sort-order">
+                    <option value="alpha">Alfabetico (A-Z)</option>
+                    <option value="recent">Ultimo Inserimento</option>
+                </select>
+            </div>
+            <div class="input-group">
                 <select id="a-filtro-mansione">
                     <option value="all">Tutte le Mansioni</option>
                     <option value="Assistente bagnanti">Assistente bagnanti</option>
@@ -386,7 +390,7 @@
     let myTurni = []; 
     let allTurni = []; 
     let detailUserEmail = null;
-    let currentEditEmail = null; // Per modifica nome
+    let currentEditEmail = null;
     const Mansioni = ["Assistente bagnanti", "Istruttore", "Fitness", "Propaganda", "Lezione individuale", "Segreteria"];
 
     // INIT
@@ -563,16 +567,17 @@
         const newName = document.getElementById('edit-name-input').value;
         try {
             await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: newName }, { merge: true });
-            rubrica[currentEditEmail] = newName; // Aggiorna locale
+            rubrica[currentEditEmail] = newName; 
             toast("Nome modificato");
             document.getElementById('edit-user-modal').style.display = 'none';
-            loadAdminData(); // Ricarica card
+            loadAdminData(); 
         } catch(e) { modal("Errore", e.message); }
     };
 
     window.loadAdminData = async () => {
         const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
         const role = document.getElementById('a-filtro-mansione').value;
+        const sortOrder = document.getElementById('a-sort-order').value; // NUOVO SORT
         const q = query(collection(db, "turni"), orderBy("data", "desc"));
         const snap = await getDocs(q);
         
@@ -592,29 +597,47 @@
                 allTurni.push(fullT);
                 
                 // Aggrega per Dashboard
-                if(!stats[t.email]) stats[t.email] = { ore: 0, nome: rubrica[t.email] || t.email };
+                if(!stats[t.email]) {
+                    stats[t.email] = { 
+                        ore: 0, 
+                        nome: rubrica[t.email] || t.email,
+                        lastInput: 0 
+                    };
+                }
                 stats[t.email].ore += t.ore;
+                
+                // Calcolo Ultimo Inserimento (recupera timestamp creazione o data)
+                const ts = t.created_at ? t.created_at.seconds : new Date(t.data).getTime()/1000;
+                if(ts > stats[t.email].lastInput) stats[t.email].lastInput = ts;
             }
         });
 
-        // RENDER GRID (SCHEDE)
+        // ORDINAMENTO
+        let cardsArray = Object.entries(stats).map(([email, data]) => ({ email, ...data }));
+        
+        if (sortOrder === 'alpha') {
+            cardsArray.sort((a, b) => a.nome.localeCompare(b.nome));
+        } else if (sortOrder === 'recent') {
+            cardsArray.sort((a, b) => b.lastInput - a.lastInput);
+        }
+
+        // RENDER GRID
         const grid = document.getElementById('cards-container');
         grid.innerHTML = "";
         
-        if(Object.keys(stats).length === 0) grid.innerHTML = "<p style='color:#666; width:100%'>Nessun dato trovato.</p>";
+        if(cardsArray.length === 0) grid.innerHTML = "<p style='color:#666; width:100%'>Nessun dato trovato.</p>";
 
-        Object.keys(stats).forEach(email => {
-            const s = stats[email];
+        cardsArray.forEach(u => {
             grid.innerHTML += `
-                <div class="user-card" onclick="openDetail('${email}')">
+                <div class="user-card" onclick="openDetail('${u.email}')">
                     <div class="card-header">
-                        <div class="card-name">${s.nome}</div>
-                        <button class="edit-user-btn" onclick="event.stopPropagation(); openEditUser('${email}', '${s.nome}')">✏️</button>
+                        <div class="card-name">${u.nome}</div>
+                        <button class="edit-user-btn" onclick="event.stopPropagation(); openEditUser('${u.email}', '${u.nome}')">✏️</button>
                     </div>
-                    <div class="card-sub">${email}</div>
+                    <div class="card-sub">${u.email}</div>
                     <div class="card-stat-box">
                         <span class="card-label">TOTALE ORE</span>
-                        <span class="card-stat">${s.ore.toFixed(1)}</span>
+                        <span class="card-stat">${u.ore.toFixed(1)}</span>
                     </div>
                 </div>
             `;
@@ -789,7 +812,7 @@
         document.body.appendChild(a); a.click(); document.body.removeChild(a);
     }
 
-    // EXPORT COLLABORATORE (Nome Dinamico)
+    // Export COLLAB
     window.excelCollab = () => {
         const selectMese = document.getElementById('c-filtro-mese');
         const selectAnno = document.getElementById('c-filtro-anno');
@@ -803,7 +826,7 @@
         generateCsv(myTurni, nomeFile);
     };
 
-    // EXPORT ADMIN DETTAGLIO (Nome Dinamico)
+    // Export ADMIN DETTAGLIO
     window.excelAdminDetail = () => {
         const selectMese = document.getElementById('a-filtro-mese');
         const selectAnno = document.getElementById('a-filtro-anno');
@@ -815,7 +838,7 @@
         generateCsv(userTurni, nomeFile);
     };
     
-    // EXPORT ADMIN GLOBALE (Nome Dinamico)
+    // Export ADMIN GLOBAL
     window.excelAdminGlobal = () => {
         const selectMese = document.getElementById('a-filtro-mese');
         const selectAnno = document.getElementById('a-filtro-anno');
