@@ -368,7 +368,7 @@
 
     const Mansioni = ["Assistente bagnanti", "Istruttore", "Fitness", "Propaganda", "Lezione individuale", "Segreteria"];
 
-    // GLOBAL VARS FOR DOM ELEMENTS
+    // GLOBAL VARS
     const loginBtn = document.getElementById('btn-login');
     const resetLink = document.getElementById('reset-link');
     const logoutBtn = document.getElementById('logout-btn');
@@ -398,7 +398,7 @@
         }
     };
 
-    // LOGIN LOGIC (Safe Mode)
+    // LOGIN LOGIC
     loginBtn.addEventListener('click', async () => {
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
@@ -407,7 +407,6 @@
         toggleLoading(loginBtn, true);
         try {
             await signInWithEmailAndPassword(auth, e, p);
-            // Non serve fare altro, onAuthStateChanged scatterà
         } catch(err) {
             modal("Errore Login", err.message);
             toggleLoading(loginBtn, false);
@@ -427,59 +426,57 @@
         catch(err) { modal("Errore", err.message); }
     });
 
+    // AUTO LOGOUT (10 MIN)
+    let inactivityTimer;
+    const resetInactivityTimer = () => {
+        if (!currentUser) return;
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => { modal("Sessione Scaduta", "Disconnesso per inattività.", () => signOut(auth)); signOut(auth); }, 600000);
+    };
+    ['click', 'mousemove', 'keypress', 'touchstart'].forEach(e => document.addEventListener(e, resetInactivityTimer));
+
     // AUTH STATE CHANGE
     onAuthStateChanged(auth, async (user) => {
-        toggleLoading(loginBtn, false); // Sempre stop spinner
+        toggleLoading(loginBtn, false);
         
         if (user) {
             currentUser = user;
             document.getElementById('logout-btn').classList.remove('hidden');
+            resetInactivityTimer();
             
-            // 1. DETERMINA RUOLO E CAMBIA VISTA SUBITO (Non aspettare dati)
+            // 1. DETERMINA RUOLO E CAMBIA VISTA SUBITO
             const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
             
             if (isAdmin) {
-                // Controllo se l'elemento esiste prima di usarlo
                 const adminBad = document.getElementById('admin-indicator');
                 if(adminBad) adminBad.classList.remove('hidden');
-                
                 switchView('admin-view');
-                
             } else {
                 const adminBad = document.getElementById('admin-indicator');
                 if(adminBad) adminBad.classList.add('hidden');
-                
                 switchView('collaborator-view');
             }
 
-            // 2. CARICA DATI IN BACKGROUND (Safe block)
+            // 2. CARICA DATI IN BACKGROUND
             try {
-                // Carica rubrica
                 const snap = await getDocs(collection(db, "anagrafica"));
                 snap.forEach(d => rubrica[d.id] = d.data().nome);
                 document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.split(' ')[0] || 'User'}`;
                 
-                // Inizializza date
                 if(!isAdmin) {
                     const today = new Date();
                     document.getElementById('c-data').valueAsDate = today;
                     document.getElementById('c-filtro-mese').value = today.getMonth() + 1;
                     document.getElementById('c-filtro-anno').value = today.getFullYear();
                     syncCalFromFilter();
+                    loadCollabData();
                 } else {
                     const today = new Date();
                     document.getElementById('a-filtro-mese').value = today.getMonth() + 1;
                     document.getElementById('a-filtro-anno').value = today.getFullYear();
+                    loadAdminData();
                 }
-
-                // Carica dati specifici
-                if(isAdmin) loadAdminData(); 
-                else loadCollabData();
-
-            } catch (e) {
-                console.error("Errore caricamento dati:", e);
-                // Non blocchiamo l'utente, è già dentro
-            }
+            } catch (e) { console.error("Errore caricamento dati:", e); }
 
         } else {
             currentUser = null;
@@ -523,7 +520,7 @@
         document.getElementById('c-ore').value = t.ore;
         document.getElementById('c-note').value = t.note;
         window.scrollTo({top:0, behavior:'smooth'});
-        toast("Copiato! Scegli la data.");
+        toast("Dati copiati! Scegli la data.");
     };
 
     // CALENDAR & DATA
@@ -542,7 +539,9 @@
     window.renderCalendar = () => {
         const m = calDate.getMonth();
         const y = calDate.getFullYear();
-        document.getElementById('cal-title').innerText = `${monthNames[m]} ${y}`;
+        
+        const titleEl = document.getElementById('cal-title');
+        if(titleEl) titleEl.innerText = `${monthNames[m]} ${y}`;
         
         document.getElementById('c-filtro-mese').value = m + 1;
         document.getElementById('c-filtro-anno').value = y;
@@ -767,6 +766,8 @@
     }
 
     // EXPORT
+    window.changePwd = async () => { try { await updatePassword(currentUser, document.getElementById('new-pwd').value); toast("Fatto"); document.getElementById('pwd-modal').style.display='none'; } catch(e){ modal("Errore", e.message); } };
+
     function generateCsv(data, filename) {
         if(data.length === 0) return modal("Info", "Nessun dato.");
         const y = document.getElementById(currentUser.email===ADMIN_EMAIL ? 'a-filtro-anno':'c-filtro-anno').value;
