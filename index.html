@@ -10,18 +10,22 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. RESET & VARIABILI --- */
+        /* --- 1. THEME VARIABLES --- */
         :root {
+            /* LIGHT THEME (Default) */
             --primary: #007aff;
             --bg-body: #f2f2f7; 
             --bg-card: #ffffff;
+            --bg-input: #ffffff;
             --text-main: #1c1c1e;
             --text-muted: #8e8e93;
+            --border-color: #d1d1d6;
             --border-radius: 12px; 
             --shadow: 0 4px 12px rgba(0,0,0,0.05);
             --money-color: #34c759;
+            --hover-btn: #e5e5ea;
 
-            /* COLORI PALLINI */
+            /* PALLINI (Rimangono uguali per contrasto) */
             --dot-assistente: #ff3b30;
             --dot-istruttore: #34c759;
             --dot-propaganda: #af52de;
@@ -30,7 +34,19 @@
             --dot-segreteria: #8e8e93;
         }
 
-        *, *::before, *::after { box-sizing: border-box; }
+        /* DARK THEME OVERRIDES */
+        [data-theme="dark"] {
+            --bg-body: #000000;
+            --bg-card: #1c1c1e;
+            --bg-input: #2c2c2e;
+            --text-main: #f2f2f7;
+            --text-muted: #aeaeb2;
+            --border-color: #3a3a3c;
+            --shadow: 0 4px 12px rgba(0,0,0,0.3);
+            --hover-btn: #3a3a3c;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
         
         body { 
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
@@ -50,18 +66,18 @@
         .view-section.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        h2 { font-size: 1.5rem; font-weight: 700; margin: 0 0 5px 0; color: #000; } 
+        h2 { font-size: 1.5rem; font-weight: 700; margin: 0 0 5px 0; color: var(--text-main); } 
         h3 { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 25px 0 10px 0; font-weight: 600; }
 
         /* Form */
-        .form-box { background: #f2f2f7; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
+        .form-box { background: var(--bg-body); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--border-color); }
         .time-row { display: flex; gap: 15px; margin-bottom: 15px; } 
         .time-row > div { flex: 1; } 
 
         label { display: block; font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
         input, select { 
-            width: 100%; padding: 10px 12px; border: 1px solid #d1d1d6; border-radius: 10px; 
-            font-size: 15px; background: #fff; color: var(--text-main); outline: none; appearance: none;
+            width: 100%; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 10px; 
+            font-size: 15px; background: var(--bg-input); color: var(--text-main); outline: none; appearance: none;
         }
         input:focus, select:focus { border-color: var(--primary); }
 
@@ -74,69 +90,73 @@
         .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: #34c759; color: white; }
         .btn-warning { background: #ff9500; color: white; }
-        .btn-secondary { background: #e5e5ea; color: var(--text-main); }
+        .btn-secondary { background: var(--hover-btn); color: var(--text-main); }
         .btn-danger { background: #ff3b30; color: white; }
         
         .link-text { color: var(--primary); cursor: pointer; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px; }
         .link-text:hover { text-decoration: underline; }
 
+        /* Header Actions */
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+        .theme-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 5px; width: auto; color: var(--text-main); }
+
         /* Calendario */
         .calendar-wrapper { 
-            background: #ffffff; max-width: 380px; margin: 0 auto 20px auto; 
-            padding: 15px; border-radius: 20px; border: 1px solid #e5e5ea; 
+            background: var(--bg-card); max-width: 380px; margin: 0 auto 20px auto; 
+            padding: 15px; border-radius: 20px; border: 1px solid var(--border-color); 
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .cal-title { font-size: 1.1rem; font-weight: 700; text-transform: capitalize; color: #000; }
+        .cal-title { font-size: 1.1rem; font-weight: 700; text-transform: capitalize; color: var(--text-main); }
         .cal-nav { background: none; border: none; color: var(--primary); font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
         .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); row-gap: 2px; text-align: center; }
-        .cal-weekday { font-size: 0.7rem; font-weight: 600; color: #8e8e93; text-transform: uppercase; margin-bottom: 8px; }
+        .cal-weekday { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
         .cal-day { height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; cursor: pointer; font-size: 1rem; color: var(--text-main); position: relative; padding-top: 4px; }
         .cal-num { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; z-index: 2; font-weight: 500; }
         .cal-day.today .cal-num { background-color: #ff3b30; color: white; font-weight: 700; }
-        .cal-day.selected .cal-num { background-color: #000; color: white; }
+        .cal-day.selected .cal-num { background-color: var(--text-main); color: var(--bg-card); }
         .cal-dots { display: flex; gap: 3px; margin-top: 2px; height: 6px; justify-content: center; }
         .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
 
         /* Filtri & Tabella */
-        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; background: #f2f2f7; padding: 12px; border-radius: 12px; align-items: center; margin-bottom: 15px; }
-        .filter-bar select { flex: 1; min-width: 120px; background: white; border: none; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; background: var(--bg-body); padding: 12px; border-radius: 12px; align-items: center; margin-bottom: 15px; border: 1px solid var(--border-color); }
+        .filter-bar select, .filter-bar input { flex: 1; min-width: 120px; background: var(--bg-input); border: 1px solid var(--border-color); }
         .filter-bar button { width: auto; padding: 8px 16px; font-size: 13px; margin: 0; }
-        #a-search { flex: 2; min-width: 200px; border-color: #007aff; }
+        #a-search { flex: 2; min-width: 200px; border-color: var(--primary); }
 
-        .table-wrap { overflow-x: auto; margin-top: 10px; border: 1px solid #e5e5ea; border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; }
-        th { text-align: left; padding: 12px; border-bottom: 1px solid #e5e5ea; color: #86868b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid #f2f2f7; color: #1d1d1f; vertical-align: middle; }
+        .table-wrap { overflow-x: auto; margin-top: 10px; border: 1px solid var(--border-color); border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--bg-card); }
+        th { text-align: left; padding: 12px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid var(--bg-body); color: var(--text-main); vertical-align: middle; }
         tr:last-child td { border-bottom: none; }
         .action-icons { display: flex; gap: 8px; justify-content: flex-end; }
-        .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px; width: auto; }
-        .icon-lock { font-size: 1rem; color: #ccc; cursor: not-allowed; padding: 4px;}
+        .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px; width: auto; color: var(--text-main); }
+        .icon-lock { font-size: 1rem; color: var(--text-muted); cursor: not-allowed; padding: 4px;}
 
-        /* Stats */
+        /* Stats & Cards */
         .stats-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 10px; }
-        .stat-pill { background: #fff; border: 1px solid #e5e5ea; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; color: var(--text-main); font-weight: 500; }
+        .stat-pill { background: var(--bg-input); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; color: var(--text-main); font-weight: 500; }
         .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        /* Admin Cards */
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-top: 20px; }
-        .user-card { background: white; border: 1px solid #e5e5ea; border-radius: 16px; padding: 20px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .user-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .user-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
-        .card-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 2px; }
-        .card-sub { color: #86868b; font-size: 0.8rem; margin-bottom: 15px; }
-        .card-stats-row { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid #f2f2f7; padding-top: 10px; }
+        .card-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 2px; color: var(--text-main); }
+        .card-sub { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px; }
+        
+        .card-stats-row { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--bg-body); padding-top: 10px; }
         .stat-group { text-align: left; }
         .stat-group.right { text-align: right; }
-        .stat-label { font-size: 0.65rem; color: #86868b; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 2px; }
+        .stat-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 2px; }
         .stat-val-h { font-size: 1.4rem; font-weight: 800; color: var(--primary); line-height: 1; }
         .stat-val-m { font-size: 1.4rem; font-weight: 800; color: var(--money-color); line-height: 1; }
 
-        .edit-user-btn { background: #f2f2f7; border:none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #86868b; margin: 0; padding: 0; }
-        .edit-user-btn:hover { background: #e5e5ea; color: var(--primary); }
+        .edit-user-btn { background: var(--bg-body); border:none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); margin: 0; padding: 0; }
+        .edit-user-btn:hover { background: var(--border-color); color: var(--primary); }
 
         /* Rate Matrix */
         #rate-inputs-container { max-height: 300px; overflow-y: auto; padding-right: 5px; }
-        .rate-matrix-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #f2f2f7; }
+        .rate-matrix-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--bg-body); }
         .rate-matrix-row:last-child { border-bottom: none; }
         .rate-label { font-size: 0.85rem; color: var(--text-main); font-weight: 500; }
         .rate-input { width: 80px; padding: 6px; text-align: right; font-weight: 700; color: var(--money-color); }
@@ -149,9 +169,9 @@
             .filter-bar button { width: 100%; margin-top: 5px; }
             .stats-container { justify-content: flex-start; }
             thead { display: none; }
-            tr { display: block; background: white; border: 1px solid #e5e5ea; border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+            tr { display: block; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
             td { display: flex; justify-content: space-between; padding: 5px 0; border: none; text-align: right; }
-            td:before { content: attr(data-label); color: #86868b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; text-align: left; }
+            td:before { content: attr(data-label); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; text-align: left; }
             .table-input { text-align: right; width: 60%; }
         }
 
@@ -160,7 +180,7 @@
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} } @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 3000; display: none; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 18px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .modal-box { background: var(--bg-card); padding: 25px; border-radius: 18px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); color: var(--text-main); }
         .spinner { width: 16px; height: 16px; border: 2px solid white; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s infinite linear; display: inline-block; }
         @keyframes spin { to {transform: rotate(360deg);} }
     </style>
@@ -171,7 +191,7 @@
 <div id="custom-modal" class="modal-overlay">
     <div class="modal-box">
         <h3 id="modal-title">Avviso</h3>
-        <p id="modal-msg" style="color:#666; margin-bottom:20px">Testo</p>
+        <p id="modal-msg" style="color:var(--text-muted); margin-bottom:20px">Testo</p>
         <div style="display:flex; gap:10px">
             <button id="modal-cancel" class="btn-secondary" onclick="closeModal()">Annulla</button>
             <button id="modal-confirm" class="btn-primary">OK</button>
@@ -185,7 +205,10 @@
             <h2 id="welcome-msg" style="margin:0">Login</h2>
             <span id="admin-indicator" class="hidden" style="background:#fef3c7; color:#d97706; padding:2px 8px; border-radius:12px; font-size:0.65rem; font-weight:700; margin-left:5px">ADMIN</span>
         </div>
-        <button id="logout-btn" class="btn-secondary hidden" style="width:auto; padding:8px 16px;">Esci</button>
+        <div class="header-actions">
+            <button id="theme-btn" class="theme-btn" onclick="toggleTheme()">🌙</button>
+            <button id="logout-btn" class="btn-secondary hidden" style="width:auto; padding:8px 16px;">Esci</button>
+        </div>
     </div>
 
     <div id="login-view" class="view-section active">
@@ -278,8 +301,8 @@
     </div>
 
     <div id="admin-view" class="view-section">
-        <div class="form-box" style="background:#fffbeb; border-color:#fcd34d">
-            <h3 style="color:#b45309; margin-top:0">🛠️ Anagrafica</h3>
+        <div class="form-box" style="background:var(--bg-body); border-color:var(--border-color)">
+            <h3 style="color:var(--primary); margin-top:0">🛠️ Anagrafica</h3>
             <div class="time-row" style="margin-bottom:0">
                 <input type="email" id="adm-email" placeholder="Email">
                 <input type="text" id="adm-name" placeholder="Nome Cognome">
@@ -315,7 +338,7 @@
     </div>
 
     <div id="admin-detail" class="view-section">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:#e5e5ea; padding:10px; border-radius:12px">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:var(--bg-body); padding:10px; border-radius:12px; border:1px solid var(--border-color)">
             <h3 style="margin:0" id="detail-name">Utente</h3>
             <div>
                 <button onclick="openAddShiftModal()" class="btn-primary" style="display:inline-flex; width:auto; margin-right:5px">➕ Aggiungi Turno</button>
@@ -350,8 +373,8 @@
     <div class="modal-box">
         <h3>Modifica Utente & Tariffe</h3>
         <input type="text" id="edit-name-input" placeholder="Nome Cognome" style="margin-bottom:15px; font-weight:bold">
-        <div style="max-height:250px; overflow-y:auto; border:1px solid #e5e5ea; padding:10px; border-radius:8px; margin-bottom:15px">
-            <h4 style="margin:0 0 10px 0; font-size:0.75rem; color:#86868b; text-transform:uppercase">Tariffe Orarie (€)</h4>
+        <div style="max-height:250px; overflow-y:auto; border:1px solid var(--border-color); padding:10px; border-radius:8px; margin-bottom:15px">
+            <h4 style="margin:0 0 10px 0; font-size:0.75rem; color:var(--text-muted); text-transform:uppercase">Tariffe Orarie (€)</h4>
             <div id="rate-inputs-container"></div>
         </div>
         <div style="display:flex; gap:10px">
@@ -425,6 +448,20 @@
     const resetLink = document.getElementById('reset-link');
     const logoutBtn = document.getElementById('logout-btn');
     const searchInput = document.getElementById('a-search');
+
+    // --- DARK MODE LOGIC ---
+    window.toggleTheme = () => {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        document.getElementById('theme-btn').innerText = next === 'dark' ? '☀️' : '🌙';
+    };
+    // Init Theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-btn').innerText = savedTheme === 'dark' ? '☀️' : '🌙';
 
     // UI UTILS
     window.toast = (msg) => { const t = document.getElementById("toast"); t.innerText=msg; t.className="show"; setTimeout(()=>t.className="",3000); };
@@ -832,17 +869,12 @@
 
     window.saveAdminShift = async () => {
         if(!detailUserEmail) return;
-        
-        // Cerca UID da turni precedenti
+        // Recupera UID
         let targetUid = null;
         const knownShift = allTurni.find(t => t.email === detailUserEmail);
         if (knownShift) targetUid = knownShift.uid;
-        
-        // Fallback: se l'utente non ha turni nel periodo, cerca in tutti i turni caricati
-        // Nota: se l'utente è nuovissimo (0 turni totali), non possiamo inserire turni senza UID.
-        if (!targetUid) {
-             return modal("Errore", "Impossibile trovare UID utente (nessun turno precedente).");
-        }
+        // Se non trovato (utente nuovo), servirebbe un meccanismo diverso, ma per ora usiamo questo fallback
+        if (!targetUid) return modal("Errore", "Impossibile trovare UID (nessun turno precedente).");
 
         const d = document.getElementById('aa-data').value;
         const m = document.getElementById('aa-mansione').value;
@@ -852,47 +884,18 @@
 
         try {
             await addDoc(collection(db, "turni"), {
-                uid: targetUid,
-                email: detailUserEmail,
-                data: d, mansione: m, ore: h,
+                uid: targetUid, email: detailUserEmail, data: d, mansione: m, ore: h,
                 oraInizio: document.getElementById('aa-inizio').value,
                 oraFine: document.getElementById('aa-fine').value,
-                note: document.getElementById('aa-note').value,
-                created_at: new Date()
+                note: document.getElementById('aa-note').value, created_at: new Date()
             });
             toast("Turno aggiunto!");
             document.getElementById('admin-add-modal').style.display='none';
-            loadAdminData(); // Ricarica tutto
+            loadAdminData(); 
         } catch(e) { modal("Errore", e.message); }
     };
 
-    window.openDetail = (e) => { detailUserEmail=e; switchView('admin-detail'); document.getElementById('detail-name').innerText=rubrica[e]?.nome||e; renderAdminDetailTable(); };
-    window.closeDetail = () => { detailUserEmail=null; switchView('admin-view'); };
-
-    function renderAdminDetailTable() {
-        const tbody = document.getElementById('detail-tbody'); tbody.innerHTML=""; let tot=0; let breakdown={};
-        const statsBox = document.getElementById('d-stats-container'); statsBox.innerHTML="";
-
-        allTurni.filter(t=>t.email===detailUserEmail).forEach(t => {
-            tot+=t.ore;
-            if(!breakdown[t.mansione]) breakdown[t.mansione]=0;
-            breakdown[t.mansione] += t.ore;
-            tbody.innerHTML += `
-                <tr id="arow-${t.id}">
-                    <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
-                    <td data-label="Mansione">${t.mansione}</td>
-                    <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
-                    <td data-label="Ore"><strong>${t.ore}</strong></td>
-                    <td data-label="Note">${t.note||''}</td>
-                    <td class="actions-cell"><div class="action-icons"><button class="icon-btn" onclick="editRow('${t.id}', true)">✏️</button><button class="icon-btn" onclick="delRow('${t.id}', true)">🗑️</button></div></td>
-                </tr>
-            `;
-        });
-        document.getElementById('d-totale').innerText = tot.toFixed(1);
-        Object.keys(breakdown).forEach(m => { statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`; });
-    }
-
-    // SHARED
+    // Shared Edit
     window.editRow = (id, isAdmin=false) => {
         const tr = document.getElementById((isAdmin?'arow-':'row-')+id);
         const src = isAdmin ? allTurni : myTurni;
@@ -920,6 +923,33 @@
         } catch(e) { modal("Errore", e.message); }
     };
     window.delRow = (id, isAdmin=false) => { modal("Eliminare?", "Confermi?", async () => { await deleteDoc(doc(db, "turni", id)); toast("Eliminato"); isAdmin ? loadAdminData() : loadCollabData(); }); };
+
+    // Detail & Export
+    window.openDetail = (e) => { detailUserEmail=e; switchView('admin-detail'); document.getElementById('detail-name').innerText=rubrica[e]?.nome||e; renderAdminDetailTable(); };
+    window.closeDetail = () => { detailUserEmail=null; switchView('admin-view'); };
+
+    function renderAdminDetailTable() {
+        const tbody = document.getElementById('detail-tbody'); tbody.innerHTML=""; let tot=0; let breakdown={};
+        const statsBox = document.getElementById('d-stats-container'); statsBox.innerHTML="";
+
+        allTurni.filter(t=>t.email===detailUserEmail).forEach(t => {
+            tot+=t.ore;
+            if(!breakdown[t.mansione]) breakdown[t.mansione]=0;
+            breakdown[t.mansione] += t.ore;
+            tbody.innerHTML += `
+                <tr id="arow-${t.id}">
+                    <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
+                    <td data-label="Mansione">${t.mansione}</td>
+                    <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
+                    <td data-label="Ore"><strong>${t.ore}</strong></td>
+                    <td data-label="Note">${t.note||''}</td>
+                    <td class="actions-cell"><div class="action-icons"><button class="icon-btn" onclick="editRow('${t.id}', true)">✏️</button><button class="icon-btn" onclick="delRow('${t.id}', true)">🗑️</button></div></td>
+                </tr>
+            `;
+        });
+        document.getElementById('d-totale').innerText = tot.toFixed(1);
+        Object.keys(breakdown).forEach(m => { statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`; });
+    }
 
     // EXPORT
     window.changePwd = async () => { try { await updatePassword(currentUser, document.getElementById('new-pwd').value); toast("Fatto"); document.getElementById('pwd-modal').style.display='none'; } catch(e){ modal("Errore", e.message); } };
