@@ -10,9 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 1. RESET & VARIABILI --- */
+        /* --- RESET & VARIABILI --- */
         :root {
-            --primary: #007aff; 
+            --primary: #007aff;
             --bg-body: #f2f2f7; 
             --bg-card: #ffffff;
             --text-main: #1c1c1e;
@@ -32,7 +32,8 @@
         *, *::before, *::after { box-sizing: border-box; }
         
         body { 
-            font-family: 'Inter', sans-serif; background-color: var(--bg-body); 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background-color: var(--bg-body); 
             color: var(--text-main); margin: 0; padding: 15px; 
             font-size: 14px; -webkit-font-smoothing: antialiased;
         }
@@ -43,15 +44,17 @@
             min-height: 85vh;
         }
 
-        /* Gestione Visibilità */
+        /* --- VISIBILITÀ (SISTEMA A TAB) --- */
+        /* Nascondiamo tutto di default, mostriamo solo .active */
         .view-section { display: none; } 
         .view-section.active { display: block; animation: fadeIn 0.3s ease; }
+        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         h2 { font-size: 1.5rem; font-weight: 700; margin: 0 0 15px 0; color: #000; } 
         h3 { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 25px 0 10px 0; font-weight: 600; }
 
-        /* --- FORM ELEMENTS --- */
+        /* --- UI ELEMENTS --- */
         .form-box { background: #f2f2f7; padding: 20px; border-radius: 16px; margin-bottom: 20px; }
         .time-row { display: flex; gap: 15px; margin-bottom: 15px; } 
         .time-row > div { flex: 1; } 
@@ -96,12 +99,11 @@
         .cal-dots { display: flex; gap: 3px; margin-top: 2px; height: 6px; justify-content: center; }
         .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
 
-        /* --- FILTRI --- */
+        /* --- FILTRI E TABELLE --- */
         .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; background: #f2f2f7; padding: 12px; border-radius: 12px; align-items: center; margin-bottom: 15px; }
         .filter-bar select { flex: 1; min-width: 120px; background: white; border: none; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .filter-bar button { width: auto; padding: 8px 16px; font-size: 13px; margin: 0; }
 
-        /* --- TABELLA --- */
         .table-wrap { overflow-x: auto; margin-top: 10px; border: 1px solid #e5e5ea; border-radius: 12px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; }
         th { text-align: left; padding: 12px; border-bottom: 1px solid #e5e5ea; color: #86868b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
@@ -110,12 +112,11 @@
         .action-icons { display: flex; gap: 8px; justify-content: flex-end; }
         .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px; width: auto; }
 
-        /* --- STATISTICHE --- */
+        /* --- STATS & CARDS --- */
         .stats-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 10px; }
         .stat-pill { background: #fff; border: 1px solid #e5e5ea; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; color: var(--text-main); font-weight: 500; }
         .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        /* --- ADMIN CARDS --- */
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-top: 20px; }
         .user-card { background: white; border: 1px solid #e5e5ea; border-radius: 16px; padding: 20px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
         .user-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
@@ -123,9 +124,8 @@
         .card-sub { color: #86868b; font-size: 0.8rem; margin-bottom: 15px; }
         .card-stat { font-size: 1.8rem; font-weight: 800; color: var(--primary); text-align: right; }
         .edit-user-btn { background: #f2f2f7; border:none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #86868b; margin: 0; padding: 0; }
-        .edit-user-btn:hover { background: #e5e5ea; color: var(--primary); }
 
-        /* Mobile */
+        /* Mobile & Utils */
         @media (max-width: 600px) {
             .container { padding: 15px; box-shadow: none; background: transparent; }
             .time-row { flex-direction: column; gap: 10px; }
@@ -138,8 +138,6 @@
             td:before { content: attr(data-label); color: #86868b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; text-align: left; }
             .table-input { text-align: right; width: 60%; }
         }
-
-        /* Utils */
         .hidden { display: none !important; }
         #toast { visibility: hidden; min-width: 250px; background: #333; color: #fff; text-align: center; border-radius: 50px; padding: 12px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2000; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
@@ -175,8 +173,8 @@
             <h2 style="margin-bottom:20px">Accesso</h2>
             <input type="email" id="email" placeholder="Email" style="margin-bottom:10px">
             <input type="password" id="password" placeholder="Password" style="margin-bottom:20px">
-            <button id="btn-login" onclick="login()" class="btn-primary">Accedi</button>
-            <p onclick="resetPwd()" style="color:var(--primary); cursor:pointer; font-size:0.85rem; margin-top:15px">Password dimenticata?</p>
+            <button id="btn-login" class="btn-primary">Accedi</button>
+            <p id="reset-link" style="color:var(--primary); cursor:pointer; font-size:0.85rem; margin-top:15px">Password dimenticata?</p>
         </div>
     </div>
 
@@ -338,6 +336,7 @@
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // FIREBASE CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
       authDomain: "gestioneore-3bf5f.firebaseapp.com",
@@ -364,18 +363,12 @@
 
     const Mansioni = ["Assistente bagnanti", "Istruttore", "Fitness", "Propaganda", "Lezione individuale", "Segreteria"];
 
-    // SYSTEM
-    window.switchView = (viewId) => {
-        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-        const target = document.getElementById(viewId);
-        if(target) target.classList.add('active');
-        if(viewId === 'login-view') {
-            document.getElementById('logout-btn').classList.add('hidden');
-            document.getElementById('welcome-msg').innerText = "Login";
-        }
-    };
+    // GLOBAL VARS FOR DOM ELEMENTS
+    const loginBtn = document.getElementById('btn-login');
+    const resetLink = document.getElementById('reset-link');
+    const logoutBtn = document.getElementById('logout-btn');
 
-    // Utils
+    // UI UTILS
     window.toast = (msg) => { const t = document.getElementById("toast"); t.innerText=msg; t.className="show"; setTimeout(()=>t.className="",3000); };
     window.modal = (t,m,cb) => {
         document.getElementById('modal-title').innerText=t; document.getElementById('modal-msg').innerText=m;
@@ -384,19 +377,144 @@
         document.getElementById('custom-modal').style.display='flex';
     };
     window.closeModal = () => document.getElementById('custom-modal').style.display='none';
-    const toggleLoading = (id,l) => { const b=document.getElementById(id); if(b){ l?b.innerHTML='<div class="spinner"></div>':b.innerText=b.id==='btn-login'?'Accedi':'Registra Turno'; b.disabled=l; }};
+    const toggleLoading = (el, loading) => { if(el) { loading ? el.innerHTML='<div class="spinner"></div>' : el.innerText='Accedi'; el.disabled = loading; }};
 
-    // INIT
-    const today = new Date();
-    if(document.getElementById('c-data')) {
-        document.getElementById('c-data').valueAsDate = today;
-        document.getElementById('c-filtro-mese').value = today.getMonth() + 1;
-        document.getElementById('c-filtro-anno').value = today.getFullYear();
-        document.getElementById('a-filtro-mese').value = today.getMonth() + 1;
-        document.getElementById('a-filtro-anno').value = today.getFullYear();
-    }
+    // SWITCH VIEW
+    window.switchView = (viewId) => {
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+        const target = document.getElementById(viewId);
+        if(target) target.classList.add('active');
+        
+        if(viewId === 'login-view') {
+            logoutBtn.classList.add('hidden');
+            document.getElementById('welcome-msg').innerText = "Login";
+        } else {
+            logoutBtn.classList.remove('hidden');
+        }
+    };
 
-    // HELPER COLOR
+    // LOGIN LOGIC (Safe Mode)
+    loginBtn.addEventListener('click', async () => {
+        const e = document.getElementById('email').value;
+        const p = document.getElementById('password').value;
+        if(!e || !p) return modal("Errore", "Inserisci email e password.");
+        
+        toggleLoading(loginBtn, true);
+        try {
+            await signInWithEmailAndPassword(auth, e, p);
+            // Non serve fare altro, onAuthStateChanged scatterà
+        } catch(err) {
+            modal("Errore Login", err.message);
+            toggleLoading(loginBtn, false);
+        }
+    });
+
+    // LOGOUT LOGIC
+    logoutBtn.addEventListener('click', async () => {
+        try { await signOut(auth); } catch(e) { console.error(e); }
+    });
+
+    // RESET PWD
+    resetLink.addEventListener('click', async () => {
+        const e = document.getElementById('email').value;
+        if(!e) return modal("Info", "Inserisci la tua email nel campo sopra.");
+        try { await sendPasswordResetEmail(auth, e); modal("Inviata", "Controlla la posta."); } 
+        catch(err) { modal("Errore", err.message); }
+    });
+
+    // AUTH STATE CHANGE
+    onAuthStateChanged(auth, async (user) => {
+        toggleLoading(loginBtn, false); // Sempre stop spinner
+        
+        if (user) {
+            currentUser = user;
+            
+            // 1. DETERMINA RUOLO E CAMBIA VISTA SUBITO
+            const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+            
+            if(isAdmin) {
+                document.getElementById('admin-indicator').classList.remove('hidden');
+                switchView('admin-view');
+            } else {
+                document.getElementById('admin-indicator').classList.add('hidden');
+                switchView('collaborator-view');
+            }
+
+            // 2. CARICA DATI IN BACKGROUND (Safe block)
+            try {
+                // Carica rubrica
+                const snap = await getDocs(collection(db, "anagrafica"));
+                snap.forEach(d => rubrica[d.id] = d.data().nome);
+                document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.split(' ')[0] || 'User'}`;
+                
+                // Inizializza date
+                if(!isAdmin) {
+                    const today = new Date();
+                    document.getElementById('c-data').valueAsDate = today;
+                    document.getElementById('c-filtro-mese').value = today.getMonth() + 1;
+                    document.getElementById('c-filtro-anno').value = today.getFullYear();
+                    syncCalFromFilter();
+                } else {
+                    const today = new Date();
+                    document.getElementById('a-filtro-mese').value = today.getMonth() + 1;
+                    document.getElementById('a-filtro-anno').value = today.getFullYear();
+                }
+
+                // Carica dati specifici
+                if(isAdmin) loadAdminData(); 
+                else loadCollabData();
+
+            } catch (e) {
+                console.error("Errore caricamento dati:", e);
+                // Non blocchiamo l'utente, è già dentro
+            }
+
+        } else {
+            currentUser = null;
+            switchView('login-view');
+        }
+    });
+
+    // --- FUNZIONI CONDIVISE ---
+    window.calcDiff = () => {
+        const i = document.getElementById('c-inizio').value, f = document.getElementById('c-fine').value;
+        if(i && f) {
+            let d = (new Date(`1970-01-01T${f}`) - new Date(`1970-01-01T${i}`))/36e5;
+            if(d<0) d+=24;
+            document.getElementById('c-ore').value = d.toFixed(2);
+        }
+    };
+
+    window.salvaOre = async () => {
+        const d=document.getElementById('c-data').value, m=document.getElementById('c-mansione').value, h=parseFloat(document.getElementById('c-ore').value);
+        if(!d || !m || !h) return modal("Errore", "Compila i campi.");
+        const btn = document.getElementById('btn-salva');
+        btn.innerHTML = '<div class="spinner"></div>';
+        try {
+            await addDoc(collection(db, "turni"), {
+                uid: currentUser.uid, email: currentUser.email, data: d, mansione: m, ore: h,
+                oraInizio: document.getElementById('c-inizio').value, oraFine: document.getElementById('c-fine').value,
+                note: document.getElementById('c-note').value, created_at: new Date()
+            });
+            toast("Salvato!"); loadCollabData();
+            document.getElementById('c-ore').value=""; document.getElementById('c-note').value="";
+        } catch(e) { modal("Errore", e.message); }
+        btn.innerText = "Registra Turno";
+    };
+
+    window.duplicaTurno = (id) => {
+        const t = myTurni.find(x => x.id === id);
+        if(!t) return;
+        document.getElementById('c-mansione').value = t.mansione;
+        document.getElementById('c-inizio').value = t.oraInizio;
+        document.getElementById('c-fine').value = t.oraFine;
+        document.getElementById('c-ore').value = t.ore;
+        document.getElementById('c-note').value = t.note;
+        window.scrollTo({top:0, behavior:'smooth'});
+        toast("Copiato! Scegli la data.");
+    };
+
+    // CALENDAR & DATA
     const getColor = (m) => {
         if(m.includes("Assistente")) return "var(--dot-assistente)";
         if(m.includes("Istruttore")) return "var(--dot-istruttore)";
@@ -407,15 +525,12 @@
         return "#ccc";
     };
 
-    // CALENDAR
     const monthNames = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
     
     window.renderCalendar = () => {
         const m = calDate.getMonth();
         const y = calDate.getFullYear();
-        
-        const titleEl = document.getElementById('cal-title');
-        if(titleEl) titleEl.innerText = `${monthNames[m]} ${y}`;
+        document.getElementById('cal-title').innerText = `${monthNames[m]} ${y}`;
         
         document.getElementById('c-filtro-mese').value = m + 1;
         document.getElementById('c-filtro-anno').value = y;
@@ -434,9 +549,7 @@
             const shifts = myTurni.filter(t => t.data === dateStr);
             
             let dots = "";
-            shifts.forEach(s => {
-                dots += `<div class="cal-dot" style="background:${getColor(s.mansione)}"></div>`;
-            });
+            shifts.forEach(s => { dots += `<div class="cal-dot" style="background:${getColor(s.mansione)}"></div>`; });
 
             const isToday = (d === now.getDate() && m === now.getMonth() && y === now.getFullYear());
             const isSel = (d === selectedDay);
@@ -449,13 +562,7 @@
         }
     };
 
-    window.changeMonth = (delta) => {
-        calDate.setMonth(calDate.getMonth() + delta);
-        selectedDay = null;
-        renderCalendar();
-        renderCollabTable();
-    };
-
+    window.changeMonth = (delta) => { calDate.setMonth(calDate.getMonth() + delta); selectedDay = null; renderCalendar(); renderCollabTable(); };
     window.syncCalFromFilter = () => {
         const m = parseInt(document.getElementById('c-filtro-mese').value) - 1;
         const y = parseInt(document.getElementById('c-filtro-anno').value);
@@ -463,108 +570,6 @@
         selectedDay = null;
         renderCalendar();
         renderCollabTable();
-    };
-
-    // AUTH
-    window.login = async () => {
-        const e=document.getElementById('email').value, p=document.getElementById('password').value;
-        if(!e||!p) return modal("Errore", "Inserisci dati.");
-        toggleLoading('btn-login', true);
-        try { await signInWithEmailAndPassword(auth, e, p); } catch(err) { modal("Errore", err.message); toggleLoading('btn-login', false); }
-    };
-    
-    // Explicit Logout Logic
-    const logout = async () => {
-        try { await signOut(auth); } catch(e) { console.error(e); }
-    };
-    document.getElementById('logout-btn').addEventListener('click', logout);
-
-    window.resetPwd = async () => {
-        const e = document.getElementById('email').value;
-        if(!e) return modal("Info", "Inserisci email sopra.");
-        try { await sendPasswordResetEmail(auth, e); modal("Fatto", "Controlla la posta."); } catch(err) { modal("Errore", err.message); }
-    };
-    window.changePwd = async () => {
-        try { await updatePassword(currentUser, document.getElementById('new-pwd').value); toast("Password cambiata"); document.getElementById('pwd-modal').style.display='none'; }
-        catch(e) { modal("Errore", e.message); }
-    };
-
-    onAuthStateChanged(auth, (user) => { // Removed async from top level callback
-        toggleLoading('btn-login', false);
-        if(user) {
-            currentUser = user;
-            document.getElementById('logout-btn').classList.remove('hidden');
-            
-            // 1. SWITCH VIEW IMMEDIATELY (Don't await data)
-            const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-            
-            if (isAdmin) {
-                document.getElementById('admin-indicator').classList.remove('hidden');
-                switchView('admin-view');
-            } else {
-                document.getElementById('admin-indicator').classList.add('hidden');
-                switchView('collaborator-view');
-            }
-
-            // 2. LOAD DATA ASYNC (Does not block UI)
-            (async () => {
-                try {
-                    const snap = await getDocs(collection(db, "anagrafica"));
-                    snap.forEach(d => rubrica[d.id] = d.data().nome);
-                    document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.split(' ')[0] || 'User'}`;
-                } catch(e) {}
-
-                if (isAdmin) {
-                    loadAdminData();
-                } else {
-                    document.getElementById('c-data').valueAsDate = new Date();
-                    syncCalFromFilter(); 
-                    loadCollabData(); 
-                }
-            })();
-
-        } else {
-            currentUser = null;
-            switchView('login-view');
-        }
-    });
-
-    // COLLABORATOR ACTIONS
-    window.calcDiff = () => {
-        const i = document.getElementById('c-inizio').value, f = document.getElementById('c-fine').value;
-        if(i && f) {
-            let d = (new Date(`1970-01-01T${f}`) - new Date(`1970-01-01T${i}`))/36e5;
-            if(d<0) d+=24;
-            document.getElementById('c-ore').value = d.toFixed(2);
-        }
-    };
-
-    window.salvaOre = async () => {
-        const d=document.getElementById('c-data').value, m=document.getElementById('c-mansione').value, h=parseFloat(document.getElementById('c-ore').value);
-        if(!d || !m || !h) return modal("Errore", "Compila i campi.");
-        toggleLoading('btn-salva', true);
-        try {
-            await addDoc(collection(db, "turni"), {
-                uid: currentUser.uid, email: currentUser.email, data: d, mansione: m, ore: h,
-                oraInizio: document.getElementById('c-inizio').value, oraFine: document.getElementById('c-fine').value,
-                note: document.getElementById('c-note').value, created_at: new Date()
-            });
-            toast("Salvato!"); loadCollabData();
-            document.getElementById('c-ore').value=""; document.getElementById('c-note').value="";
-        } catch(e) { modal("Errore", e.message); }
-        toggleLoading('btn-salva', false);
-    };
-
-    window.duplicaTurno = (id) => {
-        const t = myTurni.find(x => x.id === id);
-        if(!t) return;
-        document.getElementById('c-mansione').value = t.mansione;
-        document.getElementById('c-inizio').value = t.oraInizio;
-        document.getElementById('c-fine').value = t.oraFine;
-        document.getElementById('c-ore').value = t.ore;
-        document.getElementById('c-note').value = t.note;
-        window.scrollTo({top:0, behavior:'smooth'});
-        toast("Dati copiati! Scegli la data.");
     };
 
     async function loadCollabData() {
@@ -617,64 +622,8 @@
             `;
         });
         document.getElementById('c-totale').innerText = tot.toFixed(1);
-        
-        Object.keys(breakdown).forEach(m => {
-            statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`;
-        });
+        Object.keys(breakdown).forEach(m => { statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`; });
     };
-
-    // SHARED EDIT
-    window.delRow = (id, isAdmin=false) => {
-        modal("Eliminare?", "Confermi cancellazione?", async () => {
-            await deleteDoc(doc(db, "turni", id));
-            toast("Eliminato");
-            isAdmin ? loadAdminData() : loadCollabData();
-        });
-    };
-    window.editRow = (id, isAdmin=false) => {
-        const tr = document.getElementById((isAdmin?'arow-':'row-')+id);
-        const src = isAdmin ? allTurni : myTurni;
-        const t = src.find(x => x.id === id);
-        tr.innerHTML = `
-            <td data-label="Data"><input type="date" id="ed-d-${id}" value="${t.data}" class="table-input"></td>
-            <td data-label="Mansione"><select id="ed-m-${id}" class="table-input">${Mansioni.map(m=>`<option ${m==t.mansione?'selected':''}>${m}</option>`).join('')}</select></td>
-            <td data-label="Orario"><div style="display:flex; gap:2px"><input type="time" id="ed-i-${id}" value="${t.oraInizio}" class="table-input"><input type="time" id="ed-f-${id}" value="${t.oraFine}" class="table-input"></div></td>
-            <td data-label="Ore"><input type="number" id="ed-h-${id}" value="${t.ore}" step="0.5" class="table-input" style="width:50px"></td>
-            <td data-label="Note"><input type="text" id="ed-n-${id}" value="${t.note}" class="table-input"></td>
-            <td class="actions-cell"><button class="btn-success" onclick="saveEdit('${id}', ${isAdmin})" style="padding:5px">OK</button></td>
-        `;
-    };
-    window.saveEdit = async (id, isAdmin) => {
-        try {
-            await updateDoc(doc(db, "turni", id), {
-                data: document.getElementById(`ed-d-${id}`).value,
-                mansione: document.getElementById(`ed-m-${id}`).value,
-                ore: parseFloat(document.getElementById(`ed-h-${id}`).value),
-                oraInizio: document.getElementById(`ed-i-${id}`).value,
-                oraFine: document.getElementById(`ed-f-${id}`).value,
-                note: document.getElementById(`ed-n-${id}`).value
-            });
-            toast("Modificato"); isAdmin ? loadAdminData() : loadCollabData();
-        } catch(e) { modal("Errore", e.message); }
-    };
-
-    // ADMIN
-    window.saveAnagrafica = async () => {
-        const e = document.getElementById('adm-email').value.trim().toLowerCase();
-        if(!e) return modal("Errore", "Manca email.");
-        try { await setDoc(doc(db, "anagrafica", e), { nome: document.getElementById('adm-name').value }); toast("OK"); loadAdminData(); } 
-        catch(e) { modal("Errore", e.message); }
-    };
-    window.saveEditUser = async () => {
-        if(!currentEditEmail) return;
-        try { 
-            const n = document.getElementById('edit-name-input').value;
-            await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: n }, { merge: true });
-            rubrica[currentEditEmail] = n; toast("Nome aggiornato"); 
-            document.getElementById('edit-user-modal').style.display='none'; loadAdminData();
-        } catch(e) { modal("Errore", e.message); }
-    };
-    window.openEditUser = (e,n) => { currentEditEmail=e; document.getElementById('edit-name-input').value=n; document.getElementById('edit-user-modal').style.display='flex'; };
 
     window.loadAdminData = async () => {
         const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
@@ -725,7 +674,6 @@
             tot+=t.ore;
             if(!breakdown[t.mansione]) breakdown[t.mansione]=0;
             breakdown[t.mansione] += t.ore;
-
             tbody.innerHTML += `
                 <tr id="arow-${t.id}">
                     <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
@@ -743,13 +691,63 @@
             `;
         });
         document.getElementById('d-totale').innerText = tot.toFixed(1);
-        
-        Object.keys(breakdown).forEach(m => {
-            statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`;
-        });
+        Object.keys(breakdown).forEach(m => { statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`; });
     }
 
+    // SHARED
+    window.delRow = (id, isAdmin=false) => {
+        modal("Eliminare?", "Confermi?", async () => {
+            await deleteDoc(doc(db, "turni", id));
+            toast("Eliminato"); isAdmin ? loadAdminData() : loadCollabData();
+        });
+    };
+    window.editRow = (id, isAdmin=false) => {
+        const tr = document.getElementById((isAdmin?'arow-':'row-')+id);
+        const src = isAdmin ? allTurni : myTurni;
+        const t = src.find(x => x.id === id);
+        tr.innerHTML = `
+            <td data-label="Data"><input type="date" id="ed-d-${id}" value="${t.data}" class="table-input"></td>
+            <td data-label="Mansione"><select id="ed-m-${id}" class="table-input">${Mansioni.map(m=>`<option ${m==t.mansione?'selected':''}>${m}</option>`).join('')}</select></td>
+            <td data-label="Orario"><div style="display:flex; gap:2px"><input type="time" id="ed-i-${id}" value="${t.oraInizio}" class="table-input"><input type="time" id="ed-f-${id}" value="${t.oraFine}" class="table-input"></div></td>
+            <td data-label="Ore"><input type="number" id="ed-h-${id}" value="${t.ore}" step="0.5" class="table-input" style="width:50px"></td>
+            <td data-label="Note"><input type="text" id="ed-n-${id}" value="${t.note}" class="table-input"></td>
+            <td class="actions-cell"><button class="btn-success" onclick="saveEdit('${id}', ${isAdmin})" style="padding:5px">OK</button></td>
+        `;
+    };
+    window.saveEdit = async (id, isAdmin) => {
+        try {
+            await updateDoc(doc(db, "turni", id), {
+                data: document.getElementById(`ed-d-${id}`).value,
+                mansione: document.getElementById(`ed-m-${id}`).value,
+                ore: parseFloat(document.getElementById(`ed-h-${id}`).value),
+                oraInizio: document.getElementById(`ed-i-${id}`).value,
+                oraFine: document.getElementById(`ed-f-${id}`).value,
+                note: document.getElementById(`ed-n-${id}`).value
+            });
+            toast("Modificato"); isAdmin ? loadAdminData() : loadCollabData();
+        } catch(e) { modal("Errore", e.message); }
+    };
+
+    window.saveAnagrafica = async () => {
+        const e = document.getElementById('adm-email').value.trim().toLowerCase();
+        if(!e) return modal("Errore", "Email mancante.");
+        try { await setDoc(doc(db, "anagrafica", e), { nome: document.getElementById('adm-name').value }); toast("OK"); loadAdminData(); } 
+        catch(e) { modal("Errore", e.message); }
+    };
+    window.saveEditUser = async () => {
+        if(!currentEditEmail) return;
+        try { 
+            const n = document.getElementById('edit-name-input').value;
+            await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: n }, { merge: true });
+            rubrica[currentEditEmail] = n; toast("Aggiornato"); 
+            document.getElementById('edit-user-modal').style.display='none'; loadAdminData();
+        } catch(e) { modal("Errore", e.message); }
+    };
+    window.openEditUser = (e,n) => { currentEditEmail=e; document.getElementById('edit-name-input').value=n; document.getElementById('edit-user-modal').style.display='flex'; };
+    
     // EXPORT
+    window.changePwd = async () => { try { await updatePassword(currentUser, document.getElementById('new-pwd').value); toast("Fatto"); document.getElementById('pwd-modal').style.display='none'; } catch(e){ modal("Errore", e.message); } };
+
     function generateCsv(data, filename) {
         if(data.length === 0) return modal("Info", "Nessun dato.");
         const y = document.getElementById(currentUser.email===ADMIN_EMAIL ? 'a-filtro-anno':'c-filtro-anno').value;
