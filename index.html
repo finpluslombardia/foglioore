@@ -19,7 +19,7 @@
             --text-muted: #8e8e93;
             --border-radius: 12px; 
             --shadow: 0 4px 12px rgba(0,0,0,0.05);
-            --money-color: #34c759; /* Verde per i soldi */
+            --money-color: #34c759;
 
             /* COLORI PALLINI */
             --dot-assistente: #ff3b30;
@@ -45,11 +45,12 @@
             min-height: 85vh;
         }
 
+        /* Gestione Visibilità */
         .view-section { display: none; } 
         .view-section.active { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        h2 { font-size: 1.5rem; font-weight: 700; margin: 0 0 15px 0; color: #000; } 
+        h2 { font-size: 1.5rem; font-weight: 700; margin: 0 0 5px 0; color: #000; } 
         h3 { color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; margin: 25px 0 10px 0; font-weight: 600; }
 
         /* --- FORM ELEMENTS --- */
@@ -79,7 +80,7 @@
         .link-text { color: var(--primary); cursor: pointer; font-size: 0.8rem; text-decoration: none; display: inline-block; margin-top: 10px; }
         .link-text:hover { text-decoration: underline; }
 
-        /* --- CALENDARIO APPLE --- */
+        /* --- CALENDARIO APPLE COMPACT --- */
         .calendar-wrapper { 
             background: #ffffff; max-width: 380px; margin: 0 auto 20px auto; 
             padding: 15px; border-radius: 20px; border: 1px solid #e5e5ea; 
@@ -97,12 +98,13 @@
         .cal-dots { display: flex; gap: 3px; margin-top: 2px; height: 6px; justify-content: center; }
         .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
 
-        /* --- FILTRI E TABELLE --- */
+        /* --- FILTRI --- */
         .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; background: #f2f2f7; padding: 12px; border-radius: 12px; align-items: center; margin-bottom: 15px; }
         .filter-bar select { flex: 1; min-width: 120px; background: white; border: none; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
         .filter-bar button { width: auto; padding: 8px 16px; font-size: 13px; margin: 0; }
         #a-search { flex: 2; min-width: 200px; border-color: #007aff; }
 
+        /* --- TABELLA --- */
         .table-wrap { overflow-x: auto; margin-top: 10px; border: 1px solid #e5e5ea; border-radius: 12px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; background: white; }
         th { text-align: left; padding: 12px; border-bottom: 1px solid #e5e5ea; color: #86868b; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
@@ -123,7 +125,6 @@
         .card-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 2px; }
         .card-sub { color: #86868b; font-size: 0.8rem; margin-bottom: 15px; }
         
-        /* Nuovi Stili per Compensi */
         .card-stats-row { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid #f2f2f7; padding-top: 10px; }
         .stat-group { text-align: left; }
         .stat-group.right { text-align: right; }
@@ -133,6 +134,13 @@
 
         .edit-user-btn { background: #f2f2f7; border:none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #86868b; margin: 0; padding: 0; }
         .edit-user-btn:hover { background: #e5e5ea; color: var(--primary); }
+
+        /* RATE MATRIX STYLE */
+        #rate-inputs-container { max-height: 300px; overflow-y: auto; padding-right: 5px; }
+        .rate-matrix-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid #f2f2f7; }
+        .rate-matrix-row:last-child { border-bottom: none; }
+        .rate-label { font-size: 0.85rem; color: var(--text-main); font-weight: 500; }
+        .rate-input { width: 80px; padding: 6px; text-align: right; font-weight: 700; color: var(--money-color); }
 
         /* Mobile */
         @media (max-width: 600px) {
@@ -153,7 +161,7 @@
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} } @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 3000; display: none; justify-content: center; align-items: center; }
-        .modal-box { background: white; padding: 25px; border-radius: 18px; width: 90%; max-width: 320px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .modal-box { background: white; padding: 25px; border-radius: 18px; width: 90%; max-width: 350px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
         .spinner { width: 16px; height: 16px; border: 2px solid white; border-top-color: transparent; border-radius: 50%; animation: spin 0.8s infinite linear; display: inline-block; }
         @keyframes spin { to {transform: rotate(360deg);} }
     </style>
@@ -272,9 +280,8 @@
         <div class="form-box" style="background:#fffbeb; border-color:#fcd34d">
             <h3 style="color:#b45309; margin-top:0">🛠️ Anagrafica</h3>
             <div class="time-row" style="margin-bottom:0">
-                <div style="flex:2"><input type="email" id="adm-email" placeholder="Email"></div>
-                <div style="flex:2"><input type="text" id="adm-name" placeholder="Nome Cognome"></div>
-                <div style="flex:1"><input type="number" id="adm-rate" placeholder="€/h" step="0.5"></div>
+                <input type="email" id="adm-email" placeholder="Email">
+                <input type="text" id="adm-name" placeholder="Nome Cognome">
             </div>
             <button onclick="saveAnagrafica()" class="btn-warning" style="margin-top:10px">Salva in Rubrica</button>
         </div>
@@ -337,12 +344,17 @@
 
 <div id="edit-user-modal" class="modal-overlay" style="display:none">
     <div class="modal-box">
-        <h3>Modifica Utente</h3>
-        <input type="text" id="edit-name-input" placeholder="Nome Cognome" style="margin-bottom:10px">
-        <input type="number" id="edit-rate-input" placeholder="Tariffa €/h" step="0.5" style="margin-bottom:20px">
+        <h3>Modifica Utente & Tariffe</h3>
+        <input type="text" id="edit-name-input" placeholder="Nome Cognome" style="margin-bottom:15px; font-weight:bold">
+        
+        <div style="max-height:250px; overflow-y:auto; border:1px solid #e5e5ea; padding:10px; border-radius:8px; margin-bottom:15px">
+            <h4 style="margin:0 0 10px 0; font-size:0.75rem; color:#86868b; text-transform:uppercase">Tariffe Orarie (€)</h4>
+            <div id="rate-inputs-container"></div>
+        </div>
+
         <div style="display:flex; gap:10px">
             <button class="btn-secondary" onclick="document.getElementById('edit-user-modal').style.display='none'">Annulla</button>
-            <button class="btn-primary" onclick="saveEditUser()">Salva</button>
+            <button class="btn-primary" onclick="saveEditUser()">Salva Tutto</button>
         </div>
     </div>
 </div>
@@ -369,13 +381,12 @@
     const ADMIN_EMAIL = "a.chiodini01@gmail.com"; 
     let currentUser = null;
     let rubrica = {}; 
-    let tariffe = {}; // NUOVO DIZIONARIO TARIFFE
-    let myTurni = []; 
     let allTurni = []; 
     let detailUserEmail = null;
     let currentEditEmail = null;
     let calDate = new Date(); 
     let selectedDay = null;
+    let myTurni = [];
 
     const Mansioni = ["Assistente bagnanti", "Istruttore", "Fitness", "Propaganda", "Lezione individuale", "Segreteria"];
 
@@ -438,12 +449,8 @@
         }
     });
 
-    // LOGOUT LOGIC
-    logoutBtn.addEventListener('click', async () => {
-        try { await signOut(auth); } catch(e) { console.error(e); }
-    });
+    logoutBtn.addEventListener('click', async () => { try { await signOut(auth); } catch(e) { console.error(e); } });
 
-    // RESET PWD
     resetLink.addEventListener('click', async () => {
         const e = document.getElementById('email').value;
         if(!e) return modal("Info", "Inserisci la tua email nel campo sopra.");
@@ -451,7 +458,7 @@
         catch(err) { modal("Errore", err.message); }
     });
 
-    // AUTO LOGOUT (10 MIN)
+    // AUTO LOGOUT
     let inactivityTimer;
     const resetInactivityTimer = () => {
         if (!currentUser) return;
@@ -460,10 +467,9 @@
     };
     ['click', 'mousemove', 'keypress', 'touchstart'].forEach(e => document.addEventListener(e, resetInactivityTimer));
 
-    // AUTH STATE CHANGE
+    // AUTH STATE
     onAuthStateChanged(auth, async (user) => {
         toggleLoading(loginBtn, false);
-        
         if (user) {
             currentUser = user;
             document.getElementById('logout-btn').classList.remove('hidden');
@@ -482,14 +488,15 @@
             }
 
             try {
-                // Carica dati rubrica e tariffe
+                // Carica anagrafica (contiene nome + pacchetto tariffe)
                 const snap = await getDocs(collection(db, "anagrafica"));
                 snap.forEach(d => {
                     const data = d.data();
-                    rubrica[d.id] = data.nome;
-                    tariffe[d.id] = data.tariffa || 0; // Carica tariffa
+                    // Struttura rubrica: { email: { nome: "Mario", tariffe: { "Istruttore": 15, ... } } }
+                    rubrica[d.id] = { nome: data.nome, tariffe: data.tariffe || {} };
                 });
-                document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.split(' ')[0] || 'User'}`;
+                const userData = rubrica[user.email] || { nome: 'User' };
+                document.getElementById('welcome-msg').innerText = `Ciao, ${userData.nome.split(' ')[0]}`;
                 
                 if(!isAdmin) {
                     const today = new Date();
@@ -504,7 +511,7 @@
                     document.getElementById('a-filtro-anno').value = today.getFullYear();
                     loadAdminData();
                 }
-            } catch (e) { console.error("Errore caricamento dati:", e); }
+            } catch (e) { console.error("Errore dati:", e); }
 
         } else {
             currentUser = null;
@@ -512,7 +519,7 @@
         }
     });
 
-    // --- FUNZIONI CONDIVISE ---
+    // --- FUNZIONI UTENTE ---
     window.calcDiff = () => {
         const i = document.getElementById('c-inizio').value, f = document.getElementById('c-fine').value;
         if(i && f) {
@@ -548,10 +555,10 @@
         document.getElementById('c-ore').value = t.ore;
         document.getElementById('c-note').value = t.note;
         window.scrollTo({top:0, behavior:'smooth'});
-        toast("Dati copiati! Scegli la data.");
+        toast("Copiato! Scegli la data.");
     };
 
-    // CALENDAR & DATA
+    // CALENDAR
     const getColor = (m) => {
         if(m.includes("Assistente")) return "var(--dot-assistente)";
         if(m.includes("Istruttore")) return "var(--dot-istruttore)";
@@ -568,7 +575,6 @@
         const m = calDate.getMonth();
         const y = calDate.getFullYear();
         document.getElementById('cal-title').innerText = `${monthNames[m]} ${y}`;
-        
         document.getElementById('c-filtro-mese').value = m + 1;
         document.getElementById('c-filtro-anno').value = y;
 
@@ -584,7 +590,6 @@
         for(let d=1; d<=daysInMonth; d++) {
             const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
             const shifts = myTurni.filter(t => t.data === dateStr);
-            
             let dots = "";
             shifts.forEach(s => { dots += `<div class="cal-dot" style="background:${getColor(s.mansione)}"></div>`; });
 
@@ -665,14 +670,124 @@
         });
     };
 
-    // SHARED EDIT
-    window.delRow = (id, isAdmin=false) => {
-        modal("Eliminare?", "Confermi cancellazione?", async () => {
-            await deleteDoc(doc(db, "turni", id));
-            toast("Eliminato");
-            isAdmin ? loadAdminData() : loadCollabData();
-        });
+    // ADMIN
+    window.saveAnagrafica = async () => {
+        const e = document.getElementById('adm-email').value.trim().toLowerCase();
+        if(!e) return modal("Errore", "Manca email.");
+        try { 
+            // Inizializza con tariffe vuote
+            await setDoc(doc(db, "anagrafica", e), { nome: document.getElementById('adm-name').value, tariffe: {} }); 
+            toast("OK"); loadAdminData(); 
+        } 
+        catch(e) { modal("Errore", e.message); }
     };
+
+    window.openEditUser = (email, nome) => { 
+        currentEditEmail = email; 
+        document.getElementById('edit-name-input').value = nome;
+        
+        const container = document.getElementById('rate-inputs-container');
+        container.innerHTML = "";
+        
+        // Carica le tariffe salvate per questo utente
+        const userRates = rubrica[email]?.tariffe || {};
+
+        Mansioni.forEach(m => {
+            const val = userRates[m] || 0;
+            container.innerHTML += `
+                <div class="rate-matrix-row">
+                    <span class="rate-label">${m}</span>
+                    <input type="number" id="rate-${m}" value="${val}" step="0.5" class="rate-input" placeholder="0">
+                </div>
+            `;
+        });
+        document.getElementById('edit-user-modal').style.display='flex'; 
+    };
+
+    window.saveEditUser = async () => {
+        if(!currentEditEmail) return;
+        try { 
+            const n = document.getElementById('edit-name-input').value;
+            const newRates = {};
+            
+            // Raccogli tutte le tariffe dal modale
+            Mansioni.forEach(m => {
+                const val = parseFloat(document.getElementById(`rate-${m}`).value) || 0;
+                newRates[m] = val;
+            });
+
+            // Salva su Firebase
+            await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: n, tariffe: newRates }, { merge: true });
+            
+            // Aggiorna cache locale
+            rubrica[currentEditEmail] = { nome: n, tariffe: newRates };
+            
+            toast("Aggiornato"); 
+            document.getElementById('edit-user-modal').style.display='none'; 
+            loadAdminData(); // Ricalcola i totali dashboard
+        } catch(e) { modal("Errore", e.message); }
+    };
+
+    window.loadAdminData = async () => {
+        const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
+        const role = document.getElementById('a-filtro-mansione').value, sort = document.getElementById('a-sort-order').value;
+        const q = query(collection(db, "turni"), orderBy("data", "desc"));
+        const snap = await getDocs(q);
+        allTurni = []; const stats = {};
+
+        snap.forEach(d => {
+            const t = d.data(); const date = new Date(t.data);
+            if((m=='all'||(date.getMonth()+1)==m) && date.getFullYear()==y && (role=='all'||t.mansione==role)) {
+                allTurni.push({id:d.id, ...t});
+                
+                const userEmail = t.email;
+                if(!stats[userEmail]) {
+                    const userData = rubrica[userEmail] || { nome: userEmail, tariffe: {} };
+                    stats[userEmail] = { ore:0, soldi:0, nome: userData.nome, last:0, tariffe: userData.tariffe };
+                }
+                
+                stats[userEmail].ore += t.ore;
+                
+                // CALCOLO SOLDI PRECISO (Tariffa specifica per mansione)
+                const tariffaOraria = stats[userEmail].tariffe[t.mansione] || 0;
+                stats[userEmail].soldi += (t.ore * tariffaOraria);
+
+                const ts = t.created_at ? t.created_at.seconds : date.getTime()/1000;
+                if(ts > stats[userEmail].last) stats[userEmail].last = ts;
+            }
+        });
+
+        let cards = Object.entries(stats).map(([e,d]) => ({email:e, ...d}));
+        if(sort === 'alpha') cards.sort((a,b) => a.nome.localeCompare(b.nome));
+        else cards.sort((a,b) => b.last - a.last);
+
+        const grid = document.getElementById('cards-container'); grid.innerHTML = "";
+        cards.forEach(u => {
+            grid.innerHTML += `
+                <div class="user-card" onclick="openDetail('${u.email}')">
+                    <div style="display:flex; justify-content:space-between">
+                        <div class="card-name">${u.nome}</div>
+                        <button style="background:none; border:none; padding:0; width:auto; cursor:pointer" onclick="event.stopPropagation(); openEditUser('${u.email}','${u.nome}')">✏️</button>
+                    </div>
+                    <div class="card-sub">${u.email}</div>
+                    
+                    <div class="card-stats-row">
+                        <div class="stat-group">
+                            <span class="stat-label">ORE</span>
+                            <span class="stat-val-h">${u.ore.toFixed(1)}</span>
+                        </div>
+                        <div class="stat-group right">
+                            <span class="stat-label">STIMA</span>
+                            <span class="stat-val-m">€ ${u.soldi.toFixed(2)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        if(document.getElementById('admin-detail').classList.contains('active')) renderAdminDetailTable();
+    };
+
+    // Shared Edit
     window.editRow = (id, isAdmin=false) => {
         const tr = document.getElementById((isAdmin?'arow-':'row-')+id);
         const src = isAdmin ? allTurni : myTurni;
@@ -699,103 +814,10 @@
             toast("Modificato"); isAdmin ? loadAdminData() : loadCollabData();
         } catch(e) { modal("Errore", e.message); }
     };
+    window.delRow = (id, isAdmin=false) => { modal("Eliminare?", "Confermi?", async () => { await deleteDoc(doc(db, "turni", id)); toast("Eliminato"); isAdmin ? loadAdminData() : loadCollabData(); }); };
 
-    // ADMIN
-    window.saveAnagrafica = async () => {
-        const e = document.getElementById('adm-email').value.trim().toLowerCase();
-        if(!e) return modal("Errore", "Manca email.");
-        
-        // RECUPERA TARIFFA
-        const rate = parseFloat(document.getElementById('adm-rate').value) || 0;
-
-        try { 
-            await setDoc(doc(db, "anagrafica", e), { 
-                nome: document.getElementById('adm-name').value,
-                tariffa: rate
-            }); 
-            toast("OK"); loadAdminData(); 
-        } 
-        catch(e) { modal("Errore", e.message); }
-    };
-
-    window.saveEditUser = async () => {
-        if(!currentEditEmail) return;
-        try { 
-            const n = document.getElementById('edit-name-input').value;
-            const r = parseFloat(document.getElementById('edit-rate-input').value) || 0;
-            
-            await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: n, tariffa: r }, { merge: true });
-            
-            rubrica[currentEditEmail] = n; 
-            tariffe[currentEditEmail] = r;
-            
-            toast("Aggiornato"); 
-            document.getElementById('edit-user-modal').style.display='none'; 
-            loadAdminData();
-        } catch(e) { modal("Errore", e.message); }
-    };
-    
-    window.openEditUser = (e,n) => { 
-        currentEditEmail=e; 
-        document.getElementById('edit-name-input').value=n; 
-        // Pre-fill tariffa
-        document.getElementById('edit-rate-input').value = tariffe[e] || '';
-        document.getElementById('edit-user-modal').style.display='flex'; 
-    };
-
-    window.loadAdminData = async () => {
-        const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
-        const role = document.getElementById('a-filtro-mansione').value, sort = document.getElementById('a-sort-order').value;
-        const q = query(collection(db, "turni"), orderBy("data", "desc"));
-        const snap = await getDocs(q);
-        allTurni = []; const stats = {};
-
-        snap.forEach(d => {
-            const t = d.data(); const date = new Date(t.data);
-            if((m=='all'||(date.getMonth()+1)==m) && date.getFullYear()==y && (role=='all'||t.mansione==role)) {
-                allTurni.push({id:d.id, ...t});
-                if(!stats[t.email]) stats[t.email] = { ore:0, nome: rubrica[t.email]||t.email, last:0 };
-                stats[t.email].ore += t.ore;
-                const ts = t.created_at ? t.created_at.seconds : date.getTime()/1000;
-                if(ts > stats[t.email].last) stats[t.email].last = ts;
-            }
-        });
-
-        let cards = Object.entries(stats).map(([e,d]) => ({email:e, ...d}));
-        if(sort === 'alpha') cards.sort((a,b) => a.nome.localeCompare(b.nome));
-        else cards.sort((a,b) => b.last - a.last);
-
-        const grid = document.getElementById('cards-container'); grid.innerHTML = "";
-        cards.forEach(u => {
-            // CALCOLO STIMA COMPENSO
-            const rate = tariffe[u.email] || 0;
-            const money = (u.ore * rate).toFixed(2);
-
-            grid.innerHTML += `
-                <div class="user-card" onclick="openDetail('${u.email}')">
-                    <div style="display:flex; justify-content:space-between">
-                        <div class="card-name">${u.nome}</div>
-                        <button style="background:none; border:none; padding:0; width:auto; cursor:pointer" onclick="event.stopPropagation(); openEditUser('${u.email}','${u.nome}')">✏️</button>
-                    </div>
-                    <div class="card-sub">${u.email}</div>
-                    
-                    <div class="card-stats-row">
-                        <div class="stat-group">
-                            <span class="stat-label">ORE</span>
-                            <span class="stat-val-h">${u.ore.toFixed(1)}</span>
-                        </div>
-                        <div class="stat-group right">
-                            <span class="stat-label">STIMA</span>
-                            <span class="stat-val-m">€ ${money}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-        if(document.getElementById('admin-detail').classList.contains('active')) renderAdminDetailTable();
-    };
-
-    window.openDetail = (e) => { detailUserEmail=e; switchView('admin-detail'); document.getElementById('detail-name').innerText=rubrica[e]||e; renderAdminDetailTable(); };
+    // Detail & Export
+    window.openDetail = (e) => { detailUserEmail=e; switchView('admin-detail'); document.getElementById('detail-name').innerText=rubrica[e]?.nome||e; renderAdminDetailTable(); };
     window.closeDetail = () => { detailUserEmail=null; switchView('admin-view'); };
 
     function renderAdminDetailTable() {
@@ -806,7 +828,6 @@
             tot+=t.ore;
             if(!breakdown[t.mansione]) breakdown[t.mansione]=0;
             breakdown[t.mansione] += t.ore;
-
             tbody.innerHTML += `
                 <tr id="arow-${t.id}">
                     <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
@@ -814,20 +835,12 @@
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
                     <td data-label="Ore"><strong>${t.ore}</strong></td>
                     <td data-label="Note">${t.note||''}</td>
-                    <td class="actions-cell">
-                        <div class="action-icons">
-                            <button class="icon-btn" onclick="editRow('${t.id}', true)">✏️</button>
-                            <button class="icon-btn" onclick="delRow('${t.id}', true)">🗑️</button>
-                        </div>
-                    </td>
+                    <td class="actions-cell"><div class="action-icons"><button class="icon-btn" onclick="editRow('${t.id}', true)">✏️</button><button class="icon-btn" onclick="delRow('${t.id}', true)">🗑️</button></div></td>
                 </tr>
             `;
         });
         document.getElementById('d-totale').innerText = tot.toFixed(1);
-        
-        Object.keys(breakdown).forEach(m => {
-            statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`;
-        });
+        Object.keys(breakdown).forEach(m => { statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`; });
     }
 
     // EXPORT
@@ -872,10 +885,8 @@
             });
             csv += row.join(";") + "\n";
         }
-        
         let tr = ["TOTALE","","", ...cols.slice(3).map(c => tots[c] ? tots[c].toString().replace('.',',') : "")];
         csv += "\n" + tr.join(";") + "\n";
-
         const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a"); a.href = url; a.download = filename;
@@ -884,19 +895,19 @@
 
     window.excelCollab = () => {
         const sm = document.getElementById('c-filtro-mese'); const sy = document.getElementById('c-filtro-anno');
-        const n = (rubrica[currentUser.email]||currentUser.email.split('@')[0]).replace(/\s+/g,'');
+        const n = (rubrica[currentUser.email]?.nome||currentUser.email.split('@')[0]).replace(/\s+/g,'');
         generateCsv(myTurni, `Presenze_${n}_${sm.options[sm.selectedIndex].text}_${sy.value}.csv`);
     };
     window.excelAdminDetail = () => {
         const sm = document.getElementById('a-filtro-mese'); const sy = document.getElementById('a-filtro-anno');
-        const n = (rubrica[detailUserEmail]||detailUserEmail).replace(/\s+/g,'');
+        const n = (rubrica[detailUserEmail]?.nome||detailUserEmail).replace(/\s+/g,'');
         generateCsv(allTurni.filter(t=>t.email===detailUserEmail), `Presenze_${n}_${sm.options[sm.selectedIndex].text}_${sy.value}.csv`);
     };
     window.excelAdminGlobal = () => {
         const sm = document.getElementById('a-filtro-mese');
         let csv = "Data;Collaboratore;Mansione;Ore;Orario;Note\n";
         allTurni.forEach(t => {
-            const n = rubrica[t.email] || t.email;
+            const n = rubrica[t.email]?.nome || t.email;
             csv += `${t.data};${n};${t.mansione};${t.ore.toString().replace('.',',')};${t.oraInizio}-${t.oraFine};${t.note}\n`;
         });
         const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
