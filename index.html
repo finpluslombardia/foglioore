@@ -702,12 +702,10 @@
                 const SIX_MONTHS = 180 * 24 * 60 * 60 * 1000;
 
                 if (!lastChange) {
-                    // FIRST LOGIN
                     document.getElementById('force-pwd-title').innerText = "Primo Accesso";
                     document.getElementById('force-pwd-msg').innerText = "Per sicurezza, imposta una nuova password.";
                     document.getElementById('force-pwd-modal').style.display = 'flex';
                 } else if ((now - lastChange) > SIX_MONTHS) {
-                    // EXPIRED
                     document.getElementById('force-pwd-title').innerText = "Password Scaduta";
                     document.getElementById('force-pwd-msg').innerText = "Sono passati 6 mesi. Aggiorna la password.";
                     document.getElementById('force-pwd-modal').style.display = 'flex';
@@ -903,7 +901,11 @@
         if(!e) return modal("Errore", "Manca email.");
         try { 
             await setDoc(doc(db, "anagrafica", e), { nome: document.getElementById('adm-name').value, tariffe: {} }); 
-            toast("OK"); loadAdminData(); 
+            toast("Salvato in Rubrica"); 
+            // Clear inputs
+            document.getElementById('adm-email').value = "";
+            document.getElementById('adm-name').value = "";
+            loadAdminData(); 
         } 
         catch(e) { modal("Errore", e.message); }
     };
@@ -941,28 +943,48 @@
     window.loadAdminData = async () => {
         const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
         const role = document.getElementById('a-filtro-mansione').value, sort = document.getElementById('a-sort-order').value;
+        
+        // 1. START WITH ALL USERS (Fixes "Ghost User")
+        const stats = {};
+        for (const [email, data] of Object.entries(rubrica)) {
+            stats[email] = { 
+                ore: 0, 
+                soldi: 0, 
+                nome: data.nome, 
+                last: 0, // Default sort value
+                tariffe: data.tariffe || {} 
+            };
+        }
+
+        // 2. OVERLAY SHIFTS
         const q = query(collection(db, "turni"), orderBy("data", "desc"));
         const snap = await getDocs(q);
-        allTurni = []; const stats = {};
+        allTurni = []; 
 
         snap.forEach(d => {
             const t = d.data(); const date = new Date(t.data);
+            
+            // Check filters for the array
             if((m=='all'||(date.getMonth()+1)==m) && date.getFullYear()==y && (role=='all'||t.mansione==role)) {
                 allTurni.push({id:d.id, ...t});
+                
                 const userEmail = t.email;
-                if(!stats[userEmail]) {
-                    const userData = rubrica[userEmail] || { nome: userEmail, tariffe: {} };
-                    stats[userEmail] = { ore:0, soldi:0, nome: userData.nome, last:0, tariffe: userData.tariffe };
+                if(stats[userEmail]) {
+                    stats[userEmail].ore += t.ore;
+                    const tariffaOraria = stats[userEmail].tariffe[t.mansione] || 0;
+                    stats[userEmail].soldi += (t.ore * tariffaOraria);
+                    const ts = t.created_at ? t.created_at.seconds : date.getTime()/1000;
+                    if(ts > stats[userEmail].last) stats[userEmail].last = ts;
                 }
-                stats[userEmail].ore += t.ore;
-                const tariffaOraria = stats[userEmail].tariffe[t.mansione] || 0;
-                stats[userEmail].soldi += (t.ore * tariffaOraria);
-                const ts = t.created_at ? t.created_at.seconds : date.getTime()/1000;
-                if(ts > stats[userEmail].last) stats[userEmail].last = ts;
             }
         });
 
+        // 3. RENDER
         let cards = Object.entries(stats).map(([e,d]) => ({email:e, ...d}));
+        
+        // Hide users with 0 hours ONLY IF filtering by specific role (optional, keep all visible for now)
+        // if(role !== 'all') cards = cards.filter(c => c.ore > 0);
+
         if(sort === 'alpha') cards.sort((a,b) => a.nome.localeCompare(b.nome));
         else cards.sort((a,b) => b.last - a.last);
 
@@ -1010,7 +1032,12 @@
         let targetUid = null;
         const knownShift = allTurni.find(t => t.email === detailUserEmail);
         if (knownShift) targetUid = knownShift.uid;
-        if (!targetUid) return modal("Errore", "Impossibile trovare UID (nessun turno precedente).");
+        if (!targetUid) {
+             // Fallback for new users without history: use placeholder or fetch via admin SDK (not possible here).
+             // Workaround: We can't insert a shift without the user's UID for security rules usually. 
+             // But if rules allow, we can query by email. 
+             return modal("Info", "Utente nuovo senza storico. L'utente deve fare il primo accesso per attivare l'ID.");
+        }
 
         const d = document.getElementById('aa-data').value;
         const m = document.getElementById('aa-mansione').value;
