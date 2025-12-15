@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Foglio ore</title>
+    <title>Gestione Ore Team</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -691,7 +691,7 @@
                 
                 snap.forEach(d => {
                     const data = d.data();
-                    rubrica[d.id] = { nome: data.nome, tariffe: data.tariffe || {} };
+                    rubrica[d.id] = { nome: data.nome || "Senza Nome", tariffe: data.tariffe || {} };
                 });
                 
                 document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.nome.split(' ')[0] || 'User'}`;
@@ -950,7 +950,7 @@
             stats[email] = { 
                 ore: 0, 
                 soldi: 0, 
-                nome: data.nome, 
+                nome: data.nome || "Senza Nome", // Safe Fallback
                 last: 0, // Default sort value
                 tariffe: data.tariffe || {} 
             };
@@ -985,7 +985,7 @@
         // Hide users with 0 hours ONLY IF filtering by specific role (optional, keep all visible for now)
         // if(role !== 'all') cards = cards.filter(c => c.ore > 0);
 
-        if(sort === 'alpha') cards.sort((a,b) => a.nome.localeCompare(b.nome));
+        if(sort === 'alpha') cards.sort((a,b) => (a.nome || "").localeCompare(b.nome || ""));
         else cards.sort((a,b) => b.last - a.last);
 
         const grid = document.getElementById('cards-container'); grid.innerHTML = "";
