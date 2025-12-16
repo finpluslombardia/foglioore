@@ -1227,7 +1227,7 @@
     window.excelCollab = () => {
         const sm = document.getElementById('c-filtro-mese'); const sy = document.getElementById('c-filtro-anno');
         const n = (rubrica[currentUser.email]?.nome||currentUser.email.split('@')[0]).replace(/\s+/g,'');
-        generateCsv(myTurni, `Presenze_${n}_${sm.options[sm.selectedIndex].text}_${sy.value}.csv`);
+        generateCsv(myTurni, `Presenze_${n}_${sm.options[sm.selectedIndex].text}_${sy.value}.csv`, parseInt(sm.value), parseInt(sy.value));
     };
     
     // UPDATED EXCEL DETAIL TO USE NEW FILTERS
@@ -1249,37 +1249,79 @@
         }
         
         const label = m === 'all' ? 'Tutto_Anno' : sm.options[sm.selectedIndex].text;
-        generateCsv(dataToExport, `Presenze_${n}_${label}_${sy.value}.csv`);
+        generateCsv(dataToExport, `Presenze_${n}_${label}_${sy.value}.csv`, parseInt(m), parseInt(y));
     };
 
-    // Standard CSV Generator
-    function generateCsv(data, filename) {
-        if(data.length === 0) return modal("Info", "Nessun dato.");
-        const days = 31; // Generic max
+    // V40: OFFICIAL TIMESHEET EXPORT
+    function generateCsv(data, filename, selectedMonth, selectedYear) {
+        if (!selectedMonth || isNaN(selectedMonth) || !selectedYear || isNaN(selectedYear)) {
+             // Fallback if "All months" selected, just dump data
+             // But for official timesheet, we likely want a specific month.
+             // If "All" selected, let's just dump list.
+             if (!selectedMonth) return alert("Seleziona un mese specifico per scaricare il foglio presenze ufficiale.");
+        }
+
+        const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
         const cols = ["Giorno","IN","OUT","ASS. BAG.","ISTRUTTORE","AQUAFIT.","PROPAG.","LEZ. INDIV.","SEGRETERIA","NOTE"];
-        const tots = {}; cols.forEach(c => tots[c]=0);
+        const roleKeys = ["Assistente", "Istruttore", "Fitness", "Propaganda", "Lezione", "Segreteria"];
+        
         let csv = cols.join(";") + "\n";
+        
+        // Prepare Totals
+        const totals = {};
+        for(let i=3; i<cols.length-1; i++) totals[cols[i]] = 0;
 
-        // Sort by date then time
-        data.sort((a,b) => new Date(a.data + 'T' + a.oraInizio) - new Date(b.data + 'T' + b.oraInizio));
-
-        data.forEach(t => {
-            const d = new Date(t.data);
-            let row = [d.getDate(), t.oraInizio, t.oraFine];
+        for (let day = 1; day <= daysInMonth; day++) {
+            // Filter shifts for this specific day
+            const dateStr = `${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dailyShifts = data.filter(t => t.data === dateStr);
             
-            // Empty cells for roles not matched
-            let roles = ["Assistente", "Istruttore", "Fitness", "Propaganda", "Lezione", "Segreteria"];
-            roles.forEach(rKey => {
-                if(t.mansione.includes(rKey)) {
-                    row.push(t.ore.toString().replace('.',','));
-                    // Update totals mapping (simplified for brevity)
-                } else {
-                    row.push("");
-                }
-            });
-            row.push(t.note.replace(/;/g, ' '));
+            // Build Row
+            let row = [day]; // Giorno
+            
+            if (dailyShifts.length > 0) {
+                // Sort by time
+                dailyShifts.sort((a,b) => a.oraInizio.localeCompare(b.oraInizio));
+                
+                // IN / OUT
+                row.push(dailyShifts[0].oraInizio); // First IN
+                row.push(dailyShifts[dailyShifts.length - 1].oraFine); // Last OUT
+                
+                // ROLES
+                roleKeys.forEach((key, index) => {
+                    // Sum hours for this role on this day
+                    const hours = dailyShifts
+                        .filter(t => t.mansione.includes(key))
+                        .reduce((sum, t) => sum + t.ore, 0);
+                    
+                    if (hours > 0) {
+                        row.push(hours.toString().replace('.', ','));
+                        totals[cols[index+3]] += hours;
+                    } else {
+                        row.push("");
+                    }
+                });
+                
+                // NOTES
+                const notes = dailyShifts.map(t => t.note).filter(n => n).join(" | ").replace(/;/g, " ");
+                row.push(notes);
+            } else {
+                // Empty day row
+                row.push("", "", "", "", "", "", "", "", "");
+            }
             csv += row.join(";") + "\n";
-        });
+        }
+        
+        // TOTALS ROW
+        let totalRow = ["TOTALE", "", ""];
+        for(let i=3; i<cols.length-1; i++) {
+            totalRow.push(totals[cols[i]] > 0 ? totals[cols[i]].toString().replace('.', ',') : "");
+        }
+        totalRow.push(""); // Note empty
+        csv += "\n" + totalRow.join(";") + "\n";
+        
+        // SIGNATURE ROW
+        csv += "\n\nFIRMA: __________________________\n";
 
         const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
         const url = URL.createObjectURL(blob);
