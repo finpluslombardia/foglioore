@@ -27,9 +27,9 @@
             /* PALLINI */
             --dot-assistente: #ff3b30;
             --dot-istruttore: #34c759;
-            --dot-propaganda: #ffcc00;
+            --dot-propaganda: #af52de;
             --dot-lezione: #007aff;
-            --dot-fitness: #af52de;
+            --dot-fitness: #ffcc00;
             --dot-segreteria: #8e8e93;
         }
 
@@ -282,6 +282,10 @@
         <h3>📅 I Miei Turni</h3>
 
         <div class="filter-bar">
+            <select id="c-sort-order" onchange="renderCollabTable()">
+                <option value="recent">Più Recenti</option>
+                <option value="oldest">Più Vecchi</option>
+            </select>
             <select id="c-filtro-mansione" onchange="renderCollabTable()">
                 <option value="all">Tutte le Mansioni</option>
                 <option value="Assistente bagnanti">Assistente bagnanti</option>
@@ -851,12 +855,22 @@
         const myRates = rubrica[currentUser.email]?.tariffe || {};
         let totSoldi = 0;
 
+        // --- SORTING LOGIC ---
+        const sortOrder = document.getElementById('c-sort-order').value;
+
         const filtered = myTurni.filter(t => {
             const d = new Date(t.data);
             const matchDate = (m == 'all' || (d.getMonth()+1) == m) && d.getFullYear() == y;
             const matchRole = (r == 'all' || t.mansione == r);
             const matchDay = selectedDay ? (d.getDate() === selectedDay) : true;
             return matchDate && matchRole && matchDay;
+        });
+
+        // Apply sorting
+        filtered.sort((a, b) => {
+            const dA = new Date(a.data + 'T' + a.oraInizio);
+            const dB = new Date(b.data + 'T' + b.oraInizio);
+            return sortOrder === 'recent' ? dB - dA : dA - dB;
         });
 
         filtered.forEach(t => {
