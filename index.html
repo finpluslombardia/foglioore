@@ -29,10 +29,10 @@
 
             /* PALLINI */
             --dot-assistente: #ff3b30;
-            --dot-istruttore: #38b6ff;
-            --dot-propaganda: #ffde59;
-            --dot-lezione: #00bf63;
-            --dot-fitness: #cb6ce6;
+            --dot-istruttore: #34c759;
+            --dot-propaganda: #af52de;
+            --dot-lezione: #007aff;
+            --dot-fitness: #ffcc00;
             --dot-segreteria: #8e8e93;
         }
 
@@ -87,8 +87,6 @@
             width: 100%; padding: 10px 12px; 
             border: 1px solid var(--border-color); 
             border-radius: 10px; 
-            /* FIX FONT: Forza Inter anche su date e time */
-            font-family: 'Inter', sans-serif;
             font-size: 15px; 
             background: var(--bg-input); 
             color: var(--text-main); 
@@ -313,6 +311,8 @@
             <button onclick="pdfCollab()" class="btn-danger">📄 Scarica PDF</button>
         </div>
         
+        <button onclick="openAutocertModal()" class="btn-warning" style="margin-bottom:20px">📝 Autocertificazione</button>
+
         <div class="calendar-wrapper">
             <div class="cal-header">
                 <button class="cal-nav" onclick="changeMonth(-1)">❮</button>
@@ -419,6 +419,7 @@
         <div id="d-stats-container" class="stats-container"></div>
         <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:15px; width:auto">📥 Scarica Excel Utente</button>
         <button onclick="pdfAdminDetail()" class="btn-danger" style="margin-top:15px; width:auto">📄 Scarica PDF Utente</button>
+        <button onclick="openAutocertModal(true)" class="btn-warning" style="margin-top:15px; width:auto">📝 Autocertificazione</button>
     </div>
 
 </div>
@@ -442,6 +443,38 @@
         <input type="password" id="old-pwd-2" placeholder="Vecchia Password" style="margin-bottom:10px; border-color:var(--text-muted)">
         <input type="password" id="force-new-pwd" placeholder="Nuova Password (min 6 car.)" style="margin-bottom:20px; border:2px solid var(--primary)">
         <button class="btn-primary" onclick="changePwd(true)">Aggiorna Password</button>
+    </div>
+</div>
+
+<div id="autocert-modal" class="modal-overlay" style="display:none">
+    <div class="modal-box" style="max-width:500px; text-align:left">
+        <h3 style="margin-bottom:15px; color:var(--primary)">Autocertificazione</h3>
+        <div style="margin-bottom:15px">
+            <label>Codice Fiscale</label>
+            <input type="text" id="auto-cf" style="text-transform:uppercase" placeholder="RSSMRA...">
+        </div>
+        <div style="margin-bottom:15px">
+            <label>Compenso Lordo (€) - Calcolato</label>
+            <input type="text" id="auto-importo" style="font-weight:bold; color:var(--money-color)" readonly>
+        </div>
+        <div style="margin-bottom:15px">
+            <label style="margin-bottom:5px; display:block; font-weight:bold">Altri compensi sportivi?</label>
+            <div style="display:flex; gap:10px; align-items:center; margin-bottom:5px">
+                <input type="radio" name="altri-compensi" value="no" checked style="width:auto"> Non ho percepito altro
+            </div>
+            <div style="display:flex; gap:10px; align-items:center">
+                <input type="radio" name="altri-compensi" value="si" style="width:auto"> Ho percepito altro
+            </div>
+        </div>
+        <div id="altri-compensi-box" class="hidden" style="background:var(--bg-body); padding:10px; border-radius:8px; margin-bottom:15px">
+            <input type="text" id="auto-altro-importo" placeholder="Importo (€)">
+            <input type="date" id="auto-altro-data" style="margin-top:5px">
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:20px">
+            <button class="btn-secondary" onclick="document.getElementById('autocert-modal').style.display='none'">Annulla</button>
+            <button class="btn-primary" onclick="generateAutocertPDF()">📄 Genera PDF</button>
+        </div>
     </div>
 </div>
 
@@ -864,7 +897,7 @@
         const myRates = rubrica[currentUser.email]?.tariffe || {};
         let totSoldi = 0;
 
-        // --- SORTING LOGIC ADDED ---
+        // --- SORTING LOGIC ---
         const sortOrder = document.getElementById('c-sort-order').value;
 
         const filtered = myTurni.filter(t => {
@@ -1227,6 +1260,129 @@
         } finally {
             btn.innerText = originalText;
         }
+    };
+
+    // AUTOCERT MODAL LOGIC
+    window.openAutocertModal = (isAdminDetail = false) => {
+        const idPrefix = isAdminDetail ? 'd' : 'c'; 
+        const m = document.getElementById(`${idPrefix}-filtro-mese`).value;
+        const y = document.getElementById(`${idPrefix}-filtro-anno`).value;
+
+        // Grab total amount from DOM (already calculated by renderTable)
+        const totalStr = document.getElementById(`${idPrefix}-soldi`).innerText;
+        
+        if (!m || !y) return modal("Errore", "Seleziona mese e anno.");
+
+        // Pre-fill
+        document.getElementById('auto-importo').value = totalStr;
+        
+        // Show/Hide Other Income
+        document.querySelectorAll('input[name="altri-compensi"]').forEach(r => {
+            r.onchange = (e) => {
+                 document.getElementById('altri-compensi-box').className = e.target.value === 'si' ? '' : 'hidden';
+            };
+        });
+
+        document.getElementById('autocert-modal').style.display = 'flex';
+    };
+
+    window.generateAutocertPDF = () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Data Retrieval
+        const cf = document.getElementById('auto-cf').value.toUpperCase();
+        if(!cf) return modal("Errore", "Inserisci il Codice Fiscale");
+
+        const importo = document.getElementById('auto-importo').value;
+        
+        // Determine Context (Admin vs User) to get Name and Date
+        let userName = "";
+        let m, y;
+        
+        // Simple check: if admin-detail is active, use detailUserEmail, else currentUser
+        if(document.getElementById('admin-detail').classList.contains('active')) {
+             userName = rubrica[detailUserEmail]?.nome || detailUserEmail;
+             m = document.getElementById('d-filtro-mese').value;
+             y = document.getElementById('d-filtro-anno').value;
+        } else {
+             userName = rubrica[currentUser.email]?.nome || currentUser.email.split('@')[0];
+             m = document.getElementById('c-filtro-mese').value;
+             y = document.getElementById('c-filtro-anno').value;
+        }
+        
+        // Handle Other Income
+        const hasOther = document.querySelector('input[name="altri-compensi"]:checked').value === 'si';
+        const otherAmount = document.getElementById('auto-altro-importo').value;
+        const otherDate = document.getElementById('auto-altro-data').value;
+
+        // 1. HEADER
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text("SOCIETÀ SPORTIVA FIN PLUS LOMBARDIA SSD A R.L.", 105, 20, { align: "center" });
+        
+        doc.setFontSize(12);
+        doc.text("AUTOCERTIFICAZIONE", 105, 35, { align: "center" });
+        doc.text(`COMPENSI DA LAVORO SPORTIVO PERCEPITI ANNO DI IMPOSTA ${y}`, 105, 42, { align: "center" });
+
+        // 2. BODY TEXT
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        const startY = 60;
+        const lineHeight = 7;
+        
+        // "Ai fini..."
+        const text1 = "Ai fini della applicazione della normativa di cui al D.Lgs. n.36/2021 il/la sottoscritto/a";
+        doc.text(text1, 20, startY);
+        
+        // NAME
+        doc.setFont("helvetica", "bold");
+        doc.text(userName, 160, startY); // Approx position
+        doc.line(160, startY+1, 200, startY+1); // Underline
+
+        // CF
+        doc.setFont("helvetica", "normal");
+        doc.text("Codice Fiscale:  " + cf, 20, startY + lineHeight);
+        
+        // DECLARATION
+        const today = new Date().toLocaleDateString('it-IT');
+        doc.text(`sul proprio onore DICHIARA che alla data odierna del ${today}`, 20, startY + (lineHeight * 3));
+        
+        // CHECKBOXES
+        const checkY = startY + (lineHeight * 5);
+        
+        // Check 1
+        doc.rect(20, checkY - 4, 4, 4); 
+        if(!hasOther) doc.text("X", 21, checkY-1);
+        doc.text("Non ha percepito alcun compenso della stessa natura da altre società sportive.", 28, checkY);
+        
+        // Check 2
+        const check2Y = checkY + 10;
+        doc.rect(20, check2Y - 4, 4, 4);
+        if(hasOther) doc.text("X", 21, check2Y-1);
+        doc.text("Ha percepito compensi della stessa natura da altre società sportive...", 28, check2Y);
+        
+        if(hasOther) {
+             doc.text(`pari ad € ${otherAmount}  ricevuto in data ${otherDate}`, 28, check2Y + 6);
+        }
+
+        // 3. FINAL PART
+        const finalY = check2Y + 20;
+        doc.text("Quanto sopra al fine di ricevere dalla FIN PLUS LOMBARDIA SSD A R.L., di cui alla presente", 20, finalY);
+        doc.text(`autocertificazione, la somma di Euro  ${importo}`, 20, finalY + 7);
+        doc.text("al lordo delle eventuali trattenute di Legge dovute, relative a prestazioni di lavoro sportivo", 20, finalY + 14);
+        doc.text(`svolte nel corso del periodo dal 01/${String(m).padStart(2,'0')}/${y} al 30/${String(m).padStart(2,'0')}/${y}`, 20, finalY + 21); // Approx end date
+        doc.text("rese in relazione al contratto o agli accordi in essere.", 20, finalY + 28);
+        
+        doc.text("Si allega documento di riconoscimento.", 20, finalY + 40);
+        
+        // SIGNATURE
+        doc.text("Il lavoratore sportivo", 20, finalY + 60);
+        doc.text("In fede", 150, finalY + 60);
+        doc.line(140, finalY + 75, 190, finalY + 75);
+
+        doc.save(`Autocertificazione_${userName.replace(/\s+/g,'')}_${m}_${y}.pdf`);
+        document.getElementById('autocert-modal').style.display='none';
     };
 
     window.excelAdminGlobal = () => {
