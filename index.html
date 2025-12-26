@@ -254,8 +254,20 @@
         .edit-user-btn { background: var(--bg-body); border:none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); margin: 0; padding: 0; }
         .edit-user-btn:hover { background: var(--border-color); color: var(--primary); }
 
-        /* Rate Matrix */
-        #rate-inputs-container { max-height: 300px; overflow-y: auto; padding-right: 5px; }
+        /* Rate Matrix - FIX SCROLL */
+        #rate-inputs-container { 
+            max-height: 40vh; /* Responsive height */
+            overflow-y: auto; 
+            padding-right: 5px; 
+            overscroll-behavior: contain; /* KEY FIX: Impedisce lo scroll della pagina sotto */
+            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+        }
+        
+        /* Custom Scrollbar for better visibility */
+        #rate-inputs-container::-webkit-scrollbar { width: 6px; }
+        #rate-inputs-container::-webkit-scrollbar-thumb { background-color: var(--text-muted); border-radius: 4px; }
+        #rate-inputs-container::-webkit-scrollbar-track { background-color: var(--bg-input); }
+
         .rate-matrix-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--bg-body); }
         .rate-matrix-row:last-child { border-bottom: none; }
         .rate-label { font-size: 0.85rem; color: var(--text-main); font-weight: 500; }
@@ -1569,12 +1581,12 @@
         
         doc.text("Si allega documento di riconoscimento.", 20, finalY + 40);
         
-        // 4. DIGITAL SIGNATURE STAMP (Separated & Aligned)
-        const signY = finalY + 55; // Pushed down to avoid overlap
+        // 4. DIGITAL SIGNATURE STAMP (Updated Style - Matching Foglio Ore)
+        const signY = finalY + 55; // Pushed down to match spacing
         
         doc.setDrawColor(150);
         doc.setFillColor(245, 245, 245);
-        doc.rect(14, signY, 180, 25, 'FD'); // Width 180, x=14
+        doc.rect(14, signY, 180, 25, 'FD'); // Width 180, x=14, Height 25
 
         doc.setFontSize(8);
         doc.setTextColor(100);
@@ -1796,7 +1808,7 @@
         const signY = finalY + 10;
         doc.setDrawColor(150);
         doc.setFillColor(245, 245, 245);
-        doc.rect(14, signY, 180, 25, 'FD'); // Box width 180, x=14
+        doc.rect(14, signY, 180, 25, 'FD'); // Width 180, x=14
         
         doc.setFontSize(8);
         doc.setTextColor(100);
@@ -1807,14 +1819,15 @@
         doc.text(`Utente: ${userName}`, 19, signY + 12);
         
         const timestamp = new Date().toLocaleString('it-IT');
-        doc.text(`Data: ${timestamp}`, 19, signY + 18); // Label "Data:"
+        doc.text(`Data: ${timestamp}`, 19, signY + 18);
         
         const uniqueID = "ID-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-        doc.text(`Codice Univoco: ${uniqueID}`, 100, signY + 18); // Label "Codice Univoco:"
+        doc.text(`Codice Univoco: ${uniqueID}`, 100, signY + 18);
         
+        // Footer text inside box
         doc.setFontSize(8);
         doc.setTextColor(100);
-        doc.text("Generato tramite gestionale interno FIN PLUS LOMBARDIA SSD A R.L.", 105, signY + 28, { align: 'center' });
+        doc.text("Generato tramite gestionale interno FIN PLUS LOMBARDIA SSD A R.L.", 105, signY + 28, { align: "center" });
 
         doc.save(filename);
     }
