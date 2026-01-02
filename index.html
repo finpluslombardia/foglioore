@@ -222,6 +222,11 @@
         .filter-bar select, .filter-bar input { flex: 1; min-width: 120px; background: var(--bg-input); border: 1px solid var(--border-color); }
         .filter-bar button { width: auto; padding: 8px 16px; font-size: 13px; margin: 0; }
         #a-search { flex: 2; min-width: 200px; border-color: var(--primary); }
+        
+        /* Stile Toggle Archiviati */
+        #a-show-archived {
+             width: 18px; height: 18px; margin: 0; cursor: pointer;
+        }
 
         .table-wrap { overflow-x: auto; margin-top: 10px; border: 1px solid var(--border-color); border-radius: 12px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--bg-card); }
@@ -239,8 +244,9 @@
 
         /* Admin Cards */
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-top: 20px; }
-        .user-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .user-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; }
         .user-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        .user-card.archived { opacity: 0.6; border-style: dashed; }
         .card-name { font-weight: 700; font-size: 1.1rem; margin-bottom: 2px; color: var(--text-main); }
         .card-sub { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px; }
         
@@ -259,11 +265,10 @@
             max-height: 40vh; /* Responsive height */
             overflow-y: auto; 
             padding-right: 5px; 
-            overscroll-behavior: contain; /* KEY FIX: Impedisce lo scroll della pagina sotto */
-            -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+            overscroll-behavior: contain; 
+            -webkit-overflow-scrolling: touch; 
         }
         
-        /* Custom Scrollbar for better visibility */
         #rate-inputs-container::-webkit-scrollbar { width: 6px; }
         #rate-inputs-container::-webkit-scrollbar-thumb { background-color: var(--text-muted); border-radius: 4px; }
         #rate-inputs-container::-webkit-scrollbar-track { background-color: var(--bg-input); }
@@ -425,7 +430,13 @@
     <div id="admin-view" class="view-section">
         <h3 style="margin-top:0">Riepilogo</h3>
         <div class="filter-bar">
-            <input type="text" id="a-search" placeholder="🔍 Cerca collaboratore..." style="flex:2; min-width:200px; border-color:var(--primary)">
+            <input type="text" id="a-search" placeholder="🔍 Cerca collaboratore..." style="flex:2; min-width:180px; border-color:var(--primary)">
+            
+            <div style="display:flex; align-items:center; gap:5px; margin:0 5px;">
+                 <input type="checkbox" id="a-show-archived" onchange="loadAdminData()" style="width:18px; height:18px;">
+                 <label for="a-show-archived" style="margin:0; font-size:0.8rem; cursor:pointer; color:var(--text-main)">Mostra Archiviati</label>
+            </div>
+
             <select id="a-sort-order"><option value="alpha">A-Z</option><option value="recent">Recenti</option></select>
             <select id="a-filtro-mansione">
                 <option value="all">Tutte</option>
@@ -855,7 +866,11 @@
                 
                 snap.forEach(d => {
                     const data = d.data();
-                    rubrica[d.id] = { nome: data.nome || "Senza Nome", tariffe: data.tariffe || {} };
+                    rubrica[d.id] = { 
+                        nome: data.nome || "Senza Nome", 
+                        tariffe: data.tariffe || {},
+                        archived: data.archived || false 
+                    };
                 });
                 
                 document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.nome.split(' ')[0] || 'User'}`;
@@ -1074,7 +1089,7 @@
         const e = document.getElementById('adm-email').value.trim().toLowerCase();
         if(!e) return modal("Errore", "Manca email.");
         try { 
-            await setDoc(doc(db, "anagrafica", e), { nome: document.getElementById('adm-name').value, tariffe: {} }); 
+            await setDoc(doc(db, "anagrafica", e), { nome: document.getElementById('adm-name').value, tariffe: {}, archived: false }); 
             toast("Salvato in Rubrica"); 
             // Clear inputs
             document.getElementById('adm-email').value = "";
@@ -1106,18 +1121,44 @@
                 const val = parseFloat(document.getElementById(`rate-${m}`).value) || 0;
                 newRates[m] = val;
             });
+            // Keep archive status
             await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: n, tariffe: newRates }, { merge: true });
-            rubrica[currentEditEmail] = { nome: n, tariffe: newRates };
+            
+            // Local update
+            if(rubrica[currentEditEmail]) {
+                rubrica[currentEditEmail].nome = n;
+                rubrica[currentEditEmail].tariffe = newRates;
+            }
+            
             toast("Aggiornato"); 
             document.getElementById('edit-user-modal').style.display='none'; 
             loadAdminData(); 
         } catch(e) { modal("Errore", e.message); }
+    };
+    
+    // ARCHIVE FUNCTIONALITY
+    window.toggleArchive = async (email, archiveStatus) => {
+        // Confirm action
+        const action = archiveStatus ? "archiviare" : "ripristinare";
+        modal("Conferma", `Vuoi ${action} questo utente?`, async () => {
+             try {
+                await setDoc(doc(db, "anagrafica", email), { archived: archiveStatus }, { merge: true });
+                if(rubrica[email]) rubrica[email].archived = archiveStatus;
+                toast(archiveStatus ? "Utente Archiviato" : "Utente Ripristinato");
+                loadAdminData();
+             } catch(e) {
+                 modal("Errore", e.message);
+             }
+        });
     };
 
     window.loadAdminData = async () => {
         const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
         const role = document.getElementById('a-filtro-mansione').value, sort = document.getElementById('a-sort-order').value;
         
+        // GET ARCHIVE TOGGLE STATE
+        const showArchived = document.getElementById('a-show-archived').checked;
+
         // Show loading state
         document.getElementById('cards-container').innerHTML = '<p style="text-align:center; width:100%; color:var(--text-muted)">Caricamento...</p>';
         
@@ -1129,7 +1170,8 @@
                 soldi: 0, 
                 nome: data.nome || "Senza Nome", 
                 last: 0, 
-                tariffe: data.tariffe || {} 
+                tariffe: data.tariffe || {},
+                archived: data.archived || false
             };
         }
 
@@ -1154,7 +1196,8 @@
                         soldi: 0, 
                         nome: userEmail, // Nome provvisorio
                         last: 0, 
-                        tariffe: {} 
+                        tariffe: {},
+                        archived: false // Default not archived
                     };
                 }
 
@@ -1171,6 +1214,13 @@
         // 3. RENDER
         let cards = Object.entries(stats).map(([e,d]) => ({email:e, ...d}));
         
+        // FILTER BY ARCHIVE STATUS
+        if (showArchived) {
+            cards = cards.filter(u => u.archived === true);
+        } else {
+            cards = cards.filter(u => u.archived !== true);
+        }
+        
         if(sort === 'alpha') cards.sort((a,b) => (a.nome || "").localeCompare(b.nome || ""));
         else cards.sort((a,b) => b.last - a.last);
 
@@ -1180,11 +1230,22 @@
              grid.innerHTML = '<p style="text-align:center; width:100%; color:var(--text-muted)">Nessun collaboratore trovato.</p>';
         } else {
             cards.forEach(u => {
+                // Determine Archive Button Appearance
+                const isArchived = u.archived === true;
+                const archiveAction = isArchived 
+                    ? `<button onclick="event.stopPropagation(); toggleArchive('${u.email}', false)" style="background:none; border:none; cursor:pointer;" title="Ripristina">♻️</button>` 
+                    : `<button onclick="event.stopPropagation(); toggleArchive('${u.email}', true)" style="background:none; border:none; cursor:pointer;" title="Archivia">📂</button>`;
+                
+                const cardClass = isArchived ? "user-card archived" : "user-card";
+
                 grid.innerHTML += `
-                    <div class="user-card" onclick="openDetail('${u.email}')">
+                    <div class="${cardClass}" onclick="openDetail('${u.email}')">
                         <div style="display:flex; justify-content:space-between">
                             <div class="card-name">${u.nome}</div>
-                            <button style="background:none; border:none; padding:0; width:auto; cursor:pointer" onclick="event.stopPropagation(); openEditUser('${u.email}','${u.nome}')">✏️</button>
+                            <div style="display:flex; gap:5px">
+                                <button style="background:none; border:none; padding:0; width:auto; cursor:pointer" onclick="event.stopPropagation(); openEditUser('${u.email}','${u.nome}')">✏️</button>
+                                ${archiveAction}
+                            </div>
                         </div>
                         <div class="card-sub">${u.email}</div>
                         <div class="card-stats-row">
@@ -1581,7 +1642,7 @@
         
         doc.text("Si allega documento di riconoscimento.", 20, finalY + 40);
         
-        // 4. DIGITAL SIGNATURE STAMP (Updated Style - Matching Foglio Ore)
+        // 4. DIGITAL SIGNATURE STAMP (Matching Foglio Ore Style & Labels)
         const signY = finalY + 55; // Pushed down to match spacing
         
         doc.setDrawColor(150);
@@ -1804,7 +1865,7 @@
 
         const finalY = doc.lastAutoTable.finalY;
         
-        // DIGITAL SIGNATURE BOX (IDENTICAL TO AUTOCERT)
+        // DIGITAL SIGNATURE BOX (UPDATED: Identical to Autocert Style)
         const signY = finalY + 10;
         doc.setDrawColor(150);
         doc.setFillColor(245, 245, 245);
@@ -1819,10 +1880,10 @@
         doc.text(`Utente: ${userName}`, 19, signY + 12);
         
         const timestamp = new Date().toLocaleString('it-IT');
-        doc.text(`Data: ${timestamp}`, 19, signY + 18);
+        doc.text(`Data: ${timestamp}`, 19, signY + 18); // Label "Data:"
         
         const uniqueID = "ID-" + Math.random().toString(36).substr(2, 9).toUpperCase();
-        doc.text(`Codice Univoco: ${uniqueID}`, 100, signY + 18);
+        doc.text(`Codice Univoco: ${uniqueID}`, 100, signY + 18); // Label "Codice Univoco:"
         
         // Footer text inside box
         doc.setFontSize(8);
