@@ -88,7 +88,7 @@
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
         }
 
-        /* STILE INPUT TESTUALI (Esclude Checkbox/Radio per evitare deformazioni) */
+        /* STILE INPUT TESTUALI */
         input:not([type="checkbox"]):not([type="radio"]), select, textarea { 
             width: 100%; padding: 10px 12px; 
             border: 1px solid var(--border-color); 
@@ -101,7 +101,7 @@
         }
         input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(0,122,255,0.1); }
 
-        /* RADIO & CHECKBOX PIÙ VISIBILI */
+        /* RADIO & CHECKBOX CUSTOM */
         input[type="radio"], input[type="checkbox"] {
             -webkit-appearance: none;
             appearance: none;
@@ -116,20 +116,18 @@
             place-content: center;
             margin-right: 8px;
             cursor: pointer;
-            flex-shrink: 0; 
+            flex-shrink: 0;
         }
         
         input[type="radio"] { border-radius: 50%; }
         input[type="checkbox"] { border-radius: 4px; }
 
-        /* Pallino Radio */
         input[type="radio"]::before {
             content: ""; width: 10px; height: 10px; border-radius: 50%;
             transform: scale(0); transition: 120ms transform ease-in-out;
             box-shadow: inset 1em 1em var(--primary);
         }
 
-        /* Spunta Checkbox */
         input[type="checkbox"]::before {
             content: "✔"; color: white; font-size: 14px;
             transform: scale(0); transition: 120ms transform ease-in-out;
@@ -203,24 +201,16 @@
         .cal-dot { width: 5px; height: 5px; border-radius: 50%; }
 
         /* Filtri & Tabella */
-        .filter-bar { 
-            display: flex; gap: 10px; flex-wrap: wrap; 
-            background: var(--bg-body); padding: 12px; border-radius: 12px; 
-            align-items: center; margin-bottom: 15px; border: 1px solid var(--border-color); 
-        }
-        /* Solo i campi testo e select si allargano, NON la checkbox */
-        .filter-bar select, .filter-bar input:not([type="checkbox"]) { 
-            flex: 1; min-width: 100px; 
-            background: var(--bg-input); border: 1px solid var(--border-color); 
-        }
+        .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; background: var(--bg-body); padding: 12px; border-radius: 12px; align-items: center; margin-bottom: 15px; border: 1px solid var(--border-color); }
+        /* FIX: Solo input testuali e select si espandono */
+        .filter-bar select, .filter-bar input:not([type="checkbox"]) { flex: 1; min-width: 120px; background: var(--bg-input); border: 1px solid var(--border-color); }
         .filter-bar button { width: auto; padding: 8px 16px; font-size: 13px; margin: 0; }
         #a-search { flex: 2; min-width: 180px; border-color: var(--primary); }
-        
-        /* Contenitore Checkbox Archivio compatto */
+
+        /* Toggle Archivio Compatto */
         .archive-toggle-container {
             display: flex; align-items: center; gap: 6px; 
-            flex: 0 0 auto; /* Non crescere */
-            margin: 0 5px;
+            flex: 0 0 auto; margin: 0 5px;
         }
 
         .table-wrap { overflow-x: auto; margin-top: 10px; border: 1px solid var(--border-color); border-radius: 12px; }
@@ -243,7 +233,6 @@
         .user-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
         .user-card.archived { opacity: 0.6; border-style: dashed; }
         
-        /* HEADER CARD: Nome a sx, Bottoni a dx */
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .card-name { font-weight: 700; font-size: 1.1rem; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px; }
         .card-actions-group { display: flex; gap: 5px; flex-shrink: 0; align-items: center; }
@@ -257,10 +246,7 @@
         .stat-val-h { font-size: 1.4rem; font-weight: 800; color: var(--primary); line-height: 1; }
         .stat-val-m { font-size: 1.4rem; font-weight: 800; color: var(--money-color); line-height: 1; }
 
-        .edit-user-btn { background: var(--bg-body); border:none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); margin: 0; padding: 0; }
-        .edit-user-btn:hover { background: var(--border-color); color: var(--primary); }
-
-        /* Rate Matrix */
+        /* Rate Matrix Scroll Fix */
         #rate-inputs-container { 
             max-height: 40vh; overflow-y: auto; padding-right: 5px; 
             overscroll-behavior: contain; -webkit-overflow-scrolling: touch; 
@@ -1455,6 +1441,219 @@
         }
     };
 
+    // UI HELPERS FOR CONFIRMATION
+    window.togglePdfBtn = () => {
+        const check = document.getElementById('auto-sign-check');
+        const btn = document.getElementById('btn-gen-pdf');
+        if(check.checked) {
+            btn.classList.remove('btn-disabled');
+            btn.disabled = false;
+        } else {
+            btn.classList.add('btn-disabled');
+            btn.disabled = true;
+        }
+    };
+
+    window.togglePdfSignBtn = () => {
+        const check = document.getElementById('pdf-sign-check');
+        const btn = document.getElementById('btn-do-pdf-sign');
+        if(check.checked) {
+            btn.classList.remove('btn-disabled');
+            btn.disabled = false;
+        } else {
+            btn.classList.add('btn-disabled');
+            btn.disabled = true;
+        }
+    };
+
+    // PDF FOGLIO ORE - CONFIRMATION
+    window.openPdfSignModal = (isAdminDetail = false) => {
+        // Store context
+        currentPdfContext = isAdminDetail ? 'admin' : 'collab';
+        
+        // Reset checkbox
+        document.getElementById('pdf-sign-check').checked = false;
+        togglePdfSignBtn();
+        
+        document.getElementById('pdf-sign-modal').style.display = 'flex';
+    };
+
+    window.executePdfGeneration = () => {
+        document.getElementById('pdf-sign-modal').style.display = 'none';
+        if (currentPdfContext === 'collab') {
+            window.pdfCollab();
+        } else {
+            window.pdfAdminDetail();
+        }
+    };
+
+    // AUTOCERT MODAL LOGIC
+    window.openAutocertModal = (isAdminDetail = false) => {
+        const idPrefix = isAdminDetail ? 'd' : 'c'; 
+        const m = document.getElementById(`${idPrefix}-filtro-mese`).value;
+        const y = document.getElementById(`${idPrefix}-filtro-anno`).value;
+
+        // Grab total amount from DOM (already calculated by renderTable)
+        const totalStr = document.getElementById(`${idPrefix}-soldi`).innerText;
+        
+        if (!m || !y) return modal("Errore", "Seleziona mese e anno.");
+
+        // Pre-fill
+        document.getElementById('auto-importo').value = totalStr;
+        
+        // Show/Hide Other Income
+        document.querySelectorAll('input[name="altri-compensi"]').forEach(r => {
+            r.onchange = (e) => {
+                 document.getElementById('altri-compensi-box').className = e.target.value === 'si' ? '' : 'hidden';
+            };
+        });
+        
+        // Reset checkbox and button
+        document.getElementById('auto-sign-check').checked = false;
+        togglePdfBtn();
+
+        document.getElementById('autocert-modal').style.display = 'flex';
+    };
+
+    window.generateAutocertPDF = () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Data Retrieval
+        const cf = document.getElementById('auto-cf').value.toUpperCase();
+        if(!cf) return modal("Errore", "Inserisci il Codice Fiscale");
+
+        const importo = document.getElementById('auto-importo').value;
+        
+        // Determine Context (Admin vs User) to get Name and Date
+        let userName = "";
+        let m, y;
+        
+        // Simple check: if admin-detail is active, use detailUserEmail, else currentUser
+        if(document.getElementById('admin-detail').classList.contains('active')) {
+             userName = rubrica[detailUserEmail]?.nome || detailUserEmail;
+             m = document.getElementById('d-filtro-mese').value;
+             y = document.getElementById('d-filtro-anno').value;
+        } else {
+             userName = rubrica[currentUser.email]?.nome || currentUser.email.split('@')[0];
+             m = document.getElementById('c-filtro-mese').value;
+             y = document.getElementById('c-filtro-anno').value;
+        }
+        
+        // Handle Other Income
+        const hasOther = document.querySelector('input[name="altri-compensi"]:checked').value === 'si';
+        const otherAmount = document.getElementById('auto-altro-importo').value;
+        
+        // Date formatting dd/mm/yyyy
+        let otherDate = "";
+        const rawDate = document.getElementById('auto-altro-data').value;
+        if(rawDate) {
+            const parts = rawDate.split('-');
+            otherDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        // Calculate dynamic last day of the month
+        const lastDay = new Date(y, m, 0).getDate(); 
+
+        // 1. HEADER
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text("SOCIETÀ SPORTIVA FIN PLUS LOMBARDIA SSD A R.L.", 105, 20, { align: "center" });
+        
+        doc.setFontSize(12);
+        doc.text("AUTOCERTIFICAZIONE", 105, 35, { align: "center" });
+        doc.text(`COMPENSI DA LAVORO SPORTIVO PERCEPITI ANNO DI IMPOSTA ${y}`, 105, 42, { align: "center" });
+
+        // 2. BODY TEXT
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        const startY = 60;
+        const lineHeight = 7;
+        
+        // LINE 1
+        doc.text("Ai fini della applicazione della normativa di cui al D.Lgs. n.36/2021 il/la sottoscritto/a", 20, startY);
+        
+        // LINE 2: NAME (Indented)
+        doc.setFont("helvetica", "bold");
+        doc.text(userName, 20, startY + lineHeight);
+        doc.setFont("helvetica", "normal");
+        
+        // LINE 3: CF
+        doc.text(`Codice Fiscale: ${cf}`, 20, startY + (lineHeight * 2));
+
+        // LINE 4: DECLARATION
+        const today = new Date().toLocaleDateString('it-IT');
+        doc.text(`sul proprio onore DICHIARA che alla data odierna del ${today}`, 20, startY + (lineHeight * 4));
+        
+        // CHECKBOXES SECTION
+        const checkY = startY + (lineHeight * 6);
+        
+        // Box 1: Non ha percepito
+        doc.rect(20, checkY - 4, 4, 4); 
+        if(!hasOther) doc.text("X", 21, checkY-1);
+        doc.text("Non ha percepito alcun compenso della stessa natura da altre società sportive.", 28, checkY);
+        
+        // Box 2: Ha percepito
+        const check2Y = checkY + 10;
+        doc.rect(20, check2Y - 4, 4, 4);
+        if(hasOther) doc.text("X", 21, check2Y-1);
+        
+        // TEXT SPLIT EXACTLY AS REQUESTED
+        doc.text("Ha percepito compensi della stessa natura da altre società sportive dalla data della precedente", 28, check2Y);
+        doc.text("autocertificazione rilasciata alla FIN PLUS LOMBARDIA SSD A R.L. pari ad", 28, check2Y + 5);
+        
+        // AMOUNT ROW
+        if(hasOther) {
+             doc.text(`€ ${otherAmount} ricevuto in data ${otherDate}`, 28, check2Y + 10);
+        } else {
+             // Blank line simulation if not selected
+             doc.text("€ _________________ ricevuto in data _________________", 28, check2Y + 10);
+        }
+
+        // 3. FINAL PART
+        const finalY = check2Y + 25;
+        
+        // TEXT SPLIT EXACTLY AS REQUESTED
+        doc.text("Quanto sopra al fine di ricevere dalla FIN PLUS LOMBARDIA SSD A R.L., di cui alla presente", 20, finalY);
+        doc.text(`autocertificazione, la somma di Euro ${importo}`, 20, finalY + 5);
+        
+        doc.text("al lordo delle eventuali trattenute di Legge dovute (contribuzione previdenziale, di maternità e", 20, finalY + 12);
+        doc.text("quella fiscale ove superato l'importo lordo di euro 5.000 per l'esercizio sopra indicato), relative", 20, finalY + 17);
+        doc.text(`a prestazioni di lavoro sportivo svolte nel corso del periodo dal 01/${String(m).padStart(2,'0')}/${y} al ${lastDay}/${String(m).padStart(2,'0')}/${y}`, 20, finalY + 22);
+        doc.text("rese in relazione al contratto o agli accordi in essere.", 20, finalY + 27);
+        
+        doc.text("Si allega documento di riconoscimento.", 20, finalY + 40);
+        
+        // 4. DIGITAL SIGNATURE STAMP (Separated & Aligned)
+        const signY = finalY + 55; // Pushed down to avoid overlap
+        
+        doc.setDrawColor(150);
+        doc.setFillColor(245, 245, 245);
+        doc.rect(14, signY, 180, 25, 'FD'); // Width 180, x=14
+
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text("DOCUMENTO SOTTOSCRITTO DIGITALMENTE", 19, signY + 6); // x=19 inside box
+
+        doc.setFontSize(10);
+        doc.setTextColor(0);
+        doc.text(`Utente: ${userName}`, 19, signY + 12);
+
+        const timestamp = new Date().toLocaleString('it-IT');
+        doc.text(`Data: ${timestamp}`, 19, signY + 18); // Label "Data:"
+
+        const uniqueID = "ID-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+        doc.text(`Codice Univoco: ${uniqueID}`, 100, signY + 18); // Label "Codice Univoco:"
+
+        // Footer text inside the box
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text("Generato tramite gestionale interno FIN PLUS LOMBARDIA SSD A R.L.", 105, signY + 28, { align: "center" });
+
+        doc.save(`Autocertificazione_${userName.replace(/\s+/g,'')}_${m}_${y}.pdf`);
+        document.getElementById('autocert-modal').style.display='none';
+    };
+
     window.excelAdminGlobal = () => {
         const sm = document.getElementById('a-filtro-mese'); 
         const mTxt = sm.options[sm.selectedIndex].text;
@@ -1648,7 +1847,7 @@
 
         const finalY = doc.lastAutoTable.finalY;
         
-        // DIGITAL SIGNATURE BOX (UPDATED: Identical to Autocert Style)
+        // DIGITAL SIGNATURE BOX (IDENTICAL TO AUTOCERT)
         const signY = finalY + 10;
         doc.setDrawColor(150);
         doc.setFillColor(245, 245, 245);
