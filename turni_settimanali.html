@@ -68,6 +68,7 @@
         .btn-primary { background: var(--primary); color: white; }
         .btn-secondary { background: var(--hover-btn); color: var(--text-main); border: 1px solid var(--border-color); }
         .btn-danger { background: #ff3b30; color: white; }
+        .btn-warning { background: #ff9500; color: white; }
         
         input, select { 
             padding: 10px; border: 1px solid var(--border-color); 
@@ -258,8 +259,26 @@
         </div>
 
         <div style="display:flex; gap:10px">
-            <button class="btn-secondary" onclick="closeModal()" style="flex:1">Annulla</button>
+            <button class="btn-secondary" onclick="closeModal('add-shift-modal')" style="flex:1">Annulla</button>
             <button class="btn-primary" onclick="savePlannedShift()" style="flex:1">Salva</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODALE DUPLICAZIONE SETTIMANA (Nuovo) -->
+<div id="dup-week-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 style="margin-bottom:15px; color:var(--primary)">📑 Duplica Settimana</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px">
+            Stai per copiare tutti i turni della settimana visualizzata (<span id="dup-source-label" style="font-weight:bold"></span>).
+        </p>
+        
+        <label>Seleziona il Lunedì di destinazione:</label>
+        <input type="date" id="dup-target-date" style="margin-bottom:20px">
+
+        <div style="display:flex; gap:10px">
+            <button class="btn-secondary" onclick="closeModal('dup-week-modal')" style="flex:1">Annulla</button>
+            <button class="btn-warning" onclick="executeDuplication()" style="flex:1">Copia Turni</button>
         </div>
     </div>
 </div>
@@ -290,7 +309,11 @@
                 <button onclick="goToToday()" style="font-size:0.9rem; font-weight:600">Oggi</button>
                 <button onclick="changeWeek(1)">❯</button>
             </div>
-            <button id="btn-add-shift" class="btn-primary hidden" onclick="openAddModal()">➕ Aggiungi</button>
+            <div style="display:flex; gap:5px">
+                <!-- Bottone Duplica (Admin) -->
+                <button id="btn-dup-week" class="btn-secondary hidden" onclick="openDupModal()" title="Duplica Settimana">📑</button>
+                <button id="btn-add-shift" class="btn-primary hidden" onclick="openAddModal()">➕ Aggiungi</button>
+            </div>
         </div>
     </div>
 
@@ -319,7 +342,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, onSnapshot, updateDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
@@ -340,6 +363,7 @@
     let isAdmin = false;
     let currentWeekStart = getMonday(new Date()); 
     let rubrica = []; 
+    let allShiftsData = []; // Memorizza i dati grezzi per la duplicazione
 
     // --- DARK MODE ---
     window.toggleTheme = () => {
@@ -405,6 +429,7 @@
             
             if (isAdmin) {
                 document.getElementById('btn-add-shift').classList.remove('hidden');
+                document.getElementById('btn-dup-week').classList.remove('hidden'); // Mostra bottone duplica
                 await loadUsers();
             }
             
@@ -528,26 +553,26 @@
         const q = query(collection(db, "programmazione_turni"));
         
         onSnapshot(q, (snap) => {
-            // Pulisci tutte le colonne in tutte le griglie
+            // Pulisci tutte le colonne
             document.querySelectorAll('.shifts-container').forEach(el => el.innerHTML = "");
 
-            const shifts = [];
-            snap.forEach(docSnap => shifts.push({ id: docSnap.id, ...docSnap.data() }));
+            allShiftsData = []; // Aggiorna dati globali
+            snap.forEach(docSnap => allShiftsData.push({ id: docSnap.id, ...docSnap.data() }));
             
-            shifts.sort((a,b) => a.start.localeCompare(b.start));
+            allShiftsData.sort((a,b) => a.start.localeCompare(b.start));
 
-            shifts.forEach(s => {
+            allShiftsData.forEach(s => {
                 // 1. POSIZIONAMENTO NELLA CATEGORIA SPECIFICA
                 let suffix = 'altri';
                 let showRole = true; 
 
                 if (s.role === 'Assistente bagnanti') {
                     suffix = 'assistenti';
-                    showRole = false; // Nascondi etichetta perché ridondante
+                    showRole = false; 
                 } 
                 else if (s.role === 'Segreteria') {
                     suffix = 'segreteria';
-                    showRole = false; // Nascondi etichetta
+                    showRole = false; 
                 }
                 
                 const colIdSpecific = `col-${s.date}-${suffix}`;
@@ -560,7 +585,7 @@
                 const colIdUnified = `col-${s.date}-tutti`;
                 const colUnified = document.getElementById(colIdUnified);
                 if (colUnified) {
-                    colUnified.appendChild(createCard(s, true)); // Qui mostriamo sempre il ruolo
+                    colUnified.appendChild(createCard(s, true));
                 }
             });
         }, (error) => {
@@ -602,8 +627,8 @@
         document.getElementById('add-shift-modal').style.display = 'flex';
     };
 
-    window.closeModal = () => {
-        document.getElementById('add-shift-modal').style.display = 'none';
+    window.closeModal = (id) => {
+        document.getElementById(id).style.display = 'none';
     };
 
     window.savePlannedShift = async () => {
@@ -627,7 +652,7 @@
                 await addDoc(collection(db, "programmazione_turni"), { email, userName, date, role, start, end, created_at: new Date() });
                 window.toast("Creato");
             }
-            window.closeModal();
+            window.closeModal('add-shift-modal');
         } catch(e) { alert("Errore: " + e.message); }
     };
 
@@ -635,6 +660,84 @@
         if(confirm("Eliminare turno?")) {
             try { await deleteDoc(doc(db, "programmazione_turni", id)); window.toast("Eliminato"); } 
             catch(e) { alert("Errore: " + e.message); }
+        }
+    };
+
+    // --- DUPLICAZIONE SETTIMANA ---
+    window.openDupModal = () => {
+        const options = { day: 'numeric', month: 'short' };
+        document.getElementById('dup-source-label').innerText = currentWeekStart.toLocaleDateString('it-IT', options);
+        
+        // Imposta di default il lunedì successivo
+        const nextMonday = new Date(currentWeekStart);
+        nextMonday.setDate(nextMonday.getDate() + 7);
+        document.getElementById('dup-target-date').value = formatDate(nextMonday);
+        
+        document.getElementById('dup-week-modal').style.display = 'flex';
+    };
+
+    window.executeDuplication = async () => {
+        const targetDateStr = document.getElementById('dup-target-date').value;
+        if (!targetDateStr) return alert("Seleziona una data.");
+
+        const targetDate = new Date(targetDateStr);
+        // Forza a lunedì se non lo è (opzionale, ma sicuro)
+        const targetMonday = getMonday(targetDate);
+        const targetMondayStr = formatDate(targetMonday);
+        const sourceMondayStr = formatDate(currentWeekStart);
+
+        if (targetMondayStr === sourceMondayStr) return alert("Non puoi duplicare sulla stessa settimana!");
+
+        // 1. Trova i turni della settimana corrente (Source)
+        // Usiamo allShiftsData filtrando per date
+        const sourceEnd = new Date(currentWeekStart);
+        sourceEnd.setDate(sourceEnd.getDate() + 6);
+        const sourceEndStr = formatDate(sourceEnd);
+
+        const shiftsToCopy = allShiftsData.filter(s => s.date >= sourceMondayStr && s.date <= sourceEndStr);
+
+        if (shiftsToCopy.length === 0) return alert("Nessun turno da copiare nella settimana visualizzata.");
+
+        if (!confirm(`Copiare ${shiftsToCopy.length} turni nella settimana del ${targetMonday.toLocaleDateString('it-IT')}?`)) return;
+
+        // 2. Calcola offset giorni
+        const diffTime = targetMonday.getTime() - currentWeekStart.getTime();
+        const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
+
+        try {
+            // 3. Batch Write
+            const batch = writeBatch(db);
+            
+            shiftsToCopy.forEach(s => {
+                const oldDate = new Date(s.date);
+                const newDate = new Date(oldDate);
+                newDate.setDate(newDate.getDate() + diffDays);
+                const newDateStr = formatDate(newDate);
+
+                const newRef = doc(collection(db, "programmazione_turni"));
+                batch.set(newRef, {
+                    email: s.email,
+                    userName: s.userName,
+                    role: s.role,
+                    start: s.start,
+                    end: s.end,
+                    date: newDateStr,
+                    created_at: new Date()
+                });
+            });
+
+            await batch.commit();
+            window.toast(`Copiati ${shiftsToCopy.length} turni!`);
+            window.closeModal('dup-week-modal');
+            
+            // Opzionale: spostati alla settimana target per vedere il risultato
+            currentWeekStart = targetMonday;
+            renderWeek();
+            loadPlannedShifts();
+
+        } catch (e) {
+            console.error(e);
+            alert("Errore duplicazione: " + e.message);
         }
     };
 
