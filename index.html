@@ -189,7 +189,15 @@
             background: var(--bg-card); max-width: 380px; margin: 0 auto 20px auto; 
             padding: 15px; border-radius: 20px; border: 1px solid var(--border-color); 
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            position: relative; z-index: 1;
         }
+        /* Fix contrasto Desktop: rende il calendario grigio chiaro per staccare dal contenitore bianco */
+        @media (min-width: 601px) {
+            .calendar-wrapper {
+                background: #f5f5f7;
+            }
+        }
+
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .cal-title { font-size: 1.1rem; font-weight: 700; text-transform: capitalize; color: var(--text-main); }
         .cal-nav { background: none; border: none; color: var(--primary); font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
