@@ -341,6 +341,11 @@
             <span id="admin-indicator" class="hidden" style="background:#fef3c7; color:#d97706; padding:2px 8px; border-radius:12px; font-size:0.65rem; font-weight:700; margin-left:5px">ADMIN</span>
         </div>
         <div class="header-actions">
+            <!-- TASTO PER ANDARE ALLA SECONDA PAGINA (Turni Settimanali) -->
+            <button id="week-btn" class="icon-btn-header hidden" onclick="window.location.href='turni_settimanali.html'" title="Turni Settimanali">
+                📅
+            </button>
+
             <button id="notice-btn" class="icon-btn-header hidden" onclick="openNotices()">
                 🔔<span id="notice-badge" class="badge hidden">0</span>
             </button>
@@ -801,10 +806,15 @@
         if(viewId === 'login-view') {
             logoutBtn.classList.add('hidden');
             noticeBtn.classList.add('hidden');
+            // AGGIUNTO QUI: Nascondi il tasto calendario al login
+            if(document.getElementById('week-btn')) document.getElementById('week-btn').classList.add('hidden');
+            
             document.getElementById('welcome-msg').innerText = "Login";
         } else {
             logoutBtn.classList.remove('hidden');
             noticeBtn.classList.remove('hidden');
+            // AGGIUNTO QUI: Mostra il tasto calendario dopo il login
+            if(document.getElementById('week-btn')) document.getElementById('week-btn').classList.remove('hidden');
         }
     };
 
