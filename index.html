@@ -189,12 +189,7 @@
             background: var(--bg-card); max-width: 380px; margin: 0 auto 20px auto; 
             padding: 15px; border-radius: 20px; border: 1px solid var(--border-color); 
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            position: relative; z-index: 1;
         }
-        @media (min-width: 601px) {
-            .calendar-wrapper { background: #f5f5f7; }
-        }
-
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .cal-title { font-size: 1.1rem; font-weight: 700; text-transform: capitalize; color: var(--text-main); }
         .cal-nav { background: none; border: none; color: var(--primary); font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
@@ -245,29 +240,13 @@
             display: flex; gap: 8px; align-items: center;
         }
 
-        /* --- STILE LISTA TURNI (CARDS/TABLE) --- */
-        .table-wrap { overflow-x: auto; margin-top: 10px; border: none; }
-        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; font-size: 13px; background: transparent; }
-        
-        /* Desktop Rows Style (Card-like rows) */
-        th { text-align: left; padding: 10px 15px; border-bottom: none; color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
-        
-        /* Colored Rows Logic - Applied via inline style, base style here */
-        td { 
-            padding: 8px 15px; /* Compact padding */
-            color: var(--text-main); 
-            vertical-align: middle; 
-            background-color: var(--bg-card); /* Fallback */
-            border-top: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-        }
-        /* Rounded corners for rows */
-        td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; border-left: 1px solid var(--border-color); }
-        td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-right: 1px solid var(--border-color); }
-
+        .table-wrap { overflow-x: auto; margin-top: 10px; border: 1px solid var(--border-color); border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--bg-card); }
+        th { text-align: left; padding: 12px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid var(--bg-body); color: var(--text-main); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
         .action-icons { display: flex; gap: 8px; justify-content: flex-end; }
-        .icon-btn { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1); border-radius:4px; font-size: 1rem; cursor: pointer; padding: 2px 5px; width: auto; color: var(--text-main); transition: 0.2s; }
-        .icon-btn:hover { background: white; transform: scale(1.1); }
+        .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px; width: auto; color: var(--text-main); }
         .icon-lock { font-size: 1rem; color: var(--text-muted); cursor: not-allowed; padding: 4px;}
 
         /* Stats */
@@ -275,24 +254,34 @@
         .stat-pill { background: var(--bg-input); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; color: var(--text-main); font-weight: 500; }
         .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        /* Admin Cards (Ripristinato stile originale) */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-top: 20px; }
-        .user-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; }
-        .user-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        /* Admin Cards - COMPACT & COLORED */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin-top: 20px; }
+        .user-card { 
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color); 
+            border-radius: 14px; 
+            padding: 12px 15px; /* Compact padding */
+            cursor: pointer; 
+            transition: transform 0.2s, box-shadow 0.2s; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+            position: relative; 
+        }
+        .user-card:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         .user-card.archived { opacity: 0.6; border-style: dashed; }
         
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .card-name { font-weight: 700; font-size: 1.1rem; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px; }
-        .card-actions-group { display: flex; gap: 5px; flex-shrink: 0; align-items: center; }
-        .card-action-btn { background: none; border: none; padding: 4px; font-size: 1.1rem; cursor: pointer; line-height: 1; width: auto; margin:0; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+        .card-name { font-weight: 700; font-size: 1rem; color: inherit; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px; }
+        .card-actions-group { display: flex; gap: 4px; flex-shrink: 0; align-items: center; }
+        .card-action-btn { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1); border-radius:4px; padding: 2px 4px; font-size: 1rem; cursor: pointer; line-height: 1; width: auto; margin:0; }
+        .card-action-btn:hover { background: rgba(255,255,255,1); }
 
-        .card-sub { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px; }
-        .card-stats-row { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--bg-body); padding-top: 10px; }
+        .card-sub { color: inherit; opacity: 0.7; font-size: 0.75rem; margin-bottom: 10px; }
+        .card-stats-row { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px; }
         .stat-group { text-align: left; }
         .stat-group.right { text-align: right; }
-        .stat-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 2px; }
-        .stat-val-h { font-size: 1.4rem; font-weight: 800; color: var(--primary); line-height: 1; }
-        .stat-val-m { font-size: 1.4rem; font-weight: 800; color: var(--money-color); line-height: 1; }
+        .stat-label { font-size: 0.6rem; color: inherit; opacity: 0.7; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 1px; }
+        .stat-val-h { font-size: 1.1rem; font-weight: 800; color: inherit; line-height: 1; }
+        .stat-val-m { font-size: 1.1rem; font-weight: 800; color: inherit; line-height: 1; }
 
         .edit-user-btn { background: var(--bg-body); border:none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); margin: 0; padding: 0; }
         .edit-user-btn:hover { background: var(--border-color); color: var(--primary); }
@@ -325,19 +314,9 @@
 
             .stats-container { justify-content: flex-start; }
             thead { display: none; }
-            
-            /* Shift Card Mobile Style */
-            tr { 
-                display: block; 
-                /* Background is set via JS inline style */
-                border: 1px solid var(--border-color); 
-                border-radius: 12px; 
-                padding: 10px; /* Reduced padding */
-                margin-bottom: 8px; 
-                box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
-            }
-            td { display: flex; justify-content: space-between; padding: 4px 0; border: none; text-align: right; border-radius: 0 !important; background: transparent !important; }
-            td:before { content: attr(data-label); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; text-align: left; opacity: 0.7; }
+            tr { display: block; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+            td { display: flex; justify-content: space-between; padding: 5px 0; border: none; text-align: right; }
+            td:before { content: attr(data-label); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; text-align: left; }
             .table-input { text-align: right; width: 60%; }
         }
 
@@ -751,7 +730,7 @@
     let selectedDay = null;
     let myTurni = [];
     let currentPdfContext = null;
-    let userUidMap = {}; 
+    let userUidMap = {}; // Maps Email -> UID
 
     const Mansioni = ["Assistente bagnanti", "Istruttore", "Fitness", "Propaganda", "Lezione individuale", "Segreteria"];
 
@@ -837,11 +816,14 @@
         if(viewId === 'login-view') {
             logoutBtn.classList.add('hidden');
             noticeBtn.classList.add('hidden');
+            // AGGIUNTO QUI: Nascondi il tasto calendario al login
             if(document.getElementById('week-btn')) document.getElementById('week-btn').classList.add('hidden');
+            
             document.getElementById('welcome-msg').innerText = "Login";
         } else {
             logoutBtn.classList.remove('hidden');
             noticeBtn.classList.remove('hidden');
+            // AGGIUNTO QUI: Mostra il tasto calendario dopo il login
             if(document.getElementById('week-btn')) document.getElementById('week-btn').classList.remove('hidden');
         }
     };
@@ -876,11 +858,13 @@
         try { await sendPasswordResetEmail(auth, e); modal("Inviata", "Controlla la posta."); } catch(err) { modal("Errore", err.message); }
     });
 
-    // AUTO LOGOUT
+    // AUTO LOGOUT (HARD LIMIT - 15 MINUTI)
     let sessionTimer;
+
     const startSessionTimer = () => {
         if (!currentUser) return;
         clearTimeout(sessionTimer); 
+        // 15 minuti = 900000 ms
         sessionTimer = setTimeout(() => {
             modal("Sessione Scaduta", "Tempo massimo di sessione raggiunto (15 min).", () => signOut(auth));
             signOut(auth);
@@ -906,7 +890,10 @@
             currentUser = user;
             document.getElementById('logout-btn').classList.remove('hidden');
             document.getElementById('notice-btn').classList.remove('hidden');
+            
+            // START HARD TIMER
             startSessionTimer();
+
             loadNotices();
             
             const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
@@ -924,9 +911,11 @@
                 const snap = await getDocs(collection(db, "anagrafica"));
                 const userDoc = await getDocs(query(collection(db, "anagrafica"), where("__name__", "==", user.email)));
                 
+                // DATA CHECK FOR FORCED PWD CHANGE
                 let userData = {};
                 userDoc.forEach(d => userData = d.data());
                 
+                // Save UID in Anagrafica if missing (Self-Repair)
                 await setDoc(doc(db, "anagrafica", user.email), { uid: user.uid }, { merge: true });
 
                 snap.forEach(d => {
@@ -941,6 +930,7 @@
                 
                 document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.nome.split(' ')[0] || 'User'}`;
                 
+                // SECURITY CHECK
                 const lastChange = userData.lastPasswordChange ? userData.lastPasswordChange.toDate() : null;
                 const now = new Date();
                 const SIX_MONTHS = 180 * 24 * 60 * 60 * 1000;
@@ -1017,7 +1007,7 @@
         toast("Dati copiati! Scegli la data.");
     };
 
-    // CALENDAR
+    // CALENDAR & ROLES COLORS
     const getColor = (m) => {
         if(m.includes("Assistente")) return "var(--dot-assistente)";
         if(m.includes("Istruttore")) return "var(--dot-istruttore)";
@@ -1028,15 +1018,16 @@
         return "#ccc";
     };
 
-    // FUNZIONE COLORI RUOLI (SFONDO)
-    const getRoleBg = (m) => {
-        if(m.includes("Assistente")) return "#ffecec"; // Rosso Chiaro
-        if(m.includes("Istruttore")) return "#eafbe7"; // Verde Chiaro
-        if(m.includes("Fitness")) return "#fff8cc"; // Giallo Chiaro
-        if(m.includes("Propaganda")) return "#f6e4ff"; // Viola Chiaro
-        if(m.includes("Lezione")) return "#e0f0ff"; // Blu Chiaro
-        if(m.includes("Segreteria")) return "#f4f4f5"; // Grigio Chiaro
-        return "var(--bg-card)";
+    // NEW FUNCTION: Get Light Background and Dark Text for Roles
+    const getRoleStyle = (m) => {
+        // Returns { bg: color, color: color }
+        if(m.includes("Assistente")) return { bg: "#ffecec", color: "#c41c12" }; // Redish
+        if(m.includes("Istruttore")) return { bg: "#eafbe7", color: "#1e7e34" }; // Greenish
+        if(m.includes("Fitness")) return { bg: "#fff8cc", color: "#997a00" }; // Yellowish
+        if(m.includes("Propaganda")) return { bg: "#f6e4ff", color: "#7a28a3" }; // Purplish
+        if(m.includes("Lezione")) return { bg: "#e0f0ff", color: "#0056b3" }; // Blueish
+        if(m.includes("Segreteria")) return { bg: "#f2f2f7", color: "#555555" }; // Grayish
+        return { bg: "#f2f2f7", color: "#333" };
     };
 
     const monthNames = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
@@ -1106,6 +1097,7 @@
         const myRates = rubrica[currentUser.email]?.tariffe || {};
         let totSoldi = 0;
 
+        // --- SORTING LOGIC ---
         const sortOrder = document.getElementById('c-sort-order').value;
 
         const filtered = myTurni.filter(t => {
@@ -1116,6 +1108,7 @@
             return matchDate && matchRole && matchDay;
         });
 
+        // Apply sorting
         filtered.sort((a, b) => {
             const dA = new Date(a.data + 'T' + a.oraInizio);
             const dB = new Date(b.data + 'T' + b.oraInizio);
@@ -1138,11 +1131,8 @@
                 actionHtml = `<span class="icon-lock">🔒</span>`;
             }
 
-            // APPLICA SFONDO ALLA RIGA
-            const bg = getRoleBg(t.mansione);
-            
             tbody.innerHTML += `
-                <tr id="row-${t.id}" style="background-color:${bg}">
+                <tr id="row-${t.id}">
                     <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
                     <td data-label="Mansione">${t.mansione}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
@@ -1156,8 +1146,10 @@
         const soldiEl = document.getElementById('c-soldi');
         if(soldiEl) soldiEl.innerText = totSoldi.toFixed(2);
         
+        // UPDATED: Render pills with compact style
         Object.keys(breakdown).forEach(m => {
-            statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`;
+            const style = getRoleStyle(m);
+            statsBox.innerHTML += `<div class="stat-pill" style="background:${style.bg}; color:${style.color};">${m}: ${breakdown[m].toFixed(1)}</div>`;
         });
     };
 
@@ -1168,6 +1160,7 @@
         try { 
             await setDoc(doc(db, "anagrafica", e), { nome: document.getElementById('adm-name').value, tariffe: {}, archived: false }, { merge: true }); 
             toast("Salvato in Rubrica"); 
+            // Clear inputs
             document.getElementById('adm-email').value = "";
             document.getElementById('adm-name').value = "";
             loadAdminData(); 
@@ -1197,8 +1190,10 @@
                 const val = parseFloat(document.getElementById(`rate-${m}`).value) || 0;
                 newRates[m] = val;
             });
+            // Keep archive status
             await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: n, tariffe: newRates }, { merge: true });
             
+            // Local update
             if(rubrica[currentEditEmail]) {
                 rubrica[currentEditEmail].nome = n;
                 rubrica[currentEditEmail].tariffe = newRates;
@@ -1210,8 +1205,11 @@
         } catch(e) { modal("Errore", e.message); }
     };
     
+    // ARCHIVE FUNCTIONALITY
     window.toggleArchive = async (email, archiveStatus) => {
-        modal("Conferma", `Vuoi ${archiveStatus ? "archiviare" : "ripristinare"} questo utente?`, async () => {
+        // Confirm action
+        const action = archiveStatus ? "archiviare" : "ripristinare";
+        modal("Conferma", `Vuoi ${action} questo utente?`, async () => {
              try {
                 await setDoc(doc(db, "anagrafica", email), { archived: archiveStatus }, { merge: true });
                 if(rubrica[email]) rubrica[email].archived = archiveStatus;
@@ -1226,10 +1224,14 @@
     window.loadAdminData = async () => {
         const m = document.getElementById('a-filtro-mese').value, y = document.getElementById('a-filtro-anno').value;
         const role = document.getElementById('a-filtro-mansione').value, sort = document.getElementById('a-sort-order').value;
+        
+        // GET ARCHIVE TOGGLE STATE
         const showArchived = document.getElementById('a-show-archived').checked;
 
+        // Show loading state
         document.getElementById('cards-container').innerHTML = '<p style="text-align:center; width:100%; color:var(--text-muted)">Caricamento...</p>';
         
+        // 1. INIZIA CON UTENTI IN RUBRICA
         const stats = {};
         for (const [email, data] of Object.entries(rubrica)) {
             stats[email] = { 
@@ -1239,10 +1241,12 @@
                 last: 0, 
                 tariffe: data.tariffe || {},
                 archived: data.archived || false,
-                uid: data.uid || null
+                uid: data.uid || null,
+                roles: {} // Initialize roles object
             };
         }
 
+        // 2. FETCH SHIFTS (and catch ghosts)
         const q = query(collection(db, "turni"), orderBy("data", "desc"));
         const snap = await getDocs(q);
         allTurni = [];
@@ -1252,28 +1256,60 @@
             const t = d.data(); 
             const date = new Date(t.data);
             
+            // Map email to uid for everyone
             if(t.email && t.uid) userUidMap[t.email] = t.uid;
             
             if((m=='all'||(date.getMonth()+1)==m) && date.getFullYear()==y && (role=='all'||t.mansione==role)) {
                 allTurni.push({id:d.id, ...t});
+                
                 const userEmail = t.email;
+                
+                // GHOST USER FIX: Se l'utente non è in rubrica, inizializzalo
                 if(!stats[userEmail]) {
-                    stats[userEmail] = { ore: 0, soldi: 0, nome: userEmail, last: 0, tariffe: {}, archived: false };
+                    stats[userEmail] = { 
+                        ore: 0, 
+                        soldi: 0, 
+                        nome: userEmail, // Nome provvisorio
+                        last: 0, 
+                        tariffe: {},
+                        archived: false, // Default not archived
+                        roles: {}
+                    };
                 }
+
                 if(stats[userEmail]) {
                     stats[userEmail].ore += t.ore;
                     const tariffaOraria = stats[userEmail].tariffe[t.mansione] || 0;
                     stats[userEmail].soldi += (t.ore * tariffaOraria);
                     const ts = t.created_at ? t.created_at.seconds : date.getTime()/1000;
                     if(ts > stats[userEmail].last) stats[userEmail].last = ts;
+                    
+                    // Track role hours
+                    stats[userEmail].roles[t.mansione] = (stats[userEmail].roles[t.mansione] || 0) + t.ore;
                 }
             }
         });
 
-        let cards = Object.entries(stats).map(([e,d]) => ({email:e, ...d}));
+        // 3. RENDER
+        let cards = Object.entries(stats).map(([e,d]) => {
+            // Determine dominant role
+            let maxHours = -1;
+            let dominantRole = "";
+            for (const [r, h] of Object.entries(d.roles)) {
+                if (h > maxHours) {
+                    maxHours = h;
+                    dominantRole = r;
+                }
+            }
+            return {email:e, ...d, dominantRole};
+        });
         
-        if (showArchived) cards = cards.filter(u => u.archived === true);
-        else cards = cards.filter(u => u.archived !== true);
+        // FILTER BY ARCHIVE STATUS
+        if (showArchived) {
+            cards = cards.filter(u => u.archived === true);
+        } else {
+            cards = cards.filter(u => u.archived !== true);
+        }
         
         if(sort === 'alpha') cards.sort((a,b) => (a.nome || "").localeCompare(b.nome || ""));
         else cards.sort((a,b) => b.last - a.last);
@@ -1284,26 +1320,31 @@
              grid.innerHTML = '<p style="text-align:center; width:100%; color:var(--text-muted)">Nessun collaboratore trovato.</p>';
         } else {
             cards.forEach(u => {
+                // Determine Archive Button Appearance
                 const isArchived = u.archived === true;
                 const archiveAction = isArchived 
                     ? `<button class="card-action-btn" onclick="event.stopPropagation(); toggleArchive('${u.email}', false)" title="Ripristina">♻️</button>` 
                     : `<button class="card-action-btn" onclick="event.stopPropagation(); toggleArchive('${u.email}', true)" title="Archivia">📂</button>`;
                 
                 const cardClass = isArchived ? "user-card archived" : "user-card";
+                
+                // Get style based on dominant role
+                const style = getRoleStyle(u.dominantRole || "");
+                const cardStyle = `background-color: ${style.bg}; border-color: ${style.color}40;`; // 40 for transparency on border
 
                 grid.innerHTML += `
-                    <div class="${cardClass}" onclick="openDetail('${u.email}')">
+                    <div class="${cardClass}" style="${cardStyle}" onclick="openDetail('${u.email}')">
                         <div class="card-header">
-                            <div class="card-name">${u.nome}</div>
+                            <div class="card-name" style="color:${style.color}">${u.nome}</div>
                             <div class="card-actions-group">
                                 <button class="card-action-btn" onclick="event.stopPropagation(); openEditUser('${u.email}','${u.nome}')">✏️</button>
                                 ${archiveAction}
                             </div>
                         </div>
-                        <div class="card-sub">${u.email}</div>
-                        <div class="card-stats-row">
-                            <div class="stat-group"><span class="stat-label">ORE</span><span class="stat-val-h">${u.ore.toFixed(1)}</span></div>
-                            <div class="stat-group right"><span class="stat-label">STIMA</span><span class="stat-val-m">€ ${u.soldi.toFixed(2)}</span></div>
+                        <div class="card-sub" style="color:${style.color}">${u.email}</div>
+                        <div class="card-stats-row" style="border-top-color:${style.color}20">
+                            <div class="stat-group"><span class="stat-label" style="color:${style.color}">ORE</span><span class="stat-val-h" style="color:${style.color}">${u.ore.toFixed(1)}</span></div>
+                            <div class="stat-group right"><span class="stat-label" style="color:${style.color}">STIMA</span><span class="stat-val-m" style="color:${style.color}">€ ${u.soldi.toFixed(2)}</span></div>
                         </div>
                     </div>
                 `;
@@ -1336,8 +1377,17 @@
     window.saveAdminShift = async () => {
         if(!detailUserEmail) return;
         let targetUid = userUidMap[detailUserEmail];
-        if (!targetUid && rubrica[detailUserEmail]?.uid) targetUid = rubrica[detailUserEmail].uid;
-        if (!targetUid) return modal("Info", "Utente nuovo senza storico.");
+        
+        // Fallback: Check Rubrica directly
+        if (!targetUid && rubrica[detailUserEmail]?.uid) {
+             targetUid = rubrica[detailUserEmail].uid;
+        }
+
+        if (!targetUid) {
+             // Ultimate Fallback: Scan ALL shifts in memory just in case (already done in loadAdminData but double check)
+             // If still null, then user truly never logged in or saved data
+             return modal("Info", "Utente nuovo senza storico. L'utente deve fare il primo accesso per attivare l'ID.");
+        }
 
         const d = document.getElementById('aa-data').value;
         const m = document.getElementById('aa-mansione').value;
@@ -1391,10 +1441,13 @@
         detailUserEmail = e; 
         switchView('admin-detail'); 
         document.getElementById('detail-name').innerText = rubrica[e]?.nome || e;
+        
+        // SET DEFAULT FILTERS TO CURRENT MONTH
         const today = new Date();
         document.getElementById('d-filtro-mese').value = today.getMonth() + 1;
         document.getElementById('d-filtro-anno').value = today.getFullYear();
         document.getElementById('d-sort-order').value = 'recent';
+
         renderAdminDetailTable(); 
     };
     window.closeDetail = () => { detailUserEmail=null; switchView('admin-view'); };
@@ -1403,11 +1456,15 @@
         const tbody = document.getElementById('detail-tbody'); tbody.innerHTML=""; 
         const statsBox = document.getElementById('d-stats-container'); statsBox.innerHTML="";
         
+        // GET FILTERS
         const sort = document.getElementById('d-sort-order').value;
         const m = document.getElementById('d-filtro-mese').value;
         const y = document.getElementById('d-filtro-anno').value;
 
+        // FILTER USER SHIFTS
         let userShifts = allTurni.filter(t => t.email === detailUserEmail);
+
+        // DATE FILTER
         if (m !== 'all') {
             userShifts = userShifts.filter(t => {
                 const d = new Date(t.data);
@@ -1415,6 +1472,7 @@
             });
         }
 
+        // SORT
         userShifts.sort((a,b) => {
             const dA = new Date(a.data); const dB = new Date(b.data);
             return sort === 'recent' ? dB - dA : dA - dB;
@@ -1427,14 +1485,12 @@
             tot += t.ore;
             const rate = userRates[t.mansione] || 0;
             totSoldi += (t.ore * rate);
+
             if(!breakdown[t.mansione]) breakdown[t.mansione]=0;
             breakdown[t.mansione] += t.ore;
 
-            // APPLICA SFONDO RIGA
-            const bg = getRoleBg(t.mansione);
-
             tbody.innerHTML += `
-                <tr id="arow-${t.id}" style="background-color:${bg}">
+                <tr id="arow-${t.id}">
                     <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
                     <td data-label="Mansione">${t.mansione}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
@@ -1448,10 +1504,551 @@
         document.getElementById('d-totale').innerText = tot.toFixed(1);
         document.getElementById('d-soldi').innerText = totSoldi.toFixed(2);
         
-        Object.keys(breakdown).forEach(m => { 
-            statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`; 
+        // UPDATED: Render pills with compact style
+        Object.keys(breakdown).forEach(m => {
+            const style = getRoleStyle(m);
+            statsBox.innerHTML += `<div class="stat-pill" style="background:${style.bg}; color:${style.color};">${m}: ${breakdown[m].toFixed(1)}</div>`;
         });
     };
+
+    // CHANGE PASSWORD WITH REAUTH
+    window.changePwd = async (isForced = false) => { 
+        const oldId = isForced ? 'old-pwd-2' : 'old-pwd-1';
+        const newId = isForced ? 'force-new-pwd' : 'new-pwd';
+        
+        const oldP = document.getElementById(oldId).value;
+        const newP = document.getElementById(newId).value;
+
+        if (!oldP) return modal("Errore", "Inserisci la vecchia password per sicurezza.");
+        if (!newP || newP.length < 6) return modal("Errore", "La nuova password deve avere almeno 6 caratteri.");
+
+        const btn = document.querySelector(isForced ? '#force-pwd-modal .btn-primary' : '#pwd-modal .btn-primary');
+        const originalText = btn.innerText;
+        btn.innerText = "Attendere...";
+
+        try { 
+            // 1. RE-AUTHENTICATE
+            const credential = EmailAuthProvider.credential(currentUser.email, oldP);
+            await reauthenticateWithCredential(currentUser, credential);
+            
+            // 2. UPDATE PASSWORD
+            await updatePassword(currentUser, newP); 
+            
+            // 3. TRY UPDATE DB (Graceful fail)
+            try {
+                // Ensure lowercase ID to match rule
+                await setDoc(doc(db, "anagrafica", currentUser.email.toLowerCase()), { lastPasswordChange: new Date() }, { merge: true });
+                toast("Password Aggiornata!"); 
+            } catch (dbError) {
+                console.error("DB Error:", dbError);
+                toast("Password cambiata (errore data)"); // Warn but success
+            }
+            
+            document.getElementById('pwd-modal').style.display='none'; 
+            document.getElementById('force-pwd-modal').style.display='none'; 
+            
+            // Clear fields
+            document.getElementById(oldId).value = "";
+            document.getElementById(newId).value = "";
+
+        } catch(e){ 
+            console.error(e);
+            if(e.code === 'auth/invalid-credential') modal("Errore", "Vecchia password errata.");
+            else modal("Errore", e.message); 
+        } finally {
+            btn.innerText = originalText;
+        }
+    };
+
+    // UI HELPERS FOR CONFIRMATION
+    window.togglePdfBtn = () => {
+        const check = document.getElementById('auto-sign-check');
+        const btn = document.getElementById('btn-gen-pdf');
+        if(check.checked) {
+            btn.classList.remove('btn-disabled');
+            btn.disabled = false;
+        } else {
+            btn.classList.add('btn-disabled');
+            btn.disabled = true;
+        }
+    };
+
+    window.togglePdfSignBtn = () => {
+        const check = document.getElementById('pdf-sign-check');
+        const btn = document.getElementById('btn-do-pdf-sign');
+        if(check.checked) {
+            btn.classList.remove('btn-disabled');
+            btn.disabled = false;
+        } else {
+            btn.classList.add('btn-disabled');
+            btn.disabled = true;
+        }
+    };
+
+    // PDF FOGLIO ORE - CONFIRMATION
+    window.openPdfSignModal = (isAdminDetail = false) => {
+        // Store context
+        currentPdfContext = isAdminDetail ? 'admin' : 'collab';
+        
+        // Reset checkbox
+        document.getElementById('pdf-sign-check').checked = false;
+        togglePdfSignBtn();
+        
+        document.getElementById('pdf-sign-modal').style.display = 'flex';
+    };
+
+    window.executePdfGeneration = () => {
+        document.getElementById('pdf-sign-modal').style.display = 'none';
+        if (currentPdfContext === 'collab') {
+            window.pdfCollab();
+        } else {
+            window.pdfAdminDetail();
+        }
+    };
+
+    // AUTOCERT MODAL LOGIC
+    window.openAutocertModal = (isAdminDetail = false) => {
+        const idPrefix = isAdminDetail ? 'd' : 'c'; 
+        const m = document.getElementById(`${idPrefix}-filtro-mese`).value;
+        const y = document.getElementById(`${idPrefix}-filtro-anno`).value;
+
+        // Grab total amount from DOM (already calculated by renderTable)
+        const totalStr = document.getElementById(`${idPrefix}-soldi`).innerText;
+        
+        if (!m || !y) return modal("Errore", "Seleziona mese e anno.");
+
+        // Pre-fill
+        document.getElementById('auto-importo').value = totalStr;
+        
+        // Show/Hide Other Income
+        document.querySelectorAll('input[name="altri-compensi"]').forEach(r => {
+            r.onchange = (e) => {
+                 document.getElementById('altri-compensi-box').className = e.target.value === 'si' ? '' : 'hidden';
+            };
+        });
+        
+        // Reset checkbox and button
+        document.getElementById('auto-sign-check').checked = false;
+        togglePdfBtn();
+
+        document.getElementById('autocert-modal').style.display = 'flex';
+    };
+
+    window.generateAutocertPDF = () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Data Retrieval
+        const cf = document.getElementById('auto-cf').value.toUpperCase();
+        if(!cf) return modal("Errore", "Inserisci il Codice Fiscale");
+
+        const importo = document.getElementById('auto-importo').value;
+        
+        // Determine Context (Admin vs User) to get Name and Date
+        let userName = "";
+        let m, y;
+        
+        // Simple check: if admin-detail is active, use detailUserEmail, else currentUser
+        if(document.getElementById('admin-detail').classList.contains('active')) {
+             userName = rubrica[detailUserEmail]?.nome || detailUserEmail;
+             m = document.getElementById('d-filtro-mese').value;
+             y = document.getElementById('d-filtro-anno').value;
+        } else {
+             userName = rubrica[currentUser.email]?.nome || currentUser.email.split('@')[0];
+             m = document.getElementById('c-filtro-mese').value;
+             y = document.getElementById('c-filtro-anno').value;
+        }
+        
+        // Handle Other Income
+        const hasOther = document.querySelector('input[name="altri-compensi"]:checked').value === 'si';
+        const otherAmount = document.getElementById('auto-altro-importo').value;
+        
+        // Date formatting dd/mm/yyyy
+        let otherDate = "";
+        const rawDate = document.getElementById('auto-altro-data').value;
+        if(rawDate) {
+            const parts = rawDate.split('-');
+            otherDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+
+        // Calculate dynamic last day of the month
+        const lastDay = new Date(y, m, 0).getDate(); 
+
+        // 1. HEADER
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "bold");
+        doc.text("SOCIETÀ SPORTIVA FIN PLUS LOMBARDIA SSD A R.L.", 105, 20, { align: "center" });
+        
+        doc.setFontSize(12);
+        doc.text("AUTOCERTIFICAZIONE", 105, 35, { align: "center" });
+        doc.text(`COMPENSI DA LAVORO SPORTIVO PERCEPITI ANNO DI IMPOSTA ${y}`, 105, 42, { align: "center" });
+
+        // 2. BODY TEXT
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        const startY = 60;
+        const lineHeight = 7;
+        
+        // LINE 1
+        doc.text("Ai fini della applicazione della normativa di cui al D.Lgs. n.36/2021 il/la sottoscritto/a", 20, startY);
+        
+        // LINE 2: NAME (Indented)
+        doc.setFont("helvetica", "bold");
+        doc.text(userName, 20, startY + lineHeight);
+        doc.setFont("helvetica", "normal");
+        
+        // LINE 3: CF
+        doc.text(`Codice Fiscale: ${cf}`, 20, startY + (lineHeight * 2));
+
+        // LINE 4: DECLARATION
+        const today = new Date().toLocaleDateString('it-IT');
+        doc.text(`sul proprio onore DICHIARA che alla data odierna del ${today}`, 20, startY + (lineHeight * 4));
+        
+        // CHECKBOXES SECTION
+        const checkY = startY + (lineHeight * 6);
+        
+        // Box 1: Non ha percepito
+        doc.rect(20, checkY - 4, 4, 4); 
+        if(!hasOther) doc.text("X", 21, checkY-1);
+        doc.text("Non ha percepito alcun compenso della stessa natura da altre società sportive.", 28, checkY);
+        
+        // Box 2: Ha percepito
+        const check2Y = checkY + 10;
+        doc.rect(20, check2Y - 4, 4, 4);
+        if(hasOther) doc.text("X", 21, check2Y-1);
+        
+        // TEXT SPLIT EXACTLY AS REQUESTED
+        doc.text("Ha percepito compensi della stessa natura da altre società sportive dalla data della precedente", 28, check2Y);
+        doc.text("autocertificazione rilasciata alla FIN PLUS LOMBARDIA SSD A R.L. pari ad", 28, check2Y + 5);
+        
+        // AMOUNT ROW
+        if(hasOther) {
+             doc.text(`€ ${otherAmount} ricevuto in data ${otherDate}`, 28, check2Y + 10);
+        } else {
+             // Blank line simulation if not selected
+             doc.text("€ _________________ ricevuto in data _________________", 28, check2Y + 10);
+        }
+
+        // 3. FINAL PART
+        const finalY = check2Y + 25;
+        
+        // TEXT SPLIT EXACTLY AS REQUESTED
+        doc.text("Quanto sopra al fine di ricevere dalla FIN PLUS LOMBARDIA SSD A R.L., di cui alla presente", 20, finalY);
+        doc.text(`autocertificazione, la somma di Euro ${importo}`, 20, finalY + 5);
+        
+        doc.text("al lordo delle eventuali trattenute di Legge dovute (contribuzione previdenziale, di maternità e", 20, finalY + 12);
+        doc.text("quella fiscale ove superato l'importo lordo di euro 5.000 per l'esercizio sopra indicato), relative", 20, finalY + 17);
+        doc.text(`a prestazioni di lavoro sportivo svolte nel corso del periodo dal 01/${String(m).padStart(2,'0')}/${y} al ${lastDay}/${String(m).padStart(2,'0')}/${y}`, 20, finalY + 22);
+        doc.text("rese in relazione al contratto o agli accordi in essere.", 20, finalY + 27);
+        
+        doc.text("Si allega documento di riconoscimento.", 20, finalY + 40);
+        
+        // 4. DIGITAL SIGNATURE STAMP (Separated & Aligned)
+        const signY = finalY + 55; // Pushed down to avoid overlap
+        
+        doc.setDrawColor(150);
+        doc.setFillColor(245, 245, 245);
+        doc.rect(14, signY, 180, 25, 'FD'); // Width 180, x=14
+
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text("DOCUMENTO SOTTOSCRITTO DIGITALMENTE", 19, signY + 6); // x=19 inside box
+
+        doc.setFontSize(10);
+        doc.setTextColor(0);
+        doc.text(`Utente: ${userName}`, 19, signY + 12);
+
+        const timestamp = new Date().toLocaleString('it-IT');
+        doc.text(`Data: ${timestamp}`, 19, signY + 18); // Label "Data:"
+
+        const uniqueID = "ID-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+        doc.text(`Codice Univoco: ${uniqueID}`, 100, signY + 18); // Label "Codice Univoco:"
+
+        // Footer text inside the box
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text("Generato tramite gestionale interno FIN PLUS LOMBARDIA SSD A R.L.", 105, signY + 28, { align: "center" });
+
+        doc.save(`Autocertificazione_${userName.replace(/\s+/g,'')}_${m}_${y}.pdf`);
+        document.getElementById('autocert-modal').style.display='none';
+    };
+
+    window.excelAdminGlobal = () => {
+        const sm = document.getElementById('a-filtro-mese'); 
+        const mTxt = sm.options[sm.selectedIndex].text;
+        
+        let csv = "Collaboratore;" + Mansioni.join(";") + ";TOTALE\n";
+        const report = {};
+        
+        allTurni.forEach(t => {
+            if (!report[t.email]) {
+                report[t.email] = { nome: rubrica[t.email]?.nome || t.email, hours: {}, total: 0 };
+                Mansioni.forEach(m => report[t.email].hours[m] = 0);
+            }
+            if (report[t.email].hours[t.mansione] !== undefined) {
+                report[t.email].hours[t.mansione] += t.ore;
+                report[t.email].total += t.ore;
+            }
+        });
+
+        const sortedUsers = Object.values(report).sort((a,b) => a.nome.localeCompare(b.nome));
+        sortedUsers.forEach(u => {
+            let row = [u.nome];
+            Mansioni.forEach(m => {
+                let h = u.hours[m];
+                row.push(h > 0 ? h.toString().replace('.', ',') : "0");
+            });
+            row.push(u.total.toString().replace('.', ','));
+            csv += row.join(";") + "\n";
+        });
+
+        const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a"); a.href = url; 
+        a.download = `Report_Globale_Pivot_${mTxt}.csv`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    };
+
+    window.excelCollab = () => {
+        const sm = document.getElementById('c-filtro-mese'); const sy = document.getElementById('c-filtro-anno');
+        const n = (rubrica[currentUser.email]?.nome||currentUser.email.split('@')[0]).replace(/\s+/g,'');
+        generateCsv(myTurni, `Presenze_${n}_${sm.options[sm.selectedIndex].text}_${sy.value}.csv`, parseInt(sm.value), parseInt(sy.value));
+    };
+    
+    // UPDATED EXCEL DETAIL TO USE NEW FILTERS
+    window.excelAdminDetail = () => {
+        const sm = document.getElementById('d-filtro-mese'); 
+        const sy = document.getElementById('d-filtro-anno');
+        const n = (rubrica[detailUserEmail]?.nome||detailUserEmail).replace(/\s+/g,'');
+        
+        // Filter logic inside export to match visual
+        const m = sm.value;
+        const y = sy.value;
+        let dataToExport = allTurni.filter(t => t.email === detailUserEmail);
+        
+        if (m !== 'all') {
+            dataToExport = dataToExport.filter(t => {
+                const d = new Date(t.data);
+                return (d.getMonth() + 1) == m && d.getFullYear() == y;
+            });
+        }
+        
+        const label = m === 'all' ? 'Tutto_Anno' : sm.options[sm.selectedIndex].text;
+        generateCsv(dataToExport, `Presenze_${n}_${label}_${sy.value}.csv`, parseInt(m), parseInt(y));
+    };
+
+    // GENERATE PDF
+    window.pdfCollab = () => {
+        const sm = document.getElementById('c-filtro-mese');
+        const sy = document.getElementById('c-filtro-anno');
+        const n = (rubrica[currentUser.email]?.nome||currentUser.email.split('@')[0]).replace(/\s+/g,'');
+        generatePdf(myTurni, `Presenze_${n}_${sm.options[sm.selectedIndex].text}_${sy.value}.pdf`, parseInt(sm.value), parseInt(sy.value), rubrica[currentUser.email]?.nome || currentUser.email);
+    };
+
+    window.pdfAdminDetail = () => {
+        const sm = document.getElementById('d-filtro-mese'); 
+        const sy = document.getElementById('d-filtro-anno');
+        const n = (rubrica[detailUserEmail]?.nome||detailUserEmail).replace(/\s+/g,'');
+        
+        const m = sm.value;
+        const y = sy.value;
+        let dataToExport = allTurni.filter(t => t.email === detailUserEmail);
+        
+        if (m !== 'all') {
+            dataToExport = dataToExport.filter(t => {
+                const d = new Date(t.data);
+                return (d.getMonth() + 1) == m && d.getFullYear() == y;
+            });
+        }
+        
+        const label = m === 'all' ? 'Tutto_Anno' : sm.options[sm.selectedIndex].text;
+        generatePdf(dataToExport, `Presenze_${n}_${label}_${sy.value}.pdf`, parseInt(m), parseInt(y), rubrica[detailUserEmail]?.nome || detailUserEmail);
+    };
+
+    function generatePdf(data, filename, selectedMonth, selectedYear, userName) {
+        if (!window.jspdf) {
+            alert("Libreria PDF non caricata. Ricarica la pagina.");
+            return;
+        }
+        
+        if (!selectedMonth || isNaN(selectedMonth) || !selectedYear || isNaN(selectedYear)) {
+             if (!selectedMonth) return alert("Seleziona un mese specifico per scaricare il PDF.");
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const monthNames = ["", "GENNAIO", "FEBBRAIO", "MARZO", "APRILE", "MAGGIO", "GIUGNO", "LUGLIO", "AGOSTO", "SETTEMBRE", "OTTOBRE", "NOVEMBRE", "DICEMBRE"];
+        
+        // Header
+        doc.setFontSize(14);
+        doc.text("FOGLIO ORE COLLABORATORE", 14, 20);
+        doc.setFontSize(11);
+        doc.text(`Nome: ${userName}`, 14, 28);
+        doc.text(`Periodo: ${monthNames[selectedMonth]} ${selectedYear}`, 14, 34);
+
+        const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+        const roleKeys = ["Assistente", "Istruttore", "Fitness", "Propaganda", "Lezione", "Segreteria"];
+        
+        // UPDATED LABELS FOR PDF
+        const tableHead = [["Giorno", "IN", "OUT", "ASS. BAG.", "ISTRUTT.", "FITNESS", "PROPAG.", "LEZ. IND.", "SEGRET.", "NOTE"]];
+        
+        const tableBody = [];
+        const totals = [0, 0, 0, 0, 0, 0]; // One for each role
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dailyShifts = data.filter(t => t.data === dateStr);
+            
+            // DATE WITH WEEKDAY
+            const dateObj = new Date(selectedYear, selectedMonth - 1, day);
+            const weekday = dateObj.toLocaleDateString('it-IT', { weekday: 'short' });
+            let row = [`${day} ${weekday}`, "", "", "", "", "", "", "", "", ""];
+
+            if (dailyShifts.length > 0) {
+                dailyShifts.sort((a,b) => a.oraInizio.localeCompare(b.oraInizio));
+                row[1] = dailyShifts[0].oraInizio;
+                row[2] = dailyShifts[dailyShifts.length - 1].oraFine;
+                
+                roleKeys.forEach((key, index) => {
+                    const hours = dailyShifts
+                        .filter(t => t.mansione.includes(key))
+                        .reduce((sum, t) => sum + t.ore, 0);
+                    if (hours > 0) {
+                        row[index + 3] = hours.toString();
+                        totals[index] += hours;
+                    }
+                });
+                row[9] = dailyShifts.map(t => t.note).filter(n => n).join(" ").substring(0, 20);
+            }
+            tableBody.push(row);
+        }
+
+        // Totals Row
+        const totalRow = ["TOTALE", "", "", ...totals.map(t => t > 0 ? t.toString() : ""), ""];
+        tableBody.push(totalRow);
+
+        doc.autoTable({
+            head: tableHead,
+            body: tableBody,
+            startY: 40,
+            theme: 'grid',
+            headStyles: { fillColor: [220, 220, 220], textColor: 20, fontSize: 8, fontStyle: 'bold', lineColor: [200, 200, 200], lineWidth: 0.1 },
+            bodyStyles: { fontSize: 8, cellPadding: 1, textColor: 20 },
+            columnStyles: {
+                0: { cellWidth: 20, fillColor: [245, 245, 245], fontStyle: 'bold' }, // Giorno wider + light gray
+                1: { cellWidth: 12 }, // IN
+                2: { cellWidth: 12 }, // OUT
+                9: { cellWidth: 'auto' } // Note
+            },
+            didDrawCell: function(data) {
+                // Thicker right border for OUT column (index 2)
+                if (data.column.index === 2 && data.section === 'body') {
+                     const doc = data.doc;
+                     doc.setLineWidth(0.5);
+                     doc.setDrawColor(150);
+                     doc.line(
+                         data.cell.x + data.cell.width,
+                         data.cell.y,
+                         data.cell.x + data.cell.width,
+                         data.cell.y + data.cell.height
+                     );
+                }
+            },
+            didParseCell: function(data) {
+                // Totals row styling (last row)
+                if (data.row.index === tableBody.length - 1) {
+                    data.cell.styles.fillColor = [224, 224, 224]; // Slightly darker gray for totals
+                    data.cell.styles.fontStyle = 'bold';
+                }
+            }
+        });
+
+        const finalY = doc.lastAutoTable.finalY;
+        
+        // DIGITAL SIGNATURE BOX (IDENTICAL TO AUTOCERT)
+        const signY = finalY + 10;
+        doc.setDrawColor(150);
+        doc.setFillColor(245, 245, 245);
+        doc.rect(14, signY, 180, 25, 'FD'); // Width 180, x=14
+        
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text("DOCUMENTO SOTTOSCRITTO DIGITALMENTE", 19, signY + 6); // x=19 inside box
+        
+        doc.setFontSize(10);
+        doc.setTextColor(0);
+        doc.text(`Utente: ${userName}`, 19, signY + 12);
+        
+        const timestamp = new Date().toLocaleString('it-IT');
+        doc.text(`Data: ${timestamp}`, 19, signY + 18); // Label "Data:"
+        
+        const uniqueID = "ID-" + Math.random().toString(36).substr(2, 9).toUpperCase();
+        doc.text(`Codice Univoco: ${uniqueID}`, 100, signY + 18); // Label "Codice Univoco:"
+        
+        // Footer text inside box
+        doc.setFontSize(8);
+        doc.setTextColor(100);
+        doc.text("Generato tramite gestionale interno FIN PLUS LOMBARDIA SSD A R.L.", 105, signY + 28, { align: "center" });
+
+        doc.save(filename);
+    }
+
+    // Standard CSV Generator
+    function generateCsv(data, filename, selectedMonth, selectedYear) {
+        if (!selectedMonth || isNaN(selectedMonth) || !selectedYear || isNaN(selectedYear)) {
+             if (!selectedMonth) return alert("Seleziona un mese specifico per scaricare il foglio presenze ufficiale.");
+        }
+
+        const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+        const cols = ["Giorno","IN","OUT","ASS. BAG.","ISTRUTTORE","AQUAFIT.","PROPAG.","LEZ. INDIV.","SEGRETERIA","NOTE"];
+        const roleKeys = ["Assistente", "Istruttore", "Fitness", "Propaganda", "Lezione", "Segreteria"];
+        
+        let csv = cols.join(";") + "\n";
+        
+        const totals = {};
+        for(let i=3; i<cols.length-1; i++) totals[cols[i]] = 0;
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = `${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const dailyShifts = data.filter(t => t.data === dateStr);
+            let row = [day]; 
+            
+            if (dailyShifts.length > 0) {
+                dailyShifts.sort((a,b) => a.oraInizio.localeCompare(b.oraInizio));
+                row.push(dailyShifts[0].oraInizio); 
+                row.push(dailyShifts[dailyShifts.length - 1].oraFine);
+                
+                roleKeys.forEach((key, index) => {
+                    const hours = dailyShifts.filter(t => t.mansione.includes(key)).reduce((sum, t) => sum + t.ore, 0);
+                    if (hours > 0) {
+                        row.push(hours.toString().replace('.', ','));
+                        totals[cols[index+3]] += hours;
+                    } else {
+                        row.push("");
+                    }
+                });
+                const notes = dailyShifts.map(t => t.note).filter(n => n).join(" | ").replace(/;/g, " ");
+                row.push(notes);
+            } else {
+                row.push("", "", "", "", "", "", "", "", "");
+            }
+            csv += row.join(";") + "\n";
+        }
+        
+        let totalRow = ["TOTALE", "", ""];
+        for(let i=3; i<cols.length-1; i++) {
+            totalRow.push(totals[cols[i]] > 0 ? totals[cols[i]].toString().replace('.', ',') : "");
+        }
+        totalRow.push("");
+        csv += "\n" + totalRow.join(";") + "\n";
+        csv += "\n\nFIRMA: __________________________\n";
+
+        const blob = new Blob(["\uFEFF"+csv], {type: 'text/csv;charset=utf-8;'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a"); a.href = url; a.download = filename;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }
 </script>
 </body>
 </html>
