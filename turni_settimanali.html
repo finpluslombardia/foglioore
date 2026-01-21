@@ -449,6 +449,14 @@
         return new Date(d.setDate(diff));
     }
 
+    function getWeekNumber(d) {
+        d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+        d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+        var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+        var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+        return weekNo;
+    }
+
     function formatDate(d) {
         return d.toISOString().split('T')[0];
     }
@@ -539,10 +547,11 @@
         const days = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
         const todayStr = formatDate(new Date());
         
+        const weekNum = getWeekNumber(currentWeekStart);
         const options = { day: 'numeric', month: 'short' };
         const endOfWeek = new Date(currentWeekStart);
         endOfWeek.setDate(endOfWeek.getDate() + 6);
-        document.getElementById('week-range-label').innerText = `${currentWeekStart.toLocaleDateString('it-IT', options)} - ${endOfWeek.toLocaleDateString('it-IT', options)} ${endOfWeek.getFullYear()}`;
+        document.getElementById('week-range-label').innerText = `Settimana ${weekNum} | ${currentWeekStart.toLocaleDateString('it-IT', options)} - ${endOfWeek.toLocaleDateString('it-IT', options)} ${endOfWeek.getFullYear()}`;
 
         // Definizione delle 4 griglie
         const grids = ['grid-assistenti', 'grid-segreteria', 'grid-altri', 'grid-tutti'];
