@@ -148,14 +148,25 @@
         .shift-user { font-weight: 600; color: var(--text-main); margin-bottom: 2px; display: block; }
         .shift-role { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 500; }
         
-        .delete-btn {
+        /* STILI BOTTONI AZIONE CARD */
+        .card-actions {
             position: absolute; top: 5px; right: 5px;
-            background: rgba(255, 59, 48, 0.1); border-radius: 4px; 
-            border: none; color: #ff3b30;
-            cursor: pointer; padding: 2px 6px; font-size: 1rem;
-            line-height: 1;
+            display: flex; gap: 4px; z-index: 5;
         }
-        .delete-btn:hover { background: #ff3b30; color: white; }
+        .action-btn {
+            background: rgba(255, 255, 255, 0.8); 
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 6px; 
+            color: var(--text-muted);
+            cursor: pointer; padding: 2px 6px; font-size: 0.9rem;
+            line-height: 1; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .action-btn:hover { background: white; color: var(--primary); border-color: var(--primary); transform: scale(1.1); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .action-btn.del:hover { color: #ff3b30; border-color: #ff3b30; }
+        
+        [data-theme="dark"] .action-btn { background: rgba(30,30,30, 0.8); border-color: rgba(255,255,255,0.2); }
+        [data-theme="dark"] .action-btn:hover { background: #333; }
 
         /* MODALE */
         .modal-overlay { 
@@ -192,10 +203,11 @@
 
 <div id="toast">Notifica</div>
 
-<!-- MODALE AGGIUNTA TURNO (Solo Admin) -->
+<!-- MODALE AGGIUNTA/MODIFICA TURNO (Solo Admin) -->
 <div id="add-shift-modal" class="modal-overlay">
     <div class="modal-box">
-        <h3 style="margin-bottom:15px; color:var(--primary)">Nuovo Turno in Programma</h3>
+        <h3 id="modal-title" style="margin-bottom:15px; color:var(--primary)">Nuovo Turno in Programma</h3>
+        <input type="hidden" id="p-id"> <!-- ID nascosto per le modifiche -->
         
         <label>Collaboratore</label>
         <select id="p-user"></select>
@@ -234,7 +246,7 @@
 <div class="container">
     <div style="display:flex; justify-content:space-between; align-items:center">
         <!-- Bottone per tornare alla home -->
-        <a href="index.html" class="back-link">❮ Torna al Foglio Ore</a>
+        <a onclick="tryGoHome()" class="back-link">❮ Torna al Foglio Ore</a>
         <button id="theme-btn" class="btn-secondary" onclick="toggleTheme()" style="padding: 5px 10px;">🌙</button>
     </div>
 
@@ -266,7 +278,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
@@ -314,6 +326,16 @@
 
     window.toast = (msg) => { const t = document.getElementById("toast"); t.innerText=msg; t.className="show"; setTimeout(()=>t.className="",3000); };
     
+    // --- NAVIGAZIONE ---
+    window.tryGoHome = () => {
+        try {
+            window.location.href = "index.html";
+        } catch(e) {
+            console.warn("Navigazione bloccata:", e);
+            alert("Impossibile tornare indietro automaticamente in questa anteprima. Clicca 'Indietro' nel browser o apri index.html manualmente.");
+        }
+    };
+
     // --- AUTH ---
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -330,13 +352,18 @@
             loadPlannedShifts(); // Carica i turni di tutti
         } else {
             // Se non loggato, prova a tornare a index.html
-            // Usiamo try-catch per evitare crash nelle preview
             try {
                 window.location.href = "index.html"; 
             } catch (e) {
                 console.warn("Reindirizzamento bloccato dall'ambiente:", e);
-                // Fallback visivo se il redirect fallisce
-                document.body.innerHTML = '<div style="padding:20px; text-align:center;"><h2>Accesso Richiesto</h2><p>Torna alla <a href="index.html">Pagina Principale</a> per accedere.</p></div>';
+                document.body.innerHTML = `
+                    <div style="padding:40px; text-align:center; font-family:sans-serif;">
+                        <h2>Accesso Richiesto</h2>
+                        <p>Per visualizzare i turni devi effettuare il login.</p>
+                        <button onclick="tryGoHome()" style="padding:10px 20px; background:#007aff; color:white; border:none; border-radius:8px; cursor:pointer;">
+                            Vai al Login (index.html)
+                        </button>
+                    </div>`;
             }
         }
     });
@@ -393,42 +420,41 @@
 
     // --- CARICAMENTO DATI ---
     async function loadUsers() {
-        const q = query(collection(db, "anagrafica"), orderBy("nome"));
-        const snap = await getDocs(q);
-        const select = document.getElementById('p-user');
-        select.innerHTML = "";
-        rubrica = [];
-        snap.forEach(d => {
-            const u = d.data();
-            if(!u.archived) {
-                rubrica.push({email: d.id, nome: u.nome});
-                const opt = document.createElement('option');
-                opt.value = d.id; 
-                opt.innerText = u.nome;
-                select.appendChild(opt);
-            }
-        });
+        try {
+            const q = query(collection(db, "anagrafica"), orderBy("nome"));
+            const snap = await getDocs(q);
+            const select = document.getElementById('p-user');
+            select.innerHTML = "";
+            rubrica = [];
+            snap.forEach(d => {
+                const u = d.data();
+                if(!u.archived) {
+                    rubrica.push({email: d.id, nome: u.nome});
+                    const opt = document.createElement('option');
+                    opt.value = d.id; 
+                    opt.innerText = u.nome;
+                    select.appendChild(opt);
+                }
+            });
+        } catch(e) {
+            console.error("Errore caricamento utenti:", e);
+        }
     }
 
     function loadPlannedShifts() {
-        // SCARICA TUTTI I TURNI (Admin e Collaboratori vedono tutto)
-        // La query realtime garantisce che tutti vedano aggiornamenti istantanei
         const q = query(collection(db, "programmazione_turni"));
         
         onSnapshot(q, (snap) => {
-            // Pulisci le colonne
             document.querySelectorAll('.shifts-container').forEach(el => el.innerHTML = "");
 
             const shifts = [];
             snap.forEach(docSnap => shifts.push({ id: docSnap.id, ...docSnap.data() }));
             
-            // Ordina per orario di inizio
             shifts.sort((a,b) => a.start.localeCompare(b.start));
 
             shifts.forEach(s => {
                 const col = document.getElementById(`col-${s.date}`);
                 
-                // Se il turno appartiene a questa settimana visualizzata
                 if (col) {
                     const isMyShift = (currentUser && s.email === currentUser.email);
                     const colorVar = getRoleColor(s.role);
@@ -436,20 +462,21 @@
                     const card = document.createElement('div');
                     card.className = 'shift-card';
                     card.style.borderLeftColor = colorVar;
-                    
-                    // EVIDENZIA I MIEI TURNI
-                    if(isMyShift) {
-                        card.classList.add('is-mine');
-                    }
+                    if(isMyShift) card.classList.add('is-mine');
 
-                    // BOTTONE ELIMINA (Solo Admin)
-                    let deleteBtn = "";
+                    let actions = "";
                     if(isAdmin) {
-                        deleteBtn = `<button class="delete-btn" onclick="window.deletePlanned('${s.id}')">×</button>`;
+                        // Passiamo i parametri come stringhe safe
+                        actions = `
+                            <div class="card-actions">
+                                <button class="action-btn" onclick="window.openEditModal('${s.id}', '${s.email}', '${s.date}', '${s.role}', '${s.start}', '${s.end}')">✏️</button>
+                                <button class="action-btn del" onclick="window.deletePlanned('${s.id}')">×</button>
+                            </div>
+                        `;
                     }
 
                     card.innerHTML = `
-                        ${deleteBtn}
+                        ${actions}
                         <span class="shift-time">${s.start} - ${s.end}</span>
                         <span class="shift-user">${s.userName}</span>
                         <span class="shift-role" style="color:${colorVar}">${s.role}</span>
@@ -457,6 +484,21 @@
                     col.appendChild(card);
                 }
             });
+        }, (error) => {
+            console.error("Errore lettura turni:", error);
+            const loader = document.getElementById('loader');
+            loader.style.display = 'block';
+            
+            if (error.code === 'permission-denied') {
+                loader.innerHTML = `
+                    <div style="color:#721c24; background-color:#f8d7da; border:1px solid #f5c6cb; padding:15px; border-radius:8px; max-width:500px; margin:0 auto; text-align:left;">
+                        <strong>⚠️ Accesso Negato al Database</strong><br>
+                        Mancano le regole di sicurezza per visualizzare i turni.
+                    </div>
+                `;
+            } else {
+                loader.innerText = "Errore caricamento: " + error.message;
+            }
         });
     }
 
@@ -472,8 +514,27 @@
 
     // --- AZIONI ADMIN ---
     window.openAddModal = () => {
+        document.getElementById('modal-title').innerText = "Nuovo Turno in Programma";
+        document.getElementById('p-id').value = ""; // Resetta ID
+        
         document.getElementById('add-shift-modal').style.display = 'flex';
         document.getElementById('p-date').value = formatDate(currentWeekStart);
+        document.getElementById('p-start').value = "";
+        document.getElementById('p-end').value = "";
+    };
+
+    // Funzione per aprire la modale in modalità modifica
+    window.openEditModal = (id, email, date, role, start, end) => {
+        document.getElementById('modal-title').innerText = "Modifica Turno";
+        document.getElementById('p-id').value = id; // Imposta ID
+        
+        document.getElementById('p-user').value = email;
+        document.getElementById('p-date').value = date;
+        document.getElementById('p-role').value = role;
+        document.getElementById('p-start').value = start;
+        document.getElementById('p-end').value = end;
+        
+        document.getElementById('add-shift-modal').style.display = 'flex';
     };
 
     window.closeModal = () => {
@@ -481,6 +542,7 @@
     };
 
     window.savePlannedShift = async () => {
+        const id = document.getElementById('p-id').value; // Recupera ID (vuoto se nuovo)
         const email = document.getElementById('p-user').value;
         const date = document.getElementById('p-date').value;
         const role = document.getElementById('p-role').value;
@@ -493,15 +555,24 @@
         const userName = userObj ? userObj.nome : email;
 
         try {
-            await addDoc(collection(db, "programmazione_turni"), {
-                email, userName, date, role, start, end,
-                created_at: new Date()
-            });
-            window.toast("Turno pianificato");
+            if (id) {
+                // MODIFICA ESISTENTE
+                await updateDoc(doc(db, "programmazione_turni", id), {
+                    email, userName, date, role, start, end
+                });
+                window.toast("Turno modificato");
+            } else {
+                // CREAZIONE NUOVO
+                await addDoc(collection(db, "programmazione_turni"), {
+                    email, userName, date, role, start, end,
+                    created_at: new Date()
+                });
+                window.toast("Turno pianificato");
+            }
             window.closeModal();
         } catch(e) {
             console.error(e);
-            alert("Errore: " + e.message);
+            alert("Errore salvataggio: " + e.message);
         }
     };
 
@@ -510,7 +581,7 @@
             try {
                 await deleteDoc(doc(db, "programmazione_turni", id));
                 window.toast("Turno rimosso");
-            } catch(e) { alert(e.message); }
+            } catch(e) { alert("Errore eliminazione: " + e.message); }
         }
     };
 
