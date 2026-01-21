@@ -294,13 +294,15 @@
                 justify-content: center; /* Per checkbox */
             }
 
-            /* Navigazione settimane in basso, full width */
+            /* Navigazione settimane compatta e centrata */
             .week-nav {
-                width: 100%;
-                justify-content: space-between;
-                margin-top: 5px;
+                width: auto;
+                justify-content: center;
+                margin: 5px auto;
+                display: flex;
+                padding: 4px;
             }
-            .week-nav button { padding: 8px 15px; }
+            .week-nav button { padding: 5px 10px; font-size: 1.1rem; }
             
             /* Sposta i bottoni azione (Add/Dup) in una riga separata o integrati */
             .week-header > div:last-child {
@@ -308,6 +310,7 @@
                 display: flex;
                 gap: 5px;
                 flex-wrap: wrap;
+                justify-content: center; /* Centra i bottoni azione */
             }
             #btn-dup-week, #btn-add-shift { flex: 1; justify-content: center; }
 
