@@ -192,11 +192,8 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             position: relative; z-index: 1;
         }
-        /* Fix contrasto Desktop: rende il calendario grigio chiaro per staccare dal contenitore bianco */
         @media (min-width: 601px) {
-            .calendar-wrapper {
-                background: #f5f5f7;
-            }
+            .calendar-wrapper { background: #f5f5f7; }
         }
 
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
@@ -249,34 +246,36 @@
             display: flex; gap: 8px; align-items: center;
         }
 
-        .table-wrap { overflow-x: auto; margin-top: 10px; border: 1px solid var(--border-color); border-radius: 12px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--bg-card); }
-        th { text-align: left; padding: 12px; border-bottom: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
-        td { padding: 12px; border-bottom: 1px solid var(--bg-body); color: var(--text-main); vertical-align: middle; }
-        tr:last-child td { border-bottom: none; }
+        /* --- STILE LISTA TURNI (CARDS/TABLE) --- */
+        .table-wrap { overflow-x: auto; margin-top: 10px; border: none; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 6px; font-size: 13px; background: transparent; }
+        
+        /* Header tabella */
+        th { text-align: left; padding: 10px 15px; border-bottom: none; color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        
+        /* Celle tabella (Card look) */
+        td { 
+            padding: 8px 12px; /* Più compatto */
+            color: var(--text-main); 
+            vertical-align: middle; 
+            /* Background settato via JS inline */
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+        }
+        td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; border-left: 1px solid var(--border-color); }
+        td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-right: 1px solid var(--border-color); }
+
         .action-icons { display: flex; gap: 8px; justify-content: flex-end; }
-        .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px; width: auto; color: var(--text-main); }
+        .icon-btn { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1); border-radius:4px; font-size: 1rem; cursor: pointer; padding: 2px 5px; width: auto; color: var(--text-main); transition: 0.2s; }
+        .icon-btn:hover { background: white; transform: scale(1.1); }
         .icon-lock { font-size: 1rem; color: var(--text-muted); cursor: not-allowed; padding: 4px;}
 
-        /* Stats (Box Riepilogo) - MODIFICATO PER ESSERE COMPATTO E COLORATO */
-        .stats-container { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; margin-top: 10px; }
-        .stat-pill { 
-            background: var(--bg-input); 
-            /* Rimuoviamo il bordo grigio standard e usiamo lo sfondo colorato inline */
-            border: none; 
-            padding: 4px 10px; /* Più compatto */
-            border-radius: 8px; 
-            font-size: 0.75rem; /* Font leggermente più piccolo */
-            display: inline-flex; 
-            align-items: center; 
-            gap: 6px; 
-            color: var(--text-main); 
-            font-weight: 600;
-        }
-        /* Nascondiamo il pallino perché ora coloriamo tutto il box */
-        .stat-dot { display: none; }
+        /* Stats */
+        .stats-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 10px; }
+        .stat-pill { background: var(--bg-input); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; color: var(--text-main); font-weight: 500; }
+        .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        /* Admin Cards (Ripristinato stile originale) */
+        /* Admin Cards (Originale) */
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-top: 20px; }
         .user-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; }
         .user-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
@@ -326,9 +325,19 @@
 
             .stats-container { justify-content: flex-start; }
             thead { display: none; }
-            tr { display: block; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-            td { display: flex; justify-content: space-between; padding: 5px 0; border: none; text-align: right; }
-            td:before { content: attr(data-label); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; text-align: left; }
+            
+            /* Card Mobile Style */
+            tr { 
+                display: block; 
+                /* Background settato via JS inline */
+                border: 1px solid var(--border-color); 
+                border-radius: 12px; 
+                padding: 10px; /* Reduced padding */
+                margin-bottom: 8px; 
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+            }
+            td { display: flex; justify-content: space-between; padding: 4px 0; border: none; text-align: right; border-radius: 0 !important; background: transparent !important; }
+            td:before { content: attr(data-label); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; text-align: left; opacity: 0.7; }
             .table-input { text-align: right; width: 60%; }
         }
 
@@ -1031,15 +1040,15 @@
     };
 
     // FUNZIONE COLORI RUOLI (SFONDO)
-    const getRoleStyle = (m) => {
+    const getRoleBg = (m) => {
         // Returns { bg: color, color: color }
-        if(m.includes("Assistente")) return { bg: "#ffecec", color: "#c41c12" }; // Redish
-        if(m.includes("Istruttore")) return { bg: "#eafbe7", color: "#1e7e34" }; // Greenish
-        if(m.includes("Fitness")) return { bg: "#fff8cc", color: "#997a00" }; // Yellowish
-        if(m.includes("Propaganda")) return { bg: "#f6e4ff", color: "#7a28a3" }; // Purplish
-        if(m.includes("Lezione")) return { bg: "#e0f0ff", color: "#0056b3" }; // Blueish
-        if(m.includes("Segreteria")) return { bg: "#f4f4f5", color: "#555555" }; // Grayish
-        return { bg: "#f2f2f7", color: "#333" };
+        if(m.includes("Assistente")) return "#ffecec"; // Rosso Chiaro
+        if(m.includes("Istruttore")) return "#eafbe7"; // Verde Chiaro
+        if(m.includes("Fitness")) return "#fff8cc"; // Giallo Chiaro
+        if(m.includes("Propaganda")) return "#f6e4ff"; // Viola Chiaro
+        if(m.includes("Lezione")) return "#e0f0ff"; // Blu Chiaro
+        if(m.includes("Segreteria")) return "#f4f4f5"; // Grigio Chiaro
+        return "var(--bg-card)";
     };
 
     const monthNames = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
@@ -1143,8 +1152,11 @@
                 actionHtml = `<span class="icon-lock">🔒</span>`;
             }
 
+            // APPLICA SFONDO ALLA RIGA
+            const bg = getRoleBg(t.mansione);
+            
             tbody.innerHTML += `
-                <tr id="row-${t.id}">
+                <tr id="row-${t.id}" style="background-color:${bg}">
                     <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
                     <td data-label="Mansione">${t.mansione}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
@@ -1160,8 +1172,10 @@
         
         // UPDATED: Render pills with compact style
         Object.keys(breakdown).forEach(m => {
-            const style = getRoleStyle(m);
-            statsBox.innerHTML += `<div class="stat-pill" style="background:${style.bg}; color:${style.color};">${m}: ${breakdown[m].toFixed(1)}</div>`;
+            const bg = getRoleBg(m);
+            // Uso un colore del testo più scuro per contrasto su sfondo chiaro
+            const textColor = "#333"; 
+            statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${breakdown[m].toFixed(1)}</div>`;
         });
     };
 
@@ -1481,8 +1495,11 @@
             if(!breakdown[t.mansione]) breakdown[t.mansione]=0;
             breakdown[t.mansione] += t.ore;
 
+            // APPLICA SFONDO ALLA RIGA
+            const bg = getRoleBg(t.mansione);
+
             tbody.innerHTML += `
-                <tr id="arow-${t.id}">
+                <tr id="arow-${t.id}" style="background-color:${bg}">
                     <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
                     <td data-label="Mansione">${t.mansione}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
@@ -1497,9 +1514,10 @@
         document.getElementById('d-soldi').innerText = totSoldi.toFixed(2);
         
         // UPDATED: Render pills with compact style
-        Object.keys(breakdown).forEach(m => {
-            const style = getRoleStyle(m);
-            statsBox.innerHTML += `<div class="stat-pill" style="background:${style.bg}; color:${style.color};">${m}: ${breakdown[m].toFixed(1)}</div>`;
+        Object.keys(breakdown).forEach(m => { 
+            const bg = getRoleBg(m);
+            const textColor = "#333";
+            statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${breakdown[m].toFixed(1)}</div>`; 
         });
     };
 
