@@ -1,1 +1,513 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pianificazione Turni</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- STILI BASE (Identici a index.html) --- */
+        :root {
+            --primary: #007aff;
+            --bg-body: #f2f2f7; 
+            --bg-card: #ffffff;
+            --bg-input: #ffffff;
+            --text-main: #1c1c1e;
+            --text-muted: #8e8e93;
+            --border-color: #b0b0b5; 
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --hover-btn: #e5e5ea;
 
+            /* PALLINI MANSIONI */
+            --dot-assistente: #ff3b30;
+            --dot-istruttore: #34c759;
+            --dot-propaganda: #af52de;
+            --dot-lezione: #007aff;
+            --dot-fitness: #ffcc00;
+            --dot-segreteria: #8e8e93;
+        }
+
+        [data-theme="dark"] {
+            --bg-body: #000000;
+            --bg-card: #1c1c1e;
+            --bg-input: #2c2c2e;
+            --text-main: #f2f2f7;
+            --text-muted: #aeaeb2;
+            --border-color: #48484a; 
+            --shadow: 0 4px 12px rgba(0,0,0,0.3);
+            --hover-btn: #3a3a3c;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+            background-color: var(--bg-body); 
+            color: var(--text-main); margin: 0; padding: 15px; 
+            font-size: 14px; -webkit-font-smoothing: antialiased;
+        }
+
+        .container { 
+            max-width: 1300px; margin: 0 auto; background: var(--bg-card); 
+            padding: 20px; border-radius: 20px; box-shadow: var(--shadow); 
+            min-height: 85vh;
+        }
+
+        h2, h3 { color: var(--text-main); margin-top: 0; }
+        h3 { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; }
+
+        button { 
+            padding: 10px 15px; border: none; border-radius: 10px; 
+            font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+            font-size: 14px; font-family: inherit;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-secondary { background: var(--hover-btn); color: var(--text-main); border: 1px solid var(--border-color); }
+        .btn-danger { background: #ff3b30; color: white; }
+        
+        input, select { 
+            padding: 10px; border: 1px solid var(--border-color); 
+            border-radius: 10px; background: var(--bg-input); color: var(--text-main);
+            width: 100%; font-family: inherit; margin-bottom: 10px;
+        }
+
+        /* --- CALENDARIO SETTIMANALE --- */
+        .week-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; flex-wrap: wrap; gap: 10px;
+        }
+        .week-nav { display: flex; align-items: center; gap: 10px; background: var(--bg-body); padding: 5px; border-radius: 12px; }
+        .week-nav button { background: none; border: none; font-size: 1.2rem; padding: 5px 10px; color: var(--primary); }
+        
+        /* GRID LAYOUT */
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+
+        .day-column {
+            background: var(--bg-body);
+            border-radius: 12px;
+            min-height: 400px;
+            display: flex; flex-direction: column;
+            border: 1px solid var(--border-color);
+        }
+
+        .day-header {
+            padding: 12px 5px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--bg-card);
+            border-radius: 12px 12px 0 0;
+            position: sticky; top: 0; z-index: 10;
+        }
+        .day-name { font-weight: 700; text-transform: uppercase; font-size: 0.75rem; color: var(--text-muted); }
+        .day-date { font-weight: 700; font-size: 1.2rem; margin-top: 4px; }
+        .day-date.today { color: var(--primary); text-decoration: underline; text-decoration-thickness: 3px; }
+
+        .shifts-container {
+            padding: 8px;
+            flex: 1;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+
+        /* SHIFT CARD */
+        .shift-card {
+            background: var(--bg-card);
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-left: 5px solid #ccc; /* Colore ruolo */
+            font-size: 0.85rem;
+            position: relative;
+            cursor: default;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .shift-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        
+        /* STILE PER I MIEI TURNI (Evidenziati) */
+        .shift-card.is-mine {
+            background-color: rgba(0, 122, 255, 0.08); /* Azzurro chiaro */
+            border: 1px solid var(--primary);
+            border-left-width: 5px; /* Mantiene larghezza ruolo */
+        }
+        /* Dark mode fix per is-mine */
+        [data-theme="dark"] .shift-card.is-mine {
+            background-color: rgba(10, 132, 255, 0.15);
+            border-color: #0a84ff;
+        }
+
+        .shift-time { font-weight: 800; margin-bottom: 3px; display: block; font-size: 0.9rem; }
+        .shift-user { font-weight: 600; color: var(--text-main); margin-bottom: 2px; display: block; }
+        .shift-role { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 500; }
+        
+        .delete-btn {
+            position: absolute; top: 5px; right: 5px;
+            background: rgba(255, 59, 48, 0.1); border-radius: 4px; 
+            border: none; color: #ff3b30;
+            cursor: pointer; padding: 2px 6px; font-size: 1rem;
+            line-height: 1;
+        }
+        .delete-btn:hover { background: #ff3b30; color: white; }
+
+        /* MODALE */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); z-index: 2000; 
+            display: none; justify-content: center; align-items: center; 
+        }
+        .modal-box { background: var(--bg-card); padding: 25px; border-radius: 18px; width: 90%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: left; }
+        
+        .hidden { display: none !important; }
+        #toast { visibility: hidden; min-width: 250px; background: #333; color: #fff; text-align: center; border-radius: 50px; padding: 12px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 3000; }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} } @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+
+        @media (max-width: 900px) {
+            .week-grid { 
+                grid-template-columns: 1fr; /* Colonna singola su mobile */
+                gap: 15px; 
+            }
+            .day-column { min-height: auto; border: 1px solid var(--border-color); }
+            .day-header { position: static; background: var(--bg-input); }
+        }
+
+        /* Link torna indietro */
+        .back-link {
+            text-decoration: none; color: var(--text-main); font-weight: 600;
+            display: inline-flex; align-items: center; gap: 5px; margin-bottom: 20px; cursor: pointer;
+            padding: 8px 12px; border-radius: 10px; background: var(--bg-body);
+        }
+        .back-link:hover { background: var(--hover-btn); }
+    </style>
+</head>
+<body>
+
+<div id="toast">Notifica</div>
+
+<!-- MODALE AGGIUNTA TURNO (Solo Admin) -->
+<div id="add-shift-modal" class="modal-overlay">
+    <div class="modal-box">
+        <h3 style="margin-bottom:15px; color:var(--primary)">Nuovo Turno in Programma</h3>
+        
+        <label>Collaboratore</label>
+        <select id="p-user"></select>
+
+        <label>Data</label>
+        <input type="date" id="p-date">
+
+        <label>Mansione</label>
+        <select id="p-role">
+            <option value="Assistente bagnanti">Assistente bagnanti</option>
+            <option value="Istruttore">Istruttore</option>
+            <option value="Fitness">Fitness</option>
+            <option value="Propaganda">Propaganda</option>
+            <option value="Lezione individuale">Lezione individuale</option>
+            <option value="Segreteria">Segreteria</option>
+        </select>
+
+        <div style="display:flex; gap:10px; margin-bottom:20px">
+            <div style="flex:1">
+                <label>Inizio</label>
+                <input type="time" id="p-start">
+            </div>
+            <div style="flex:1">
+                <label>Fine</label>
+                <input type="time" id="p-end">
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px">
+            <button class="btn-secondary" onclick="closeModal()" style="flex:1">Annulla</button>
+            <button class="btn-primary" onclick="savePlannedShift()" style="flex:1">Salva</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div style="display:flex; justify-content:space-between; align-items:center">
+        <!-- Bottone per tornare alla home -->
+        <a onclick="window.location.href='index.html'" class="back-link">❮ Torna al Foglio Ore</a>
+        <button id="theme-btn" class="btn-secondary" onclick="toggleTheme()" style="padding: 5px 10px;">🌙</button>
+    </div>
+
+    <div class="week-header">
+        <div>
+            <h2 style="margin:0">Programmazione Turni</h2>
+            <p id="week-range-label" style="margin:5px 0 0 0; color:var(--text-muted)">...</p>
+        </div>
+        
+        <div style="display:flex; gap:10px; align-items:center">
+            <div class="week-nav">
+                <button onclick="changeWeek(-1)">❮</button>
+                <button onclick="goToToday()" style="font-size:0.9rem; font-weight:600">Oggi</button>
+                <button onclick="changeWeek(1)">❯</button>
+            </div>
+            <!-- Solo Admin vedrà questo bottone -->
+            <button id="btn-add-shift" class="btn-primary hidden" onclick="openAddModal()">➕ Aggiungi</button>
+        </div>
+    </div>
+
+    <div id="loader" style="text-align:center; padding:20px; color:var(--text-muted)">Caricamento turni...</div>
+
+    <div class="week-grid" id="week-grid" style="display:none">
+        <!-- Generato via JS: 7 colonne -->
+    </div>
+
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
+      authDomain: "gestioneore-3bf5f.firebaseapp.com",
+      projectId: "gestioneore-3bf5f",
+      storageBucket: "gestioneore-3bf5f.firebasestorage.app",
+      messagingSenderId: "99818377406",
+      appId: "1:99818377406:web:a62ee0e6f323b8b4178eef",
+      measurementId: "G-KT823H9DVR"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const ADMIN_EMAIL = "a.chiodini01@gmail.com";
+    let currentUser = null;
+    let isAdmin = false;
+    let currentWeekStart = getMonday(new Date()); 
+    let rubrica = []; 
+
+    // --- DARK MODE ---
+    window.toggleTheme = () => {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const next = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+        document.getElementById('theme-btn').innerText = next === 'dark' ? '☀️' : '🌙';
+    };
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-btn').innerText = savedTheme === 'dark' ? '☀️' : '🌙';
+
+    // --- UTILS ---
+    function getMonday(d) {
+        d = new Date(d);
+        const day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6 : 1);
+        return new Date(d.setDate(diff));
+    }
+
+    function formatDate(d) {
+        return d.toISOString().split('T')[0];
+    }
+
+    window.toast = (msg) => { const t = document.getElementById("toast"); t.innerText=msg; t.className="show"; setTimeout(()=>t.className="",3000); };
+    
+    // --- AUTH ---
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            currentUser = user;
+            isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+            
+            // Solo admin vede il bottone aggiungi
+            if (isAdmin) {
+                document.getElementById('btn-add-shift').classList.remove('hidden');
+                await loadUsers(); // Carica lista utenti per dropdown
+            }
+            
+            renderWeek();
+            loadPlannedShifts(); // Carica i turni di tutti
+        } else {
+            // Se non loggato, torna a index.html
+            window.location.href = "index.html"; 
+        }
+    });
+
+    // --- LOGICA SETTIMANA ---
+    window.changeWeek = (delta) => {
+        currentWeekStart.setDate(currentWeekStart.getDate() + (delta * 7));
+        renderWeek();
+        loadPlannedShifts();
+    };
+
+    window.goToToday = () => {
+        currentWeekStart = getMonday(new Date());
+        renderWeek();
+        loadPlannedShifts();
+    };
+
+    function renderWeek() {
+        const grid = document.getElementById('week-grid');
+        grid.innerHTML = "";
+        
+        const endOfWeek = new Date(currentWeekStart);
+        endOfWeek.setDate(endOfWeek.getDate() + 6);
+        
+        const options = { day: 'numeric', month: 'short' };
+        document.getElementById('week-range-label').innerText = 
+            `${currentWeekStart.toLocaleDateString('it-IT', options)} - ${endOfWeek.toLocaleDateString('it-IT', options)} ${endOfWeek.getFullYear()}`;
+
+        const days = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
+        const todayStr = formatDate(new Date());
+
+        for (let i = 0; i < 7; i++) {
+            const dayDate = new Date(currentWeekStart);
+            dayDate.setDate(dayDate.getDate() + i);
+            const dateStr = formatDate(dayDate);
+            const isToday = (dateStr === todayStr);
+
+            const col = document.createElement('div');
+            col.className = 'day-column';
+            col.innerHTML = `
+                <div class="day-header">
+                    <div class="day-name">${days[i]}</div>
+                    <div class="day-date ${isToday ? 'today' : ''}">${dayDate.getDate()}</div>
+                </div>
+                <div class="shifts-container" id="col-${dateStr}">
+                    <!-- Shifts injected here -->
+                </div>
+            `;
+            grid.appendChild(col);
+        }
+        grid.style.display = "grid";
+        document.getElementById('loader').style.display = "none";
+    }
+
+    // --- CARICAMENTO DATI ---
+    async function loadUsers() {
+        const q = query(collection(db, "anagrafica"), orderBy("nome"));
+        const snap = await getDocs(q);
+        const select = document.getElementById('p-user');
+        select.innerHTML = "";
+        rubrica = [];
+        snap.forEach(d => {
+            const u = d.data();
+            if(!u.archived) {
+                rubrica.push({email: d.id, nome: u.nome});
+                const opt = document.createElement('option');
+                opt.value = d.id; 
+                opt.innerText = u.nome;
+                select.appendChild(opt);
+            }
+        });
+    }
+
+    function loadPlannedShifts() {
+        // SCARICA TUTTI I TURNI (Admin e Collaboratori vedono tutto)
+        // La query realtime garantisce che tutti vedano aggiornamenti istantanei
+        const q = query(collection(db, "programmazione_turni"));
+        
+        onSnapshot(q, (snap) => {
+            // Pulisci le colonne
+            document.querySelectorAll('.shifts-container').forEach(el => el.innerHTML = "");
+
+            const shifts = [];
+            snap.forEach(docSnap => shifts.push({ id: docSnap.id, ...docSnap.data() }));
+            
+            // Ordina per orario di inizio
+            shifts.sort((a,b) => a.start.localeCompare(b.start));
+
+            shifts.forEach(s => {
+                const col = document.getElementById(`col-${s.date}`);
+                
+                // Se il turno appartiene a questa settimana visualizzata
+                if (col) {
+                    const isMyShift = (currentUser && s.email === currentUser.email);
+                    const colorVar = getRoleColor(s.role);
+                    
+                    const card = document.createElement('div');
+                    card.className = 'shift-card';
+                    card.style.borderLeftColor = colorVar;
+                    
+                    // EVIDENZIA I MIEI TURNI
+                    if(isMyShift) {
+                        card.classList.add('is-mine');
+                    }
+
+                    // BOTTONE ELIMINA (Solo Admin)
+                    let deleteBtn = "";
+                    if(isAdmin) {
+                        deleteBtn = `<button class="delete-btn" onclick="window.deletePlanned('${s.id}')">×</button>`;
+                    }
+
+                    card.innerHTML = `
+                        ${deleteBtn}
+                        <span class="shift-time">${s.start} - ${s.end}</span>
+                        <span class="shift-user">${s.userName}</span>
+                        <span class="shift-role" style="color:${colorVar}">${s.role}</span>
+                    `;
+                    col.appendChild(card);
+                }
+            });
+        });
+    }
+
+    function getRoleColor(m) {
+        if(m.includes("Assistente")) return "var(--dot-assistente)";
+        if(m.includes("Istruttore")) return "var(--dot-istruttore)";
+        if(m.includes("Fitness")) return "var(--dot-fitness)";
+        if(m.includes("Propaganda")) return "var(--dot-propaganda)";
+        if(m.includes("Lezione")) return "var(--dot-lezione)";
+        if(m.includes("Segreteria")) return "var(--dot-segreteria)";
+        return "#ccc";
+    }
+
+    // --- AZIONI ADMIN ---
+    window.openAddModal = () => {
+        document.getElementById('add-shift-modal').style.display = 'flex';
+        document.getElementById('p-date').value = formatDate(currentWeekStart);
+    };
+
+    window.closeModal = () => {
+        document.getElementById('add-shift-modal').style.display = 'none';
+    };
+
+    window.savePlannedShift = async () => {
+        const email = document.getElementById('p-user').value;
+        const date = document.getElementById('p-date').value;
+        const role = document.getElementById('p-role').value;
+        const start = document.getElementById('p-start').value;
+        const end = document.getElementById('p-end').value;
+
+        if(!email || !date || !start || !end) return alert("Compila tutti i campi");
+
+        const userObj = rubrica.find(u => u.email === email);
+        const userName = userObj ? userObj.nome : email;
+
+        try {
+            await addDoc(collection(db, "programmazione_turni"), {
+                email, userName, date, role, start, end,
+                created_at: new Date()
+            });
+            window.toast("Turno pianificato");
+            window.closeModal();
+        } catch(e) {
+            console.error(e);
+            alert("Errore: " + e.message);
+        }
+    };
+
+    window.deletePlanned = async (id) => {
+        if(confirm("Eliminare questo turno pianificato?")) {
+            try {
+                await deleteDoc(doc(db, "programmazione_turni", id));
+                window.toast("Turno rimosso");
+            } catch(e) { alert(e.message); }
+        }
+    };
+
+</script>
+
+</body>
+</html>
