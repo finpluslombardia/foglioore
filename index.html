@@ -27,7 +27,7 @@
             --money-color: #34c759;
             --hover-btn: #e5e5ea;
 
-            /* PALLINI (Mantenuti per il calendario) */
+            /* PALLINI */
             --dot-assistente: #ff3b30;
             --dot-istruttore: #34c759;
             --dot-propaganda: #af52de;
@@ -189,15 +189,7 @@
             background: var(--bg-card); max-width: 380px; margin: 0 auto 20px auto; 
             padding: 15px; border-radius: 20px; border: 1px solid var(--border-color); 
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
-            position: relative; z-index: 1;
         }
-        /* Fix contrasto Desktop: rende il calendario grigio chiaro per staccare dal contenitore bianco */
-        @media (min-width: 601px) {
-            .calendar-wrapper {
-                background: #f5f5f7;
-            }
-        }
-
         .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .cal-title { font-size: 1.1rem; font-weight: 700; text-transform: capitalize; color: var(--text-main); }
         .cal-nav { background: none; border: none; color: var(--primary); font-size: 1.2rem; cursor: pointer; padding: 0 10px; }
@@ -257,40 +249,39 @@
         .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px; width: auto; color: var(--text-main); }
         .icon-lock { font-size: 1rem; color: var(--text-muted); cursor: not-allowed; padding: 4px;}
 
-        /* Stats Compatti & Colorati */
-        .stats-container { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; margin-top: 10px; }
-        .stat-pill { 
-            border: 1px solid transparent; 
-            padding: 3px 8px; 
-            border-radius: 6px; 
-            font-size: 0.75rem; 
-            display: inline-flex; 
-            align-items: center; 
-            gap: 5px; 
-            color: var(--text-main); 
-            font-weight: 600; 
-        }
-        /* Dot nascosto perché coloriamo lo sfondo */
-        .stat-dot { display: none; }
+        /* Stats */
+        .stats-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 10px; }
+        .stat-pill { background: var(--bg-input); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; color: var(--text-main); font-weight: 500; }
+        .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-        /* Admin Cards */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-top: 20px; }
-        .user-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.03); position: relative; }
-        .user-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        /* Admin Cards - COMPACT & COLORED */
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin-top: 20px; }
+        .user-card { 
+            background: var(--bg-card); 
+            border: 1px solid var(--border-color); 
+            border-radius: 14px; 
+            padding: 12px 15px; /* Compact padding */
+            cursor: pointer; 
+            transition: transform 0.2s, box-shadow 0.2s; 
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
+            position: relative; 
+        }
+        .user-card:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
         .user-card.archived { opacity: 0.6; border-style: dashed; }
         
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-        .card-name { font-weight: 700; font-size: 1.1rem; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px; }
-        .card-actions-group { display: flex; gap: 5px; flex-shrink: 0; align-items: center; }
-        .card-action-btn { background: none; border: none; padding: 4px; font-size: 1.1rem; cursor: pointer; line-height: 1; width: auto; margin:0; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+        .card-name { font-weight: 700; font-size: 1rem; color: inherit; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px; }
+        .card-actions-group { display: flex; gap: 4px; flex-shrink: 0; align-items: center; }
+        .card-action-btn { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1); border-radius:4px; padding: 2px 4px; font-size: 1rem; cursor: pointer; line-height: 1; width: auto; margin:0; }
+        .card-action-btn:hover { background: rgba(255,255,255,1); }
 
-        .card-sub { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 15px; }
-        .card-stats-row { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--bg-body); padding-top: 10px; }
+        .card-sub { color: inherit; opacity: 0.7; font-size: 0.75rem; margin-bottom: 10px; }
+        .card-stats-row { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 8px; }
         .stat-group { text-align: left; }
         .stat-group.right { text-align: right; }
-        .stat-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 2px; }
-        .stat-val-h { font-size: 1.4rem; font-weight: 800; color: var(--primary); line-height: 1; }
-        .stat-val-m { font-size: 1.4rem; font-weight: 800; color: var(--money-color); line-height: 1; }
+        .stat-label { font-size: 0.6rem; color: inherit; opacity: 0.7; text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 1px; }
+        .stat-val-h { font-size: 1.1rem; font-weight: 800; color: inherit; line-height: 1; }
+        .stat-val-m { font-size: 1.1rem; font-weight: 800; color: inherit; line-height: 1; }
 
         .edit-user-btn { background: var(--bg-body); border:none; border-radius: 4px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); margin: 0; padding: 0; }
         .edit-user-btn:hover { background: var(--border-color); color: var(--primary); }
@@ -1250,7 +1241,8 @@
                 last: 0, 
                 tariffe: data.tariffe || {},
                 archived: data.archived || false,
-                uid: data.uid || null
+                uid: data.uid || null,
+                roles: {} // Initialize roles object
             };
         }
 
@@ -1280,7 +1272,8 @@
                         nome: userEmail, // Nome provvisorio
                         last: 0, 
                         tariffe: {},
-                        archived: false // Default not archived
+                        archived: false, // Default not archived
+                        roles: {}
                     };
                 }
 
@@ -1290,12 +1283,26 @@
                     stats[userEmail].soldi += (t.ore * tariffaOraria);
                     const ts = t.created_at ? t.created_at.seconds : date.getTime()/1000;
                     if(ts > stats[userEmail].last) stats[userEmail].last = ts;
+                    
+                    // Track role hours
+                    stats[userEmail].roles[t.mansione] = (stats[userEmail].roles[t.mansione] || 0) + t.ore;
                 }
             }
         });
 
         // 3. RENDER
-        let cards = Object.entries(stats).map(([e,d]) => ({email:e, ...d}));
+        let cards = Object.entries(stats).map(([e,d]) => {
+            // Determine dominant role
+            let maxHours = -1;
+            let dominantRole = "";
+            for (const [r, h] of Object.entries(d.roles)) {
+                if (h > maxHours) {
+                    maxHours = h;
+                    dominantRole = r;
+                }
+            }
+            return {email:e, ...d, dominantRole};
+        });
         
         // FILTER BY ARCHIVE STATUS
         if (showArchived) {
@@ -1320,20 +1327,24 @@
                     : `<button class="card-action-btn" onclick="event.stopPropagation(); toggleArchive('${u.email}', true)" title="Archivia">📂</button>`;
                 
                 const cardClass = isArchived ? "user-card archived" : "user-card";
+                
+                // Get style based on dominant role
+                const style = getRoleStyle(u.dominantRole || "");
+                const cardStyle = `background-color: ${style.bg}; border-color: ${style.color}40;`; // 40 for transparency on border
 
                 grid.innerHTML += `
-                    <div class="${cardClass}" onclick="openDetail('${u.email}')">
+                    <div class="${cardClass}" style="${cardStyle}" onclick="openDetail('${u.email}')">
                         <div class="card-header">
-                            <div class="card-name">${u.nome}</div>
+                            <div class="card-name" style="color:${style.color}">${u.nome}</div>
                             <div class="card-actions-group">
                                 <button class="card-action-btn" onclick="event.stopPropagation(); openEditUser('${u.email}','${u.nome}')">✏️</button>
                                 ${archiveAction}
                             </div>
                         </div>
-                        <div class="card-sub">${u.email}</div>
-                        <div class="card-stats-row">
-                            <div class="stat-group"><span class="stat-label">ORE</span><span class="stat-val-h">${u.ore.toFixed(1)}</span></div>
-                            <div class="stat-group right"><span class="stat-label">STIMA</span><span class="stat-val-m">€ ${u.soldi.toFixed(2)}</span></div>
+                        <div class="card-sub" style="color:${style.color}">${u.email}</div>
+                        <div class="card-stats-row" style="border-top-color:${style.color}20">
+                            <div class="stat-group"><span class="stat-label" style="color:${style.color}">ORE</span><span class="stat-val-h" style="color:${style.color}">${u.ore.toFixed(1)}</span></div>
+                            <div class="stat-group right"><span class="stat-label" style="color:${style.color}">STIMA</span><span class="stat-val-m" style="color:${style.color}">€ ${u.soldi.toFixed(2)}</span></div>
                         </div>
                     </div>
                 `;
@@ -2041,4 +2052,3 @@
 </script>
 </body>
 </html>
-```
