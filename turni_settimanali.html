@@ -84,16 +84,30 @@
         .week-nav { display: flex; align-items: center; gap: 10px; background: var(--bg-body); padding: 5px; border-radius: 12px; }
         .week-nav button { background: none; border: none; font-size: 1.2rem; padding: 5px 10px; color: var(--primary); }
         
-        /* VIEW SWITCHER */
+        /* VIEW SWITCHER & FILTERS */
+        .controls-row {
+            display: flex; gap: 10px; align-items: center; margin-top: 10px; flex-wrap: wrap;
+        }
         .view-switcher {
-            display: flex; background: var(--bg-body); padding: 4px; border-radius: 10px; margin-top: 10px;
+            display: flex; background: var(--bg-body); padding: 4px; border-radius: 10px;
         }
         .view-switcher button {
-            flex: 1; padding: 8px 15px; border-radius: 8px; font-size: 0.85rem; background: transparent; color: var(--text-muted); transition: 0.2s;
+            padding: 8px 15px; border-radius: 8px; font-size: 0.85rem; background: transparent; color: var(--text-muted); transition: 0.2s;
         }
         .view-switcher button.active {
             background: var(--bg-card); color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
+
+        /* Nuovi Stili Filtri */
+        .filter-container select {
+            padding: 8px 12px; margin: 0; font-size: 0.85rem; border-radius: 8px; max-width: 200px;
+        }
+        .checkbox-filter {
+            display: flex; align-items: center; gap: 8px; font-size: 0.9rem; 
+            background: var(--bg-body); padding: 8px 12px; border-radius: 10px; cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+        .checkbox-filter input { width: 16px; height: 16px; margin: 0; }
 
         /* SEZIONI GRIGLIE */
         .grid-section-title {
@@ -322,18 +336,34 @@
     </div>
 
     <div class="week-header">
-        <div>
+        <div style="flex: 1;">
             <h2 style="margin:0">Programmazione Turni</h2>
             <p id="week-range-label" style="margin:5px 0 0 0; color:var(--text-muted)">...</p>
             
-            <!-- VIEW SWITCHER -->
-            <div class="view-switcher">
-                <button id="btn-view-cat" class="active" onclick="switchView('categories')">Per Categoria</button>
-                <button id="btn-view-uni" onclick="switchView('unified')">Vista Unica</button>
+            <div class="controls-row">
+                <!-- VIEW SWITCHER -->
+                <div class="view-switcher">
+                    <button id="btn-view-cat" class="active" onclick="switchView('categories')">Per Categoria</button>
+                    <button id="btn-view-uni" onclick="switchView('unified')">Vista Unica</button>
+                </div>
+
+                <!-- FILTRI UTENTE -->
+                <div class="filter-container">
+                    <!-- Solo Admin -->
+                    <select id="admin-user-filter" class="hidden" onchange="applyUserFilter(this.value)">
+                        <option value="">Tutti i collaboratori</option>
+                    </select>
+                    
+                    <!-- Solo Collaboratori -->
+                    <label id="collab-filter-container" class="checkbox-filter hidden">
+                        <input type="checkbox" id="collab-me-filter" onchange="toggleMyShifts()">
+                        <span>Solo i miei turni</span>
+                    </label>
+                </div>
             </div>
         </div>
         
-        <div style="display:flex; gap:10px; align-items:center">
+        <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
             <div class="week-nav">
                 <button onclick="changeWeek(-1)">❮</button>
                 <button onclick="goToToday()" style="font-size:0.9rem; font-weight:600">Oggi</button>
@@ -393,7 +423,11 @@
     let isAdmin = false;
     let currentWeekStart = getMonday(new Date()); 
     let rubrica = []; 
-    let allShiftsData = []; 
+    let allShiftsData = []; // Dati grezzi per filtraggio client-side
+    
+    // VARIABILI FILTRO
+    let activeUserFilter = ""; // Email utente selezionato (Admin)
+    let onlyMyShifts = false;  // Toggle (Collaboratore)
 
     // --- DARK MODE ---
     window.toggleTheme = () => {
@@ -451,6 +485,17 @@
         }
     };
 
+    // --- FILTRI ---
+    window.applyUserFilter = (email) => {
+        activeUserFilter = email;
+        renderShiftsFromData();
+    };
+
+    window.toggleMyShifts = () => {
+        onlyMyShifts = document.getElementById('collab-me-filter').checked;
+        renderShiftsFromData();
+    };
+
     // --- AUTH ---
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -460,7 +505,14 @@
             if (isAdmin) {
                 document.getElementById('btn-add-shift').classList.remove('hidden');
                 document.getElementById('btn-dup-week').classList.remove('hidden');
+                
+                // Mostra filtro admin
+                document.getElementById('admin-user-filter').classList.remove('hidden');
+                
                 await loadUsers();
+            } else {
+                // Mostra filtro collaboratore
+                document.getElementById('collab-filter-container').classList.remove('hidden');
             }
             
             renderWeek();
@@ -529,24 +581,37 @@
         try {
             const q = query(collection(db, "anagrafica"), orderBy("nome"));
             const snap = await getDocs(q);
-            const select = document.getElementById('p-user');
-            select.innerHTML = "";
+            
+            // Popola Select modale
+            const modalSelect = document.getElementById('p-user');
+            modalSelect.innerHTML = "";
+            
+            // Popola Select Filtro Admin
+            const filterSelect = document.getElementById('admin-user-filter');
+            // Mantieni l'opzione "Tutti"
+            filterSelect.innerHTML = '<option value="">Tutti i collaboratori</option>';
+
             rubrica = [];
             snap.forEach(d => {
                 const u = d.data();
                 if(!u.archived) {
                     rubrica.push({email: d.id, nome: u.nome});
-                    const opt = document.createElement('option');
-                    opt.value = d.id; 
-                    opt.innerText = u.nome;
-                    select.appendChild(opt);
+                    
+                    // Option Modale
+                    const optM = document.createElement('option');
+                    optM.value = d.id; optM.innerText = u.nome;
+                    modalSelect.appendChild(optM);
+
+                    // Option Filtro
+                    const optF = document.createElement('option');
+                    optF.value = d.id; optF.innerText = u.nome;
+                    filterSelect.appendChild(optF);
                 }
             });
         } catch(e) { console.error(e); }
     }
 
     function createCard(s, showRole) {
-        // Logica estesa per verificare se il turno è "mio" (originale o come sostituto)
         const isOriginalMe = (currentUser && s.email === currentUser.email);
         const isSubMe = (currentUser && s.sostituto && s.sostituto.email === currentUser.email);
         const isMyShift = isOriginalMe || isSubMe;
@@ -599,45 +664,74 @@
         const q = query(collection(db, "programmazione_turni"));
         
         onSnapshot(q, (snap) => {
-            // Pulisci tutte le colonne
-            document.querySelectorAll('.shifts-container').forEach(el => el.innerHTML = "");
-
-            allShiftsData = []; // Aggiorna dati globali
+            allShiftsData = []; 
             snap.forEach(docSnap => allShiftsData.push({ id: docSnap.id, ...docSnap.data() }));
             
+            // Ordina globalmente
             allShiftsData.sort((a,b) => a.start.localeCompare(b.start));
 
-            allShiftsData.forEach(s => {
-                // 1. POSIZIONAMENTO NELLA CATEGORIA SPECIFICA
-                let suffix = 'altri';
-                let showRole = true; 
+            // Chiama la funzione di rendering con i filtri attuali
+            renderShiftsFromData();
 
-                if (s.role === 'Assistente bagnanti') {
-                    suffix = 'assistenti';
-                    showRole = false; 
-                } 
-                else if (s.role === 'Segreteria') {
-                    suffix = 'segreteria';
-                    showRole = false; 
-                }
-                
-                const colIdSpecific = `col-${s.date}-${suffix}`;
-                const colSpecific = document.getElementById(colIdSpecific);
-                if (colSpecific) {
-                    colSpecific.appendChild(createCard(s, showRole));
-                }
-
-                // 2. POSIZIONAMENTO NELLA VISTA UNIFICATA
-                const colIdUnified = `col-${s.date}-tutti`;
-                const colUnified = document.getElementById(colIdUnified);
-                if (colUnified) {
-                    colUnified.appendChild(createCard(s, true));
-                }
-            });
         }, (error) => {
             console.error("Errore lettura turni:", error);
             if(error.code === 'permission-denied') {
                alert("Errore Permessi: Non puoi leggere i turni. Controlla le regole Firestore.");
+            }
+        });
+    }
+
+    // NUOVA FUNZIONE DI RENDERING (Separata dal caricamento)
+    function renderShiftsFromData() {
+        // 1. Pulisci tutte le colonne
+        document.querySelectorAll('.shifts-container').forEach(el => el.innerHTML = "");
+
+        // 2. Filtra i dati
+        const filteredShifts = allShiftsData.filter(s => {
+            // Filtro Admin (Singolo Utente)
+            if (activeUserFilter) {
+                // Mostra se l'utente è titolare O sostituto
+                const isOwner = s.email === activeUserFilter;
+                const isSub = s.sostituto && s.sostituto.email === activeUserFilter;
+                if (!isOwner && !isSub) return false;
+            }
+
+            // Filtro Collaboratore (Solo i miei)
+            if (onlyMyShifts && currentUser) {
+                const isMine = s.email === currentUser.email;
+                const isSubMine = s.sostituto && s.sostituto.email === currentUser.email;
+                if (!isMine && !isSubMine) return false;
+            }
+
+            return true;
+        });
+
+        // 3. Renderizza
+        filteredShifts.forEach(s => {
+            // A. Categoria Specifica
+            let suffix = 'altri';
+            let showRole = true; 
+
+            if (s.role === 'Assistente bagnanti') {
+                suffix = 'assistenti';
+                showRole = false; 
+            } 
+            else if (s.role === 'Segreteria') {
+                suffix = 'segreteria';
+                showRole = false; 
+            }
+            
+            const colIdSpecific = `col-${s.date}-${suffix}`;
+            const colSpecific = document.getElementById(colIdSpecific);
+            if (colSpecific) {
+                colSpecific.appendChild(createCard(s, showRole));
+            }
+
+            // B. Vista Unificata
+            const colIdUnified = `col-${s.date}-tutti`;
+            const colUnified = document.getElementById(colIdUnified);
+            if (colUnified) {
+                colUnified.appendChild(createCard(s, true));
             }
         });
     }
