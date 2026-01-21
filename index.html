@@ -27,7 +27,7 @@
             --money-color: #34c759;
             --hover-btn: #e5e5ea;
 
-            /* PALLINI */
+            /* PALLINI (Mantenuti per il calendario) */
             --dot-assistente: #ff3b30;
             --dot-istruttore: #34c759;
             --dot-propaganda: #af52de;
@@ -257,10 +257,21 @@
         .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 4px; width: auto; color: var(--text-main); }
         .icon-lock { font-size: 1rem; color: var(--text-muted); cursor: not-allowed; padding: 4px;}
 
-        /* Stats */
-        .stats-container { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 10px; }
-        .stat-pill { background: var(--bg-input); border: 1px solid var(--border-color); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px; color: var(--text-main); font-weight: 500; }
-        .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+        /* Stats Compatti & Colorati */
+        .stats-container { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; margin-top: 10px; }
+        .stat-pill { 
+            border: 1px solid transparent; 
+            padding: 3px 8px; 
+            border-radius: 6px; 
+            font-size: 0.75rem; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 5px; 
+            color: var(--text-main); 
+            font-weight: 600; 
+        }
+        /* Dot nascosto perché coloriamo lo sfondo */
+        .stat-dot { display: none; }
 
         /* Admin Cards */
         .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; margin-top: 20px; }
@@ -1005,7 +1016,7 @@
         toast("Dati copiati! Scegli la data.");
     };
 
-    // CALENDAR
+    // CALENDAR & ROLES COLORS
     const getColor = (m) => {
         if(m.includes("Assistente")) return "var(--dot-assistente)";
         if(m.includes("Istruttore")) return "var(--dot-istruttore)";
@@ -1014,6 +1025,18 @@
         if(m.includes("Lezione")) return "var(--dot-lezione)";
         if(m.includes("Segreteria")) return "var(--dot-segreteria)";
         return "#ccc";
+    };
+
+    // NEW FUNCTION: Get Light Background and Dark Text for Roles
+    const getRoleStyle = (m) => {
+        // Returns { bg: color, color: color }
+        if(m.includes("Assistente")) return { bg: "#ffecec", color: "#c41c12" }; // Redish
+        if(m.includes("Istruttore")) return { bg: "#eafbe7", color: "#1e7e34" }; // Greenish
+        if(m.includes("Fitness")) return { bg: "#fff8cc", color: "#997a00" }; // Yellowish
+        if(m.includes("Propaganda")) return { bg: "#f6e4ff", color: "#7a28a3" }; // Purplish
+        if(m.includes("Lezione")) return { bg: "#e0f0ff", color: "#0056b3" }; // Blueish
+        if(m.includes("Segreteria")) return { bg: "#f2f2f7", color: "#555555" }; // Grayish
+        return { bg: "#f2f2f7", color: "#333" };
     };
 
     const monthNames = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
@@ -1132,8 +1155,10 @@
         const soldiEl = document.getElementById('c-soldi');
         if(soldiEl) soldiEl.innerText = totSoldi.toFixed(2);
         
+        // UPDATED: Render pills with compact style
         Object.keys(breakdown).forEach(m => {
-            statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`;
+            const style = getRoleStyle(m);
+            statsBox.innerHTML += `<div class="stat-pill" style="background:${style.bg}; color:${style.color};">${m}: ${breakdown[m].toFixed(1)}</div>`;
         });
     };
 
@@ -1468,7 +1493,11 @@
         document.getElementById('d-totale').innerText = tot.toFixed(1);
         document.getElementById('d-soldi').innerText = totSoldi.toFixed(2);
         
-        Object.keys(breakdown).forEach(m => { statsBox.innerHTML += `<div class="stat-pill"><div class="stat-dot" style="background:${getColor(m)}"></div>${m}: ${breakdown[m].toFixed(1)}</div>`; });
+        // UPDATED: Render pills with compact style
+        Object.keys(breakdown).forEach(m => {
+            const style = getRoleStyle(m);
+            statsBox.innerHTML += `<div class="stat-pill" style="background:${style.bg}; color:${style.color};">${m}: ${breakdown[m].toFixed(1)}</div>`;
+        });
     };
 
     // CHANGE PASSWORD WITH REAUTH
@@ -2012,3 +2041,4 @@
 </script>
 </body>
 </html>
+```
