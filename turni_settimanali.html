@@ -83,6 +83,17 @@
         .week-nav { display: flex; align-items: center; gap: 10px; background: var(--bg-body); padding: 5px; border-radius: 12px; }
         .week-nav button { background: none; border: none; font-size: 1.2rem; padding: 5px 10px; color: var(--primary); }
         
+        /* VIEW SWITCHER */
+        .view-switcher {
+            display: flex; background: var(--bg-body); padding: 4px; border-radius: 10px; margin-top: 10px;
+        }
+        .view-switcher button {
+            flex: 1; padding: 8px 15px; border-radius: 8px; font-size: 0.85rem; background: transparent; color: var(--text-muted); transition: 0.2s;
+        }
+        .view-switcher button.active {
+            background: var(--bg-card); color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
         /* SEZIONI GRIGLIE */
         .grid-section-title {
             margin: 30px 0 10px 0;
@@ -96,6 +107,7 @@
         .grid-section-title.ass { border-color: var(--dot-assistente); }
         .grid-section-title.seg { border-color: var(--dot-segreteria); }
         .grid-section-title.alt { border-color: var(--dot-istruttore); }
+        .grid-section-title.uni { border-color: var(--text-main); }
 
         /* GRID LAYOUT */
         .week-grid {
@@ -110,7 +122,7 @@
         .day-column {
             background: var(--bg-body);
             border-radius: 12px;
-            min-height: 150px; /* Altezza minima ridotta per compattezza */
+            min-height: 150px; 
             display: flex; flex-direction: column;
             border: 1px solid var(--border-color);
         }
@@ -121,7 +133,6 @@
             border-bottom: 1px solid var(--border-color);
             background: var(--bg-card);
             border-radius: 12px 12px 0 0;
-            /* Sticky rimosso per le griglie multiple per evitare confusione */
         }
         .day-name { font-weight: 700; text-transform: uppercase; font-size: 0.75rem; color: var(--text-muted); }
         .day-date { font-weight: 700; font-size: 1rem; margin-top: 2px; }
@@ -254,15 +265,23 @@
 </div>
 
 <div class="container">
-    <div style="display:flex; justify-content:space-between; align-items:center">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
         <a onclick="tryGoHome()" class="back-link">❮ Torna al Foglio Ore</a>
-        <button id="theme-btn" class="btn-secondary" onclick="toggleTheme()" style="padding: 5px 10px;">🌙</button>
+        <div style="display:flex; gap:10px;">
+            <button id="theme-btn" class="btn-secondary" onclick="toggleTheme()" style="padding: 5px 10px;">🌙</button>
+        </div>
     </div>
 
     <div class="week-header">
         <div>
             <h2 style="margin:0">Programmazione Turni</h2>
             <p id="week-range-label" style="margin:5px 0 0 0; color:var(--text-muted)">...</p>
+            
+            <!-- VIEW SWITCHER -->
+            <div class="view-switcher">
+                <button id="btn-view-cat" class="active" onclick="switchView('categories')">Per Categoria</button>
+                <button id="btn-view-uni" onclick="switchView('unified')">Vista Unica</button>
+            </div>
         </div>
         
         <div style="display:flex; gap:10px; align-items:center">
@@ -277,17 +296,23 @@
 
     <div id="loader" style="text-align:center; padding:20px; color:var(--text-muted)">Caricamento turni...</div>
 
-    <!-- SEZIONE 1: ASSISTENTI BAGNANTI -->
-    <div class="grid-section-title ass">🏊 Assistenti Bagnanti</div>
-    <div id="grid-assistenti" class="week-grid"></div>
+    <!-- MODALITÀ: CATEGORIE (DEFAULT) -->
+    <div id="view-mode-categories">
+        <div class="grid-section-title ass">🏊 Assistenti Bagnanti</div>
+        <div id="grid-assistenti" class="week-grid"></div>
 
-    <!-- SEZIONE 2: SEGRETERIA -->
-    <div class="grid-section-title seg">💼 Segreteria</div>
-    <div id="grid-segreteria" class="week-grid"></div>
+        <div class="grid-section-title seg">💼 Segreteria</div>
+        <div id="grid-segreteria" class="week-grid"></div>
 
-    <!-- SEZIONE 3: ISTRUTTORI & ALTRI -->
-    <div class="grid-section-title alt">🏋️ Istruttori & Altri</div>
-    <div id="grid-altri" class="week-grid"></div>
+        <div class="grid-section-title alt">🏋️ Istruttori & Altri</div>
+        <div id="grid-altri" class="week-grid"></div>
+    </div>
+
+    <!-- MODALITÀ: UNIFICATA (HIDDEN) -->
+    <div id="view-mode-unified" class="hidden">
+        <div class="grid-section-title uni">🗓️ Tutti i Turni</div>
+        <div id="grid-tutti" class="week-grid"></div>
+    </div>
 
 </div>
 
@@ -352,6 +377,26 @@
         }
     };
 
+    // --- VIEW SWITCHER ---
+    window.switchView = (mode) => {
+        const catDiv = document.getElementById('view-mode-categories');
+        const uniDiv = document.getElementById('view-mode-unified');
+        const btnCat = document.getElementById('btn-view-cat');
+        const btnUni = document.getElementById('btn-view-uni');
+
+        if (mode === 'categories') {
+            catDiv.classList.remove('hidden');
+            uniDiv.classList.add('hidden');
+            btnCat.classList.add('active');
+            btnUni.classList.remove('active');
+        } else {
+            catDiv.classList.add('hidden');
+            uniDiv.classList.remove('hidden');
+            btnCat.classList.remove('active');
+            btnUni.classList.add('active');
+        }
+    };
+
     // --- AUTH ---
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -392,8 +437,8 @@
         endOfWeek.setDate(endOfWeek.getDate() + 6);
         document.getElementById('week-range-label').innerText = `${currentWeekStart.toLocaleDateString('it-IT', options)} - ${endOfWeek.toLocaleDateString('it-IT', options)} ${endOfWeek.getFullYear()}`;
 
-        // Definizione delle 3 griglie
-        const grids = ['grid-assistenti', 'grid-segreteria', 'grid-altri'];
+        // Definizione delle 4 griglie (3 categorie + 1 unificata)
+        const grids = ['grid-assistenti', 'grid-segreteria', 'grid-altri', 'grid-tutti'];
 
         grids.forEach(gridId => {
             const gridEl = document.getElementById(gridId);
@@ -446,6 +491,39 @@
         } catch(e) { console.error(e); }
     }
 
+    function createCard(s, showRole) {
+        const isMyShift = (currentUser && s.email === currentUser.email);
+        const colorVar = getRoleColor(s.role);
+        
+        const card = document.createElement('div');
+        card.className = 'shift-card';
+        card.style.borderLeftColor = colorVar;
+        if(isMyShift) card.classList.add('is-mine');
+
+        let actions = "";
+        if(isAdmin) {
+            actions = `
+                <div class="card-actions">
+                    <button class="action-btn" onclick="window.openEditModal('${s.id}', '${s.email}', '${s.date}', '${s.role}', '${s.start}', '${s.end}')">✏️</button>
+                    <button class="action-btn del" onclick="window.deletePlanned('${s.id}')">×</button>
+                </div>
+            `;
+        }
+
+        let roleHtml = "";
+        if (showRole) {
+            roleHtml = `<span class="shift-role" style="color:${colorVar}">${s.role}</span>`;
+        }
+
+        card.innerHTML = `
+            ${actions}
+            <span class="shift-time">${s.start} - ${s.end}</span>
+            <span class="shift-user">${s.userName}</span>
+            ${roleHtml}
+        `;
+        return card;
+    }
+
     function loadPlannedShifts() {
         const q = query(collection(db, "programmazione_turni"));
         
@@ -459,40 +537,30 @@
             shifts.sort((a,b) => a.start.localeCompare(b.start));
 
             shifts.forEach(s => {
-                // Determina la griglia di destinazione
+                // 1. POSIZIONAMENTO NELLA CATEGORIA SPECIFICA
                 let suffix = 'altri';
-                if (s.role === 'Assistente bagnanti') suffix = 'assistenti';
-                else if (s.role === 'Segreteria') suffix = 'segreteria';
-                
-                const colId = `col-${s.date}-${suffix}`;
-                const col = document.getElementById(colId);
-                
-                if (col) {
-                    const isMyShift = (currentUser && s.email === currentUser.email);
-                    const colorVar = getRoleColor(s.role);
-                    
-                    const card = document.createElement('div');
-                    card.className = 'shift-card';
-                    card.style.borderLeftColor = colorVar;
-                    if(isMyShift) card.classList.add('is-mine');
+                let showRole = true; 
 
-                    let actions = "";
-                    if(isAdmin) {
-                        actions = `
-                            <div class="card-actions">
-                                <button class="action-btn" onclick="window.openEditModal('${s.id}', '${s.email}', '${s.date}', '${s.role}', '${s.start}', '${s.end}')">✏️</button>
-                                <button class="action-btn del" onclick="window.deletePlanned('${s.id}')">×</button>
-                            </div>
-                        `;
-                    }
+                if (s.role === 'Assistente bagnanti') {
+                    suffix = 'assistenti';
+                    showRole = false; // Nascondi etichetta perché ridondante
+                } 
+                else if (s.role === 'Segreteria') {
+                    suffix = 'segreteria';
+                    showRole = false; // Nascondi etichetta
+                }
+                
+                const colIdSpecific = `col-${s.date}-${suffix}`;
+                const colSpecific = document.getElementById(colIdSpecific);
+                if (colSpecific) {
+                    colSpecific.appendChild(createCard(s, showRole));
+                }
 
-                    card.innerHTML = `
-                        ${actions}
-                        <span class="shift-time">${s.start} - ${s.end}</span>
-                        <span class="shift-user">${s.userName}</span>
-                        <span class="shift-role" style="color:${colorVar}">${s.role}</span>
-                    `;
-                    col.appendChild(card);
+                // 2. POSIZIONAMENTO NELLA VISTA UNIFICATA
+                const colIdUnified = `col-${s.date}-tutti`;
+                const colUnified = document.getElementById(colIdUnified);
+                if (colUnified) {
+                    colUnified.appendChild(createCard(s, true)); // Qui mostriamo sempre il ruolo
                 }
             });
         }, (error) => {
