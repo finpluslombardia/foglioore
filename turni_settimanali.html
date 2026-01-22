@@ -70,6 +70,7 @@
         .btn-secondary { background: var(--hover-btn); color: var(--text-main); border: 1px solid var(--border-color); }
         .btn-danger { background: #ff3b30; color: white; }
         .btn-warning { background: #ff9500; color: white; }
+        .btn-success { background: #34c759; color: white; }
         
         input, select, textarea { 
             padding: 10px; border: 1px solid var(--border-color); 
@@ -258,15 +259,7 @@
         }
         [data-theme="dark"] .day-note-box { background-color: #4a4000; border-color: #fbc02d; color: #ddd; }
 
-        .shifts-container { 
-            padding: 6px; 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 6px; 
-            /* MODIFICA: Centratura verticale turni */
-            justify-content: center; 
-        }
+        .shifts-container { padding: 6px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
 
         /* SHIFT CARD */
         .shift-card {
@@ -384,7 +377,6 @@
             .day-column { 
                 min-height: auto; 
                 border: 1px solid var(--border-color); 
-                /* RIPRISTINATO: Data a sinistra, turni a destra sulla stessa riga */
                 flex-direction: row; 
                 align-items: stretch; /* Stretch per occupare l'altezza */
                 flex-wrap: nowrap; /* Impedisce che vadano a capo */
@@ -411,7 +403,6 @@
                 width: 100%; 
                 padding: 5px; 
                 align-content: flex-start;
-                justify-content: flex-start; /* Reset justify-content su mobile per evitare spaziatura strana */
             }
             .shift-card { 
                 width: auto; 
@@ -466,8 +457,10 @@
     <div class="modal-box">
         <h3 id="modal-title" style="margin-bottom:15px; color:var(--primary)">Nuovo Turno</h3>
         <input type="hidden" id="p-id">
-        <label>Collaboratore</label><select id="p-user"></select>
         
+        <label>Collaboratore</label>
+        <select id="p-user"></select>
+
         <!-- SEZIONE GIORNI (VISIBILE SOLO IN NUOVO) -->
         <div id="multi-day-section">
             <label>Giorni della settimana</label>
@@ -479,7 +472,7 @@
             <label>Data</label>
             <input type="date" id="p-date">
         </div>
-        
+
         <label>Mansione</label>
         <select id="p-role">
             <option value="Assistente bagnanti">Assistente bagnanti</option>
@@ -489,10 +482,12 @@
             <option value="Propaganda">Propaganda</option>
             <option value="Lezione individuale">Lezione individuale</option>
         </select>
+
         <div style="display:flex; gap:10px; margin-bottom:20px">
             <div style="flex:1"><label>Inizio</label><input type="time" id="p-start"></div>
             <div style="flex:1"><label>Fine</label><input type="time" id="p-end"></div>
         </div>
+
         <div style="display:flex; flex-direction:column; gap:10px;">
             <div style="display:flex; gap:10px;">
                 <button class="btn-secondary" onclick="closeModal('add-shift-modal')" style="flex:1">Annulla</button>
@@ -510,12 +505,25 @@
         <button class="modal-close-x" onclick="closeModal('excel-mode-modal')">×</button>
         <h3 style="margin-bottom:15px; color:var(--primary)">Inserimento Tabellare</h3>
         <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:10px">Inserisci rapidamente più turni.</p>
+        
         <div style="overflow-x:auto; margin-bottom:15px; border:1px solid var(--border-color); border-radius:8px;">
             <table class="excel-table">
-                <thead><tr><th>Collaboratore</th><th>Data</th><th>Mansione</th><th>Inizio</th><th>Fine</th><th></th></tr></thead>
-                <tbody id="excel-body"></tbody>
+                <thead>
+                    <tr>
+                        <th>Collaboratore</th>
+                        <th>Data</th>
+                        <th>Mansione</th>
+                        <th>Inizio</th>
+                        <th>Fine</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="excel-body">
+                    <!-- Righe generate -->
+                </tbody>
             </table>
         </div>
+        
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <button class="btn-secondary" onclick="addExcelRow()" style="width:auto;">+ Aggiungi Riga</button>
             <button class="btn-success" onclick="saveExcelData()" style="width:auto;">Salva Tutto</button>
