@@ -196,14 +196,24 @@
             padding: 8px 5px; text-align: center; border-bottom: 1px solid var(--border-color);
             background: var(--bg-card); border-radius: 12px 12px 0 0; position: relative;
         }
+        
+        /* Flex wrapper per data e icona nota affiancate */
+        .day-date-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 2px;
+        }
+
         .day-name { font-weight: 700; text-transform: uppercase; font-size: 0.75rem; color: var(--text-muted); }
-        .day-date { font-weight: 700; font-size: 1rem; margin-top: 2px; }
+        .day-date { font-weight: 700; font-size: 1rem; }
         .day-date.today { color: var(--primary); text-decoration: underline; text-decoration-thickness: 3px; }
 
         /* INDICATORI NOTE */
         .note-indicator {
             display: inline-block; width: 10px; height: 10px; background-color: #fbc02d;
-            border-radius: 50%; margin-left: 5px; cursor: pointer;
+            border-radius: 50%; cursor: pointer;
             box-shadow: 0 0 2px rgba(0,0,0,0.2);
         }
         .note-indicator:hover { transform: scale(1.2); }
@@ -213,12 +223,18 @@
         }
         .admin-note-edit:hover { opacity: 1; }
 
-        /* NOTE BUTTON IN HEADER */
+        /* NOTE BUTTON IN HEADER (MATITA) */
         .day-note-btn {
             position: absolute; top: 5px; right: 5px; background: none; border: none; font-size: 0.9rem; cursor: pointer; padding: 2px;
             opacity: 0.5; transition: 0.2s;
         }
         .day-note-btn:hover { opacity: 1; transform: scale(1.1); }
+        
+        .day-note-box {
+            background-color: #fff9c4; border: 1px solid #fbc02d; border-radius: 6px; padding: 5px; margin: 5px;
+            font-size: 0.75rem; color: #555; line-height: 1.2; word-wrap: break-word;
+        }
+        [data-theme="dark"] .day-note-box { background-color: #4a4000; border-color: #fbc02d; color: #ddd; }
 
         .shifts-container { padding: 6px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
 
@@ -312,6 +328,8 @@
                 justify-content: center; 
                 padding: 10px 5px;
             }
+            
+            .day-date-box { flex-direction: column; gap: 2px; } /* Data e nota verticali su mobile per spazio */
 
             .shifts-container { 
                 flex-direction: row; 
@@ -335,8 +353,6 @@
             
             /* Pulsante nota su mobile in day-header */
             .day-note-btn { position: absolute; top: 2px; right: 2px; }
-            /* Indicatore nota su mobile */
-            .note-indicator { position: absolute; bottom: 5px; right: 5px; width: 12px; height: 12px; margin: 0; }
         }
 
         /* Ottimizzazioni specifiche Header Mobile */
@@ -640,11 +656,12 @@
                 col.className = 'day-column';
                 col.innerHTML = `
                     <div class="day-header">
-                        <div>
-                            <div class="day-name">${days[i]}</div>
-                            <div class="day-date ${isToday ? 'today' : ''}">${dayDate.getDate()}</div>
+                        <div class="day-name">${days[i]}</div>
+                        <div class="day-date-box">
+                             <span class="day-date ${isToday ? 'today' : ''}">${dayDate.getDate()}</span>
+                             <span id="note-icon-${dateStr}-${suffix}" class="note-icon-container"></span>
                         </div>
-                        <div id="note-icon-${dateStr}-${suffix}" class="note-icon-container"></div>
+                        ${isAdmin ? `<button class="day-note-btn" onclick="window.openNoteModal('${dateStr}')">📝</button>` : ''}
                     </div>
                     <div class="shifts-container" id="${colId}"></div>
                 `;
@@ -780,9 +797,6 @@
                     let html = "";
                     if (note && note.text) {
                         html += `<span class="note-indicator" onclick="window.openNoteModal('${dateStr}')" title="Leggi Nota"></span>`;
-                    }
-                    if (isAdmin) {
-                        html += `<span class="day-note-btn" onclick="window.openNoteModal('${dateStr}')">📝</span>`;
                     }
                     container.innerHTML = html;
                 }
