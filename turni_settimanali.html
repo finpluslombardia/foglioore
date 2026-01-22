@@ -85,7 +85,7 @@
 
         /* Navigatore Integrato (Box Blu) */
         .week-navigator {
-            display: flex;
+            display: flex; /* Modificato da inline-flex a flex per migliore gestione spazi */
             align-items: center;
             justify-content: space-between;
             background-color: var(--primary);
@@ -100,7 +100,12 @@
         }
         
         .nav-arrows {
-            display: flex; align-items: center; gap: 5px; flex: 1; justify-content: center;
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+            flex: 1; 
+            /* MODIFICA: Spazia le frecce agli estremi */
+            justify-content: space-between; 
         }
         .nav-arrows button {
             background: rgba(255, 255, 255, 0.2);
@@ -111,7 +116,9 @@
 
         #week-range-label {
             font-weight: 700; font-size: 0.95rem; text-align: center;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 5px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 10px;
+            /* MODIFICA: Assicura che l'etichetta prenda lo spazio centrale */
+            flex-grow: 1; 
         }
 
         .nav-tools {
@@ -211,6 +218,13 @@
         }
         .admin-note-edit:hover { opacity: 1; }
 
+        /* NOTE BUTTON IN HEADER */
+        .day-note-btn {
+            position: absolute; top: 5px; right: 5px; background: none; border: none; font-size: 0.9rem; cursor: pointer; padding: 2px;
+            opacity: 0.5; transition: 0.2s;
+        }
+        .day-note-btn:hover { opacity: 1; transform: scale(1.1); }
+
         .shifts-container { padding: 6px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
 
         /* SHIFT CARD */
@@ -281,7 +295,7 @@
 
         /* --- MOBILE OPTIMIZATIONS (Max 900px e 600px) --- */
         
-        /* Layout Riga Unica su Mobile */
+        /* Layout Riga Unica su Mobile (Giorno a Sx, Turni a Dx) */
         @media (max-width: 900px) {
             .week-grid { grid-template-columns: 1fr; gap: 10px; }
             
@@ -289,7 +303,7 @@
                 min-height: auto; 
                 border: 1px solid var(--border-color); 
                 flex-direction: row; /* DATA A SINISTRA, TURNI A DESTRA */
-                align-items: stretch; /* Stretch per occupare altezza */
+                align-items: stretch; 
             }
             
             .day-header { 
@@ -309,20 +323,25 @@
                 flex-wrap: wrap; 
                 width: 100%; 
                 padding: 5px; 
-                align-items: center; /* Centra verticalmente i turni se pochi */
+                align-items: center; 
             }
             
             .shift-card { 
                 width: auto; 
-                min-width: 140px; /* Min width per leggibilità */
+                min-width: 140px; 
                 max-width: 100%; 
                 margin-right: 5px; 
                 margin-bottom: 5px; 
-                flex-grow: 1; /* Si espande se c'è spazio */
+                flex-grow: 1; 
             }
 
             /* Su mobile le azioni sono sempre visibili o gestite diversamente */
             .card-actions { opacity: 1; position: static; margin-bottom: 4px; justify-content: flex-end; background: transparent; box-shadow: none; }
+            
+            /* Pulsante nota su mobile in day-header */
+            .day-note-btn { position: absolute; top: 2px; right: 2px; }
+            /* Indicatore nota su mobile */
+            .note-indicator { position: absolute; bottom: 5px; right: 5px; width: 12px; height: 12px; margin: 0; }
         }
 
         /* Ottimizzazioni specifiche Header Mobile */
@@ -333,7 +352,9 @@
             h2 { font-size: 1.2rem; margin-bottom: 2px; }
 
             .week-navigator { width: 100%; margin: 5px 0; flex-direction: column; gap: 10px; padding: 10px; }
+            /* Frecce e Label su una riga */
             .nav-arrows { width: 100%; display: flex; justify-content: space-between; align-items: center; }
+            /* Strumenti sotto */
             .nav-tools { width: 100%; border-left: none; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 10px; padding-left: 0; justify-content: center; }
 
             .controls-row { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; width: 100%; margin-top: 0; }
@@ -624,7 +645,7 @@
                             <div class="day-name">${days[i]}</div>
                             <div class="day-date ${isToday ? 'today' : ''}">${dayDate.getDate()}</div>
                         </div>
-                        <div id="note-icon-${dateStr}-${suffix}"></div>
+                        <div id="note-icon-${dateStr}-${suffix}" class="note-icon-container"></div>
                     </div>
                     <div class="shifts-container" id="${colId}"></div>
                 `;
@@ -746,29 +767,22 @@
     }
 
     function renderNotesFromData() {
-        // Ripulisce prima gli indicatori
-        document.querySelectorAll('[id^="note-icon-"]').forEach(el => el.innerHTML = "");
-
-        // Per ogni giorno nella settimana visualizzata, controlla se c'è una nota
+        document.querySelectorAll('.note-icon-container').forEach(el => el.innerHTML = "");
         for (let i = 0; i < 7; i++) {
             const dayDate = new Date(currentWeekStart);
             dayDate.setDate(dayDate.getDate() + i);
             const dateStr = formatDate(dayDate);
-            
             const note = allNotesData.find(n => n.id === dateStr);
             
-            // Icone per Admin (sempre, per poter creare) e Pallino giallo (se nota esiste)
             const grids = ['assistenti', 'segreteria', 'altri', 'tutti'];
             grids.forEach(suffix => {
                 const container = document.getElementById(`note-icon-${dateStr}-${suffix}`);
                 if (container) {
                     let html = "";
                     if (note && note.text) {
-                        // Pallino giallo se c'è nota
                         html += `<span class="note-indicator" onclick="window.openNoteModal('${dateStr}')" title="Leggi Nota"></span>`;
                     }
                     if (isAdmin) {
-                        // Icona matita per admin
                         html += `<span class="day-note-btn" onclick="window.openNoteModal('${dateStr}')">📝</span>`;
                     }
                     container.innerHTML = html;
@@ -784,7 +798,6 @@
         const existing = allNotesData.find(n => n.id === dateStr);
         const text = existing ? existing.text : "";
         
-        // Modalità visualizzazione
         document.getElementById('note-read-area').innerHTML = text || "<em style='color:#999'>Nessuna nota.</em>";
         
         if (isAdmin) {
