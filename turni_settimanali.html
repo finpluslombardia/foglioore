@@ -159,6 +159,32 @@
         }
         .checkbox-filter input { width: 16px; height: 16px; margin: 0; }
 
+        /* MULTI-DAY SELECTOR (Nuovo Stile) */
+        .day-toggle-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .day-toggle-btn {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            color: var(--text-main);
+        }
+        .day-toggle-btn.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            font-weight: 700;
+        }
+        .day-toggle-btn:hover:not(.selected) { background: var(--hover-btn); }
+
         /* SEZIONI GRIGLIE */
         .grid-section-title {
             margin: 30px 0 10px 0;
@@ -174,7 +200,7 @@
         .grid-section-title.seg { border-color: var(--dot-segreteria); }
         .grid-section-title.alt { border-color: var(--dot-istruttore); }
         .grid-section-title.uni { border-color: var(--text-main); }
-        .grid-section-title.sum { border-color: #34c759; } /* Verde per riepilogo */
+        .grid-section-title.sum { border-color: #34c759; }
 
         .btn-dup-cat {
             background: transparent; border: 1px solid var(--border-color); color: var(--text-muted);
@@ -191,7 +217,7 @@
 
         .day-column {
             background: var(--bg-body); border-radius: 12px; min-height: 150px; 
-            display: flex; flex-direction: column; /* Verticale su desktop */
+            display: flex; flex-direction: column; 
             border: 1px solid var(--border-color);
         }
 
@@ -236,7 +262,7 @@
 
         /* SHIFT CARD */
         .shift-card {
-            background: var(--bg-card); border-radius: 8px; padding: 5px; /* Compact padding */
+            background: var(--bg-card); border-radius: 8px; padding: 8px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.05); border-left: 4px solid #ccc;
             font-size: 0.8rem; position: relative; cursor: default;
             transition: transform 0.2s, box-shadow 0.2s; margin-bottom: 4px;
@@ -248,19 +274,19 @@
         }
         [data-theme="dark"] .shift-card.is-mine { background-color: rgba(10, 132, 255, 0.15); border-color: #0a84ff; }
 
-        .shift-content-row { display: flex; align-items: center; gap: 4px; width: 100%; }
+        .shift-content-row { display: flex; align-items: center; gap: 6px; width: 100%; }
         
         .shift-time-badge {
             background-color: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-main);
-            padding: 1px 4px; border-radius: 4px; font-weight: 700; font-size: 0.7rem; white-space: nowrap; flex-shrink: 0;
+            padding: 2px 5px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; white-space: nowrap; flex-shrink: 0;
         }
         [data-theme="dark"] .shift-time-badge { background-color: #333; border-color: #555; }
 
         .shift-user-inline {
-            font-weight: 600; color: var(--text-main); font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; 
+            font-weight: 600; color: var(--text-main); font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; 
         }
         
-        .shift-role { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 500; display: block; margin-top: 2px; }
+        .shift-role { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; font-weight: 500; display: block; margin-top: 4px; }
 
         .card-actions {
             position: absolute; top: -6px; right: -6px; display: flex; gap: 2px; z-index: 5;
@@ -279,29 +305,7 @@
 
         .user-sub-wrapper { display: flex; flex-direction: column; line-height: 1.1; overflow: hidden; }
         .original-user-strike { text-decoration: line-through; color: var(--text-muted); font-size: 0.7rem; }
-        .sub-user-highlight { color: #ff9500; font-weight: 700; font-size: 0.8rem; }
-
-        /* STILI RIEPILOGO SETTIMANALE (ADMIN) */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin-bottom: 40px;
-        }
-        .summary-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .sum-name { font-weight: 600; font-size: 0.95rem; color: var(--text-main); }
-        .sum-hours { font-weight: 700; font-size: 1.1rem; color: var(--primary); }
-        .sum-role { font-size: 0.7rem; color: var(--text-muted); display: block; margin-top: 2px; text-transform: uppercase;}
-
+        .sub-user-highlight { color: #ff9500; font-weight: 700; font-size: 0.85rem; }
 
         /* MODALE POP-UP */
         .modal-overlay { 
@@ -329,6 +333,27 @@
         .ds-time { font-weight: 700; font-size: 0.9rem; min-width: 80px; }
         .ds-user { font-weight: 600; font-size: 0.95rem; }
         .ds-role { font-size: 0.75rem; color: var(--text-muted); margin-left: auto; text-transform: uppercase; }
+
+        /* STILI RIEPILOGO SETTIMANALE (ADMIN) */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .sum-name { font-weight: 600; font-size: 0.95rem; color: var(--text-main); }
+        .sum-hours { font-weight: 700; font-size: 1.1rem; color: var(--primary); }
+        .sum-role { font-size: 0.7rem; color: var(--text-muted); display: block; margin-top: 2px; text-transform: uppercase;}
 
         .hidden { display: none !important; }
         #toast { visibility: hidden; min-width: 250px; background: #333; color: #fff; text-align: center; border-radius: 50px; padding: 12px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 3000; }
@@ -387,8 +412,22 @@
     <div class="modal-box">
         <h3 id="modal-title" style="margin-bottom:15px; color:var(--primary)">Nuovo Turno</h3>
         <input type="hidden" id="p-id">
-        <label>Collaboratore</label><select id="p-user"></select>
-        <label>Data</label><input type="date" id="p-date">
+        
+        <label>Collaboratore</label>
+        <select id="p-user"></select>
+
+        <!-- SEZIONE GIORNI (VISIBILE SOLO IN NUOVO) -->
+        <div id="multi-day-section">
+            <label>Giorni della settimana</label>
+            <div id="day-toggles-container" class="day-toggle-container"></div>
+        </div>
+
+        <!-- SEZIONE DATA SINGOLA (VISIBILE SOLO IN EDIT) -->
+        <div id="single-date-section" class="hidden">
+            <label>Data</label>
+            <input type="date" id="p-date">
+        </div>
+
         <label>Mansione</label>
         <select id="p-role">
             <option value="Assistente bagnanti">Assistente bagnanti</option>
@@ -398,10 +437,12 @@
             <option value="Propaganda">Propaganda</option>
             <option value="Lezione individuale">Lezione individuale</option>
         </select>
+
         <div style="display:flex; gap:10px; margin-bottom:20px">
             <div style="flex:1"><label>Inizio</label><input type="time" id="p-start"></div>
             <div style="flex:1"><label>Fine</label><input type="time" id="p-end"></div>
         </div>
+
         <div style="display:flex; gap:10px">
             <button class="btn-secondary" onclick="closeModal('add-shift-modal')" style="flex:1">Annulla</button>
             <button class="btn-primary" onclick="savePlannedShift()" style="flex:1">Salva</button>
@@ -422,18 +463,14 @@
     </div>
 </div>
 
-<!-- MODALE NOTA GIORNALIERA (LETTURA/SCRITTURA) -->
+<!-- MODALE NOTA GIORNALIERA -->
 <div id="note-day-modal" class="modal-overlay">
     <div class="modal-box">
         <button class="modal-close-x" onclick="closeModal('note-day-modal')">×</button>
         <h3 style="margin-bottom:10px; color:#fbc02d; display:flex; align-items:center; gap:10px;">📝 Nota del Giorno</h3>
         <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:15px; font-weight:600;" id="note-day-label"></p>
         <input type="hidden" id="note-day-date">
-        
-        <!-- Area visibile a tutti (Lettura) -->
         <div id="note-read-area" style="background:#fff9c4; padding:15px; border-radius:8px; margin-bottom:15px; line-height:1.5; color:#444;"></div>
-
-        <!-- Area modifica (Solo Admin) -->
         <div id="note-write-area" class="hidden">
             <textarea id="note-day-text" rows="4" placeholder="Scrivi una nota..." style="width:100%; margin-bottom:15px"></textarea>
             <div style="display:flex; gap:10px">
@@ -533,9 +570,7 @@
     <!-- SEZIONE RIEPILOGO SETTIMANALE (SOLO ADMIN) -->
     <div id="weekly-summary-section" class="hidden">
         <div class="grid-section-title sum">📊 Riepilogo Ore Settimanale</div>
-        <div id="weekly-summary-grid" class="summary-grid">
-            <!-- Popolato via JS -->
-        </div>
+        <div id="weekly-summary-grid" class="summary-grid"></div>
     </div>
 </div>
 
@@ -784,7 +819,7 @@
             snap.forEach(docSnap => allShiftsData.push({ id: docSnap.id, ...docSnap.data() }));
             allShiftsData.sort((a,b) => a.start.localeCompare(b.start));
             renderShiftsFromData();
-            updateWeeklySummary(); // Aggiorna riepilogo
+            updateWeeklySummary();
         }, (error) => { console.error(error); if(error.code === 'permission-denied') alert("Errore Permessi."); });
     }
 
@@ -817,56 +852,39 @@
         });
     }
 
-    // --- NUOVA FUNZIONE RIEPILOGO SETTIMANALE ---
     function updateWeeklySummary() {
         if (!isAdmin) return;
-        
         const container = document.getElementById('weekly-summary-grid');
         const section = document.getElementById('weekly-summary-section');
         section.classList.remove('hidden');
         container.innerHTML = "";
-
         const start = new Date(currentWeekStart);
         const end = new Date(currentWeekStart);
         end.setDate(end.getDate() + 6);
         const sStr = formatDate(start);
         const eStr = formatDate(end);
-
         const totals = {};
-
         allShiftsData.forEach(s => {
             if (s.date >= sStr && s.date <= eStr) {
                 const [h1, m1] = s.start.split(':').map(Number);
                 const [h2, m2] = s.end.split(':').map(Number);
                 let duration = (h2 + m2/60) - (h1 + m1/60);
                 if (duration < 0) duration += 24; 
-
                 const name = s.sostituto ? s.sostituto.nome : s.userName;
                 const role = s.role;
-
                 if (!totals[name]) totals[name] = { hours: 0, role: role };
                 totals[name].hours += duration;
             }
         });
-
-        // Converti in array e ordina per nome
         const sortedTotals = Object.entries(totals).sort((a,b) => a[0].localeCompare(b[0]));
-
         if (sortedTotals.length === 0) {
             container.innerHTML = "<p style='color:#999; grid-column:1/-1; text-align:center;'>Nessun turno questa settimana.</p>";
             return;
         }
-
         sortedTotals.forEach(([name, data]) => {
             const card = document.createElement('div');
             card.className = 'summary-card';
-            card.innerHTML = `
-                <div>
-                    <div class="sum-name">${name}</div>
-                    <span class="sum-role">${data.role}</span>
-                </div>
-                <div class="sum-hours">${data.hours.toFixed(1)} h</div>
-            `;
+            card.innerHTML = `<div><div class="sum-name">${name}</div><span class="sum-role">${data.role}</span></div><div class="sum-hours">${data.hours.toFixed(1)} h</div>`;
             container.appendChild(card);
         });
     }
@@ -897,7 +915,6 @@
             dayDate.setDate(dayDate.getDate() + i);
             const dateStr = formatDate(dayDate);
             const note = allNotesData.find(n => n.id === dateStr);
-            
             const grids = ['assistenti', 'segreteria', 'altri', 'tutti'];
             grids.forEach(suffix => {
                 const container = document.getElementById(`note-icon-${dateStr}-${suffix}`);
@@ -915,19 +932,15 @@
     window.openNoteModal = (dateStr) => {
         document.getElementById('note-day-date').value = dateStr;
         document.getElementById('note-day-label').innerText = new Date(dateStr).toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        
         const existing = allNotesData.find(n => n.id === dateStr);
         const text = existing ? existing.text : "";
-        
         document.getElementById('note-read-area').innerHTML = text || "<em style='color:#999'>Nessuna nota.</em>";
-        
         if (isAdmin) {
             document.getElementById('note-write-area').classList.remove('hidden');
             document.getElementById('note-day-text').value = text;
         } else {
             document.getElementById('note-write-area').classList.add('hidden');
         }
-        
         document.getElementById('note-day-modal').style.display = 'flex';
     };
 
@@ -951,7 +964,24 @@
         document.getElementById('modal-title').innerText = "Nuovo Turno";
         document.getElementById('p-id').value = ""; 
         document.getElementById('add-shift-modal').style.display = 'flex';
-        document.getElementById('p-date').value = formatDate(currentWeekStart);
+        document.getElementById('multi-day-section').classList.remove('hidden');
+        document.getElementById('single-date-section').classList.add('hidden');
+        document.getElementById('btn-save-continue').classList.remove('hidden'); 
+        const togglesContainer = document.getElementById('day-toggles-container');
+        togglesContainer.innerHTML = "";
+        const days = ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"];
+        for (let i = 0; i < 7; i++) {
+            const d = new Date(currentWeekStart);
+            d.setDate(d.getDate() + i);
+            const dateStr = formatDate(d);
+            const dayName = days[d.getDay()];
+            const btn = document.createElement('div');
+            btn.className = 'day-toggle-btn';
+            btn.innerText = `${dayName} ${d.getDate()}`;
+            btn.dataset.date = dateStr;
+            btn.onclick = () => btn.classList.toggle('selected');
+            togglesContainer.appendChild(btn);
+        }
         document.getElementById('p-start').value = "";
         document.getElementById('p-end').value = "";
     };
@@ -960,6 +990,9 @@
         document.getElementById('modal-title').innerText = "Modifica Turno";
         document.getElementById('p-id').value = id; 
         document.getElementById('p-user').value = email;
+        document.getElementById('multi-day-section').classList.add('hidden');
+        document.getElementById('single-date-section').classList.remove('hidden');
+        document.getElementById('btn-save-continue').classList.add('hidden'); 
         document.getElementById('p-date').value = date;
         document.getElementById('p-role').value = role;
         document.getElementById('p-start').value = start;
@@ -969,21 +1002,39 @@
 
     window.closeModal = (id) => { document.getElementById(id).style.display = 'none'; };
 
-    window.savePlannedShift = async () => {
+    window.savePlannedShift = async (keepOpen = false) => {
         const id = document.getElementById('p-id').value;
         const email = document.getElementById('p-user').value;
-        const date = document.getElementById('p-date').value;
         const role = document.getElementById('p-role').value;
         const start = document.getElementById('p-start').value;
         const end = document.getElementById('p-end').value;
-        if(!email || !date || !start || !end) return alert("Compila tutti i campi");
+        if(!email || !start || !end) return alert("Compila collaboratore e orari.");
         const userObj = rubrica.find(u => u.email === email);
         const userName = userObj ? userObj.nome : email;
         try {
-            if (id) await updateDoc(doc(db, "programmazione_turni", id), { email, userName, date, role, start, end });
-            else await addDoc(collection(db, "programmazione_turni"), { email, userName, date, role, start, end, created_at: new Date() });
-            window.toast(id ? "Modificato" : "Creato");
-            window.closeModal('add-shift-modal');
+            if (id) {
+                const date = document.getElementById('p-date').value;
+                if(!date) return alert("Data mancante.");
+                await updateDoc(doc(db, "programmazione_turni", id), { email, userName, date, role, start, end });
+                window.toast("Modificato");
+                window.closeModal('add-shift-modal');
+            } else {
+                const selectedBtns = document.querySelectorAll('.day-toggle-btn.selected');
+                if (selectedBtns.length === 0) return alert("Seleziona almeno un giorno.");
+                const batch = writeBatch(db);
+                selectedBtns.forEach(btn => {
+                    const date = btn.dataset.date;
+                    const newRef = doc(collection(db, "programmazione_turni"));
+                    batch.set(newRef, { email, userName, date, role, start, end, created_at: new Date() });
+                });
+                await batch.commit();
+                window.toast(`Creati ${selectedBtns.length} turni`);
+                if (!keepOpen) {
+                    window.closeModal('add-shift-modal');
+                } else {
+                    document.querySelectorAll('.day-toggle-btn.selected').forEach(b => b.classList.remove('selected'));
+                }
+            }
         } catch(e) { alert("Errore: " + e.message); }
     };
 
@@ -1008,11 +1059,9 @@
         const targetMonday = getMonday(targetDate);
         const sourceMondayStr = formatDate(currentWeekStart);
         if (formatDate(targetMonday) === sourceMondayStr) return alert("Non puoi duplicare sulla stessa settimana!");
-
         const sourceEnd = new Date(currentWeekStart);
         sourceEnd.setDate(sourceEnd.getDate() + 6);
         const sourceEndStr = formatDate(sourceEnd);
-
         const shiftsToCopy = allShiftsData.filter(s => {
             const inDate = s.date >= sourceMondayStr && s.date <= sourceEndStr;
             if (!inDate) return false;
@@ -1021,13 +1070,10 @@
             if (currentDupCategory === 'altri') return s.role !== 'Assistente bagnanti' && s.role !== 'Segreteria';
             return false;
         });
-
         if (shiftsToCopy.length === 0) return alert("Nessun turno da copiare.");
         if (!confirm(`Copiare ${shiftsToCopy.length} turni?`)) return;
-
         const diffTime = targetMonday.getTime() - currentWeekStart.getTime();
         const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
-
         try {
             const batch = writeBatch(db);
             shiftsToCopy.forEach(s => {
