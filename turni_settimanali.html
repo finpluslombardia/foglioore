@@ -94,9 +94,11 @@
             padding: 5px 10px;
             margin: 5px 0 10px 0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            width: 100%; 
-            max-width: 600px;
+            width: auto; 
+            min-width: 580px; 
+            max-width: 100%;
             gap: 10px;
+            flex-wrap: nowrap; 
         }
         
         .nav-arrows {
@@ -119,6 +121,7 @@
             display: flex; align-items: center; gap: 5px;
             border-left: 1px solid rgba(255,255,255,0.3);
             padding-left: 10px;
+            flex-shrink: 0;
         }
         
         .date-picker-input {
@@ -197,7 +200,6 @@
             background: var(--bg-card); border-radius: 12px 12px 0 0; position: relative;
         }
         
-        /* Flex wrapper per data e icona nota affiancate */
         .day-date-box {
             display: flex;
             align-items: center;
@@ -651,17 +653,16 @@
         } else { try { window.location.href = "index.html"; } catch (e) {} }
     });
 
-    window.changeWeek = (delta) => { currentWeekStart.setDate(currentWeekStart.getDate() + (delta * 7)); renderWeek(); loadPlannedShifts(); };
-    window.goToToday = () => { currentWeekStart = getMonday(new Date()); renderWeek(); loadPlannedShifts(); };
-    window.goToDate = (val) => { if(!val) return; currentWeekStart = getMonday(new Date(val)); renderWeek(); loadPlannedShifts(); };
+    window.changeWeek = (delta) => { currentWeekStart.setDate(currentWeekStart.getDate() + (delta * 7)); renderWeek(); renderShiftsFromData(); };
+    window.goToToday = () => { currentWeekStart = getMonday(new Date()); renderWeek(); renderShiftsFromData(); };
+    window.goToDate = (val) => { if(!val) return; currentWeekStart = getMonday(new Date(val)); renderWeek(); renderShiftsFromData(); };
 
     // --- NUOVA LOGICA OGGI/DOMANI ---
     window.handleTodayClick = () => {
         const today = new Date();
         currentWeekStart = getMonday(today);
         renderWeek();
-        // loadPlannedShifts() è già attivo, non serve chiamarlo di nuovo se onSnapshot è live
-        // ma per sicurezza aggiorniamo la UI se necessario
+        renderShiftsFromData();
         openDailySummary(today);
     };
 
@@ -670,6 +671,7 @@
         tomorrow.setDate(tomorrow.getDate() + 1);
         currentWeekStart = getMonday(tomorrow);
         renderWeek();
+        renderShiftsFromData();
         openDailySummary(tomorrow);
     };
 
