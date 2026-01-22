@@ -85,7 +85,7 @@
 
         /* Navigatore Integrato (Box Blu) */
         .week-navigator {
-            display: flex; /* Modificato da inline-flex a flex per migliore gestione spazi */
+            display: flex;
             align-items: center;
             justify-content: space-between;
             background-color: var(--primary);
@@ -94,18 +94,13 @@
             padding: 5px 10px;
             margin: 5px 0 10px 0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            width: 100%; 
-            max-width: 600px;
+            width: 400px; 
+            max-width: 100%;
             gap: 10px;
         }
         
         .nav-arrows {
-            display: flex; 
-            align-items: center; 
-            gap: 5px; 
-            flex: 1; 
-            /* MODIFICA: Spazia le frecce agli estremi */
-            justify-content: space-between; 
+            display: flex; align-items: center; gap: 5px; flex: 1; justify-content: space-between;
         }
         .nav-arrows button {
             background: rgba(255, 255, 255, 0.2);
@@ -117,7 +112,6 @@
         #week-range-label {
             font-weight: 700; font-size: 0.95rem; text-align: center;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 10px;
-            /* MODIFICA: Assicura che l'etichetta prenda lo spazio centrale */
             flex-grow: 1; 
         }
 
@@ -152,6 +146,7 @@
             background: var(--bg-card); color: var(--text-main); box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
+        /* Nuovi Stili Filtri */
         .filter-container select {
             padding: 8px 12px; margin: 0; font-size: 0.85rem; border-radius: 8px; max-width: 200px;
         }
@@ -348,7 +343,11 @@
         @media (max-width: 600px) {
             .container { padding: 10px 10px 80px 10px; }
             
-            .week-header { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; align-items: stretch; }
+            .week-header { display: flex; flex-direction: column; gap: 5px; margin-bottom: 5px; align-items: stretch; }
+            
+            /* Titolo sezione ridotto su mobile */
+            .grid-section-title { margin-top: 15px; margin-bottom: 5px; }
+
             h2 { font-size: 1.2rem; margin-bottom: 2px; }
 
             .week-navigator { width: 100%; margin: 5px 0; flex-direction: column; gap: 10px; padding: 10px; }
