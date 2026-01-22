@@ -70,6 +70,7 @@
         .btn-secondary { background: var(--hover-btn); color: var(--text-main); border: 1px solid var(--border-color); }
         .btn-danger { background: #ff3b30; color: white; }
         .btn-warning { background: #ff9500; color: white; }
+        .btn-success { background: #34c759; color: white; }
         
         input, select, textarea { 
             padding: 10px; border: 1px solid var(--border-color); 
@@ -317,6 +318,8 @@
             background: var(--bg-card); padding: 25px; border-radius: 18px; 
             width: 90%; max-width: 400px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); 
             text-align: left; position: relative;
+            max-height: 85vh; /* Limite altezza per schermi piccoli */
+            overflow-y: auto; /* Scroll se contenuto troppo lungo */
         }
         .modal-close-x {
             position: absolute; top: 15px; right: 15px; font-size: 1.5rem; 
@@ -355,6 +358,14 @@
         .sum-hours { font-weight: 700; font-size: 1.1rem; color: var(--primary); }
         .sum-role { font-size: 0.7rem; color: var(--text-muted); display: block; margin-top: 2px; text-transform: uppercase;}
 
+        /* TABELLA MODALITÀ EXCEL */
+        .excel-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .excel-table th { text-align: left; padding: 8px; border-bottom: 2px solid var(--border-color); font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); }
+        .excel-table td { padding: 4px; border-bottom: 1px solid var(--border-color); }
+        .excel-table input, .excel-table select { border: none; background: transparent; width: 100%; padding: 4px; font-size: 0.9rem; }
+        .excel-table input:focus, .excel-table select:focus { background: var(--bg-input); outline: 2px solid var(--primary); border-radius: 4px; }
+        .excel-actions { display: flex; justify-content: center; }
+
         .hidden { display: none !important; }
         #toast { visibility: hidden; min-width: 250px; background: #333; color: #fff; text-align: center; border-radius: 50px; padding: 12px; position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 3000; }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
@@ -366,7 +377,6 @@
             .day-column { 
                 min-height: auto; 
                 border: 1px solid var(--border-color); 
-                /* RIPRISTINATO: Data a sinistra, turni a destra sulla stessa riga */
                 flex-direction: row; 
                 align-items: stretch; /* Stretch per occupare l'altezza */
                 flex-wrap: nowrap; /* Impedisce che vadano a capo */
@@ -489,6 +499,38 @@
     </div>
 </div>
 
+<!-- MODALE TABELLARE (EXCEL) -->
+<div id="excel-mode-modal" class="modal-overlay">
+    <div class="modal-box" style="max-width:800px; width:95%;">
+        <button class="modal-close-x" onclick="closeModal('excel-mode-modal')">×</button>
+        <h3 style="margin-bottom:15px; color:var(--primary)">Inserimento Tabellare</h3>
+        <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:10px">Inserisci rapidamente più turni.</p>
+        
+        <div style="overflow-x:auto; margin-bottom:15px; border:1px solid var(--border-color); border-radius:8px;">
+            <table class="excel-table">
+                <thead>
+                    <tr>
+                        <th>Collaboratore</th>
+                        <th>Data</th>
+                        <th>Mansione</th>
+                        <th>Inizio</th>
+                        <th>Fine</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="excel-body">
+                    <!-- Righe generate -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <button class="btn-secondary" onclick="addExcelRow()" style="width:auto;">+ Aggiungi Riga</button>
+            <button class="btn-success" onclick="saveExcelData()" style="width:auto;">Salva Tutto</button>
+        </div>
+    </div>
+</div>
+
 <!-- MODALE DUPLICAZIONE SETTIMANA -->
 <div id="dup-week-modal" class="modal-overlay">
     <div class="modal-box">
@@ -586,6 +628,7 @@
         </div>
         <div style="display:flex; flex-direction:column; gap:5px; margin-top:10px;">
             <div class="action-buttons-container">
+                <button id="btn-excel-mode" class="btn-secondary hidden" onclick="openExcelModal()" title="Inserimento Tabellare">▦ Tabella</button>
                 <button id="btn-add-shift" class="btn-primary hidden" onclick="openAddModal()">➕ Aggiungi</button>
             </div>
         </div>
@@ -694,6 +737,7 @@
             isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
             if (isAdmin) {
                 document.getElementById('btn-add-shift').classList.remove('hidden');
+                document.getElementById('btn-excel-mode').classList.remove('hidden');
                 document.getElementById('admin-user-filter').classList.remove('hidden');
                 document.querySelectorAll('.admin-dup-btn').forEach(btn => btn.classList.remove('hidden'));
                 await loadUsers();
@@ -997,6 +1041,72 @@
         const dateStr = document.getElementById('note-day-date').value;
         if(!confirm("Rimuovere la nota?")) return;
         try { await deleteDoc(doc(db, "note_giornaliere", dateStr)); window.toast("Nota rimossa"); window.closeModal('note-day-modal'); } catch(e) { alert(e.message); }
+    };
+
+    // --- LOGICA EXCEL MODE ---
+    window.openExcelModal = () => {
+        document.getElementById('excel-mode-modal').style.display = 'flex';
+        // Aggiungi una riga vuota di default se vuota
+        const body = document.getElementById('excel-body');
+        if(body.children.length === 0) addExcelRow();
+    };
+
+    window.addExcelRow = () => {
+        const body = document.getElementById('excel-body');
+        const row = document.createElement('tr');
+        
+        // COLLABORATORE (Select)
+        let userOptions = '<option value="">Seleziona...</option>';
+        rubrica.forEach(u => userOptions += `<option value="${u.email}">${u.nome}</option>`);
+        
+        // MANSIONE (Select)
+        let roleOptions = '';
+        const roles = ["Assistente bagnanti", "Segreteria", "Istruttore", "Fitness", "Propaganda", "Lezione individuale"];
+        roles.forEach(r => roleOptions += `<option value="${r}">${r}</option>`);
+
+        row.innerHTML = `
+            <td><select class="ex-user">${userOptions}</select></td>
+            <td><input type="date" class="ex-date" value="${formatDate(currentWeekStart)}"></td>
+            <td><select class="ex-role">${roleOptions}</select></td>
+            <td><input type="time" class="ex-start"></td>
+            <td><input type="time" class="ex-end"></td>
+            <td class="excel-actions"><button onclick="this.closest('tr').remove()" style="background:none; border:none; color:red; cursor:pointer;">×</button></td>
+        `;
+        body.appendChild(row);
+    };
+
+    window.saveExcelData = async () => {
+        const rows = document.querySelectorAll('#excel-body tr');
+        const batch = writeBatch(db);
+        let count = 0;
+
+        for (const tr of rows) {
+            const email = tr.querySelector('.ex-user').value;
+            const date = tr.querySelector('.ex-date').value;
+            const role = tr.querySelector('.ex-role').value;
+            const start = tr.querySelector('.ex-start').value;
+            const end = tr.querySelector('.ex-end').value;
+
+            if (email && date && start && end) {
+                const userObj = rubrica.find(u => u.email === email);
+                const userName = userObj ? userObj.nome : email;
+
+                const newRef = doc(collection(db, "programmazione_turni"));
+                batch.set(newRef, { email, userName, date, role, start, end, created_at: new Date() });
+                count++;
+            }
+        }
+
+        if (count > 0) {
+            try {
+                await batch.commit();
+                window.toast(`Salvati ${count} turni!`);
+                window.closeModal('excel-mode-modal');
+                document.getElementById('excel-body').innerHTML = ""; // Reset
+            } catch(e) { alert("Errore salvataggio: " + e.message); }
+        } else {
+            alert("Nessun turno valido da salvare.");
+        }
     };
 
     window.openAddModal = () => {
