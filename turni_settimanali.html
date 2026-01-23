@@ -813,8 +813,26 @@
             dailyShifts.forEach(s => {
                 const style = getRoleColor(s.role);
                 const user = s.sostituto ? `<span style='text-decoration:line-through; color:#999'>${s.userName}</span> <span style='color:#ff9500; font-weight:700'>🔄 ${s.sostituto.nome}</span>` : s.userName;
+                
+                // HIGHLIGHT LOGIC FOR DAILY SUMMARY
+                let isMe = false;
+                if (currentUser) {
+                    if (s.sostituto && s.sostituto.email === currentUser.email) isMe = true;
+                    else if (!s.sostituto && s.email === currentUser.email) isMe = true;
+                }
+
                 const item = document.createElement('div');
                 item.className = 'daily-summary-item';
+                
+                if (isMe) {
+                   item.style.backgroundColor = "rgba(0, 122, 255, 0.1)"; // Azzurro chiaro
+                   item.style.borderLeft = "4px solid var(--primary)";
+                   item.style.padding = "8px"; 
+                   item.style.marginBottom = "2px";
+                   item.style.borderBottom = "none";
+                   item.style.borderRadius = "0 4px 4px 0";
+                }
+
                 item.innerHTML = `
                     <div class="ds-time">${s.start} - ${s.end}</div>
                     <div class="ds-user">${user}</div>
@@ -1079,11 +1097,14 @@
     window.addExcelRow = () => {
         const body = document.getElementById('excel-body');
         const row = document.createElement('tr');
+        
         let userOptions = '<option value="">Seleziona...</option>';
         rubrica.forEach(u => userOptions += `<option value="${u.email}">${u.nome}</option>`);
+        
         let roleOptions = '';
         const roles = ["Assistente bagnanti", "Segreteria", "Istruttore", "Fitness", "Propaganda", "Lezione individuale"];
         roles.forEach(r => roleOptions += `<option value="${r}">${r}</option>`);
+
         row.innerHTML = `
             <td><select class="ex-user">${userOptions}</select></td>
             <td><input type="date" class="ex-date" value="${formatDate(currentWeekStart)}"></td>
@@ -1099,26 +1120,30 @@
         const rows = document.querySelectorAll('#excel-body tr');
         const batch = writeBatch(db);
         let count = 0;
+
         for (const tr of rows) {
             const email = tr.querySelector('.ex-user').value;
             const date = tr.querySelector('.ex-date').value;
             const role = tr.querySelector('.ex-role').value;
             const start = tr.querySelector('.ex-start').value;
             const end = tr.querySelector('.ex-end').value;
+
             if (email && date && start && end) {
                 const userObj = rubrica.find(u => u.email === email);
                 const userName = userObj ? userObj.nome : email;
+
                 const newRef = doc(collection(db, "programmazione_turni"));
                 batch.set(newRef, { email, userName, date, role, start, end, created_at: new Date() });
                 count++;
             }
         }
+
         if (count > 0) {
             try {
                 await batch.commit();
                 window.toast(`Salvati ${count} turni!`);
                 window.closeModal('excel-mode-modal');
-                document.getElementById('excel-body').innerHTML = "";
+                document.getElementById('excel-body').innerHTML = ""; // Reset
             } catch(e) { alert("Errore salvataggio: " + e.message); }
         } else {
             alert("Nessun turno valido da salvare.");
@@ -1424,10 +1449,19 @@
             body: tableBody,
             startY: 30,
             theme: 'plain',
-            styles: { font: 'helvetica', fontSize: 10, cellPadding: 4, lineColor: [230, 230, 230], lineWidth: 0.1 },
-            headStyles: { fillColor: [0, 122, 255], textColor: 255, fontStyle: 'bold', halign: 'left' },
-            columnStyles: { 0: { cellWidth: 35, fontStyle: 'bold' }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 50, textColor: [100,100,100] } },
-            alternateRowStyles: { fillColor: [255, 255, 255] }
+            styles: { font: 'helvetica', fontSize: 8, cellPadding: 1.5, lineColor: [230, 230, 230], lineWidth: 0.1, valign: 'middle' },
+            headStyles: { fillColor: [0, 122, 255], textColor: 255, fontStyle: 'bold', halign: 'left', cellPadding: 3 },
+            columnStyles: { 0: { cellWidth: 30, fontStyle: 'bold' }, 1: { cellWidth: 'auto' }, 2: { cellWidth: 45, textColor: [100,100,100] } },
+            alternateRowStyles: { fillColor: [255, 255, 255] },
+            didParseCell: function (data) {
+                if (data.row.raw[0] && data.row.raw[0].colSpan === 3) {
+                    data.cell.styles.fillColor = [240, 242, 245];
+                    data.cell.styles.textColor = [0, 122, 255];
+                    data.cell.styles.fontStyle = 'bold';
+                    data.cell.styles.fontSize = 10;
+                    data.cell.styles.cellPadding = 3;
+                }
+            }
         });
 
         doc.save(`Turni_${dateRange.replace(/\s/g,'_')}.pdf`);
