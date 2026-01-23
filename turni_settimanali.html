@@ -160,7 +160,12 @@
         }
         .checkbox-filter input { width: 16px; height: 16px; margin: 0; }
 
-        /* SELEZIONE MULTIPLA GIORNI (MODALE) */
+        /* MODALE: TAB GROUP (Switch Inserimento) */
+        .tab-group { display: flex; background: var(--bg-input); border-radius: 10px; padding: 4px; margin-bottom: 15px; border: 1px solid var(--border-color); }
+        .tab-btn { flex: 1; padding: 8px; border: none; background: transparent; border-radius: 8px; font-size: 0.85rem; color: var(--text-muted); cursor: pointer; transition: 0.2s; justify-content: center;}
+        .tab-btn.active { background: var(--bg-card); color: var(--primary); font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        /* SELEZIONE MULTIPLA GIORNI */
         .day-toggle-container {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -185,6 +190,11 @@
             font-weight: 700;
         }
         .day-toggle-btn:hover:not(.selected) { background: var(--hover-btn); }
+
+        /* INSERIMENTO SETTIMANALE (TABELLA) */
+        .weekly-input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .weekly-input-label { font-size: 0.8rem; font-weight: 600; width: 60px; color: var(--text-muted); }
+        .weekly-input-field { flex: 1; margin: 0 !important; font-size: 0.85rem; padding: 6px; }
 
         /* SEZIONI GRIGLIE */
         .grid-section-title {
@@ -459,23 +469,17 @@
         <h3 id="modal-title" style="margin-bottom:15px; color:var(--primary)">Nuovo Turno</h3>
         <input type="hidden" id="p-id">
         
+        <!-- TABS PER SCELTA METODO DI INSERIMENTO (NUOVO) -->
+        <div id="add-mode-tabs" class="tab-group hidden">
+             <button type="button" class="tab-btn active" onclick="switchAddMode('multi')">Giorni Multipli</button>
+             <button type="button" class="tab-btn" onclick="switchAddMode('weekly')">Settimana Intera</button>
+        </div>
+
         <label>Collaboratore</label>
         <select id="p-user"></select>
-
-        <!-- SEZIONE GIORNI (VISIBILE SOLO IN NUOVO) -->
-        <div id="multi-day-section">
-            <label>Giorni della settimana</label>
-            <div id="day-toggles-container" class="day-toggle-container"></div>
-        </div>
-
-        <!-- SEZIONE DATA SINGOLA (VISIBILE SOLO IN EDIT) -->
-        <div id="single-date-section" class="hidden">
-            <label>Data</label>
-            <input type="date" id="p-date">
-        </div>
-
+        
         <label>Mansione</label>
-        <select id="p-role">
+        <select id="p-role" style="margin-bottom:15px;">
             <option value="Assistente bagnanti">Assistente bagnanti</option>
             <option value="Segreteria">Segreteria</option>
             <option value="Istruttore">Istruttore</option>
@@ -484,9 +488,33 @@
             <option value="Lezione individuale">Lezione individuale</option>
         </select>
 
-        <div style="display:flex; gap:10px; margin-bottom:20px">
-            <div style="flex:1"><label>Inizio</label><input type="time" id="p-start"></div>
-            <div style="flex:1"><label>Fine</label><input type="time" id="p-end"></div>
+        <!-- SEZIONE 1: GIORNI MULTIPLI (DEFAULT) -->
+        <div id="multi-day-section">
+            <label>Seleziona i giorni:</label>
+            <div id="day-toggles-container" class="day-toggle-container"></div>
+            
+            <div style="display:flex; gap:10px; margin-bottom:20px">
+                <div style="flex:1"><label>Inizio</label><input type="time" id="p-start"></div>
+                <div style="flex:1"><label>Fine</label><input type="time" id="p-end"></div>
+            </div>
+        </div>
+        
+        <!-- SEZIONE 2: SETTIMANA INTERA (NUOVO) -->
+        <div id="weekly-plan-section" class="hidden">
+            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px">Inserisci orari per ogni giorno (lascia vuoto se riposo).</p>
+            <div id="weekly-rows-container" style="max-height:300px; overflow-y:auto; margin-bottom:15px; padding-right:5px;">
+                <!-- Righe generate via JS -->
+            </div>
+        </div>
+
+        <!-- SEZIONE 3: DATA SINGOLA (VISIBILE SOLO IN EDIT) -->
+        <div id="single-date-section" class="hidden">
+            <label>Data</label>
+            <input type="date" id="p-date">
+             <div style="display:flex; gap:10px; margin-bottom:20px">
+                <div style="flex:1"><label>Inizio</label><input type="time" id="p-start-edit"></div>
+                <div style="flex:1"><label>Fine</label><input type="time" id="p-end-edit"></div>
+            </div>
         </div>
 
         <div style="display:flex; flex-direction:column; gap:10px;">
@@ -506,25 +534,12 @@
         <button class="modal-close-x" onclick="closeModal('excel-mode-modal')">×</button>
         <h3 style="margin-bottom:15px; color:var(--primary)">Inserimento Tabellare</h3>
         <p style="color:var(--text-muted); font-size:0.8rem; margin-bottom:10px">Inserisci rapidamente più turni.</p>
-        
         <div style="overflow-x:auto; margin-bottom:15px; border:1px solid var(--border-color); border-radius:8px;">
             <table class="excel-table">
-                <thead>
-                    <tr>
-                        <th>Collaboratore</th>
-                        <th>Data</th>
-                        <th>Mansione</th>
-                        <th>Inizio</th>
-                        <th>Fine</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="excel-body">
-                    <!-- Righe generate -->
-                </tbody>
+                <thead><tr><th>Collaboratore</th><th>Data</th><th>Mansione</th><th>Inizio</th><th>Fine</th><th></th></tr></thead>
+                <tbody id="excel-body"></tbody>
             </table>
         </div>
-        
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <button class="btn-secondary" onclick="addExcelRow()" style="width:auto;">+ Aggiungi Riga</button>
             <button class="btn-success" onclick="saveExcelData()" style="width:auto;">Salva Tutto</button>
@@ -685,6 +700,7 @@
     let activeUserFilter = ""; 
     let onlyMyShifts = false;
     let currentDupCategory = ""; 
+    let currentAddMode = 'multi'; // 'multi' | 'weekly'
 
     window.toggleTheme = () => {
         const html = document.documentElement;
@@ -1056,11 +1072,9 @@
         const body = document.getElementById('excel-body');
         const row = document.createElement('tr');
         
-        // COLLABORATORE (Select)
         let userOptions = '<option value="">Seleziona...</option>';
         rubrica.forEach(u => userOptions += `<option value="${u.email}">${u.nome}</option>`);
         
-        // MANSIONE (Select)
         let roleOptions = '';
         const roles = ["Assistente bagnanti", "Segreteria", "Istruttore", "Fitness", "Propaganda", "Lezione individuale"];
         roles.forEach(r => roleOptions += `<option value="${r}">${r}</option>`);
@@ -1110,13 +1124,58 @@
         }
     };
 
+    window.switchAddMode = (mode) => {
+        currentAddMode = mode;
+        const tabs = document.querySelectorAll('.tab-btn');
+        tabs.forEach(t => t.classList.remove('active'));
+        
+        if (mode === 'multi') {
+            document.getElementById('multi-day-section').classList.remove('hidden');
+            document.getElementById('weekly-plan-section').classList.add('hidden');
+            tabs[0].classList.add('active');
+        } else {
+            document.getElementById('multi-day-section').classList.add('hidden');
+            document.getElementById('weekly-plan-section').classList.remove('hidden');
+            tabs[1].classList.add('active');
+        }
+    };
+
+    window.initWeeklyPlanInputs = () => {
+        const container = document.getElementById('weekly-rows-container');
+        container.innerHTML = "";
+        const days = ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"];
+        
+        for (let i = 0; i < 7; i++) {
+            const d = new Date(currentWeekStart);
+            d.setDate(d.getDate() + i);
+            const dateStr = formatDate(d);
+            const label = `${days[d.getDay()]} ${d.getDate()}`;
+            
+            const div = document.createElement('div');
+            div.className = 'weekly-input-row';
+            div.innerHTML = `
+                <div class="weekly-input-label">${label}</div>
+                <input type="time" class="weekly-input-field w-start" data-date="${dateStr}">
+                <input type="time" class="weekly-input-field w-end" data-date="${dateStr}">
+            `;
+            container.appendChild(div);
+        }
+    };
+
     window.openAddModal = () => {
         document.getElementById('modal-title').innerText = "Nuovo Turno";
         document.getElementById('p-id').value = ""; 
         document.getElementById('add-shift-modal').style.display = 'flex';
-        document.getElementById('multi-day-section').classList.remove('hidden');
+        
+        document.getElementById('add-mode-tabs').classList.remove('hidden'); // Mostra tabs
+        window.switchAddMode('multi'); // Reset to default mode
+        window.initWeeklyPlanInputs(); // Prepare weekly inputs
+
+        // Reset Multi-day logic
         document.getElementById('single-date-section').classList.add('hidden');
         document.getElementById('btn-save-continue').classList.remove('hidden'); 
+        
+        // Reset toggles
         const togglesContainer = document.getElementById('day-toggles-container');
         togglesContainer.innerHTML = "";
         const days = ["Dom", "Lun", "Mar", "Mer", "Gio", "Ven", "Sab"];
@@ -1140,13 +1199,21 @@
         document.getElementById('modal-title').innerText = "Modifica Turno";
         document.getElementById('p-id').value = id; 
         document.getElementById('p-user').value = email;
+        
+        document.getElementById('add-mode-tabs').classList.add('hidden'); // Nascondi tabs in edit
         document.getElementById('multi-day-section').classList.add('hidden');
+        document.getElementById('weekly-plan-section').classList.add('hidden');
+        
         document.getElementById('single-date-section').classList.remove('hidden');
         document.getElementById('btn-save-continue').classList.add('hidden'); 
+        
         document.getElementById('p-date').value = date;
         document.getElementById('p-role').value = role;
-        document.getElementById('p-start').value = start;
-        document.getElementById('p-end').value = end;
+        document.getElementById('p-start-edit').value = start; // Usare input specifici per edit? No, riusiamo quelli nascosti o creiamone nuovi
+        // Per semplicità uso quelli della sezione single-date
+        document.getElementById('p-start-edit').value = start;
+        document.getElementById('p-end-edit').value = end;
+        
         document.getElementById('add-shift-modal').style.display = 'flex';
     };
 
@@ -1156,36 +1223,77 @@
         const id = document.getElementById('p-id').value;
         const email = document.getElementById('p-user').value;
         const role = document.getElementById('p-role').value;
-        const start = document.getElementById('p-start').value;
-        const end = document.getElementById('p-end').value;
-        if(!email || !start || !end) return alert("Compila collaboratore e orari.");
-        const userObj = rubrica.find(u => u.email === email);
-        const userName = userObj ? userObj.nome : email;
-        try {
-            if (id) {
-                const date = document.getElementById('p-date').value;
-                if(!date) return alert("Data mancante.");
+        
+        // Se siamo in edit mode (id esiste) o single mode
+        if (id) {
+             const date = document.getElementById('p-date').value;
+             const start = document.getElementById('p-start-edit').value;
+             const end = document.getElementById('p-end-edit').value;
+             
+             if(!email || !date || !start || !end) return alert("Compila tutti i campi.");
+             const userObj = rubrica.find(u => u.email === email);
+             const userName = userObj ? userObj.nome : email;
+             
+             try {
                 await updateDoc(doc(db, "programmazione_turni", id), { email, userName, date, role, start, end });
                 window.toast("Modificato");
                 window.closeModal('add-shift-modal');
-            } else {
-                const selectedBtns = document.querySelectorAll('.day-toggle-btn.selected');
-                if (selectedBtns.length === 0) return alert("Seleziona almeno un giorno.");
-                const batch = writeBatch(db);
-                selectedBtns.forEach(btn => {
-                    const date = btn.dataset.date;
+             } catch(e) { alert(e.message); }
+             return;
+        }
+
+        // CREAZIONE NUOVO
+        const batch = writeBatch(db);
+        let count = 0;
+        const userObj = rubrica.find(u => u.email === email);
+        const userName = userObj ? userObj.nome : email;
+
+        if (currentAddMode === 'multi') {
+            const start = document.getElementById('p-start').value;
+            const end = document.getElementById('p-end').value;
+            const selectedBtns = document.querySelectorAll('.day-toggle-btn.selected');
+            
+            if (!start || !end) return alert("Inserisci orari.");
+            if (selectedBtns.length === 0) return alert("Seleziona giorni.");
+
+            selectedBtns.forEach(btn => {
+                const date = btn.dataset.date;
+                const newRef = doc(collection(db, "programmazione_turni"));
+                batch.set(newRef, { email, userName, date, role, start, end, created_at: new Date() });
+                count++;
+            });
+        } else {
+            // Weekly Mode
+            const rows = document.querySelectorAll('.weekly-input-row');
+            rows.forEach(row => {
+                const startInput = row.querySelector('.w-start');
+                const endInput = row.querySelector('.w-end');
+                if (startInput.value && endInput.value) {
+                    const date = startInput.dataset.date;
                     const newRef = doc(collection(db, "programmazione_turni"));
-                    batch.set(newRef, { email, userName, date, role, start, end, created_at: new Date() });
-                });
+                    batch.set(newRef, { email, userName, date, role, start: startInput.value, end: endInput.value, created_at: new Date() });
+                    count++;
+                }
+            });
+        }
+
+        if (count > 0) {
+            try {
                 await batch.commit();
-                window.toast(`Creati ${selectedBtns.length} turni`);
+                window.toast(`Creati ${count} turni`);
                 if (!keepOpen) {
                     window.closeModal('add-shift-modal');
                 } else {
-                    document.querySelectorAll('.day-toggle-btn.selected').forEach(b => b.classList.remove('selected'));
+                    if (currentAddMode === 'multi') {
+                        document.querySelectorAll('.day-toggle-btn.selected').forEach(b => b.classList.remove('selected'));
+                    } else {
+                        window.initWeeklyPlanInputs(); // Reset inputs
+                    }
                 }
-            }
-        } catch(e) { alert("Errore: " + e.message); }
+            } catch(e) { alert(e.message); }
+        } else {
+            alert("Nessun turno inserito.");
+        }
     };
 
     window.deletePlanned = async (id) => {
