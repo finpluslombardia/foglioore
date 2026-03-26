@@ -1813,7 +1813,8 @@
         doc.setTextColor(100);
         doc.text("Generato tramite gestionale interno FIN PLUS LOMBARDIA SSD A R.L.", 105, signY + 28, { align: "center" });
 
-        doc.save(`Autocertificazione_${userName.replace(/\s+/g,'')}_${m}_${y}.pdf`);
+        const monthPad = String(m).padStart(2, '0');
+        doc.save(`Autocertificazione ${userName} ${monthPad}.${y}.pdf`);
         document.getElementById('autocert-modal').style.display='none';
     };
 
