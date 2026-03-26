@@ -1855,15 +1855,16 @@
 
     window.excelCollab = () => {
         const sm = document.getElementById('c-filtro-mese'); const sy = document.getElementById('c-filtro-anno');
-        const n = (rubrica[currentUser.email]?.nome||currentUser.email.split('@')[0]).replace(/\s+/g,'');
-        generateCsv(myTurni, `Presenze_${n}_${sm.options[sm.selectedIndex].text}_${sy.value}.csv`, parseInt(sm.value), parseInt(sy.value));
+        const rawName = rubrica[currentUser.email]?.nome || currentUser.email.split('@')[0];
+        const monthPad = String(sm.value).padStart(2, '0');
+        generateCsv(myTurni, `${rawName} ${monthPad}.${sy.value}.csv`, parseInt(sm.value), parseInt(sy.value));
     };
     
     // UPDATED EXCEL DETAIL TO USE NEW FILTERS
     window.excelAdminDetail = () => {
         const sm = document.getElementById('d-filtro-mese'); 
         const sy = document.getElementById('d-filtro-anno');
-        const n = (rubrica[detailUserEmail]?.nome||detailUserEmail).replace(/\s+/g,'');
+        const rawName = rubrica[detailUserEmail]?.nome || detailUserEmail;
         
         // Filter logic inside export to match visual
         const m = sm.value;
@@ -1877,22 +1878,29 @@
             });
         }
         
-        const label = m === 'all' ? 'Tutto_Anno' : sm.options[sm.selectedIndex].text;
-        generateCsv(dataToExport, `Presenze_${n}_${label}_${sy.value}.csv`, parseInt(m), parseInt(y));
+        let fileName;
+        if (m === 'all') {
+            fileName = `${rawName} Tutto_Anno.${y}.csv`;
+        } else {
+            const monthPad = String(m).padStart(2, '0');
+            fileName = `${rawName} ${monthPad}.${y}.csv`;
+        }
+        generateCsv(dataToExport, fileName, parseInt(m), parseInt(y));
     };
 
     // GENERATE PDF
     window.pdfCollab = () => {
         const sm = document.getElementById('c-filtro-mese');
         const sy = document.getElementById('c-filtro-anno');
-        const n = (rubrica[currentUser.email]?.nome||currentUser.email.split('@')[0]).replace(/\s+/g,'');
-        generatePdf(myTurni, `Presenze_${n}_${sm.options[sm.selectedIndex].text}_${sy.value}.pdf`, parseInt(sm.value), parseInt(sy.value), rubrica[currentUser.email]?.nome || currentUser.email);
+        const rawName = rubrica[currentUser.email]?.nome || currentUser.email.split('@')[0];
+        const monthPad = String(sm.value).padStart(2, '0');
+        generatePdf(myTurni, `${rawName} ${monthPad}.${sy.value}.pdf`, parseInt(sm.value), parseInt(sy.value), rawName);
     };
 
     window.pdfAdminDetail = () => {
         const sm = document.getElementById('d-filtro-mese'); 
         const sy = document.getElementById('d-filtro-anno');
-        const n = (rubrica[detailUserEmail]?.nome||detailUserEmail).replace(/\s+/g,'');
+        const rawName = rubrica[detailUserEmail]?.nome || detailUserEmail;
         
         const m = sm.value;
         const y = sy.value;
@@ -1905,8 +1913,14 @@
             });
         }
         
-        const label = m === 'all' ? 'Tutto_Anno' : sm.options[sm.selectedIndex].text;
-        generatePdf(dataToExport, `Presenze_${n}_${label}_${sy.value}.pdf`, parseInt(m), parseInt(y), rubrica[detailUserEmail]?.nome || detailUserEmail);
+        let fileName;
+        if (m === 'all') {
+            fileName = `${rawName} Tutto_Anno.${y}.pdf`;
+        } else {
+            const monthPad = String(m).padStart(2, '0');
+            fileName = `${rawName} ${monthPad}.${y}.pdf`;
+        }
+        generatePdf(dataToExport, fileName, parseInt(m), parseInt(y), rawName);
     };
 
     function generatePdf(data, filename, selectedMonth, selectedYear, userName) {
