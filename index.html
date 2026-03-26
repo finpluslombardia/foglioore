@@ -1218,7 +1218,7 @@
                 </tr>
             `;
         });
-        document.getElementById('c-totale').innerText = tot.toFixed(1);
+        document.getElementById('c-totale').innerText = Number(tot.toFixed(2));
         const soldiEl = document.getElementById('c-soldi');
         if(soldiEl) soldiEl.innerText = totSoldi.toFixed(2);
         
@@ -1227,7 +1227,7 @@
             const bg = getRoleBg(m);
             // Uso un colore del testo più scuro per contrasto su sfondo chiaro
             const textColor = "#333"; 
-            statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${breakdown[m].toFixed(1)}</div>`;
+            statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${Number(breakdown[m].toFixed(2))}</div>`;
         });
     };
 
@@ -1401,7 +1401,7 @@
                         </div>
                         <div class="card-sub">${u.email}</div>
                         <div class="card-stats-row">
-                            <div class="stat-group"><span class="stat-label">ORE</span><span class="stat-val-h">${u.ore.toFixed(1)}</span></div>
+                            <div class="stat-group"><span class="stat-label">ORE</span><span class="stat-val-h">${Number(u.ore.toFixed(2))}</span></div>
                             <div class="stat-group right"><span class="stat-label">STIMA</span><span class="stat-val-m">€ ${u.soldi.toFixed(2)}</span></div>
                         </div>
                     </div>
@@ -1574,7 +1574,7 @@
             `;
         });
         
-        document.getElementById('d-totale').innerText = tot.toFixed(1);
+        document.getElementById('d-totale').innerText = Number(tot.toFixed(2));
         document.getElementById('d-soldi').innerText = totSoldi.toFixed(2);
         
         // UPDATED: Render pills with compact style
@@ -1582,7 +1582,7 @@
             const bg = getRoleBg(m);
             // Uso un colore del testo più scuro per contrasto su sfondo chiaro
             const textColor = "#333"; 
-            statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${breakdown[m].toFixed(1)}</div>`;
+            statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${Number(breakdown[m].toFixed(2))}</div>`;
         });
     };
 
