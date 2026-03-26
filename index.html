@@ -1857,7 +1857,7 @@
         const sm = document.getElementById('c-filtro-mese'); const sy = document.getElementById('c-filtro-anno');
         const rawName = rubrica[currentUser.email]?.nome || currentUser.email.split('@')[0];
         const monthPad = String(sm.value).padStart(2, '0');
-        generateCsv(myTurni, `${rawName} ${monthPad}.${sy.value}.csv`, parseInt(sm.value), parseInt(sy.value));
+        generateCsv(myTurni, `Ore ${rawName} ${monthPad}.${sy.value}.csv`, parseInt(sm.value), parseInt(sy.value));
     };
     
     // UPDATED EXCEL DETAIL TO USE NEW FILTERS
@@ -1880,10 +1880,10 @@
         
         let fileName;
         if (m === 'all') {
-            fileName = `${rawName} Tutto_Anno.${y}.csv`;
+            fileName = `Ore ${rawName} Tutto_Anno.${y}.csv`;
         } else {
             const monthPad = String(m).padStart(2, '0');
-            fileName = `${rawName} ${monthPad}.${y}.csv`;
+            fileName = `Ore ${rawName} ${monthPad}.${y}.csv`;
         }
         generateCsv(dataToExport, fileName, parseInt(m), parseInt(y));
     };
@@ -1894,7 +1894,7 @@
         const sy = document.getElementById('c-filtro-anno');
         const rawName = rubrica[currentUser.email]?.nome || currentUser.email.split('@')[0];
         const monthPad = String(sm.value).padStart(2, '0');
-        generatePdf(myTurni, `${rawName} ${monthPad}.${sy.value}.pdf`, parseInt(sm.value), parseInt(sy.value), rawName);
+        generatePdf(myTurni, `Ore ${rawName} ${monthPad}.${sy.value}.pdf`, parseInt(sm.value), parseInt(sy.value), rawName);
     };
 
     window.pdfAdminDetail = () => {
@@ -1915,10 +1915,10 @@
         
         let fileName;
         if (m === 'all') {
-            fileName = `${rawName} Tutto_Anno.${y}.pdf`;
+            fileName = `Ore ${rawName} Tutto_Anno.${y}.pdf`;
         } else {
             const monthPad = String(m).padStart(2, '0');
-            fileName = `${rawName} ${monthPad}.${y}.pdf`;
+            fileName = `Ore ${rawName} ${monthPad}.${y}.pdf`;
         }
         generatePdf(dataToExport, fileName, parseInt(m), parseInt(y), rawName);
     };
