@@ -570,6 +570,12 @@
         </div>
         <div id="c-stats-container" class="stats-container"></div>
         
+        <!-- NUOVA SEZIONE STORICO COMPENSI COLLABORATORE -->
+        <div id="collab-history-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+            <h3 style="color:var(--primary); margin-top:0">📊 Il Mio Storico Compensi</h3>
+            <div id="collab-history-content"></div>
+        </div>
+        
         <div style="text-align:center; margin-top:30px">
             <button onclick="document.getElementById('pwd-modal').style.display='flex'" class="btn-secondary" style="width:auto; margin:0 auto; font-size:0.8rem">Cambia Password</button>
         </div>
@@ -1279,7 +1285,41 @@
         snap.forEach(d => myTurni.push({id: d.id, ...d.data()}));
         renderCalendar(); 
         renderCollabTable();
+        loadCollabHistory(); // AGGIUNTO CARICAMENTO STORICO
     }
+
+    window.loadCollabHistory = () => {
+        const contentDiv = document.getElementById('collab-history-content');
+        if (!contentDiv) return;
+        
+        const historyData = {}; 
+        const userRates = rubrica[currentUser.email]?.tariffe || {};
+        
+        myTurni.forEach(t => {
+             const d = new Date(t.data);
+             const y = d.getFullYear();
+             const m = d.getMonth() + 1;
+             if(!historyData[y]) historyData[y] = {};
+             if(!historyData[y][m]) historyData[y][m] = { ore: 0, soldi: 0 };
+             historyData[y][m].ore += t.ore;
+             historyData[y][m].soldi += t.ore * (userRates[t.mansione] || 0);
+        });
+        
+        const mNames = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+        let html = '';
+        
+        Object.keys(historyData).sort((a,b) => b-a).forEach(y => {
+            let yearOre = 0; let yearSoldi = 0; let monthsHtml = '';
+            Object.keys(historyData[y]).sort((a,b) => b-a).forEach(m => {
+                const data = historyData[y][m];
+                yearOre += data.ore; yearSoldi += data.soldi;
+                monthsHtml += `<div class="history-month-row"><span style="font-weight:500;">${mNames[m]}</span><span><strong>${Number(data.ore.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${data.soldi.toFixed(2)}</span></span></div>`;
+            });
+            html += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span>📅 ${y}</span><span><strong>${Number(yearOre.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${yearSoldi.toFixed(2)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
+        });
+        
+        contentDiv.innerHTML = html || '<p style="color:var(--text-muted); text-align:center; padding:10px; font-size: 0.85rem;">Nessuno storico presente.</p>';
+    };
 
     window.renderCollabTable = () => {
         const m = document.getElementById('c-filtro-mese').value, y = document.getElementById('c-filtro-anno').value;
