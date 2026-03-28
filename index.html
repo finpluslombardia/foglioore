@@ -36,6 +36,14 @@
             --dot-lezione: #007aff;
             --dot-fitness: #ffcc00;
             --dot-segreteria: #8e8e93;
+
+            /* SFONDI RUOLI */
+            --bg-assistente: #ffecec;
+            --bg-istruttore: #eafbe7;
+            --bg-fitness: #fff8cc;
+            --bg-propaganda: #f6e4ff;
+            --bg-lezione: #e0f0ff;
+            --bg-segreteria: #f4f4f5;
         }
 
         /* DARK THEME */
@@ -49,6 +57,14 @@
             --shadow: 0 4px 12px rgba(0,0,0,0.3);
             --hover-btn: #3a3a3c;
             --primary-light: #0a2a4d;
+
+            /* SFONDI RUOLI DARK */
+            --bg-assistente: #3a1c1c;
+            --bg-istruttore: #1c3a1c;
+            --bg-fitness: #3a331c;
+            --bg-propaganda: #2e1c3a;
+            --bg-lezione: #1c2a3a;
+            --bg-segreteria: #2c2c2e;
         }
 
         *, *::before, *::after { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; }
@@ -1223,13 +1239,12 @@
 
     // FUNZIONE COLORI RUOLI (SFONDO)
     const getRoleBg = (m) => {
-        // Returns { bg: color, color: color }
-        if(m.includes("Assistente")) return "#ffecec"; // Rosso Chiaro
-        if(m.includes("Istruttore")) return "#eafbe7"; // Verde Chiaro
-        if(m.includes("Fitness")) return "#fff8cc"; // Giallo Chiaro
-        if(m.includes("Propaganda")) return "#f6e4ff"; // Viola Chiaro
-        if(m.includes("Lezione")) return "#e0f0ff"; // Blu Chiaro
-        if(m.includes("Segreteria")) return "#f4f4f5"; // Grigio Chiaro
+        if(m.includes("Assistente")) return "var(--bg-assistente)";
+        if(m.includes("Istruttore")) return "var(--bg-istruttore)";
+        if(m.includes("Fitness")) return "var(--bg-fitness)";
+        if(m.includes("Propaganda")) return "var(--bg-propaganda)";
+        if(m.includes("Lezione")) return "var(--bg-lezione)";
+        if(m.includes("Segreteria")) return "var(--bg-segreteria)";
         return "var(--bg-card)";
     };
 
@@ -1389,8 +1404,7 @@
         // UPDATED: Render pills with compact style
         Object.keys(breakdown).forEach(m => {
             const bg = getRoleBg(m);
-            // Uso un colore del testo più scuro per contrasto su sfondo chiaro
-            const textColor = "#333"; 
+            const textColor = "var(--text-main)"; 
             statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${Number(breakdown[m].toFixed(2))}</div>`;
         });
     };
@@ -1597,7 +1611,7 @@
             breakdownBox.innerHTML = '';
             Object.keys(globalBreakdown).forEach(m => {
                 const bg = getRoleBg(m);
-                const textColor = "#333"; 
+                const textColor = "var(--text-main)"; 
                 breakdownBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${Number(globalBreakdown[m].toFixed(2))}</div>`;
             });
             
