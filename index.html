@@ -1785,8 +1785,7 @@
         // UPDATED: Render pills with compact style
         Object.keys(breakdown).forEach(m => {
             const bg = getRoleBg(m);
-            // Uso un colore del testo più scuro per contrasto su sfondo chiaro
-            const textColor = "#333"; 
+            const textColor = "var(--text-main)"; 
             statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${Number(breakdown[m].toFixed(2))}</div>`;
         });
     };
