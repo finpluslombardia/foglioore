@@ -814,6 +814,10 @@
             </div>
             <label>Ore</label><input type="number" id="aa-ore" step="0.5" style="font-weight:bold; color:var(--primary)">
             <label>Note</label><input type="text" id="aa-note" placeholder="Opzionale">
+            <div style="margin-top: 10px; display: flex; align-items: center; gap: 6px;">
+                <input type="checkbox" id="aa-admin-flag" style="width:16px; height:16px; margin:0;">
+                <label for="aa-admin-flag" style="margin:0; font-size:0.8rem; cursor:pointer;">Segnala modifica al collaboratore</label>
+            </div>
         </div>
         <div style="display:flex; gap:10px; margin-top:15px">
             <button class="btn-secondary" onclick="document.getElementById('admin-add-modal').style.display='none'">Annulla</button>
@@ -1513,6 +1517,7 @@
         document.getElementById('aa-fine').value = "";
         document.getElementById('aa-ore').value = "";
         document.getElementById('aa-note').value = "";
+        document.getElementById('aa-admin-flag').checked = false;
         document.getElementById('admin-add-modal').style.display = 'flex';
     };
 
@@ -1543,6 +1548,7 @@
         const d = document.getElementById('aa-data').value;
         const m = document.getElementById('aa-mansione').value;
         const h = parseFloat(document.getElementById('aa-ore').value);
+        const isFlagged = document.getElementById('aa-admin-flag').checked;
         if(!d || !m || !h) return modal("Errore", "Dati mancanti.");
 
         try {
@@ -1550,7 +1556,9 @@
                 uid: targetUid, email: detailUserEmail, data: d, mansione: m, ore: h,
                 oraInizio: document.getElementById('aa-inizio').value,
                 oraFine: document.getElementById('aa-fine').value,
-                note: document.getElementById('aa-note').value, created_at: new Date()
+                note: document.getElementById('aa-note').value,
+                adminFlag: isFlagged,
+                created_at: new Date()
             });
             toast("Turno aggiunto!");
             document.getElementById('admin-add-modal').style.display='none';
@@ -1563,25 +1571,29 @@
         const tr = document.getElementById((isAdmin?'arow-':'row-')+id);
         const src = isAdmin ? allTurni : myTurni;
         const t = src.find(x => x.id === id);
+        const flagHtml = isAdmin ? `<div style="margin-top:4px; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="ed-flag-${id}" ${t.adminFlag ? 'checked' : ''} style="width:14px;height:14px;margin:0;"><span style="font-size:0.7rem; color:var(--text-muted)">Segnala a collab.</span></div>` : '';
         tr.innerHTML = `
             <td data-label="Data"><input type="date" id="ed-d-${id}" value="${t.data}" class="table-input"></td>
             <td data-label="Mansione"><select id="ed-m-${id}" class="table-input">${Mansioni.map(m=>`<option ${m==t.mansione?'selected':''}>${m}</option>`).join('')}</select></td>
             <td data-label="Orario"><div style="display:flex; gap:2px"><input type="time" id="ed-i-${id}" value="${t.oraInizio}" class="table-input"><input type="time" id="ed-f-${id}" value="${t.oraFine}" class="table-input"></div></td>
             <td data-label="Ore"><input type="number" id="ed-h-${id}" value="${t.ore}" step="0.5" class="table-input" style="width:50px"></td>
-            <td data-label="Note"><input type="text" id="ed-n-${id}" value="${t.note}" class="table-input"></td>
+            <td data-label="Note"><input type="text" id="ed-n-${id}" value="${t.note||''}" class="table-input">${flagHtml}</td>
             <td class="actions-cell"><button class="btn-success" onclick="saveEdit('${id}', ${isAdmin})" style="padding:5px">OK</button></td>
         `;
     };
     window.saveEdit = async (id, isAdmin) => {
         try {
-            await updateDoc(doc(db, "turni", id), {
+            const updateData = {
                 data: document.getElementById(`ed-d-${id}`).value,
                 mansione: document.getElementById(`ed-m-${id}`).value,
                 ore: parseFloat(document.getElementById(`ed-h-${id}`).value),
                 oraInizio: document.getElementById(`ed-i-${id}`).value,
                 oraFine: document.getElementById(`ed-f-${id}`).value,
                 note: document.getElementById(`ed-n-${id}`).value
-            });
+            };
+            if (isAdmin) updateData.adminFlag = document.getElementById(`ed-flag-${id}`).checked;
+
+            await updateDoc(doc(db, "turni", id), updateData);
             toast("Modificato"); isAdmin ? loadAdminData() : loadCollabData();
         } catch(e) { modal("Errore", e.message); }
     };
@@ -1654,11 +1666,12 @@
 
             // APPLICA SFONDO ALLA RIGA
             const bg = getRoleBg(t.mansione);
+            const adminBadge = t.adminFlag ? `<span style="background:#fef3c7; color:#d97706; padding:2px 6px; border-radius:8px; font-size:0.6rem; font-weight:bold; margin-left:6px; white-space:nowrap;" title="Segnalato al collaboratore">⚙️ ADMIN</span>` : '';
 
             tbody.innerHTML += `
                 <tr id="arow-${t.id}" style="background-color:${bg}">
                     <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
-                    <td data-label="Mansione">${t.mansione}</td>
+                    <td data-label="Mansione">${t.mansione}${adminBadge}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
                     <td data-label="Ore"><strong>${t.ore}</strong></td>
                     <td data-label="Note">${t.note||''}</td>
