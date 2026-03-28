@@ -604,6 +604,21 @@
 
         <div id="cards-container" class="cards-grid"></div>
 
+        <div id="admin-global-totals" class="form-box" style="margin-top: 20px; display: none;">
+            <h3 style="color:var(--text-main); margin-top:0; font-size: 1.1rem;">📊 Totali Selezionati</h3>
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
+                <div>
+                    <span class="stat-label" style="font-size:0.75rem;">TOTALE ORE</span>
+                    <span id="admin-tot-ore" class="stat-val-h" style="font-size:1.8rem;">0</span>
+                </div>
+                <div style="text-align: right;">
+                    <span class="stat-label" style="font-size:0.75rem;">COSTO TOTALE</span>
+                    <span id="admin-tot-soldi" class="stat-val-m" style="font-size:1.8rem;">€ 0.00</span>
+                </div>
+            </div>
+            <div id="admin-tot-breakdown" class="stats-container" style="justify-content: flex-start; margin-top: 0;"></div>
+        </div>
+
         <div style="margin-top: 40px;"></div>
         <div class="form-box" style="background:var(--bg-body); border-color:var(--border-color)">
             <h3 style="color:var(--primary); margin-top:0">🛠️ Anagrafica</h3>
@@ -1477,6 +1492,7 @@
         
         if (cards.length === 0) {
              grid.innerHTML = '<p style="text-align:center; width:100%; color:var(--text-muted)">Nessun collaboratore trovato.</p>';
+             document.getElementById('admin-global-totals').style.display = 'none';
         } else {
             cards.forEach(u => {
                 // Determine Archive Button Appearance
@@ -1504,6 +1520,36 @@
                     </div>
                 `;
             });
+
+            // --- CALCOLO TOTALI GLOBALI ADMIN ---
+            let globalTotOre = 0;
+            let globalTotSoldi = 0;
+            let globalBreakdown = {};
+            const validEmails = cards.map(c => c.email);
+
+            allTurni.forEach(t => {
+                if(validEmails.includes(t.email)) {
+                    globalTotOre += t.ore;
+                    const tariffa = rubrica[t.email]?.tariffe[t.mansione] || 0;
+                    globalTotSoldi += (t.ore * tariffa);
+                    
+                    if(!globalBreakdown[t.mansione]) globalBreakdown[t.mansione] = 0;
+                    globalBreakdown[t.mansione] += t.ore;
+                }
+            });
+
+            document.getElementById('admin-tot-ore').innerText = Number(globalTotOre.toFixed(2));
+            document.getElementById('admin-tot-soldi').innerText = '€ ' + globalTotSoldi.toFixed(2);
+            
+            const breakdownBox = document.getElementById('admin-tot-breakdown');
+            breakdownBox.innerHTML = '';
+            Object.keys(globalBreakdown).forEach(m => {
+                const bg = getRoleBg(m);
+                const textColor = "#333"; 
+                breakdownBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${Number(globalBreakdown[m].toFixed(2))}</div>`;
+            });
+            
+            document.getElementById('admin-global-totals').style.display = 'block';
         }
         
         if(document.getElementById('admin-detail').classList.contains('active')) renderAdminDetailTable();
