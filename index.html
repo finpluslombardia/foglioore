@@ -636,10 +636,14 @@
 
         <div id="admin-global-totals" class="form-box" style="margin-top: 20px; display: none;">
             <h3 style="color:var(--text-main); margin-top:0; font-size: 1.1rem;">📊 Totali Selezionati</h3>
-            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
                 <div>
                     <span class="stat-label" style="font-size:0.75rem;">TOTALE ORE</span>
                     <span id="admin-tot-ore" class="stat-val-h" style="font-size:1.8rem;">0</span>
+                </div>
+                <div style="text-align: center;">
+                    <span class="stat-label" style="font-size:0.75rem;">COLLAB. ATTIVI</span>
+                    <span id="admin-tot-collab" class="stat-val-h" style="font-size:1.8rem; color: var(--text-main);">0</span>
                 </div>
                 <div style="text-align: right;">
                     <span class="stat-label" style="font-size:0.75rem;">COSTO TOTALE</span>
@@ -647,6 +651,12 @@
                 </div>
             </div>
             <div id="admin-tot-breakdown" class="stats-container" style="justify-content: flex-start; margin-top: 0;"></div>
+        </div>
+
+        <!-- NUOVA SEZIONE STORICO GLOBALE AZIENDALE -->
+        <div id="admin-global-history-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; display: none;">
+            <h3 style="color:var(--primary); margin-top:0">📈 Riepilogo Storico Aziendale</h3>
+            <div id="admin-global-history-content"></div>
         </div>
 
         <div style="margin-top: 40px;"></div>
@@ -1506,6 +1516,8 @@
         const snap = await getDocs(q);
         allTurni = [];
         userUidMap = {};
+        
+        const historyData = {}; // Nuovo oggetto per lo storico globale aziendale
 
         snap.forEach(d => {
             const t = d.data(); 
@@ -1513,6 +1525,16 @@
             
             // Map email to uid for everyone
             if(t.email && t.uid) userUidMap[t.email] = t.uid;
+
+            // --- Accumula nello storico globale aziendale ---
+            const y_hist = date.getFullYear();
+            const m_hist = date.getMonth() + 1;
+            if(!historyData[y_hist]) historyData[y_hist] = {};
+            if(!historyData[y_hist][m_hist]) historyData[y_hist][m_hist] = { ore: 0, soldi: 0, collabs: new Set() };
+            historyData[y_hist][m_hist].ore += t.ore;
+            const tariffaHist = rubrica[t.email]?.tariffe[t.mansione] || 0;
+            historyData[y_hist][m_hist].soldi += t.ore * tariffaHist;
+            historyData[y_hist][m_hist].collabs.add(t.email);
             
             if((m=='all'||(date.getMonth()+1)==m) && date.getFullYear()==y && (role=='all'||t.mansione==role)) {
                 allTurni.push({id:d.id, ...t});
@@ -1591,6 +1613,7 @@
             let globalTotOre = 0;
             let globalTotSoldi = 0;
             let globalBreakdown = {};
+            let activeCollabs = new Set();
             const validEmails = cards.map(c => c.email);
 
             allTurni.forEach(t => {
@@ -1601,22 +1624,39 @@
                     
                     if(!globalBreakdown[t.mansione]) globalBreakdown[t.mansione] = 0;
                     globalBreakdown[t.mansione] += t.ore;
+                    activeCollabs.add(t.email);
                 }
             });
 
             document.getElementById('admin-tot-ore').innerText = Number(globalTotOre.toFixed(2));
             document.getElementById('admin-tot-soldi').innerText = '€ ' + globalTotSoldi.toFixed(2);
+            document.getElementById('admin-tot-collab').innerText = activeCollabs.size;
             
             const breakdownBox = document.getElementById('admin-tot-breakdown');
             breakdownBox.innerHTML = '';
-            Object.keys(globalBreakdown).forEach(m => {
-                const bg = getRoleBg(m);
+            Object.keys(globalBreakdown).forEach(m_role => {
+                const bg = getRoleBg(m_role);
                 const textColor = "var(--text-main)"; 
-                breakdownBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${Number(globalBreakdown[m].toFixed(2))}</div>`;
+                breakdownBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m_role}: ${Number(globalBreakdown[m_role].toFixed(2))}</div>`;
             });
             
             document.getElementById('admin-global-totals').style.display = 'block';
         }
+
+        // --- RENDER GLOBAL HISTORY ACCORDION ---
+        const mNames = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
+        let histHtml = '';
+        Object.keys(historyData).sort((a,b) => b-a).forEach(y_hist => {
+            let yearOre = 0; let yearSoldi = 0; let monthsHtml = '';
+            Object.keys(historyData[y_hist]).sort((a,b) => b-a).forEach(m_hist => {
+                const data = historyData[y_hist][m_hist];
+                yearOre += data.ore; yearSoldi += data.soldi;
+                monthsHtml += `<div class="history-month-row"><span style="font-weight:500; min-width:80px; display:inline-block;">${mNames[m_hist]}</span><span style="font-size:0.75rem; color:var(--text-muted); margin-right:auto;">👤 ${data.collabs.size} collab.</span><span><strong>${Number(data.ore.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${data.soldi.toFixed(2)}</span></span></div>`;
+            });
+            histHtml += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span>📅 ${y_hist}</span><span><strong>${Number(yearOre.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${yearSoldi.toFixed(2)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
+        });
+        document.getElementById('admin-global-history-content').innerHTML = histHtml || '<p style="color:var(--text-muted); text-align:center; padding:10px; font-size: 0.85rem;">Nessuno storico presente.</p>';
+        document.getElementById('admin-global-history-container').style.display = 'block';
         
         if(document.getElementById('admin-detail').classList.contains('active')) renderAdminDetailTable();
     };
