@@ -411,19 +411,48 @@
             .stats-container { justify-content: flex-start; }
             thead { display: none; }
             
-            /* Card Mobile Style (Lista turni) */
+            /* Card Mobile Style (Lista turni - Layout a due colonne COMPATTO) */
             tr { 
-                display: block; 
+                display: grid; 
+                grid-template-columns: 1fr 1fr; /* Divido esattamente in due colonne */
+                gap: 8px 12px;
                 /* Background settato via JS inline */
                 border: 1px solid var(--border-color); 
                 border-radius: 12px; 
-                padding: 10px; /* Reduced padding */
+                padding: 12px; 
                 margin-bottom: 8px; 
                 box-shadow: 0 1px 3px rgba(0,0,0,0.05); 
             }
-            td { display: flex; justify-content: space-between; padding: 4px 0; border: none; text-align: right; border-radius: 0 !important; background: transparent !important; }
-            td:before { content: attr(data-label); color: var(--text-muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; text-align: left; opacity: 0.7; }
-            .table-input { text-align: right; width: 60%; }
+            td { 
+                display: flex; 
+                flex-direction: column; /* Etichetta sopra, valore sotto uniti */
+                align-items: flex-start; 
+                padding: 0; 
+                border: none; 
+                text-align: left; 
+                border-radius: 0 !important; 
+                background: transparent !important; 
+            }
+            td:before { 
+                content: attr(data-label); 
+                color: var(--text-muted); 
+                font-weight: 600; 
+                font-size: 0.65rem; 
+                text-transform: uppercase; 
+                text-align: left; 
+                opacity: 0.8; 
+                margin-bottom: 2px;
+            }
+            td:nth-child(5) { grid-column: span 2; } /* Le note prendono tutta la larghezza in basso */
+            td:nth-child(6) { 
+                grid-column: span 2; 
+                flex-direction: row; 
+                justify-content: flex-end; 
+                margin-top: -5px; /* Compensa lo spazio vuoto in caso di note assenti */
+            }
+            td:nth-child(6):before { display: none; } /* Rimuove l'etichetta finta dai pulsanti di azione */
+            
+            .table-input { text-align: left; width: 100%; box-sizing: border-box; }
             
             /* Planning responsive */
             .planning-grid { grid-template-columns: 1fr; } 
