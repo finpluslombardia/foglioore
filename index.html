@@ -1396,9 +1396,14 @@
             // APPLICA SFONDO ALLA RIGA
             const bg = getRoleBg(t.mansione);
             
+            // FORMATTAZIONE DATA CON GIORNO DELLA SETTIMANA
+            const dateObj = new Date(t.data);
+            const shortDay = dateObj.toLocaleDateString('it-IT', { weekday: 'short' }).replace(/\./g, '');
+            const numDate = dateObj.toLocaleDateString('it-IT');
+            
             tbody.innerHTML += `
                 <tr id="row-${t.id}" style="background-color:${bg}">
-                    <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
+                    <td data-label="Data"><span style="text-transform:capitalize">${shortDay}</span> ${numDate}</td>
                     <td data-label="Mansione">${t.mansione}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
                     <td data-label="Ore"><strong>${t.ore}</strong></td>
@@ -1821,9 +1826,14 @@
             const bg = getRoleBg(t.mansione);
             const adminBadge = t.adminFlag ? `<span style="background:#fef3c7; color:#d97706; padding:2px 6px; border-radius:8px; font-size:0.6rem; font-weight:bold; margin-left:6px; white-space:nowrap;" title="Segnalato al collaboratore">⚙️ ADMIN</span>` : '';
 
+            // FORMATTAZIONE DATA CON GIORNO DELLA SETTIMANA
+            const dateObj = new Date(t.data);
+            const shortDay = dateObj.toLocaleDateString('it-IT', { weekday: 'short' }).replace(/\./g, '');
+            const numDate = dateObj.toLocaleDateString('it-IT');
+
             tbody.innerHTML += `
                 <tr id="arow-${t.id}" style="background-color:${bg}">
-                    <td data-label="Data">${new Date(t.data).toLocaleDateString('it-IT')}</td>
+                    <td data-label="Data"><span style="text-transform:capitalize">${shortDay}</span> ${numDate}</td>
                     <td data-label="Mansione">${t.mansione}${adminBadge}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
                     <td data-label="Ore"><strong>${t.ore}</strong></td>
