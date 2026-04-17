@@ -2235,15 +2235,14 @@
         const sy = document.getElementById('d-filtro-anno');
         const rawName = rubrica[detailUserEmail]?.nome || detailUserEmail;
         
-        // Filter logic inside export to match visual
         const m = sm.value;
         const y = sy.value;
-        let dataToExport = allTurni.filter(t => t.email === detailUserEmail);
+        let dataToExport = [...detailTurni]; // Usiamo i turni in Lazy Load
         
         if (m !== 'all') {
             dataToExport = dataToExport.filter(t => {
                 const d = new Date(t.data);
-                return (d.getMonth() + 1) == m && d.getFullYear() == y;
+                return (d.getMonth() + 1) == m; // L'anno è già filtrato
             });
         }
         
@@ -2273,12 +2272,12 @@
         
         const m = sm.value;
         const y = sy.value;
-        let dataToExport = allTurni.filter(t => t.email === detailUserEmail);
+        let dataToExport = [...detailTurni]; // Usiamo i turni in Lazy Load
         
         if (m !== 'all') {
             dataToExport = dataToExport.filter(t => {
                 const d = new Date(t.data);
-                return (d.getMonth() + 1) == m && d.getFullYear() == y;
+                return (d.getMonth() + 1) == m; // L'anno è già filtrato
             });
         }
         
