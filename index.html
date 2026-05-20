@@ -1754,15 +1754,16 @@
 
     // Shared Edit
     window.editRow = (id, isAdmin=false) => {
+        const isDetail = document.getElementById('admin-detail').classList.contains('active');
+        const src = isDetail ? detailTurni : (isAdmin ? allTurni : myTurni);
         const tr = document.getElementById((isAdmin?'arow-':'row-')+id);
-        const src = isAdmin ? allTurni : myTurni;
         const t = src.find(x => x.id === id);
         const flagHtml = isAdmin ? `<div style="margin-top:4px; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="ed-flag-${id}" ${t.adminFlag ? 'checked' : ''} style="width:14px;height:14px;margin:0;"><span style="font-size:0.7rem; color:var(--text-muted)">Segnala a collab.</span></div>` : '';
         tr.innerHTML = `
             <td data-label="Data"><input type="date" id="ed-d-${id}" value="${t.data}" class="table-input"></td>
             <td data-label="Mansione"><select id="ed-m-${id}" class="table-input">${Mansioni.map(m=>`<option ${m==t.mansione?'selected':''}>${m}</option>`).join('')}</select></td>
             <td data-label="Orario"><div style="display:flex; gap:2px"><input type="time" id="ed-i-${id}" value="${t.oraInizio}" class="table-input"><input type="time" id="ed-f-${id}" value="${t.oraFine}" class="table-input"></div></td>
-            <td data-label="Ore"><input type="number" id="ed-h-${id}" value="${t.ore}" step="0.5" class="table-input" style="width:50px"></td>
+            <td data-label="Ore"><input type="number" id="ed-h-${id}" value="${t.ore}" step="0.5" class="table-input" style="width:70px"></td>
             <td data-label="Note"><input type="text" id="ed-n-${id}" value="${t.note||''}" class="table-input">${flagHtml}</td>
             <td class="actions-cell"><button class="btn-success" onclick="saveEdit('${id}', ${isAdmin})" style="padding:5px">OK</button></td>
         `;
