@@ -1754,8 +1754,7 @@
 
     // Shared Edit
     window.editRow = (id, isAdmin=false) => {
-        const isDetail = document.getElementById('admin-detail').classList.contains('active');
-        const src = isDetail ? detailTurni : (isAdmin ? allTurni : myTurni);
+        const src = isAdmin ? allTurni : myTurni;
         const tr = document.getElementById((isAdmin?'arow-':'row-')+id);
         const t = src.find(x => x.id === id);
         const flagHtml = isAdmin ? `<div style="margin-top:4px; display:flex; align-items:center; gap:4px;"><input type="checkbox" id="ed-flag-${id}" ${t.adminFlag ? 'checked' : ''} style="width:14px;height:14px;margin:0;"><span style="font-size:0.7rem; color:var(--text-muted)">Segnala a collab.</span></div>` : '';
@@ -2238,12 +2237,12 @@
         
         const m = sm.value;
         const y = sy.value;
-        let dataToExport = [...detailTurni]; // Usiamo i turni in Lazy Load
+        let dataToExport = allTurni.filter(t => t.email === detailUserEmail);
         
         if (m !== 'all') {
             dataToExport = dataToExport.filter(t => {
                 const d = new Date(t.data);
-                return (d.getMonth() + 1) == m; // L'anno è già filtrato
+                return (d.getMonth() + 1) == m && d.getFullYear() == y;
             });
         }
         
@@ -2273,12 +2272,12 @@
         
         const m = sm.value;
         const y = sy.value;
-        let dataToExport = [...detailTurni]; // Usiamo i turni in Lazy Load
+        let dataToExport = allTurni.filter(t => t.email === detailUserEmail);
         
         if (m !== 'all') {
             dataToExport = dataToExport.filter(t => {
                 const d = new Date(t.data);
-                return (d.getMonth() + 1) == m; // L'anno è già filtrato
+                return (d.getMonth() + 1) == m && d.getFullYear() == y;
             });
         }
         
