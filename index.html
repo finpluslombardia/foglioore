@@ -481,15 +481,17 @@
         @media (max-width: 600px) { #confronto-table td:last-child { grid-column: span 2; flex-direction: row; justify-content: flex-end; } }
 
         /* --- PIANIFICAZIONE RAPIDA (Bulk, solo Admin) --- */
-        .bulk-row { display:flex; align-items:center; gap:10px; padding:10px 12px; border:1px solid var(--border-color); border-radius:10px; margin-bottom:8px; background:var(--bg-card); }
-        .bulk-row-name { flex:1.4; font-weight:600; font-size:0.85rem; min-width:110px; }
-        .bulk-row select.bulk-mansione { flex:1.3; min-width:130px; }
-        .bulk-row input[type="time"] { flex:0.8; min-width:80px; }
+        .bulk-collab-group { border:1px solid var(--border-color); border-radius:12px; padding:12px; margin-bottom:10px; background:var(--bg-card); }
+        .bulk-collab-name { font-weight:700; font-size:0.9rem; margin-bottom:8px; color:var(--text-main); }
+        .bulk-shifts { display:flex; flex-direction:column; gap:8px; }
+        .bulk-shift-row { display:flex; align-items:center; gap:8px; }
+        .bulk-shift-row select.bulk-mansione { flex:1.4; min-width:130px; }
+        .bulk-shift-row input[type="time"] { flex:0.8; min-width:80px; }
+        .bulk-add-shift { width:auto; background:none; border:none; color:var(--primary); font-size:0.75rem; font-weight:600; padding:8px 0 0 0; margin:0; cursor:pointer; display:inline-flex; }
         @media (max-width: 600px) {
-            .bulk-row { flex-wrap:wrap; }
-            .bulk-row-name { flex:1 1 100%; }
-            .bulk-row select.bulk-mansione { flex:1 1 100%; }
-            .bulk-row input[type="time"] { flex:1; }
+            .bulk-shift-row { flex-wrap:wrap; }
+            .bulk-shift-row select.bulk-mansione { flex:1 1 100%; }
+            .bulk-shift-row input[type="time"] { flex:1; }
         }
     </style>
 </head>
@@ -2018,8 +2020,10 @@
     // ==================== PIANIFICAZIONE RAPIDA (Bulk, solo Admin) ====================
     // Permette di assegnare turni a molti collaboratori in un'unica schermata, invece
     // di aprire ogni scheda singolarmente. Scrive/aggiorna/elimina sulla stessa
-    // collezione "turniPianificati" usata dalla Verifica Turni.
+    // collezione "turniPianificati" usata dalla Verifica Turni. Ogni collaboratore può
+    // avere più turni (mansioni/orari) nello stesso giorno.
     let bulkExistingPlans = {}; // email -> array di turni pianificati già esistenti per il giorno selezionato
+    let bulkPendingDeletes = []; // id di turni già salvati rimossi manualmente con "✕", da eliminare al salvataggio
 
     window.openBulkPlanning = () => {
         if (!document.getElementById('bulk-data').value) {
@@ -2041,6 +2045,7 @@
     window.loadBulkPlanning = async () => {
         const dateStr = document.getElementById('bulk-data').value;
         const container = document.getElementById('bulk-rows-container');
+        bulkPendingDeletes = []; // cambio giorno: eventuali rimozioni non salvate del giorno precedente decadono
         if (!dateStr) { container.innerHTML = ''; return; }
         container.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:15px">Caricamento...</p>';
         try {
@@ -2055,6 +2060,21 @@
             renderBulkRows();
         } catch(e) { container.innerHTML = '<p style="color:#ff3b30; text-align:center">Errore caricamento.</p>'; console.error(e); }
     };
+
+    // Genera l'HTML di un singolo turno (riga) dentro il gruppo di un collaboratore.
+    // p = {mansione, oraInizio, oraFine, id} oppure null/undefined per una riga vuota.
+    function renderBulkShiftRow(p) {
+        const mansioniOpts = Mansioni.map(m => `<option value="${m}" ${p && p.mansione === m ? 'selected' : ''}>${m}</option>`).join('');
+        return `<div class="bulk-shift-row" data-id="${p && p.id ? p.id : ''}">
+            <select class="bulk-mansione">
+                <option value="">— Nessun turno —</option>
+                ${mansioniOpts}
+            </select>
+            <input type="time" class="bulk-inizio" value="${p ? (p.oraInizio || '') : ''}">
+            <input type="time" class="bulk-fine" value="${p ? (p.oraFine || '') : ''}">
+            <button type="button" class="icon-btn" onclick="removeBulkShiftRow(this)" title="Rimuovi turno">✕</button>
+        </div>`;
+    }
 
     window.renderBulkRows = () => {
         const term = (document.getElementById('bulk-search').value || '').toLowerCase();
@@ -2074,22 +2094,30 @@
 
         container.innerHTML = collabs.map(([email, d]) => {
             const existingArr = bulkExistingPlans[email] || [];
-            const existing = existingArr[0]; // la vista rapida gestisce 1 turno/giorno a persona
-            const extraBadge = existingArr.length > 1
-                ? `<span class="status-badge status-warn" style="margin-left:6px">+${existingArr.length - 1} già pianificato/i</span>`
-                : '';
-            const mansioniOpts = Mansioni.map(m => `<option value="${m}" ${existing && existing.mansione === m ? 'selected' : ''}>${m}</option>`).join('');
+            const shiftsHtml = existingArr.length > 0
+                ? existingArr.map(p => renderBulkShiftRow(p)).join('')
+                : renderBulkShiftRow(null);
 
-            return `<div class="bulk-row" data-email="${email}" data-id="${existing ? existing.id : ''}">
-                <div class="bulk-row-name">${d.nome || email}${extraBadge}</div>
-                <select class="bulk-mansione">
-                    <option value="">— Nessun turno —</option>
-                    ${mansioniOpts}
-                </select>
-                <input type="time" class="bulk-inizio" value="${existing ? existing.oraInizio : ''}">
-                <input type="time" class="bulk-fine" value="${existing ? existing.oraFine : ''}">
+            return `<div class="bulk-collab-group" data-email="${email}">
+                <div class="bulk-collab-name">${d.nome || email}</div>
+                <div class="bulk-shifts">${shiftsHtml}</div>
+                <button type="button" class="bulk-add-shift" onclick="addBulkShiftRow(this)">➕ Aggiungi turno</button>
             </div>`;
         }).join('');
+    };
+
+    // Aggiunge una riga vuota per un altro turno dello stesso collaboratore nello stesso giorno.
+    window.addBulkShiftRow = (btn) => {
+        const shiftsContainer = btn.closest('.bulk-collab-group').querySelector('.bulk-shifts');
+        shiftsContainer.insertAdjacentHTML('beforeend', renderBulkShiftRow(null));
+    };
+
+    // Rimuove una riga turno. Se rappresentava un turno già salvato, lo mette in coda
+    // per l'eliminazione effettiva al momento del salvataggio.
+    window.removeBulkShiftRow = (btn) => {
+        const row = btn.closest('.bulk-shift-row');
+        if (row.dataset.id) bulkPendingDeletes.push(row.dataset.id);
+        row.remove();
     };
 
     window.copyPrevDayPlanning = async () => {
@@ -2118,7 +2146,8 @@
         await applyCopyFromDate(sourceStr);
     };
 
-    // Copia i turni pianificati di sourceStr sulla data attualmente aperta in bulk-data.
+    // Copia TUTTI i turni pianificati di sourceStr sulla data attualmente aperta in bulk-data,
+    // sostituendo (per ogni collaboratore coinvolto) le righe correnti con quelle copiate.
     // "label" è opzionale, solo per personalizzare il messaggio (es. "ieri").
     async function applyCopyFromDate(sourceStr, label) {
         const dateStr = document.getElementById('bulk-data').value;
@@ -2128,22 +2157,31 @@
         try {
             const q = query(collection(db, "turniPianificati"), where("data", "==", sourceStr));
             const snap = await getDocs(q);
-            const sourcePlans = {};
-            snap.forEach(d => { const data = d.data(); if (!sourcePlans[data.email]) sourcePlans[data.email] = data; });
+            const sourcePlans = {}; // email -> array di turni di quel giorno
+            snap.forEach(d => {
+                const data = d.data();
+                if (!sourcePlans[data.email]) sourcePlans[data.email] = [];
+                sourcePlans[data.email].push(data);
+            });
 
             const dateFmt = new Date(sourceStr + 'T00:00:00').toLocaleDateString('it-IT');
             if (Object.keys(sourcePlans).length === 0) {
                 return modal("Info", `Nessun turno pianificato trovato per il ${dateFmt}.`);
             }
 
-            document.querySelectorAll('#bulk-rows-container .bulk-row').forEach(row => {
-                const p = sourcePlans[row.dataset.email];
-                if (p) {
-                    row.querySelector('.bulk-mansione').value = p.mansione;
-                    row.querySelector('.bulk-inizio').value = p.oraInizio;
-                    row.querySelector('.bulk-fine').value = p.oraFine;
-                }
+            document.querySelectorAll('.bulk-collab-group').forEach(group => {
+                const plans = sourcePlans[group.dataset.email];
+                if (!plans) return; // nessun turno quel giorno per questo collaboratore: lascio le righe attuali invariate
+
+                const shiftsContainer = group.querySelector('.bulk-shifts');
+                // Le righe già salvate sul giorno target vengono sostituite: le metto in coda per l'eliminazione
+                shiftsContainer.querySelectorAll('.bulk-shift-row').forEach(row => {
+                    if (row.dataset.id) bulkPendingDeletes.push(row.dataset.id);
+                });
+                // Righe copiate senza id: verranno create come nuovi turni al salvataggio
+                shiftsContainer.innerHTML = plans.map(p => renderBulkShiftRow({ mansione: p.mansione, oraInizio: p.oraInizio, oraFine: p.oraFine, id: null })).join('');
             });
+
             toast(`Turni di ${label || dateFmt} copiati: controlla e salva`);
         } catch(e) { modal("Errore", e.message); }
     }
@@ -2152,38 +2190,43 @@
         const dateStr = document.getElementById('bulk-data').value;
         if (!dateStr) return modal("Errore", "Seleziona una data.");
 
-        const rows = document.querySelectorAll('#bulk-rows-container .bulk-row');
         const ops = [];
         let created = 0, updated = 0, deleted = 0;
 
-        rows.forEach(row => {
-            const email = row.dataset.email;
-            const existingId = row.dataset.id || null;
-            const mansione = row.querySelector('.bulk-mansione').value;
-            const oraInizio = row.querySelector('.bulk-inizio').value;
-            const oraFine = row.querySelector('.bulk-fine').value;
+        document.querySelectorAll('.bulk-collab-group').forEach(group => {
+            const email = group.dataset.email;
+            group.querySelectorAll('.bulk-shift-row').forEach(row => {
+                const existingId = row.dataset.id || null;
+                const mansione = row.querySelector('.bulk-mansione').value;
+                const oraInizio = row.querySelector('.bulk-inizio').value;
+                const oraFine = row.querySelector('.bulk-fine').value;
 
-            if (!mansione || !oraInizio || !oraFine) {
-                if (existingId) { ops.push(deleteDoc(doc(db, "turniPianificati", existingId))); deleted++; }
-                return;
-            }
+                if (!mansione || !oraInizio || !oraFine) {
+                    if (existingId) { ops.push(deleteDoc(doc(db, "turniPianificati", existingId))); deleted++; }
+                    return; // riga vuota senza id: nessun turno da salvare
+                }
 
-            let ore = (new Date(`1970-01-01T${oraFine}`) - new Date(`1970-01-01T${oraInizio}`)) / 36e5;
-            if (ore < 0) ore += 24;
-            ore = Math.round(ore * 100) / 100;
+                let ore = (new Date(`1970-01-01T${oraFine}`) - new Date(`1970-01-01T${oraInizio}`)) / 36e5;
+                if (ore < 0) ore += 24;
+                ore = Math.round(ore * 100) / 100;
 
-            const targetUid = userUidMap[email] || rubrica[email]?.uid || null;
+                const targetUid = userUidMap[email] || rubrica[email]?.uid || null;
 
-            if (existingId) {
-                ops.push(updateDoc(doc(db, "turniPianificati", existingId), { mansione, oraInizio, oraFine, ore }));
-                updated++;
-            } else {
-                ops.push(addDoc(collection(db, "turniPianificati"), {
-                    uid: targetUid, email, data: dateStr, mansione, oraInizio, oraFine, ore, note: "", created_at: new Date()
-                }));
-                created++;
-            }
+                if (existingId) {
+                    ops.push(updateDoc(doc(db, "turniPianificati", existingId), { mansione, oraInizio, oraFine, ore }));
+                    updated++;
+                } else {
+                    ops.push(addDoc(collection(db, "turniPianificati"), {
+                        uid: targetUid, email, data: dateStr, mansione, oraInizio, oraFine, ore, note: "", created_at: new Date()
+                    }));
+                    created++;
+                }
+            });
         });
+
+        // Turni già salvati rimossi manualmente con "✕" durante questa sessione
+        bulkPendingDeletes.forEach(id => { ops.push(deleteDoc(doc(db, "turniPianificati", id))); deleted++; });
+        bulkPendingDeletes = [];
 
         if (ops.length === 0) return toast("Nessuna modifica da salvare.");
 
