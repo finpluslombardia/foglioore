@@ -560,6 +560,7 @@
 
     <!-- 3. COLLABORATORE DASHBOARD (Registro) -->
     <div id="collaborator-view" class="view-section">
+        <button id="segretaria-bulk-btn" onclick="openBulkPlanning()" class="btn-warning hidden" style="margin-bottom:20px">📋 Pianifica Turni Collaboratori</button>
         <div class="form-box">
             <h3>➕ Nuovo Turno</h3>
             <div class="time-row">
@@ -793,7 +794,7 @@
     <div id="bulk-planning-view" class="view-section">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; background:var(--bg-body); padding:10px; border-radius:12px; border:1px solid var(--border-color)">
             <h3 style="margin:0">📋 Pianificazione Rapida</h3>
-            <button onclick="switchView('admin-view')" class="btn-secondary" style="display:inline-flex; width:auto; padding:5px 15px; margin:0">Indietro</button>
+            <button onclick="closeBulkPlanning()" class="btn-secondary" style="display:inline-flex; width:auto; padding:5px 15px; margin:0">Indietro</button>
         </div>
 
         <div class="planning-controls">
@@ -1058,6 +1059,7 @@
     const db = getFirestore(app);
     
     const ADMIN_EMAIL = "a.chiodini01@gmail.com"; 
+    const SEGRETARIA_EMAIL = "alessiarusso.arb@icloud.com"; // Account con permesso extra di pianificare turni per tutti
     let currentUser = null;
     let rubrica = {}; 
     let allTurni = []; 
@@ -1295,6 +1297,11 @@
                 });
                 
                 document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.nome.split(' ')[0] || 'User'}`;
+
+                // ACCOUNT SEGRETARIA: stessa base collaboratore + può pianificare turni per tutti
+                const isSegretaria = user.email.toLowerCase() === SEGRETARIA_EMAIL.toLowerCase();
+                const segBtn = document.getElementById('segretaria-bulk-btn');
+                if (segBtn) segBtn.classList.toggle('hidden', !isSegretaria);
                 
                 // SECURITY CHECK
                 const lastChange = userData.lastPasswordChange ? userData.lastPasswordChange.toDate() : null;
@@ -2032,6 +2039,13 @@
         document.getElementById('bulk-search').value = '';
         switchView('bulk-planning-view');
         loadBulkPlanning();
+    };
+
+    // Torna alla vista di partenza corretta: admin-view per l'admin, collaborator-view
+    // (dove si trova il suo pulsante) per la segretaria.
+    window.closeBulkPlanning = () => {
+        const isAdminNow = currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+        switchView(isAdminNow ? 'admin-view' : 'collaborator-view');
     };
 
     window.changeBulkDate = (deltaDays) => {
