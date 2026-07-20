@@ -804,6 +804,7 @@
             <input type="text" id="bulk-search" placeholder="🔍 Cerca collaboratore..." oninput="renderBulkRows()" style="flex:2; min-width:180px; border-color:var(--primary)">
             <div class="filter-buttons">
                 <button onclick="copyPrevDayPlanning()" class="btn-secondary">📋 Copia da ieri</button>
+                <button onclick="openCopyDateModal()" class="btn-secondary">📅 Copia da data...</button>
             </div>
         </div>
         <p id="bulk-count-label" style="font-size:0.75rem; color:var(--text-muted); margin:0 0 10px 0;"></p>
@@ -849,6 +850,18 @@
         <div style="display:flex; gap:10px">
             <button class="btn-secondary" onclick="document.getElementById('pwd-modal').style.display='none'">Chiudi</button>
             <button class="btn-primary" onclick="changePwd()">Salva</button>
+        </div>
+    </div>
+</div>
+
+<div id="copia-data-modal" class="modal-overlay" style="display:none">
+    <div class="modal-box">
+        <h3>Copia Turni da un'altra Data</h3>
+        <label style="text-align:left">Data di origine</label>
+        <input type="date" id="copia-source-data" style="margin-bottom:20px">
+        <div style="display:flex; gap:10px">
+            <button class="btn-secondary" onclick="document.getElementById('copia-data-modal').style.display='none'">Annulla</button>
+            <button class="btn-primary" onclick="confirmCopyFromDate()">Copia</button>
         </div>
     </div>
 </div>
@@ -2085,24 +2098,55 @@
         const prevDate = new Date(dateStr + 'T00:00:00');
         prevDate.setDate(prevDate.getDate() - 1);
         const prevStr = prevDate.toISOString().slice(0, 10);
+        await applyCopyFromDate(prevStr, "ieri");
+    };
+
+    window.openCopyDateModal = () => {
+        const inp = document.getElementById('copia-source-data');
+        if (!inp.value) {
+            const d = (document.getElementById('bulk-data').valueAsDate) || new Date();
+            d.setDate(d.getDate() - 1);
+            inp.valueAsDate = d;
+        }
+        document.getElementById('copia-data-modal').style.display = 'flex';
+    };
+
+    window.confirmCopyFromDate = async () => {
+        const sourceStr = document.getElementById('copia-source-data').value;
+        if (!sourceStr) return modal("Errore", "Seleziona una data di origine.");
+        document.getElementById('copia-data-modal').style.display = 'none';
+        await applyCopyFromDate(sourceStr);
+    };
+
+    // Copia i turni pianificati di sourceStr sulla data attualmente aperta in bulk-data.
+    // "label" è opzionale, solo per personalizzare il messaggio (es. "ieri").
+    async function applyCopyFromDate(sourceStr, label) {
+        const dateStr = document.getElementById('bulk-data').value;
+        if (!dateStr) return;
+        if (sourceStr === dateStr) return modal("Attenzione", "La data di origine coincide con quella selezionata.");
 
         try {
-            const q = query(collection(db, "turniPianificati"), where("data", "==", prevStr));
+            const q = query(collection(db, "turniPianificati"), where("data", "==", sourceStr));
             const snap = await getDocs(q);
-            const prevPlans = {};
-            snap.forEach(d => { const data = d.data(); if (!prevPlans[data.email]) prevPlans[data.email] = data; });
+            const sourcePlans = {};
+            snap.forEach(d => { const data = d.data(); if (!sourcePlans[data.email]) sourcePlans[data.email] = data; });
+
+            const dateFmt = new Date(sourceStr + 'T00:00:00').toLocaleDateString('it-IT');
+            if (Object.keys(sourcePlans).length === 0) {
+                return modal("Info", `Nessun turno pianificato trovato per il ${dateFmt}.`);
+            }
 
             document.querySelectorAll('#bulk-rows-container .bulk-row').forEach(row => {
-                const p = prevPlans[row.dataset.email];
+                const p = sourcePlans[row.dataset.email];
                 if (p) {
                     row.querySelector('.bulk-mansione').value = p.mansione;
                     row.querySelector('.bulk-inizio').value = p.oraInizio;
                     row.querySelector('.bulk-fine').value = p.oraFine;
                 }
             });
-            toast("Turni di ieri copiati: controlla e salva");
+            toast(`Turni di ${label || dateFmt} copiati: controlla e salva`);
         } catch(e) { modal("Errore", e.message); }
-    };
+    }
 
     window.saveBulkPlanning = async () => {
         const dateStr = document.getElementById('bulk-data').value;
