@@ -696,8 +696,10 @@
     const db = getFirestore(app);
 
     const ADMIN_EMAIL = "a.chiodini01@gmail.com";
+    const SEGRETARIA_EMAIL = "alessiarusso.arb@icloud.com"; // Può gestire i turni di tutti, come l'admin, ma non è l'admin
     let currentUser = null;
     let isAdmin = false;
+    let canManageShifts = false; // isAdmin oppure la segretaria: entrambi possono creare/modificare/eliminare turni
     let currentWeekStart = getMonday(new Date()); 
     let rubrica = []; 
     let allShiftsData = []; 
@@ -757,17 +759,19 @@
         if (user) {
             currentUser = user;
             isAdmin = (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
+            canManageShifts = isAdmin || (user.email.toLowerCase() === SEGRETARIA_EMAIL.toLowerCase());
             
             // Show Download PDF button for everyone
             document.getElementById('btn-download-pdf').classList.remove('hidden');
 
-            if (isAdmin) {
+            if (canManageShifts) {
                 document.getElementById('btn-add-shift').classList.remove('hidden');
                 document.getElementById('btn-excel-mode').classList.remove('hidden');
                 document.getElementById('admin-user-filter').classList.remove('hidden');
                 document.querySelectorAll('.admin-dup-btn').forEach(btn => btn.classList.remove('hidden'));
                 await loadUsers();
-            } else {
+            }
+            if (!isAdmin) {
                 document.getElementById('collab-filter-container').classList.remove('hidden');
             }
             renderWeek();
@@ -919,7 +923,7 @@
         if(isMyShift) card.classList.add('is-mine');
 
         let actions = "";
-        if(isAdmin) {
+        if(canManageShifts) {
             actions = `
                 <div class="card-actions">
                     <button class="action-btn sub" onclick="window.openSubModal('${s.id}', '${s.userName.replace(/'/g, "\\'")}', '${s.date}', '${s.start}-${s.end}')" title="Sostituisci">🔄</button>
@@ -1007,8 +1011,8 @@
                 const email = s.sostituto ? s.sostituto.email : s.email;
                 const role = s.role;
 
-                // Logica Filtro: Admin vede tutto. Collaboratore vede solo se stesso.
-                if (isAdmin || (currentUser && (email === currentUser.email))) {
+                // Logica Filtro: chi gestisce i turni vede tutto. Collaboratore vede solo se stesso.
+                if (canManageShifts || (currentUser && (email === currentUser.email))) {
                     if (!totals[name]) totals[name] = { hours: 0, role: role };
                     totals[name].hours += duration;
                 }
