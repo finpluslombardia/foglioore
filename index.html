@@ -479,20 +479,6 @@
         [data-theme="dark"] .status-extra { background:#1c2a3a; color:#7ec1ff; }
         #confronto-table td:last-child:before { display:none; }
         @media (max-width: 600px) { #confronto-table td:last-child { grid-column: span 2; flex-direction: row; justify-content: flex-end; } }
-
-        /* --- PIANIFICAZIONE RAPIDA (Bulk, solo Admin) --- */
-        .bulk-collab-group { border:1px solid var(--border-color); border-radius:12px; padding:12px; margin-bottom:10px; background:var(--bg-card); }
-        .bulk-collab-name { font-weight:700; font-size:0.9rem; margin-bottom:8px; color:var(--text-main); }
-        .bulk-shifts { display:flex; flex-direction:column; gap:8px; }
-        .bulk-shift-row { display:flex; align-items:center; gap:8px; }
-        .bulk-shift-row select.bulk-mansione { flex:1.4; min-width:130px; }
-        .bulk-shift-row input[type="time"] { flex:0.8; min-width:80px; }
-        .bulk-add-shift { width:auto; background:none; border:none; color:var(--primary); font-size:0.75rem; font-weight:600; padding:8px 0 0 0; margin:0; cursor:pointer; display:inline-flex; }
-        @media (max-width: 600px) {
-            .bulk-shift-row { flex-wrap:wrap; }
-            .bulk-shift-row select.bulk-mansione { flex:1 1 100%; }
-            .bulk-shift-row input[type="time"] { flex:1; }
-        }
     </style>
 </head>
 <body>
@@ -560,7 +546,7 @@
 
     <!-- 3. COLLABORATORE DASHBOARD (Registro) -->
     <div id="collaborator-view" class="view-section">
-        <button id="segretaria-bulk-btn" onclick="openBulkPlanning()" class="btn-warning hidden" style="margin-bottom:20px">📋 Pianifica Turni Collaboratori</button>
+        <a id="segretaria-bulk-btn" href="pianturni.html" target="_blank" class="btn-warning hidden" style="margin-bottom:20px; text-decoration:none; display:flex; align-items:center; justify-content:center;">📅 Pianifica Turni Collaboratori</a>
         <div class="form-box">
             <h3>➕ Nuovo Turno</h3>
             <div class="time-row">
@@ -686,7 +672,7 @@
             <div class="filter-buttons">
                 <button onclick="loadAdminData()" class="btn-primary">Aggiorna</button>
                 <button onclick="excelAdminGlobal()" class="btn-success">📥 Scarica Excel</button>
-                <button onclick="openBulkPlanning()" class="btn-warning">📋 Pianifica Giorno</button>
+                <a href="pianturni.html" target="_blank" class="btn-warning" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">📅 Programmazione Turni</a>
             </div>
         </div>
 
@@ -734,7 +720,6 @@
             <h3 style="margin:0" id="detail-name">Utente</h3>
             <div>
                 <button onclick="openAddShiftModal()" class="btn-primary" style="display:inline-flex; width:auto; margin-right:5px">➕ Aggiungi Turno</button>
-                <button onclick="openPianificaModal()" class="btn-warning" style="display:inline-flex; width:auto; margin-right:5px">📅 Pianifica Turno</button>
                 <button onclick="closeDetail()" class="btn-secondary" style="display:inline-flex; width:auto; padding:5px 15px; margin:0">Indietro</button>
             </div>
         </div>
@@ -773,7 +758,7 @@
         <!-- NUOVA SEZIONE VERIFICA TURNI PIANIFICATI (solo Admin) -->
         <div id="confronto-turni-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
             <h3 style="color:var(--primary); margin-top:0">🔍 Verifica Turni Pianificati</h3>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin:0 0 10px 0;">Confronto tra i turni assegnati da te e le ore registrate dal collaboratore, per il periodo selezionato nei filtri sopra.</p>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin:0 0 10px 0;">Confronto tra i turni assegnati in <a href="pianturni.html" target="_blank" style="color:var(--primary); font-weight:600">Programmazione Turni</a> e le ore registrate dal collaboratore, per il periodo selezionato nei filtri sopra.</p>
             <div id="confronto-summary" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
             <div class="table-wrap">
                 <table id="confronto-table">
@@ -788,33 +773,6 @@
             <h3 style="color:var(--primary); margin-top:0">📊 Storico Compensi (Tutti gli anni)</h3>
             <div id="admin-history-content"></div>
         </div>
-    </div>
-
-    <!-- 6. PIANIFICAZIONE RAPIDA (solo Admin) -->
-    <div id="bulk-planning-view" class="view-section">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; background:var(--bg-body); padding:10px; border-radius:12px; border:1px solid var(--border-color)">
-            <h3 style="margin:0">📋 Pianificazione Rapida</h3>
-            <button onclick="closeBulkPlanning()" class="btn-secondary" style="display:inline-flex; width:auto; padding:5px 15px; margin:0">Indietro</button>
-        </div>
-
-        <div class="planning-controls">
-            <button class="week-nav-btn" onclick="changeBulkDate(-1)">❮</button>
-            <input type="date" id="bulk-data" onchange="loadBulkPlanning()" style="width:auto; text-align:center; border:none; background:transparent; font-weight:700; font-size:1rem;">
-            <button class="week-nav-btn" onclick="changeBulkDate(1)">❯</button>
-        </div>
-
-        <div class="filter-bar">
-            <input type="text" id="bulk-search" placeholder="🔍 Cerca collaboratore..." oninput="renderBulkRows()" style="flex:2; min-width:180px; border-color:var(--primary)">
-            <div class="filter-buttons">
-                <button onclick="copyPrevDayPlanning()" class="btn-secondary">📋 Copia da ieri</button>
-                <button onclick="openCopyDateModal()" class="btn-secondary">📅 Copia da data...</button>
-            </div>
-        </div>
-        <p id="bulk-count-label" style="font-size:0.75rem; color:var(--text-muted); margin:0 0 10px 0;"></p>
-
-        <div id="bulk-rows-container"></div>
-
-        <button id="btn-save-bulk" onclick="saveBulkPlanning()" class="btn-primary" style="margin-top:20px">💾 Salva Pianificazione Giorno</button>
     </div>
 
 </div>
@@ -853,18 +811,6 @@
         <div style="display:flex; gap:10px">
             <button class="btn-secondary" onclick="document.getElementById('pwd-modal').style.display='none'">Chiudi</button>
             <button class="btn-primary" onclick="changePwd()">Salva</button>
-        </div>
-    </div>
-</div>
-
-<div id="copia-data-modal" class="modal-overlay" style="display:none">
-    <div class="modal-box">
-        <h3>Copia Turni da un'altra Data</h3>
-        <label style="text-align:left">Data di origine</label>
-        <input type="date" id="copia-source-data" style="margin-bottom:20px">
-        <div style="display:flex; gap:10px">
-            <button class="btn-secondary" onclick="document.getElementById('copia-data-modal').style.display='none'">Annulla</button>
-            <button class="btn-primary" onclick="confirmCopyFromDate()">Copia</button>
         </div>
     </div>
 </div>
@@ -996,34 +942,6 @@
     </div>
 </div>
 
-<div id="pianifica-modal" class="modal-overlay" style="display:none">
-    <div class="modal-box">
-        <h3>Pianifica Turno</h3>
-        <div class="form-box" style="padding:10px; margin:0; border:none; background:transparent; text-align:left">
-            <label>Data</label><input type="date" id="pian-data">
-            <label>Mansione</label>
-            <select id="pian-mansione">
-                <option value="Assistente bagnanti">Assistente bagnanti</option>
-                <option value="Istruttore">Istruttore</option>
-                <option value="Fitness">Fitness</option>
-                <option value="Propaganda">Propaganda</option>
-                <option value="Lezione individuale">Lezione individuale</option>
-                <option value="Segreteria">Segreteria</option>
-            </select>
-            <div style="display:flex; gap:5px">
-                <div style="flex:1"><label>Inizio</label><input type="time" id="pian-inizio" onchange="calcDiffPian()"></div>
-                <div style="flex:1"><label>Fine</label><input type="time" id="pian-fine" onchange="calcDiffPian()"></div>
-            </div>
-            <label>Ore (stimate)</label><input type="number" id="pian-ore" step="0.5" style="font-weight:bold; color:var(--primary)">
-            <label>Note</label><input type="text" id="pian-note" placeholder="Opzionale">
-        </div>
-        <div style="display:flex; gap:10px; margin-top:15px">
-            <button class="btn-secondary" onclick="document.getElementById('pianifica-modal').style.display='none'">Annulla</button>
-            <button class="btn-primary" onclick="savePianificato()">Pianifica</button>
-        </div>
-    </div>
-</div>
-
 <!-- NOTICE MODAL -->
 <div id="notice-modal" class="modal-overlay" style="display:none">
     <div class="modal-box" style="max-width:400px; text-align:left">
@@ -1070,7 +988,7 @@
     let myTurni = [];
     let currentPdfContext = null;
     let userUidMap = {}; // Maps Email -> UID
-    let turniPianificatiDetail = []; // Turni pianificati dall'admin per il collaboratore aperto (Verifica Turni)
+    let turniProgrammatiDetail = []; // Turni programmati (da programmazione_turni) per il collaboratore aperto (Verifica Turni)
 
     // --- HISTORY BACK BROWSER ---
     window.addEventListener('popstate', (e) => {
@@ -1870,70 +1788,38 @@
     };
 
     // ==================== VERIFICA TURNI PIANIFICATI (solo Admin) ====================
-    // Collezione separata "turniPianificati": qui l'admin registra cosa ha assegnato
-    // al collaboratore (utile per turni "a chiamata" non fissi). Non tocca in alcun
-    // modo la collezione "turni" (registro ore) né alcuna vista lato collaboratore.
+    // I turni "pianificati" ora arrivano dalla collezione condivisa "programmazione_turni",
+    // la stessa usata dalla pagina Programmazione Turni (calendario) che i collaboratori
+    // già vedono. Qui li leggiamo soltanto, per confrontarli col registro ore: l'inserimento
+    // dei turni si fa in pianturni.html (dall'admin o dalla segretaria).
+    // Normalizzo i nomi dei campi di quella collezione (role/start/end) su quelli usati
+    // qui (mansione/oraInizio/oraFine) così il resto della logica di confronto non cambia.
 
-    window.loadTurniPianificati = async (email) => {
+    window.loadTurniProgrammati = async (email) => {
         try {
-            const q = query(collection(db, "turniPianificati"), where("email", "==", email));
+            const q = query(collection(db, "programmazione_turni"), where("email", "==", email));
             const snap = await getDocs(q);
-            turniPianificatiDetail = [];
-            snap.forEach(d => turniPianificatiDetail.push({id: d.id, ...d.data()}));
-            turniPianificatiDetail.sort((a,b) => a.data.localeCompare(b.data));
-            renderConfrontoTurni();
-        } catch(e) { console.error("Errore caricamento turni pianificati:", e); }
-    };
-
-    window.openPianificaModal = () => {
-        if(!detailUserEmail) return;
-        document.getElementById('pian-data').valueAsDate = new Date();
-        document.getElementById('pian-mansione').selectedIndex = 0;
-        document.getElementById('pian-inizio').value = "";
-        document.getElementById('pian-fine').value = "";
-        document.getElementById('pian-ore').value = "";
-        document.getElementById('pian-note').value = "";
-        document.getElementById('pianifica-modal').style.display = 'flex';
-    };
-
-    window.calcDiffPian = () => {
-        const i = document.getElementById('pian-inizio').value, f = document.getElementById('pian-fine').value;
-        if(i && f) {
-            let d = (new Date(`1970-01-01T${f}`) - new Date(`1970-01-01T${i}`))/36e5;
-            if(d<0) d+=24;
-            document.getElementById('pian-ore').value = d.toFixed(2);
-        }
-    };
-
-    window.savePianificato = async () => {
-        if(!detailUserEmail) return;
-        const targetUid = userUidMap[detailUserEmail] || rubrica[detailUserEmail]?.uid || null;
-
-        const d = document.getElementById('pian-data').value;
-        const m = document.getElementById('pian-mansione').value;
-        const oi = document.getElementById('pian-inizio').value;
-        const of = document.getElementById('pian-fine').value;
-        const h = parseFloat(document.getElementById('pian-ore').value);
-        if(!d || !m || !oi || !of) return modal("Errore", "Compila data, mansione e orario.");
-
-        try {
-            await addDoc(collection(db, "turniPianificati"), {
-                uid: targetUid, email: detailUserEmail, data: d, mansione: m,
-                oraInizio: oi, oraFine: of, ore: isNaN(h) ? 0 : h,
-                note: document.getElementById('pian-note').value, created_at: new Date()
+            turniProgrammatiDetail = [];
+            snap.forEach(d => {
+                const data = d.data();
+                turniProgrammatiDetail.push({
+                    id: d.id, email: data.email, data: data.date,
+                    mansione: data.role, oraInizio: data.start, oraFine: data.end
+                });
             });
-            toast("Turno pianificato!");
-            document.getElementById('pianifica-modal').style.display = 'none';
-            loadTurniPianificati(detailUserEmail);
-        } catch(e) { modal("Errore", e.message); }
+            turniProgrammatiDetail.sort((a, b) => a.data.localeCompare(b.data));
+            renderConfrontoTurni();
+        } catch(e) { console.error("Errore caricamento programmazione turni:", e); }
     };
 
-    window.delPianificato = (id) => {
-        modal("Eliminare?", "Confermi l'eliminazione del turno pianificato?", async () => {
+    // Elimina un turno dalla programmazione condivisa direttamente dalla Verifica Turni admin
+    // (comodo per correggere un errore senza dover aprire pianturni.html).
+    window.deleteProgrammato = (id) => {
+        modal("Eliminare?", "Confermi l'eliminazione di questo turno programmato? Sparirà anche dal calendario condiviso.", async () => {
             try {
-                await deleteDoc(doc(db, "turniPianificati", id));
-                toast("Turno pianificato eliminato");
-                loadTurniPianificati(detailUserEmail);
+                await deleteDoc(doc(db, "programmazione_turni", id));
+                toast("Turno programmato eliminato");
+                loadTurniProgrammati(detailUserEmail);
             } catch(e) { modal("Errore", e.message); }
         });
     };
@@ -1947,7 +1833,7 @@
         const m = document.getElementById('d-filtro-mese').value;
         const y = document.getElementById('d-filtro-anno').value;
 
-        let planned = turniPianificatiDetail.slice();
+        let planned = turniProgrammatiDetail.slice();
         let actual = allTurni.filter(t => t.email === detailUserEmail);
 
         if (m !== 'all') {
@@ -1999,7 +1885,7 @@
                 <td data-label="Pianificato">${p.mansione}<br><span style="font-size:0.75rem; color:var(--text-muted)">${p.oraInizio}-${p.oraFine}</span></td>
                 <td data-label="Stato"><span class="status-badge status-${status}">${statusLabel}</span></td>
                 <td data-label="Dettaglio" style="font-size:0.75rem; color:var(--text-muted)">${detailTxt}</td>
-                <td data-label="" class="actions-cell"><button class="icon-btn" onclick="delPianificato('${p.id}')" title="Elimina turno pianificato">🗑️</button></td>
+                <td data-label="" class="actions-cell"><button class="icon-btn" onclick="deleteProgrammato('${p.id}')" title="Elimina turno programmato">🗑️</button></td>
             </tr>`;
         }).join('');
 
@@ -2022,237 +1908,6 @@
         if (extraRows) tbody += `<tr><td colspan="5" style="padding-top:14px; font-size:0.7rem; text-transform:uppercase; color:var(--text-muted); font-weight:700; background:transparent;">Turni registrati senza pianificazione</td></tr>` + extraRows;
 
         box.innerHTML = tbody || '<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:15px">Nessun turno pianificato per il periodo selezionato.</td></tr>';
-    };
-
-    // ==================== PIANIFICAZIONE RAPIDA (Bulk, solo Admin) ====================
-    // Permette di assegnare turni a molti collaboratori in un'unica schermata, invece
-    // di aprire ogni scheda singolarmente. Scrive/aggiorna/elimina sulla stessa
-    // collezione "turniPianificati" usata dalla Verifica Turni. Ogni collaboratore può
-    // avere più turni (mansioni/orari) nello stesso giorno.
-    let bulkExistingPlans = {}; // email -> array di turni pianificati già esistenti per il giorno selezionato
-    let bulkPendingDeletes = []; // id di turni già salvati rimossi manualmente con "✕", da eliminare al salvataggio
-
-    window.openBulkPlanning = () => {
-        if (!document.getElementById('bulk-data').value) {
-            document.getElementById('bulk-data').valueAsDate = new Date();
-        }
-        document.getElementById('bulk-search').value = '';
-        switchView('bulk-planning-view');
-        loadBulkPlanning();
-    };
-
-    // Torna alla vista di partenza corretta: admin-view per l'admin, collaborator-view
-    // (dove si trova il suo pulsante) per la segretaria.
-    window.closeBulkPlanning = () => {
-        const isAdminNow = currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-        switchView(isAdminNow ? 'admin-view' : 'collaborator-view');
-    };
-
-    window.changeBulkDate = (deltaDays) => {
-        const inp = document.getElementById('bulk-data');
-        const d = inp.valueAsDate || new Date();
-        d.setDate(d.getDate() + deltaDays);
-        inp.valueAsDate = d;
-        loadBulkPlanning();
-    };
-
-    window.loadBulkPlanning = async () => {
-        const dateStr = document.getElementById('bulk-data').value;
-        const container = document.getElementById('bulk-rows-container');
-        bulkPendingDeletes = []; // cambio giorno: eventuali rimozioni non salvate del giorno precedente decadono
-        if (!dateStr) { container.innerHTML = ''; return; }
-        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:15px">Caricamento...</p>';
-        try {
-            const q = query(collection(db, "turniPianificati"), where("data", "==", dateStr));
-            const snap = await getDocs(q);
-            bulkExistingPlans = {};
-            snap.forEach(d => {
-                const data = d.data();
-                if (!bulkExistingPlans[data.email]) bulkExistingPlans[data.email] = [];
-                bulkExistingPlans[data.email].push({ id: d.id, ...data });
-            });
-            renderBulkRows();
-        } catch(e) { container.innerHTML = '<p style="color:#ff3b30; text-align:center">Errore caricamento.</p>'; console.error(e); }
-    };
-
-    // Genera l'HTML di un singolo turno (riga) dentro il gruppo di un collaboratore.
-    // p = {mansione, oraInizio, oraFine, id} oppure null/undefined per una riga vuota.
-    function renderBulkShiftRow(p) {
-        const mansioniOpts = Mansioni.map(m => `<option value="${m}" ${p && p.mansione === m ? 'selected' : ''}>${m}</option>`).join('');
-        return `<div class="bulk-shift-row" data-id="${p && p.id ? p.id : ''}">
-            <select class="bulk-mansione">
-                <option value="">— Nessun turno —</option>
-                ${mansioniOpts}
-            </select>
-            <input type="time" class="bulk-inizio" value="${p ? (p.oraInizio || '') : ''}">
-            <input type="time" class="bulk-fine" value="${p ? (p.oraFine || '') : ''}">
-            <button type="button" class="icon-btn" onclick="removeBulkShiftRow(this)" title="Rimuovi turno">✕</button>
-        </div>`;
-    }
-
-    window.renderBulkRows = () => {
-        const term = (document.getElementById('bulk-search').value || '').toLowerCase();
-        const container = document.getElementById('bulk-rows-container');
-
-        const collabs = Object.entries(rubrica)
-            .filter(([email, d]) => !d.archived)
-            .filter(([email, d]) => !term || (d.nome || '').toLowerCase().includes(term) || email.toLowerCase().includes(term))
-            .sort((a, b) => (a[1].nome || '').localeCompare(b[1].nome || ''));
-
-        document.getElementById('bulk-count-label').innerText = `${collabs.length} collaboratori`;
-
-        if (collabs.length === 0) {
-            container.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:15px">Nessun collaboratore trovato.</p>';
-            return;
-        }
-
-        container.innerHTML = collabs.map(([email, d]) => {
-            const existingArr = bulkExistingPlans[email] || [];
-            const shiftsHtml = existingArr.length > 0
-                ? existingArr.map(p => renderBulkShiftRow(p)).join('')
-                : renderBulkShiftRow(null);
-
-            return `<div class="bulk-collab-group" data-email="${email}">
-                <div class="bulk-collab-name">${d.nome || email}</div>
-                <div class="bulk-shifts">${shiftsHtml}</div>
-                <button type="button" class="bulk-add-shift" onclick="addBulkShiftRow(this)">➕ Aggiungi turno</button>
-            </div>`;
-        }).join('');
-    };
-
-    // Aggiunge una riga vuota per un altro turno dello stesso collaboratore nello stesso giorno.
-    window.addBulkShiftRow = (btn) => {
-        const shiftsContainer = btn.closest('.bulk-collab-group').querySelector('.bulk-shifts');
-        shiftsContainer.insertAdjacentHTML('beforeend', renderBulkShiftRow(null));
-    };
-
-    // Rimuove una riga turno. Se rappresentava un turno già salvato, lo mette in coda
-    // per l'eliminazione effettiva al momento del salvataggio.
-    window.removeBulkShiftRow = (btn) => {
-        const row = btn.closest('.bulk-shift-row');
-        if (row.dataset.id) bulkPendingDeletes.push(row.dataset.id);
-        row.remove();
-    };
-
-    window.copyPrevDayPlanning = async () => {
-        const dateStr = document.getElementById('bulk-data').value;
-        if (!dateStr) return;
-        const prevDate = new Date(dateStr + 'T00:00:00');
-        prevDate.setDate(prevDate.getDate() - 1);
-        const prevStr = prevDate.toISOString().slice(0, 10);
-        await applyCopyFromDate(prevStr, "ieri");
-    };
-
-    window.openCopyDateModal = () => {
-        const inp = document.getElementById('copia-source-data');
-        if (!inp.value) {
-            const d = (document.getElementById('bulk-data').valueAsDate) || new Date();
-            d.setDate(d.getDate() - 1);
-            inp.valueAsDate = d;
-        }
-        document.getElementById('copia-data-modal').style.display = 'flex';
-    };
-
-    window.confirmCopyFromDate = async () => {
-        const sourceStr = document.getElementById('copia-source-data').value;
-        if (!sourceStr) return modal("Errore", "Seleziona una data di origine.");
-        document.getElementById('copia-data-modal').style.display = 'none';
-        await applyCopyFromDate(sourceStr);
-    };
-
-    // Copia TUTTI i turni pianificati di sourceStr sulla data attualmente aperta in bulk-data,
-    // sostituendo (per ogni collaboratore coinvolto) le righe correnti con quelle copiate.
-    // "label" è opzionale, solo per personalizzare il messaggio (es. "ieri").
-    async function applyCopyFromDate(sourceStr, label) {
-        const dateStr = document.getElementById('bulk-data').value;
-        if (!dateStr) return;
-        if (sourceStr === dateStr) return modal("Attenzione", "La data di origine coincide con quella selezionata.");
-
-        try {
-            const q = query(collection(db, "turniPianificati"), where("data", "==", sourceStr));
-            const snap = await getDocs(q);
-            const sourcePlans = {}; // email -> array di turni di quel giorno
-            snap.forEach(d => {
-                const data = d.data();
-                if (!sourcePlans[data.email]) sourcePlans[data.email] = [];
-                sourcePlans[data.email].push(data);
-            });
-
-            const dateFmt = new Date(sourceStr + 'T00:00:00').toLocaleDateString('it-IT');
-            if (Object.keys(sourcePlans).length === 0) {
-                return modal("Info", `Nessun turno pianificato trovato per il ${dateFmt}.`);
-            }
-
-            document.querySelectorAll('.bulk-collab-group').forEach(group => {
-                const plans = sourcePlans[group.dataset.email];
-                if (!plans) return; // nessun turno quel giorno per questo collaboratore: lascio le righe attuali invariate
-
-                const shiftsContainer = group.querySelector('.bulk-shifts');
-                // Le righe già salvate sul giorno target vengono sostituite: le metto in coda per l'eliminazione
-                shiftsContainer.querySelectorAll('.bulk-shift-row').forEach(row => {
-                    if (row.dataset.id) bulkPendingDeletes.push(row.dataset.id);
-                });
-                // Righe copiate senza id: verranno create come nuovi turni al salvataggio
-                shiftsContainer.innerHTML = plans.map(p => renderBulkShiftRow({ mansione: p.mansione, oraInizio: p.oraInizio, oraFine: p.oraFine, id: null })).join('');
-            });
-
-            toast(`Turni di ${label || dateFmt} copiati: controlla e salva`);
-        } catch(e) { modal("Errore", e.message); }
-    }
-
-    window.saveBulkPlanning = async () => {
-        const dateStr = document.getElementById('bulk-data').value;
-        if (!dateStr) return modal("Errore", "Seleziona una data.");
-
-        const ops = [];
-        let created = 0, updated = 0, deleted = 0;
-
-        document.querySelectorAll('.bulk-collab-group').forEach(group => {
-            const email = group.dataset.email;
-            group.querySelectorAll('.bulk-shift-row').forEach(row => {
-                const existingId = row.dataset.id || null;
-                const mansione = row.querySelector('.bulk-mansione').value;
-                const oraInizio = row.querySelector('.bulk-inizio').value;
-                const oraFine = row.querySelector('.bulk-fine').value;
-
-                if (!mansione || !oraInizio || !oraFine) {
-                    if (existingId) { ops.push(deleteDoc(doc(db, "turniPianificati", existingId))); deleted++; }
-                    return; // riga vuota senza id: nessun turno da salvare
-                }
-
-                let ore = (new Date(`1970-01-01T${oraFine}`) - new Date(`1970-01-01T${oraInizio}`)) / 36e5;
-                if (ore < 0) ore += 24;
-                ore = Math.round(ore * 100) / 100;
-
-                const targetUid = userUidMap[email] || rubrica[email]?.uid || null;
-
-                if (existingId) {
-                    ops.push(updateDoc(doc(db, "turniPianificati", existingId), { mansione, oraInizio, oraFine, ore }));
-                    updated++;
-                } else {
-                    ops.push(addDoc(collection(db, "turniPianificati"), {
-                        uid: targetUid, email, data: dateStr, mansione, oraInizio, oraFine, ore, note: "", created_at: new Date()
-                    }));
-                    created++;
-                }
-            });
-        });
-
-        // Turni già salvati rimossi manualmente con "✕" durante questa sessione
-        bulkPendingDeletes.forEach(id => { ops.push(deleteDoc(doc(db, "turniPianificati", id))); deleted++; });
-        bulkPendingDeletes = [];
-
-        if (ops.length === 0) return toast("Nessuna modifica da salvare.");
-
-        const btn = document.getElementById('btn-save-bulk');
-        const originalText = btn.innerText;
-        btn.innerHTML = '<div class="spinner"></div>';
-        try {
-            await Promise.all(ops);
-            toast(`Salvato: ${created} nuovi, ${updated} modificati, ${deleted} rimossi`);
-            loadBulkPlanning();
-        } catch(e) { modal("Errore", e.message); }
-        btn.innerText = originalText;
     };
 
     window.calcDiffEdit = (id) => {
@@ -2316,7 +1971,7 @@
 
         renderAdminDetailTable(); 
         loadAdminUserHistory(e);
-        loadTurniPianificati(e);
+        loadTurniProgrammati(e);
     };
 
     window.closeDetail = (pushHistory = true) => { 
