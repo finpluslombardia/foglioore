@@ -1130,8 +1130,15 @@
     let sessionTimer;
     const SESSION_TIMEOUT = 15 * 60 * 1000; // 15 Minuti
 
+    // Salvo il timestamp dell'ultima attività in localStorage (sopravvive alla chiusura
+    // della pagina/browser), così al riapertura posso capire se è passato troppo tempo.
+    const updateLastActivity = () => {
+        try { localStorage.setItem('lastActivity', Date.now().toString()); } catch(e) {}
+    };
+
     const resetSessionTimer = () => {
         if (!currentUser) return;
+        updateLastActivity();
         clearTimeout(sessionTimer);
         sessionTimer = setTimeout(() => {
             signOut(auth).then(() => {
@@ -1163,9 +1170,24 @@
     };
 
     // AUTH STATE
+    let isInitialAuthCheck = true; // Solo alla primissima chiamata (ripristino sessione) controllo la scadenza
     onAuthStateChanged(auth, async (user) => {
         toggleLoading(loginBtn, false);
         if (user) {
+            // Se la pagina è stata chiusa e riaperta dopo più di 15 minuti dall'ultima
+            // attività registrata, la sessione va considerata scaduta anche se Firebase
+            // l'ha ripristinata in automatico. Controllo fatto una sola volta per apertura:
+            // un login manuale appena fatto non deve mai essere rimesso in discussione.
+            if (isInitialAuthCheck) {
+                let lastActivity = 0;
+                try { lastActivity = parseInt(localStorage.getItem('lastActivity') || '0', 10); } catch(e) {}
+                isInitialAuthCheck = false;
+                if (lastActivity && (Date.now() - lastActivity > SESSION_TIMEOUT)) {
+                    await signOut(auth);
+                    return;
+                }
+            }
+
             currentUser = user;
             setupIdleListener(); // Start Idle Timer
             
@@ -1244,6 +1266,7 @@
             } catch (e) { console.error("Errore dati:", e); }
 
         } else {
+            isInitialAuthCheck = false;
             currentUser = null;
             clearTimeout(sessionTimer); // Stop timer
             try { history.replaceState(null, ""); } catch(e) {}
