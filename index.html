@@ -546,7 +546,6 @@
 
     <!-- 3. COLLABORATORE DASHBOARD (Registro) -->
     <div id="collaborator-view" class="view-section">
-        <a id="segretaria-bulk-btn" href="pianturni.html" target="_blank" class="btn-warning hidden" style="margin-bottom:20px; text-decoration:none; display:flex; align-items:center; justify-content:center;">📅 Pianifica Turni Collaboratori</a>
         <div class="form-box">
             <h3>➕ Nuovo Turno</h3>
             <div class="time-row">
@@ -672,7 +671,6 @@
             <div class="filter-buttons">
                 <button onclick="loadAdminData()" class="btn-primary">Aggiorna</button>
                 <button onclick="excelAdminGlobal()" class="btn-success">📥 Scarica Excel</button>
-                <a href="pianturni.html" target="_blank" class="btn-warning" style="text-decoration:none; display:inline-flex; align-items:center; justify-content:center;">📅 Programmazione Turni</a>
             </div>
         </div>
 
@@ -758,7 +756,7 @@
         <!-- NUOVA SEZIONE VERIFICA TURNI PIANIFICATI (solo Admin) -->
         <div id="confronto-turni-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
             <h3 style="color:var(--primary); margin-top:0">🔍 Verifica Turni Pianificati</h3>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin:0 0 10px 0;">Confronto tra i turni assegnati in <a href="pianturni.html" target="_blank" style="color:var(--primary); font-weight:600">Programmazione Turni</a> e le ore registrate dal collaboratore, per il periodo selezionato nei filtri sopra.</p>
+            <p style="font-size:0.8rem; color:var(--text-muted); margin:0 0 10px 0;">Confronto tra i turni assegnati in Programmazione Turni e le ore registrate dal collaboratore, per il periodo selezionato nei filtri sopra.</p>
             <div id="confronto-summary" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
             <div class="table-wrap">
                 <table id="confronto-table">
@@ -977,7 +975,6 @@
     const db = getFirestore(app);
     
     const ADMIN_EMAIL = "a.chiodini01@gmail.com"; 
-    const SEGRETARIA_EMAIL = "alessiarusso.arb@icloud.com"; // Account con permesso extra di pianificare turni per tutti
     let currentUser = null;
     let rubrica = {}; 
     let allTurni = []; 
@@ -1215,11 +1212,6 @@
                 });
                 
                 document.getElementById('welcome-msg').innerText = `Ciao, ${rubrica[user.email]?.nome.split(' ')[0] || 'User'}`;
-
-                // ACCOUNT SEGRETARIA: stessa base collaboratore + può pianificare turni per tutti
-                const isSegretaria = user.email.toLowerCase() === SEGRETARIA_EMAIL.toLowerCase();
-                const segBtn = document.getElementById('segretaria-bulk-btn');
-                if (segBtn) segBtn.classList.toggle('hidden', !isSegretaria);
                 
                 // SECURITY CHECK
                 const lastChange = userData.lastPasswordChange ? userData.lastPasswordChange.toDate() : null;
