@@ -1198,19 +1198,11 @@
             
             const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
             const baseView = isAdmin ? 'admin-view' : 'collaborator-view';
-            
-            if (isAdmin) {
-                const adminBad = document.getElementById('admin-indicator');
-                if(adminBad) adminBad.classList.remove('hidden');
-                switchView('admin-view');
-            } else {
-                const adminBad = document.getElementById('admin-indicator');
-                if(adminBad) adminBad.classList.add('hidden');
-                switchView('collaborator-view');
-            }
-            
-            // Inizializza lo stato storico per supportare il tasto indietro
-            try { if (!history.state) history.replaceState({ view: baseView }, ""); } catch(e) {}
+
+            // NOTA: la vista viene mostrata (switchView) solo DOPO il controllo password qui sotto,
+            // non prima. Prima la dashboard appariva subito e il controllo (che richiede una
+            // chiamata di rete) arrivava con un attimo di ritardo: su connessioni lente il
+            // collaboratore faceva in tempo a usare il sito prima che il blocco comparisse.
 
             try {
                 const snap = await getDocs(collection(db, "anagrafica"));
@@ -1239,16 +1231,33 @@
                 const lastChange = userData.lastPasswordChange ? userData.lastPasswordChange.toDate() : null;
                 const now = new Date();
                 const SIX_MONTHS = 180 * 24 * 60 * 60 * 1000;
+                let mustChangePwd = false;
 
                 if (!lastChange) {
                     document.getElementById('force-pwd-title').innerText = "Primo Accesso";
                     document.getElementById('force-pwd-msg').innerText = "Per sicurezza, imposta una nuova password.";
-                    document.getElementById('force-pwd-modal').style.display = 'flex';
+                    mustChangePwd = true;
                 } else if ((now - lastChange) > SIX_MONTHS) {
                     document.getElementById('force-pwd-title').innerText = "Password Scaduta";
                     document.getElementById('force-pwd-msg').innerText = "Sono passati 6 mesi. Aggiorna la password.";
-                    document.getElementById('force-pwd-modal').style.display = 'flex';
+                    mustChangePwd = true;
                 }
+
+                // Ora mostro la vista (dashboard): se serve il cambio password, il modal compare
+                // nello stesso istante sopra di essa, senza finestra di interazione libera prima.
+                if (isAdmin) {
+                    const adminBad = document.getElementById('admin-indicator');
+                    if(adminBad) adminBad.classList.remove('hidden');
+                } else {
+                    const adminBad = document.getElementById('admin-indicator');
+                    if(adminBad) adminBad.classList.add('hidden');
+                }
+                switchView(baseView);
+
+                // Inizializza lo stato storico per supportare il tasto indietro
+                try { if (!history.state) history.replaceState({ view: baseView }, ""); } catch(e) {}
+
+                if (mustChangePwd) document.getElementById('force-pwd-modal').style.display = 'flex';
 
                 if(!isAdmin) {
                     const today = new Date();
@@ -1263,7 +1272,12 @@
                     document.getElementById('a-filtro-anno').value = today.getFullYear();
                     loadAdminData();
                 }
-            } catch (e) { console.error("Errore dati:", e); }
+            } catch (e) { 
+                console.error("Errore dati:", e); 
+                // Anche in caso di errore nel controllo, mostro comunque la vista per non
+                // lasciare l'utente bloccato su una schermata vuota.
+                switchView(baseView);
+            }
 
         } else {
             isInitialAuthCheck = false;
