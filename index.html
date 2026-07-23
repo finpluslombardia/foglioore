@@ -2131,8 +2131,10 @@
             
             // 3. TRY UPDATE DB (Graceful fail)
             try {
-                // Ensure lowercase ID to match rule
-                await setDoc(doc(db, "anagrafica", currentUser.email.toLowerCase()), { lastPasswordChange: new Date() }, { merge: true });
+                // Uso currentUser.email così com'è (stesso formato usato al primo accesso, riga ~1224,
+                // e nella lettura di sicurezza al login): forzarlo in minuscolo qui creava un documento
+                // diverso da quello poi controllato, e la password risultava sempre "scaduta".
+                await setDoc(doc(db, "anagrafica", currentUser.email), { lastPasswordChange: new Date() }, { merge: true });
                 toast("Password Aggiornata!"); 
             } catch (dbError) {
                 console.error("DB Error:", dbError);
