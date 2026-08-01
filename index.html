@@ -1826,16 +1826,35 @@
 
     window.loadTurniProgrammati = async (email) => {
         try {
-            const q = query(collection(db, "programmazione_turni"), where("email", "==", email));
-            const snap = await getDocs(q);
             turniProgrammatiDetail = [];
-            snap.forEach(d => {
+
+            // 1. Turni assegnati direttamente a questo collaboratore.
+            //    Se però sono stati ceduti a un sostituto, non sono più "suoi": li salto qui,
+            //    compariranno invece nella scheda di chi li ha presi in sostituzione (punto 2).
+            const q1 = query(collection(db, "programmazione_turni"), where("email", "==", email));
+            const snap1 = await getDocs(q1);
+            snap1.forEach(d => {
                 const data = d.data();
+                if (data.sostituto && data.sostituto.email) return;
                 turniProgrammatiDetail.push({
                     id: d.id, email: data.email, data: data.date,
                     mansione: data.role, oraInizio: data.start, oraFine: data.end
                 });
             });
+
+            // 2. Turni di cui questo collaboratore è sostituto: da qui in poi il turno è suo
+            //    a tutti gli effetti (stesso criterio già usato in pianturni.html).
+            const q2 = query(collection(db, "programmazione_turni"), where("sostituto.email", "==", email));
+            const snap2 = await getDocs(q2);
+            snap2.forEach(d => {
+                const data = d.data();
+                turniProgrammatiDetail.push({
+                    id: d.id, email: data.email, data: data.date,
+                    mansione: data.role, oraInizio: data.start, oraFine: data.end,
+                    sostituzioneDi: data.userName || data.email
+                });
+            });
+
             turniProgrammatiDetail.sort((a, b) => a.data.localeCompare(b.data));
             renderConfrontoTurni();
         } catch(e) { console.error("Errore caricamento programmazione turni:", e); }
@@ -1911,7 +1930,7 @@
 
             return `<tr>
                 <td data-label="Data">${fmtDate(p.data)}</td>
-                <td data-label="Pianificato">${p.mansione}<br><span style="font-size:0.75rem; color:var(--text-muted)">${p.oraInizio}-${p.oraFine}</span></td>
+                <td data-label="Pianificato">${p.mansione}<br><span style="font-size:0.75rem; color:var(--text-muted)">${p.oraInizio}-${p.oraFine}</span>${p.sostituzioneDi ? `<br><span style="font-size:0.7rem; color:#ff9500; font-weight:600">🔄 Sostituzione di ${p.sostituzioneDi}</span>` : ''}</td>
                 <td data-label="Stato"><span class="status-badge status-${status}">${statusLabel}</span></td>
                 <td data-label="Dettaglio" style="font-size:0.75rem; color:var(--text-muted)">${detailTxt}</td>
                 <td data-label="" class="actions-cell"><button class="icon-btn" onclick="deleteProgrammato('${p.id}')" title="Elimina turno programmato">🗑️</button></td>
