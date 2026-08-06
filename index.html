@@ -1838,7 +1838,8 @@
                 if (data.sostituto && data.sostituto.email) return;
                 turniProgrammatiDetail.push({
                     id: d.id, email: data.email, data: data.date,
-                    mansione: data.role, oraInizio: data.start, oraFine: data.end
+                    mansione: data.role, oraInizio: data.start, oraFine: data.end,
+                    sourceCollection: 'programmazione_turni'
                 });
             });
 
@@ -1851,7 +1852,21 @@
                 turniProgrammatiDetail.push({
                     id: d.id, email: data.email, data: data.date,
                     mansione: data.role, oraInizio: data.start, oraFine: data.end,
-                    sostituzioneDi: data.userName || data.email
+                    sostituzioneDi: data.userName || data.email,
+                    sourceCollection: 'programmazione_turni'
+                });
+            });
+
+            // 3. Turni privati assegnati a questo collaboratore (visibili solo ad admin/segreteria
+            //    e a lui): stessa logica di confronto, solo da una collezione diversa.
+            const q3 = query(collection(db, "turni_privati"), where("email", "==", email));
+            const snap3 = await getDocs(q3);
+            snap3.forEach(d => {
+                const data = d.data();
+                turniProgrammatiDetail.push({
+                    id: d.id, email: data.email, data: data.date,
+                    mansione: data.role, oraInizio: data.start, oraFine: data.end,
+                    privato: true, sourceCollection: 'turni_privati'
                 });
             });
 
@@ -1860,13 +1875,17 @@
         } catch(e) { console.error("Errore caricamento programmazione turni:", e); }
     };
 
-    // Elimina un turno dalla programmazione condivisa direttamente dalla Verifica Turni admin
-    // (comodo per correggere un errore senza dover aprire pianturni.html).
-    window.deleteProgrammato = (id) => {
-        modal("Eliminare?", "Confermi l'eliminazione di questo turno programmato? Sparirà anche dal calendario condiviso.", async () => {
+    // Elimina un turno dalla programmazione (condivisa o privata) direttamente dalla Verifica
+    // Turni admin (comodo per correggere un errore senza dover aprire pianturni.html).
+    window.deleteProgrammato = (id, coll) => {
+        const isPrivato = coll === 'turni_privati';
+        const msg = isPrivato
+            ? "Confermi l'eliminazione di questo turno privato?"
+            : "Confermi l'eliminazione di questo turno programmato? Sparirà anche dal calendario condiviso.";
+        modal("Eliminare?", msg, async () => {
             try {
-                await deleteDoc(doc(db, "programmazione_turni", id));
-                toast("Turno programmato eliminato");
+                await deleteDoc(doc(db, coll || 'programmazione_turni', id));
+                toast("Turno eliminato");
                 loadTurniProgrammati(detailUserEmail);
             } catch(e) { modal("Errore", e.message); }
         });
@@ -1930,10 +1949,10 @@
 
             return `<tr>
                 <td data-label="Data">${fmtDate(p.data)}</td>
-                <td data-label="Pianificato">${p.mansione}<br><span style="font-size:0.75rem; color:var(--text-muted)">${p.oraInizio}-${p.oraFine}</span>${p.sostituzioneDi ? `<br><span style="font-size:0.7rem; color:#ff9500; font-weight:600">🔄 Sostituzione di ${p.sostituzioneDi}</span>` : ''}</td>
+                <td data-label="Pianificato">${p.mansione}<br><span style="font-size:0.75rem; color:var(--text-muted)">${p.oraInizio}-${p.oraFine}</span>${p.sostituzioneDi ? `<br><span style="font-size:0.7rem; color:#ff9500; font-weight:600">🔄 Sostituzione di ${p.sostituzioneDi}</span>` : ''}${p.privato ? `<br><span style="font-size:0.7rem; color:var(--primary); font-weight:600">🔒 Privato</span>` : ''}</td>
                 <td data-label="Stato"><span class="status-badge status-${status}">${statusLabel}</span></td>
                 <td data-label="Dettaglio" style="font-size:0.75rem; color:var(--text-muted)">${detailTxt}</td>
-                <td data-label="" class="actions-cell"><button class="icon-btn" onclick="deleteProgrammato('${p.id}')" title="Elimina turno programmato">🗑️</button></td>
+                <td data-label="" class="actions-cell"><button class="icon-btn" onclick="deleteProgrammato('${p.id}','${p.sourceCollection}')" title="Elimina turno programmato">🗑️</button></td>
             </tr>`;
         }).join('');
 
