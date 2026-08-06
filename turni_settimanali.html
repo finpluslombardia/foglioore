@@ -216,6 +216,7 @@
         .grid-section-title.alt { border-color: var(--dot-istruttore); }
         .grid-section-title.uni { border-color: var(--text-main); }
         .grid-section-title.sum { border-color: #34c759; }
+        .grid-section-title.priv { border-color: var(--primary); }
 
         .btn-dup-cat {
             background: transparent; border: 1px solid var(--border-color); color: var(--text-muted);
@@ -620,6 +621,8 @@
         <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:15px;">Non compaiono nella programmazione pubblica: li vedono solo l'admin, la segreteria e il collaboratore assegnato.</p>
 
         <div id="priv-form-container" class="hidden" style="border-bottom:1px solid var(--border-color); padding-bottom:15px; margin-bottom:15px;">
+            <h4 id="priv-form-title" style="margin:0 0 10px 0; color:var(--text-main); font-size:0.9rem;">➕ Nuovo Turno Privato</h4>
+            <input type="hidden" id="priv-edit-id" value="">
             <label>Collaboratore</label>
             <select id="priv-user"></select>
             <label>Data</label>
@@ -639,7 +642,10 @@
             </div>
             <label>Note (opzionale)</label>
             <input type="text" id="priv-note" placeholder="Es. commissione, corso privato...">
-            <button class="btn-primary" onclick="savePrivateShift()" style="margin-top:12px;">➕ Aggiungi Turno Privato</button>
+            <div style="display:flex; gap:10px; margin-top:12px;">
+                <button id="priv-cancel-edit-btn" class="btn-secondary hidden" onclick="window.resetPrivateForm()" style="flex:1">Annulla modifica</button>
+                <button id="priv-save-btn" class="btn-primary" onclick="savePrivateShift()" style="flex:2">➕ Aggiungi Turno Privato</button>
+            </div>
         </div>
 
         <div id="priv-list-container" style="max-height:320px; overflow-y:auto;"></div>
@@ -704,6 +710,10 @@
         <div id="grid-segreteria" class="week-grid"></div>
         <div class="grid-section-title alt"><span>🏋️ Istruttori & Altri</span><button class="btn-dup-cat hidden admin-dup-btn" onclick="openDupModal('altri')">📑</button></div>
         <div id="grid-altri" class="week-grid"></div>
+        <div id="private-grid-section" class="hidden">
+            <div class="grid-section-title priv"><span>🔒 Turni Privati (solo Admin/Segreteria)</span></div>
+            <div id="grid-privati" class="week-grid"></div>
+        </div>
     </div>
     <div id="view-mode-unified" class="hidden">
         <div class="grid-section-title uni">🗓️ Tutti i Turni</div>
@@ -744,6 +754,7 @@
     let rubrica = []; 
     let allShiftsData = []; 
     let allNotesData = []; 
+    let allPrivateShiftsData = []; // Solo per admin/segreteria (realtime)
     let activeUserFilter = ""; 
     let onlyMyShifts = false;
     let currentDupCategory = ""; 
@@ -809,6 +820,7 @@
                 document.getElementById('btn-excel-mode').classList.remove('hidden');
                 document.getElementById('admin-user-filter').classList.remove('hidden');
                 document.querySelectorAll('.admin-dup-btn').forEach(btn => btn.classList.remove('hidden'));
+                document.getElementById('private-grid-section').classList.remove('hidden');
                 await loadUsers();
             }
             if (!isAdmin) {
@@ -817,18 +829,20 @@
             renderWeek();
             loadPlannedShifts(); 
             loadNotes(); 
+            if (canManageShifts) loadPrivateShiftsRealtime();
         } else { try { window.location.href = "index.html"; } catch (e) {} }
     });
 
-    window.changeWeek = (delta) => { currentWeekStart.setDate(currentWeekStart.getDate() + (delta * 7)); renderWeek(); renderShiftsFromData(); updateWeeklySummary(); };
-    window.goToToday = () => { currentWeekStart = getMonday(new Date()); renderWeek(); renderShiftsFromData(); updateWeeklySummary(); };
-    window.goToDate = (val) => { if(!val) return; currentWeekStart = getMonday(new Date(val)); renderWeek(); renderShiftsFromData(); updateWeeklySummary(); };
+    window.changeWeek = (delta) => { currentWeekStart.setDate(currentWeekStart.getDate() + (delta * 7)); renderWeek(); renderShiftsFromData(); renderPrivateShiftsFromData(); updateWeeklySummary(); };
+    window.goToToday = () => { currentWeekStart = getMonday(new Date()); renderWeek(); renderShiftsFromData(); renderPrivateShiftsFromData(); updateWeeklySummary(); };
+    window.goToDate = (val) => { if(!val) return; currentWeekStart = getMonday(new Date(val)); renderWeek(); renderShiftsFromData(); renderPrivateShiftsFromData(); updateWeeklySummary(); };
 
     window.handleTodayClick = () => {
         const today = new Date();
         currentWeekStart = getMonday(today);
         renderWeek();
         renderShiftsFromData();
+        renderPrivateShiftsFromData();
         updateWeeklySummary();
         openDailySummary(today);
     };
@@ -839,6 +853,7 @@
         currentWeekStart = getMonday(tomorrow);
         renderWeek();
         renderShiftsFromData();
+        renderPrivateShiftsFromData();
         updateWeeklySummary();
         openDailySummary(tomorrow);
     };
@@ -899,7 +914,7 @@
         document.getElementById('week-range-label').innerText = `Week ${weekNum} | ${currentWeekStart.toLocaleDateString('it-IT', options)} - ${endOfWeek.toLocaleDateString('it-IT', options)}`;
         document.getElementById('nav-date-picker').value = formatDate(currentWeekStart);
 
-        const grids = ['grid-assistenti', 'grid-segreteria', 'grid-altri', 'grid-tutti'];
+        const grids = ['grid-assistenti', 'grid-segreteria', 'grid-altri', 'grid-tutti', 'grid-privati'];
         grids.forEach(gridId => {
             const gridEl = document.getElementById(gridId);
             gridEl.innerHTML = ""; 
@@ -955,19 +970,27 @@
     // Collezione separata "turni_privati", con regole Firestore dedicate: solo admin/segreteria
     // possono scriverli, e in lettura solo admin/segreteria o il collaboratore assegnato possono
     // vederli. Non hanno nulla a che fare con "programmazione_turni" (il tabellone pubblico).
+    // Per admin/segreteria compaiono anche come griglia settimanale dedicata (come le altre
+    // categorie), oltre che nella lista del modal; per un collaboratore restano visibili solo
+    // in forma di lista, nel modal, filtrati sui propri.
 
     window.openPrivateShiftsModal = () => {
-        const showForm = canManageShifts;
-        document.getElementById('priv-form-container').classList.toggle('hidden', !showForm);
-        if (showForm) {
-            populatePrivateUserSelect();
-            document.getElementById('priv-date').valueAsDate = new Date();
-            document.getElementById('priv-start').value = "";
-            document.getElementById('priv-end').value = "";
-            document.getElementById('priv-note').value = "";
-        }
+        window.resetPrivateForm();
+        document.getElementById('priv-form-container').classList.toggle('hidden', !canManageShifts);
         document.getElementById('private-shifts-modal').style.display = 'flex';
         loadPrivateShifts();
+    };
+
+    window.resetPrivateForm = () => {
+        document.getElementById('priv-edit-id').value = "";
+        document.getElementById('priv-form-title').innerText = "➕ Nuovo Turno Privato";
+        document.getElementById('priv-save-btn').innerText = "➕ Aggiungi Turno Privato";
+        document.getElementById('priv-cancel-edit-btn').classList.add('hidden');
+        if (canManageShifts) populatePrivateUserSelect();
+        document.getElementById('priv-date').valueAsDate = new Date();
+        document.getElementById('priv-start').value = "";
+        document.getElementById('priv-end').value = "";
+        document.getElementById('priv-note').value = "";
     };
 
     function populatePrivateUserSelect() {
@@ -981,6 +1004,7 @@
     }
 
     window.savePrivateShift = async () => {
+        const editId = document.getElementById('priv-edit-id').value;
         const email = document.getElementById('priv-user').value;
         const dataVal = document.getElementById('priv-date').value;
         const role = document.getElementById('priv-role').value;
@@ -991,62 +1015,129 @@
 
         const userObj = rubrica.find(u => u.email === email);
         try {
-            await addDoc(collection(db, "turni_privati"), {
-                email, userName: userObj ? userObj.nome : email,
-                date: dataVal, role, start, end, note: note || "",
-                createdBy: currentUser.email, createdAt: new Date()
-            });
-            window.toast("Turno privato aggiunto");
-            document.getElementById('priv-start').value = "";
-            document.getElementById('priv-end').value = "";
-            document.getElementById('priv-note').value = "";
+            if (editId) {
+                await updateDoc(doc(db, "turni_privati", editId), {
+                    email, userName: userObj ? userObj.nome : email,
+                    date: dataVal, role, start, end, note: note || ""
+                });
+                window.toast("Turno privato aggiornato");
+            } else {
+                await addDoc(collection(db, "turni_privati"), {
+                    email, userName: userObj ? userObj.nome : email,
+                    date: dataVal, role, start, end, note: note || "",
+                    createdBy: currentUser.email, createdAt: new Date()
+                });
+                window.toast("Turno privato aggiunto");
+            }
+            window.resetPrivateForm();
             loadPrivateShifts();
         } catch(e) { alert("Errore: " + e.message); }
     };
 
+    window.openEditPrivateModal = (id) => {
+        const s = allPrivateShiftsData.find(x => x.id === id);
+        if (!s) return;
+        document.getElementById('priv-form-container').classList.remove('hidden');
+        populatePrivateUserSelect();
+        document.getElementById('priv-user').value = s.email;
+        document.getElementById('priv-date').value = s.date;
+        document.getElementById('priv-role').value = s.role;
+        document.getElementById('priv-start').value = s.start;
+        document.getElementById('priv-end').value = s.end;
+        document.getElementById('priv-note').value = s.note || '';
+        document.getElementById('priv-edit-id').value = s.id;
+        document.getElementById('priv-form-title').innerText = "✏️ Modifica Turno Privato";
+        document.getElementById('priv-save-btn').innerText = "💾 Salva Modifiche";
+        document.getElementById('priv-cancel-edit-btn').classList.remove('hidden');
+        document.getElementById('private-shifts-modal').style.display = 'flex';
+    };
+
+    // Lista nel modal: per admin/segreteria legge dalla cache realtime (allPrivateShiftsData,
+    // sempre aggiornata); per un collaboratore fa una query one-time filtrata sui propri.
     window.loadPrivateShifts = async () => {
         const container = document.getElementById('priv-list-container');
+        if (canManageShifts) {
+            renderPrivateListRows(container, allPrivateShiftsData.slice().sort((a,b) => a.date.localeCompare(b.date)), true);
+            return;
+        }
         container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem;">Caricamento...</p>';
         try {
-            // Admin/segreteria vedono tutti i turni privati; un collaboratore vede solo i propri
-            // (query filtrata di conseguenza, così le regole Firestore la accettano).
-            const q = canManageShifts
-                ? query(collection(db, "turni_privati"))
-                : query(collection(db, "turni_privati"), where("email", "==", currentUser.email));
+            const q = query(collection(db, "turni_privati"), where("email", "==", currentUser.email));
             const snap = await getDocs(q);
-
             let items = [];
             snap.forEach(d => items.push({ id: d.id, ...d.data() }));
             items.sort((a, b) => a.date.localeCompare(b.date));
-
-            if (items.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem; padding:15px 0;">Nessun turno privato al momento.</p>';
-                return;
-            }
-
-            container.innerHTML = items.map(it => {
-                const dateFmt = new Date(it.date + 'T00:00:00').toLocaleDateString('it-IT', { weekday:'short', day:'2-digit', month:'2-digit' });
-                return `<div class="priv-shift-row">
-                    <div class="priv-info">
-                        <b>${canManageShifts ? (it.userName || it.email) : it.role}</b>
-                        ${dateFmt} · ${it.start}-${it.end}${canManageShifts ? ' · ' + it.role : ''}
-                        ${it.note ? `<br><span style="color:var(--text-muted)">${it.note}</span>` : ''}
-                    </div>
-                    ${canManageShifts ? `<button class="action-btn del" onclick="deletePrivateShift('${it.id}')" title="Elimina">🗑️</button>` : ''}
-                </div>`;
-            }).join('');
+            renderPrivateListRows(container, items, false);
         } catch(e) {
             console.error(e);
             container.innerHTML = '<p style="text-align:center; color:#ff3b30; font-size:0.8rem;">Errore nel caricamento.</p>';
         }
     };
 
+    function renderPrivateListRows(container, items, showActions) {
+        if (items.length === 0) {
+            container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:0.8rem; padding:15px 0;">Nessun turno privato al momento.</p>';
+            return;
+        }
+        container.innerHTML = items.map(it => {
+            const dateFmt = new Date(it.date + 'T00:00:00').toLocaleDateString('it-IT', { weekday:'short', day:'2-digit', month:'2-digit' });
+            return `<div class="priv-shift-row">
+                <div class="priv-info">
+                    <b>${showActions ? (it.userName || it.email) : it.role}</b>
+                    ${dateFmt} · ${it.start}-${it.end}${showActions ? ' · ' + it.role : ''}
+                    ${it.note ? `<br><span style="color:var(--text-muted)">${it.note}</span>` : ''}
+                </div>
+                ${showActions ? `<div style="display:flex; gap:4px;">
+                    <button class="action-btn" onclick="window.openEditPrivateModal('${it.id}')" title="Modifica">✏️</button>
+                    <button class="action-btn del" onclick="window.deletePrivateShift('${it.id}')" title="Elimina">🗑️</button>
+                </div>` : ''}
+            </div>`;
+        }).join('');
+    }
+
+    // Griglia settimanale "🔒 Turni Privati", visibile solo ad admin/segreteria: stesso schema
+    // delle altre categorie (colonne per giorno), ma alimentata da "turni_privati" in realtime.
+    function loadPrivateShiftsRealtime() {
+        const q = query(collection(db, "turni_privati"));
+        onSnapshot(q, (snap) => {
+            allPrivateShiftsData = [];
+            snap.forEach(d => allPrivateShiftsData.push({ id: d.id, ...d.data() }));
+            allPrivateShiftsData.sort((a,b) => a.start.localeCompare(b.start));
+            renderPrivateShiftsFromData();
+            // Se il modal è aperto in questo momento, aggiorno anche la lista a video
+            if (document.getElementById('private-shifts-modal').style.display === 'flex') loadPrivateShifts();
+        }, (error) => { console.error(error); });
+    }
+
+    function renderPrivateShiftsFromData() {
+        if (!canManageShifts) return;
+        document.querySelectorAll('[id^="col-"][id$="-privati"]').forEach(el => el.innerHTML = "");
+        allPrivateShiftsData.forEach(s => {
+            const col = document.getElementById(`col-${s.date}-privati`);
+            if (col) col.appendChild(createPrivateCard(s));
+        });
+    }
+
+    function createPrivateCard(s) {
+        const card = document.createElement('div');
+        card.className = 'shift-card';
+        card.style.borderLeftColor = 'var(--primary)';
+        const actions = `
+            <div class="card-actions">
+                <button class="action-btn" onclick="window.openEditPrivateModal('${s.id}')" title="Modifica">✏️</button>
+                <button class="action-btn del" onclick="window.deletePrivateShift('${s.id}')" title="Elimina">×</button>
+            </div>
+        `;
+        card.innerHTML = `${actions}<div class="shift-content-row"><span class="shift-time-badge">${s.start} - ${s.end}</span><span class="shift-user-inline">${s.userName || s.email}</span></div><span class="shift-role" style="color:var(--primary)">${s.role}</span>`;
+        return card;
+    }
+
     window.deletePrivateShift = async (id) => {
         if (!confirm("Eliminare questo turno privato?")) return;
         try {
             await deleteDoc(doc(db, "turni_privati", id));
             window.toast("Turno privato eliminato");
-            loadPrivateShifts();
+            if (!canManageShifts) loadPrivateShifts(); // per admin/segreteria ci pensa già il realtime
         } catch(e) { alert("Errore: " + e.message); }
     };
 
