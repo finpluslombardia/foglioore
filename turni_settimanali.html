@@ -977,8 +977,14 @@
     window.openPrivateShiftsModal = () => {
         window.resetPrivateForm();
         document.getElementById('priv-form-container').classList.toggle('hidden', !canManageShifts);
+        // Admin/segreteria hanno già la griglia settimanale "Turni Privati" per visualizzarli:
+        // qui il modal serve solo per aggiungerli, niente lista doppia. Un collaboratore invece
+        // non ha quella griglia, quindi per lui la lista (di sola lettura) resta l'unico modo
+        // per vedere i propri turni privati.
+        const listContainer = document.getElementById('priv-list-container');
+        listContainer.classList.toggle('hidden', canManageShifts);
         document.getElementById('private-shifts-modal').style.display = 'flex';
-        loadPrivateShifts();
+        if (!canManageShifts) loadPrivateShifts();
     };
 
     window.resetPrivateForm = () => {
@@ -1104,8 +1110,6 @@
             snap.forEach(d => allPrivateShiftsData.push({ id: d.id, ...d.data() }));
             allPrivateShiftsData.sort((a,b) => a.start.localeCompare(b.start));
             renderPrivateShiftsFromData();
-            // Se il modal è aperto in questo momento, aggiorno anche la lista a video
-            if (document.getElementById('private-shifts-modal').style.display === 'flex') loadPrivateShifts();
         }, (error) => { console.error(error); });
     }
 
