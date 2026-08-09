@@ -1010,6 +1010,16 @@
     const noticeBtn = document.getElementById('notice-btn');
     const noticeBadge = document.getElementById('notice-badge');
 
+    // Premere Invio nei campi email/password del login equivale a cliccare "Accedi"
+    ['email', 'password'].forEach(id => {
+        document.getElementById(id).addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                loginBtn.click();
+            }
+        });
+    });
+
     // --- DARK MODE LOGIC ---
     window.toggleTheme = () => {
         const html = document.documentElement;
