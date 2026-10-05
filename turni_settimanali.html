@@ -704,11 +704,11 @@
     <div id="loader" style="text-align:center; padding:20px; color:var(--text-muted)">Caricamento turni...</div>
 
     <div id="view-mode-categories">
-        <div class="grid-section-title ass"><span>🏊 Assistenti Bagnanti</span><button class="btn-dup-cat hidden admin-dup-btn" onclick="openDupModal('assistenti')">📑</button></div>
+        <div class="grid-section-title ass"><span>🏊 Assistenti Bagnanti</span><div style="display:flex; gap:6px;"><button class="btn-dup-cat hidden admin-dup-btn" onclick="openDupModal('assistenti')">📑</button><button class="btn-dup-cat hidden admin-dup-btn" onclick="deleteWeekCategory('assistenti')" title="Elimina tutti i turni di questa settimana">🗑️</button></div></div>
         <div id="grid-assistenti" class="week-grid"></div>
-        <div class="grid-section-title seg"><span>💼 Segreteria</span><button class="btn-dup-cat hidden admin-dup-btn" onclick="openDupModal('segreteria')">📑</button></div>
+        <div class="grid-section-title seg"><span>💼 Segreteria</span><div style="display:flex; gap:6px;"><button class="btn-dup-cat hidden admin-dup-btn" onclick="openDupModal('segreteria')">📑</button><button class="btn-dup-cat hidden admin-dup-btn" onclick="deleteWeekCategory('segreteria')" title="Elimina tutti i turni di questa settimana">🗑️</button></div></div>
         <div id="grid-segreteria" class="week-grid"></div>
-        <div class="grid-section-title alt"><span>🏋️ Istruttori & Altri</span><button class="btn-dup-cat hidden admin-dup-btn" onclick="openDupModal('altri')">📑</button></div>
+        <div class="grid-section-title alt"><span>🏋️ Istruttori & Altri</span><div style="display:flex; gap:6px;"><button class="btn-dup-cat hidden admin-dup-btn" onclick="openDupModal('altri')">📑</button><button class="btn-dup-cat hidden admin-dup-btn" onclick="deleteWeekCategory('altri')" title="Elimina tutti i turni di questa settimana">🗑️</button></div></div>
         <div id="grid-altri" class="week-grid"></div>
         <div id="private-grid-section" class="hidden">
             <div class="grid-section-title priv"><span>🔒 Turni Privati (solo Admin/Segreteria)</span></div>
@@ -784,7 +784,25 @@
         var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
         return weekNo;
     }
-    function formatDate(d) { return d.toISOString().split('T')[0]; }
+    // NOTA: niente toISOString() qui — passa per l'UTC e, a seconda dell'ora del giorno e del
+    // fuso orario di chi usa il sito, può far slittare la data di un giorno. Uso i componenti
+    // data "locali" così il giorno mostrato è sempre esattamente quello scelto/calcolato.
+    function formatDate(d) {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+    // Differenza in giorni di calendario tra due date, ignorando l'orario esatto di ciascuna:
+    // confrontare direttamente i millisecondi (d2.getTime()-d1.getTime()) è rischioso quando le
+    // due date non condividono lo stesso orario del giorno (es. una presa da "adesso" con ore e
+    // minuti correnti, l'altra da una stringa "YYYY-MM-DD" che parte da mezzanotte) — l'arrotondamento
+    // può sbagliare il giorno. Qui normalizzo entrambe su UTC mezzanotte dei soli anno/mese/giorno.
+    function daysBetweenDates(d1, d2) {
+        const u1 = Date.UTC(d1.getFullYear(), d1.getMonth(), d1.getDate());
+        const u2 = Date.UTC(d2.getFullYear(), d2.getMonth(), d2.getDate());
+        return Math.round((u2 - u1) / 86400000);
+    }
 
     window.toast = (msg) => { const t = document.getElementById("toast"); t.innerText=msg; t.className="show"; setTimeout(()=>t.className="",3000); };
     window.tryGoHome = () => { try { window.location.href = "index.html"; } catch(e) { alert("Usa il tasto Indietro."); } };
@@ -1595,8 +1613,7 @@
         });
         if (shiftsToCopy.length === 0) return alert("Nessun turno da copiare.");
         if (!confirm(`Copiare ${shiftsToCopy.length} turni?`)) return;
-        const diffTime = targetMonday.getTime() - currentWeekStart.getTime();
-        const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
+        const diffDays = daysBetweenDates(currentWeekStart, targetMonday);
         try {
             const batch = writeBatch(db);
             shiftsToCopy.forEach(s => {
@@ -1604,11 +1621,58 @@
                 const newDate = new Date(oldDate);
                 newDate.setDate(newDate.getDate() + diffDays);
                 const newRef = doc(collection(db, "programmazione_turni"));
-                batch.set(newRef, { email: s.email, userName: s.userName, role: s.role, start: s.start, end: s.end, date: formatDate(newDate), created_at: new Date() });
+                // seriesId: collega tra loro le copie dello stesso turno nel tempo. Se il turno
+                // sorgente non ne ha già uno (prima duplicazione di questa catena), lo creo ora e
+                // lo scrivo anche sul sorgente, cosi la catena resta tracciabile da qui in avanti
+                // (serve per poter eliminare "anche le settimane future" con un click).
+                const seriesId = s.seriesId || `${newRef.id}`;
+                if (!s.seriesId) batch.update(doc(db, "programmazione_turni", s.id), { seriesId });
+                batch.set(newRef, { email: s.email, userName: s.userName, role: s.role, start: s.start, end: s.end, date: formatDate(newDate), seriesId, created_at: new Date() });
             });
             await batch.commit();
             window.toast("Copiati!");
             window.closeModal('dup-week-modal');
+        } catch (e) { alert("Errore: " + e.message); }
+    };
+
+    // Elimina tutti i turni di una categoria per la settimana attualmente mostrata. Se alcuni di
+    // quei turni fanno parte di una serie duplicata (stesso seriesId su più settimane), chiede se
+    // eliminare anche le occorrenze nelle settimane successive della stessa serie.
+    window.deleteWeekCategory = async (category) => {
+        const catName = category === 'assistenti' ? "Assistenti Bagnanti" : category === 'segreteria' ? "Segreteria" : "Istruttori & Altri";
+        const weekStartStr = formatDate(currentWeekStart);
+        const weekEnd = new Date(currentWeekStart);
+        weekEnd.setDate(weekEnd.getDate() + 6);
+        const weekEndStr = formatDate(weekEnd);
+
+        const shiftsToDelete = allShiftsData.filter(s => {
+            const inDate = s.date >= weekStartStr && s.date <= weekEndStr;
+            if (!inDate) return false;
+            if (category === 'assistenti') return s.role === 'Assistente bagnanti';
+            if (category === 'segreteria') return s.role === 'Segreteria';
+            if (category === 'altri') return s.role !== 'Assistente bagnanti' && s.role !== 'Segreteria';
+            return false;
+        });
+
+        if (shiftsToDelete.length === 0) return alert("Nessun turno da eliminare in questa settimana.");
+        const weekLabel = `${weekStartStr.split('-').reverse().join('/')} - ${weekEndStr.split('-').reverse().join('/')}`;
+        if (!confirm(`Eliminare tutti i ${shiftsToDelete.length} turni di "${catName}" per la settimana ${weekLabel}?`)) return;
+
+        const seriesIds = [...new Set(shiftsToDelete.filter(s => s.seriesId).map(s => s.seriesId))];
+        let alsoDeleteFuture = false;
+        if (seriesIds.length > 0) {
+            alsoDeleteFuture = confirm("Alcuni di questi turni sono stati duplicati anche su altre settimane. Vuoi eliminare anche le occorrenze nelle settimane future della stessa serie?");
+        }
+
+        try {
+            const idsToDelete = new Set(shiftsToDelete.map(s => s.id));
+            if (alsoDeleteFuture) {
+                allShiftsData.forEach(s => {
+                    if (s.seriesId && seriesIds.includes(s.seriesId) && s.date > weekEndStr) idsToDelete.add(s.id);
+                });
+            }
+            await Promise.all([...idsToDelete].map(id => deleteDoc(doc(db, "programmazione_turni", id))));
+            window.toast(`${idsToDelete.size} turni eliminati`);
         } catch (e) { alert("Errore: " + e.message); }
     };
 
