@@ -594,6 +594,15 @@
             .turni-list tbody tr:hover .action-icons { opacity: 1; }
         }
         @media (max-width: 600px) { .hero { padding: 20px; } .hero-val { font-size: 2.4rem; } }
+
+        /* fix mobile: input data/ora e navigazione calendario */
+        input[type="date"], input[type="time"] { min-height: 42px; display: block; text-align: left; -webkit-appearance: none; appearance: none; }
+        input[type="date"]::-webkit-date-and-time-value, input[type="time"]::-webkit-date-and-time-value { text-align: left; min-height: 1.2em; }
+        .form-box h3 { margin: 0 0 14px 0; }
+        .cal-header { gap: 8px; }
+        .cal-title { flex: 1; text-align: center; white-space: nowrap; }
+        .cal-nav { flex: none; width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+        @media (max-width: 600px) { body { padding: 6px; } .container { padding: 8px; } .form-box { padding: 14px; } }
     </style>
 </head>
 <body>
