@@ -636,6 +636,24 @@
         .hero-val small { font-size: 0.9rem; }
         .hero-label { font-size: 0.66rem; }
         @media (max-width: 600px) { .hero { grid-template-columns: 1fr 1fr; padding: 12px 16px; border-radius: 20px; } .hero-val { font-size: 1.7rem; } }
+
+        /* mobile: data corta (giorno + numero) e orario sulla riga */
+        .d-short { display: none; }
+        @media (max-width: 600px) {
+            .turni-list tbody tr:not(.editing) .d-full { display: none; }
+            .turni-list tbody tr:not(.editing) .d-short { display: inline; }
+            .turni-list tbody tr:not(.editing) { grid-template-columns: auto auto 1fr auto; }
+            .turni-list tbody tr:not(.editing) td:nth-child(3) { display: flex; grid-column: 2; grid-row: 1; font-size: 0.85rem; font-variant-numeric: tabular-nums; color: var(--text-main); }
+            .turni-list tbody tr:not(.editing) td:nth-child(2) { grid-column: 3; }
+            .turni-list tbody tr:not(.editing) td:nth-child(4) { grid-column: 4; }
+            .turni-list tbody tr.open:not(.editing) .d-full { display: inline; }
+            .turni-list tbody tr.open:not(.editing) .d-short { display: none; }
+            .turni-list tbody tr.open:not(.editing) td:nth-child(1) { grid-column: 1 / 3; }
+            .turni-list tbody tr.open:not(.editing) td:nth-child(3) { grid-column: 1 / -1; grid-row: 2; }
+            .turni-list tbody tr.open:not(.editing) td:nth-child(3):before { content: "Orario"; display: inline; margin: 0 8px 0 0; }
+            .turni-list tbody tr.open:not(.editing) td:nth-child(5) { grid-row: 3; }
+            .turni-list tbody tr.open:not(.editing) td:nth-child(6) { grid-row: 4; }
+        }
     </style>
 </head>
 <body>
@@ -1669,7 +1687,7 @@
             
             tbody.innerHTML += `
                 <tr id="row-${t.id}" style="background-color:${bg}; --accent:${getColor(t.mansione)}">
-                    <td data-label="Data"><span><span style="text-transform:capitalize">${shortDay}</span> ${numDate}</span></td>
+                    <td data-label="Data"><span class="d-full"><span style="text-transform:capitalize">${shortDay}</span> ${numDate}</span><span class="d-short" style="text-transform:capitalize">${shortDay} ${String(dateObj.getDate()).padStart(2,'0')}</span></td>
                     <td data-label="Mansione">${t.mansione}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
                     <td data-label="Ore"><strong>${t.ore}</strong></td>
@@ -2271,7 +2289,7 @@
 
             tbody.innerHTML += `
                 <tr id="arow-${t.id}" style="background-color:${bg}; --accent:${getColor(t.mansione)}">
-                    <td data-label="Data"><span><span style="text-transform:capitalize">${shortDay}</span> ${numDate}</span></td>
+                    <td data-label="Data"><span class="d-full"><span style="text-transform:capitalize">${shortDay}</span> ${numDate}</span><span class="d-short" style="text-transform:capitalize">${shortDay} ${String(dateObj.getDate()).padStart(2,'0')}</span></td>
                     <td data-label="Mansione">${t.mansione}${adminBadge}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
                     <td data-label="Ore"><strong>${t.ore}</strong></td>
