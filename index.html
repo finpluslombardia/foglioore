@@ -661,6 +661,23 @@
             .filter-bar .filter-buttons { margin-left: auto; }
             button[onclick="openAutocertModal()"] { width: auto; padding: 8px 18px; font-size: 13px; margin-bottom: 14px !important; }
         }
+
+        /* desktop: pagina collaboratore su due colonne (nuovo turno | i miei turni) */
+        @media (min-width: 1000px) {
+            #collaborator-view.active { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; align-items: start; }
+            #collaborator-view > .hero, #collaborator-view > #c-stats-container,
+            #collaborator-view > #collab-history-container, #collaborator-view > div[style*="text-align:center"] { grid-column: 1 / -1; }
+            #collaborator-view > .form-box { grid-column: 1; grid-row: 3 / span 6; position: sticky; top: 16px; margin-bottom: 0; }
+            #collaborator-view > h3, #collaborator-view > .filter-bar, #collaborator-view > button[onclick="openAutocertModal()"],
+            #collaborator-view > .calendar-wrapper, #collaborator-view > .table-wrap { grid-column: 2; }
+            #collaborator-view > h3 { margin-top: 0; }
+            #collaborator-view > .filter-bar { flex-wrap: wrap; overflow: visible; }
+            #collaborator-view > .filter-bar select { flex: 1 1 120px; }
+            #collaborator-view > .filter-bar .filter-buttons { margin-left: 0; width: 100%; justify-content: flex-start; }
+            #collaborator-view > button[onclick="openAutocertModal()"] { justify-self: start; }
+            #collaborator-view > .form-box { display: block; }
+            #collaborator-view > .form-box .form-grid, #collaborator-view > .form-box [class*="grid"] { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
