@@ -318,8 +318,11 @@
             width: auto; padding: 8px 12px; font-size: 12px; margin: 0; white-space: nowrap; flex-shrink: 0;
         }
         
-        #a-search { 
-            flex: 2; min-width: 140px; border-color: var(--primary); 
+        #a-search {
+            flex: 2; min-width: 140px; border-color: var(--primary);
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%238e8e93" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19.5 19.5l-4.3-4.3"/></svg>');
+            background-repeat: no-repeat; background-position: 10px center; background-size: 15px;
+            padding-left: 34px;
         }
 
         /* Toggle Archivio Compatto */
@@ -401,7 +404,7 @@
         .card-name { font-weight: 700; font-size: 0.95rem; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 5px; }
         
         .card-actions-group { display: flex; gap: 4px; flex-shrink: 0; align-items: center; }
-        .card-action-btn { background: none; border: none; padding: 2px; font-size: 1rem; cursor: pointer; line-height: 1; width: auto; margin:0; }
+        .card-action-btn { background: none; border: none; padding: 2px; font-size: 1rem; cursor: pointer; line-height: 1; width: auto; margin:0; color: var(--text-muted); }
 
         .card-sub { color: var(--text-muted); font-size: 0.75rem; margin-bottom: 8px; }
         .card-stats-row { display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--bg-body); padding-top: 6px; }
@@ -514,6 +517,31 @@
         [data-theme="dark"] .status-extra { background:#1c2a3a; color:#7ec1ff; }
         #confronto-table td:last-child:before { display:none; }
         @media (max-width: 600px) { #confronto-table td:last-child { grid-column: span 2; flex-direction: row; justify-content: flex-end; } }
+        /* --- PITTOGRAMMI LIQUID GLASS (sostituiscono le emoji) --- */
+        [class^="ig-"] { display:inline-block; width:17px; height:17px; vertical-align:-3px; background-color: currentColor; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; flex-shrink: 0; }
+        .ig-bell { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17.5h12M8 17.5a4 4 0 0 1-1-2.6V11a5 5 0 0 1 10 0v3.9a4 4 0 0 1-1 2.6"/><path d="M10.3 20.5a1.8 1.8 0 0 0 3.4 0"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 17.5h12M8 17.5a4 4 0 0 1-1-2.6V11a5 5 0 0 1 10 0v3.9a4 4 0 0 1-1 2.6"/><path d="M10.3 20.5a1.8 1.8 0 0 0 3.4 0"/></svg>'); }
+        .ig-calendar { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="3"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/></svg>'); }
+        .ig-chart-bar { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5V13M10 20.5V7M16 20.5V10.5M4 20.5h16"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5V13M10 20.5V7M16 20.5V10.5M4 20.5h16"/></svg>'); }
+        .ig-check-circle { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.6 2.6L16.2 9"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.6 2.6L16.2 9"/></svg>'); }
+        .ig-download { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5V19a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 20 19v-6.5"/><path d="M12 2.5V13M12 13l-3.3-3.3M12 13l3.3-3.3"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5V19a1.5 1.5 0 0 0 1.5 1.5h13A1.5 1.5 0 0 0 20 19v-6.5"/><path d="M12 2.5V13M12 13l-3.3-3.3M12 13l3.3-3.3"/></svg>'); }
+        .ig-file { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h8l4 4V21a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/><path d="M14 2.5V7h4"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h8l4 4V21a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1Z"/><path d="M14 2.5V7h4"/></svg>'); }
+        .ig-folder { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7a1.5 1.5 0 0 1 1.5-1.5h4.4l1.8 2h7.3A1.5 1.5 0 0 1 20 9v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 3.5 18Z"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7a1.5 1.5 0 0 1 1.5-1.5h4.4l1.8 2h7.3A1.5 1.5 0 0 1 20 9v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 3.5 18Z"/></svg>'); }
+        .ig-gear { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/><path d="M19.4 13.3a1.6 1.6 0 0 0 .3 1.8l.1.1a1.9 1.9 0 1 1-2.7 2.7l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.3a1.9 1.9 0 1 1-3.8 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a1.9 1.9 0 1 1-2.7-2.7l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1h-.2a1.9 1.9 0 1 1 0-3.8h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1A1.9 1.9 0 1 1 7.5 4.9l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3.6a1.9 1.9 0 1 1 3.8 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a1.9 1.9 0 1 1 2.7 2.7l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1h.3a1.9 1.9 0 1 1 0 3.8h-.1a1.6 1.6 0 0 0-1.5 1Z"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/><path d="M19.4 13.3a1.6 1.6 0 0 0 .3 1.8l.1.1a1.9 1.9 0 1 1-2.7 2.7l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5v.3a1.9 1.9 0 1 1-3.8 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a1.9 1.9 0 1 1-2.7-2.7l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1h-.2a1.9 1.9 0 1 1 0-3.8h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1A1.9 1.9 0 1 1 7.5 4.9l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3.6a1.9 1.9 0 1 1 3.8 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a1.9 1.9 0 1 1 2.7 2.7l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1h.3a1.9 1.9 0 1 1 0 3.8h-.1a1.6 1.6 0 0 0-1.5 1Z"/></svg>'); }
+        .ig-lock { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>'); }
+        .ig-moon { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5Z"/></svg>'); }
+        .ig-new { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4.2M12 16.8V21M3 12h4.2M16.8 12H21M5.6 5.6l3 3M15.4 15.4l3 3M18.4 5.6l-3 3M8.6 15.4l-3 3"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4.2M12 16.8V21M3 12h4.2M16.8 12H21M5.6 5.6l3 3M15.4 15.4l3 3M18.4 5.6l-3 3M8.6 15.4l-3 3"/></svg>'); }
+        .ig-note { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h11l3 3V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M8 10h8M8 14h8M8 18h4"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h11l3 3V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M8 10h8M8 14h8M8 18h4"/></svg>'); }
+        .ig-pencil { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5h3.2L18.3 9.4a2 2 0 0 0 0-2.8l-1-1a2 2 0 0 0-2.8 0L3.5 16.6v3.9Z"/><path d="M13.5 6.6l3.9 3.9"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20.5h3.2L18.3 9.4a2 2 0 0 0 0-2.8l-1-1a2 2 0 0 0-2.8 0L3.5 16.6v3.9Z"/><path d="M13.5 6.6l3.9 3.9"/></svg>'); }
+        .ig-plus { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v15M4.5 12h15"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.5v15M4.5 12h15"/></svg>'); }
+        .ig-refresh { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5A8 8 0 0 1 18.6 6M20 4v4.2h-4.2"/><path d="M20 14.5A8 8 0 0 1 5.4 18M4 20v-4.2h4.2"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5A8 8 0 0 1 18.6 6M20 4v4.2h-4.2"/><path d="M20 14.5A8 8 0 0 1 5.4 18M4 20v-4.2h4.2"/></svg>'); }
+        .ig-search { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19.5 19.5l-4.3-4.3"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M19.5 19.5l-4.3-4.3"/></svg>'); }
+        .ig-sun { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"/></svg>'); }
+        .ig-trash { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9.5 7V4.8c0-.7.6-1.3 1.3-1.3h2.4c.7 0 1.3.6 1.3 1.3V7M6 7l1 13.2c.05.9.8 1.6 1.7 1.6h6.6c.9 0 1.65-.7 1.7-1.6L18 7"/><path d="M10 11v6M14 11v6"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9.5 7V4.8c0-.7.6-1.3 1.3-1.3h2.4c.7 0 1.3.6 1.3 1.3V7M6 7l1 13.2c.05.9.8 1.6 1.7 1.6h6.6c.9 0 1.65-.7 1.7-1.6L18 7"/><path d="M10 11v6M14 11v6"/></svg>'); }
+        .ig-trend { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5.3-5.3 3.3 3.3L20 7.5"/><path d="M15 7.5h5v5"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 17l5.3-5.3 3.3 3.3L20 7.5"/><path d="M15 7.5h5v5"/></svg>'); }
+        .ig-user { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.3-3.8 4.2-5.8 7.5-5.8s6.2 2 7.5 5.8"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.5 20c1.3-3.8 4.2-5.8 7.5-5.8s6.2 2 7.5 5.8"/></svg>'); }
+        .ig-warning { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8 21.3 20H2.7Z"/><path d="M12 9.5v4.4"/><path d="M12 16.8v.1" stroke-width="2.4"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8 21.3 20H2.7Z"/><path d="M12 9.5v4.4"/><path d="M12 16.8v.1" stroke-width="2.4"/></svg>'); }
+        .ig-wrench { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.6 4.9L4 16.3l3.4 3.4 5.1-5.1a4 4 0 0 0 4.9-5.6l-2.6 2.6-2.4-.6-.6-2.4Z"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.6 4.9L4 16.3l3.4 3.4 5.1-5.1a4 4 0 0 0 4.9-5.6l-2.6 2.6-2.4-.6-.6-2.4Z"/></svg>'); }
+        .ig-x-circle { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>'); }
     </style>
 </head>
 <body>
@@ -539,21 +567,21 @@
         <div class="header-actions">
             <!-- TASTO PER ANDARE ALLA SECONDA PAGINA (Turni Settimanali) -->
             <button id="week-btn" class="icon-btn-header hidden" onclick="window.location.href='turni_settimanali.html'" title="Turni Settimanali">
-                📅
+                <i class=ig-calendar></i>
             </button>
 
             <button id="notice-btn" class="icon-btn-header hidden" onclick="openNotices()">
-                🔔<span id="notice-badge" class="badge hidden">0</span>
+                <i class=ig-bell></i><span id="notice-badge" class="badge hidden">0</span>
             </button>
-            <button id="theme-btn" class="icon-btn-header" onclick="toggleTheme()">🌙</button>
+            <button id="theme-btn" class="icon-btn-header" onclick="toggleTheme()"><i class=ig-moon></i></button>
             <button id="logout-btn" class="btn-secondary hidden" style="width:auto; padding:8px 16px;">Esci</button>
         </div>
     </div>
 
     <!-- TABS NAV (Visible only when logged in) -->
     <div id="tab-nav" class="tab-container hidden">
-        <button class="tab-btn active" onclick="switchTab('registro')">📝 Registro Ore</button>
-        <button class="tab-btn" onclick="switchTab('planning')">📅 Planning Turni</button>
+        <button class="tab-btn active" onclick="switchTab('registro')"><i class=ig-note></i> Registro Ore</button>
+        <button class="tab-btn" onclick="switchTab('planning')"><i class=ig-calendar></i> Planning Turni</button>
     </div>
 
     <!-- 1. LOGIN -->
@@ -582,7 +610,7 @@
     <!-- 3. COLLABORATORE DASHBOARD (Registro) -->
     <div id="collaborator-view" class="view-section">
         <div class="form-box">
-            <h3>➕ Nuovo Turno</h3>
+            <h3><i class=ig-plus></i> Nuovo Turno</h3>
             <div class="time-row">
                 <div><label>Data</label><input type="date" id="c-data"></div>
                 <div><label>Mansione</label>
@@ -605,7 +633,7 @@
             <button id="btn-salva" onclick="salvaOre()" class="btn-primary" style="margin-top:15px">Registra Turno</button>
         </div>
 
-        <h3>📅 I Miei Turni</h3>
+        <h3><i class=ig-calendar></i> I Miei Turni</h3>
 
         <div class="filter-bar">
             <select id="c-sort-order" onchange="renderCollabTable()">
@@ -631,12 +659,12 @@
                 <option value="2024">2024</option><option value="2025">2025</option><option value="2026">2026</option>
             </select>
             <div class="filter-buttons">
-                <button onclick="excelCollab()" class="btn-success">📥 Scarica Excel</button>
-                <button onclick="openPdfSignModal()" class="btn-danger">📄 Scarica PDF</button>
+                <button onclick="excelCollab()" class="btn-success"><i class=ig-download></i> Scarica Excel</button>
+                <button onclick="openPdfSignModal()" class="btn-danger"><i class=ig-file></i> Scarica PDF</button>
             </div>
         </div>
         
-        <button onclick="openAutocertModal()" class="btn-warning" style="margin-bottom:20px">📝 Autocertificazione</button>
+        <button onclick="openAutocertModal()" class="btn-warning" style="margin-bottom:20px"><i class=ig-note></i> Autocertificazione</button>
 
         <div class="calendar-wrapper">
             <div class="cal-header">
@@ -665,7 +693,7 @@
         
         <!-- NUOVA SEZIONE STORICO COMPENSI COLLABORATORE -->
         <div id="collab-history-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-            <h3 style="color:var(--primary); margin-top:0">📊 Il Mio Storico Compensi</h3>
+            <h3 style="color:var(--primary); margin-top:0"><i class=ig-chart-bar></i> Il Mio Storico Compensi</h3>
             <div id="collab-history-content"></div>
         </div>
         
@@ -678,7 +706,7 @@
     <div id="admin-view" class="view-section">
         <h3 style="margin-top:0">Riepilogo</h3>
         <div class="filter-bar">
-            <input type="text" id="a-search" placeholder="🔍 Cerca collaboratore..." style="flex:2; min-width:180px; border-color:var(--primary)">
+            <input type="text" id="a-search" placeholder="Cerca collaboratore..." style="flex:2; min-width:180px; border-color:var(--primary)">
             
             <div class="archive-toggle-container">
                  <input type="checkbox" id="a-show-archived" onchange="loadAdminData()">
@@ -705,14 +733,14 @@
             
             <div class="filter-buttons">
                 <button onclick="loadAdminData()" class="btn-primary">Aggiorna</button>
-                <button onclick="excelAdminGlobal()" class="btn-success">📥 Scarica Excel</button>
+                <button onclick="excelAdminGlobal()" class="btn-success"><i class=ig-download></i> Scarica Excel</button>
             </div>
         </div>
 
         <div id="cards-container" class="cards-grid"></div>
 
         <div id="admin-global-totals" class="form-box" style="margin-top: 20px; display: none;">
-            <h3 style="color:var(--text-main); margin-top:0; font-size: 1.1rem;">📊 Totali Selezionati</h3>
+            <h3 style="color:var(--text-main); margin-top:0; font-size: 1.1rem;"><i class=ig-chart-bar></i> Totali Selezionati</h3>
             <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
                 <div>
                     <span class="stat-label" style="font-size:0.75rem;">TOTALE ORE</span>
@@ -732,13 +760,13 @@
 
         <!-- NUOVA SEZIONE STORICO GLOBALE AZIENDALE -->
         <div id="admin-global-history-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; display: none;">
-            <h3 style="color:var(--primary); margin-top:0">📈 Riepilogo Storico Aziendale</h3>
+            <h3 style="color:var(--primary); margin-top:0"><i class=ig-trend></i> Riepilogo Storico Aziendale</h3>
             <div id="admin-global-history-content"></div>
         </div>
 
         <div style="margin-top: 40px;"></div>
         <div class="form-box" style="background:var(--bg-body); border-color:var(--border-color)">
-            <h3 style="color:var(--primary); margin-top:0">🛠️ Anagrafica</h3>
+            <h3 style="color:var(--primary); margin-top:0"><i class=ig-wrench></i> Anagrafica</h3>
             <div class="time-row" style="margin-bottom:0">
                 <input type="email" id="adm-email" placeholder="Email">
                 <input type="text" id="adm-name" placeholder="Cognome Nome">
@@ -752,7 +780,7 @@
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:var(--bg-body); padding:10px; border-radius:12px; border:1px solid var(--border-color)">
             <h3 style="margin:0" id="detail-name">Utente</h3>
             <div>
-                <button onclick="openAddShiftModal()" class="btn-primary" style="display:inline-flex; width:auto; margin-right:5px">➕ Aggiungi Turno</button>
+                <button onclick="openAddShiftModal()" class="btn-primary" style="display:inline-flex; width:auto; margin-right:5px"><i class=ig-plus></i> Aggiungi Turno</button>
                 <button onclick="closeDetail()" class="btn-secondary" style="display:inline-flex; width:auto; padding:5px 15px; margin:0">Indietro</button>
             </div>
         </div>
@@ -784,13 +812,13 @@
             Totale: <span id="d-totale">0</span> ore • <span style="color:var(--money-color)">€ <span id="d-soldi">0.00</span></span>
         </div>
         <div id="d-stats-container" class="stats-container"></div>
-        <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:15px; width:auto">📥 Scarica Excel Utente</button>
-        <button onclick="openPdfSignModal(true)" class="btn-danger" style="margin-top:15px; width:auto">📄 Scarica PDF Utente</button>
-        <button onclick="openAutocertModal(true)" class="btn-warning" style="margin-top:15px; width:auto">📝 Autocertificazione</button>
+        <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:15px; width:auto"><i class=ig-download></i> Scarica Excel Utente</button>
+        <button onclick="openPdfSignModal(true)" class="btn-danger" style="margin-top:15px; width:auto"><i class=ig-file></i> Scarica PDF Utente</button>
+        <button onclick="openAutocertModal(true)" class="btn-warning" style="margin-top:15px; width:auto"><i class=ig-note></i> Autocertificazione</button>
         
         <!-- NUOVA SEZIONE VERIFICA TURNI PIANIFICATI (solo Admin) -->
         <div id="confronto-turni-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-            <h3 style="color:var(--primary); margin-top:0">🔍 Verifica Turni Pianificati</h3>
+            <h3 style="color:var(--primary); margin-top:0"><i class=ig-search></i> Verifica Turni Pianificati</h3>
             <p style="font-size:0.8rem; color:var(--text-muted); margin:0 0 10px 0;">Confronto tra i turni assegnati in Programmazione Turni e le ore registrate dal collaboratore, per il periodo selezionato nei filtri sopra.</p>
             <div id="confronto-summary" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
             <div class="table-wrap">
@@ -803,7 +831,7 @@
 
         <!-- NUOVA SEZIONE STORICO COMPENSI -->
         <div id="admin-history-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-            <h3 style="color:var(--primary); margin-top:0">📊 Storico Compensi (Tutti gli anni)</h3>
+            <h3 style="color:var(--primary); margin-top:0"><i class=ig-chart-bar></i> Storico Compensi (Tutti gli anni)</h3>
             <div id="admin-history-content"></div>
         </div>
     </div>
@@ -876,7 +904,7 @@
 
         <div style="display:flex; gap:10px">
             <button class="btn-secondary" onclick="document.getElementById('pdf-sign-modal').style.display='none'">Annulla</button>
-            <button id="btn-do-pdf-sign" class="btn-danger btn-disabled" onclick="executePdfGeneration()" disabled>📄 Scarica PDF</button>
+            <button id="btn-do-pdf-sign" class="btn-danger btn-disabled" onclick="executePdfGeneration()" disabled><i class=ig-file></i> Scarica PDF</button>
         </div>
     </div>
 </div>
@@ -923,7 +951,7 @@
 
         <div style="display:flex; gap:10px; margin-top:20px">
             <button class="btn-secondary" onclick="document.getElementById('autocert-modal').style.display='none'">Annulla</button>
-            <button id="btn-gen-pdf" class="btn-primary btn-disabled" onclick="generateAutocertPDF()" disabled>📄 Genera PDF</button>
+            <button id="btn-gen-pdf" class="btn-primary btn-disabled" onclick="generateAutocertPDF()" disabled><i class=ig-file></i> Genera PDF</button>
         </div>
     </div>
 </div>
@@ -1062,11 +1090,11 @@
         const next = current === 'dark' ? 'light' : 'dark';
         html.setAttribute('data-theme', next);
         localStorage.setItem('theme', next);
-        document.getElementById('theme-btn').innerText = next === 'dark' ? '☀️' : '🌙';
+        document.getElementById('theme-btn').innerHTML = next === 'dark' ? '<i class=ig-sun></i>' : '<i class=ig-moon></i>';
     };
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
-    document.getElementById('theme-btn').innerText = savedTheme === 'dark' ? '☀️' : '🌙';
+    document.getElementById('theme-btn').innerHTML = savedTheme === 'dark' ? '<i class=ig-sun></i>' : '<i class=ig-moon></i>';
 
     // UI UTILS
     window.toast = (msg) => { const t = document.getElementById("toast"); t.innerText=msg; t.className="show"; setTimeout(()=>t.className="",3000); };
@@ -1112,7 +1140,7 @@
             const data = d.data();
             count++;
             const dateStr = new Date(data.date.seconds * 1000).toLocaleDateString('it-IT');
-            const delBtn = isAdmin ? `<button class="notice-del-btn" onclick="deleteNotice('${d.id}')">🗑️</button>` : '';
+            const delBtn = isAdmin ? `<button class="notice-del-btn" onclick="deleteNotice('${d.id}')"><i class=ig-trash></i></button>` : '';
             list.innerHTML += `<div class="notice-item"><div class="notice-content"><span class="notice-date">${dateStr}</span><div class="notice-text">${data.text}</div></div>${delBtn}</div>`;
         });
 
@@ -1478,7 +1506,7 @@
                 yearOre += data.ore; yearSoldi += data.soldi;
                 monthsHtml += `<div class="history-month-row"><span style="font-weight:500;">${mNames[m]}</span><span><strong>${Number(data.ore.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${data.soldi.toFixed(2)}</span></span></div>`;
             });
-            html += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span>📅 ${y}</span><span><strong>${Number(yearOre.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${yearSoldi.toFixed(2)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
+            html += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span><i class=ig-calendar></i> ${y}</span><span><strong>${Number(yearOre.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${yearSoldi.toFixed(2)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
         });
         
         contentDiv.innerHTML = html || '<p style="color:var(--text-muted); text-align:center; padding:10px; font-size: 0.85rem;">Nessuno storico presente.</p>';
@@ -1526,9 +1554,9 @@
             const locked = isLocked(t.data);
             let actionHtml = '';
             if (!locked) {
-                actionHtml = `<div class="action-icons"><button class="icon-btn" onclick="duplicaTurno('${t.id}')">📄</button><button class="icon-btn" onclick="editRow('${t.id}')">✏️</button><button class="icon-btn" onclick="delRow('${t.id}')">🗑️</button></div>`;
+                actionHtml = `<div class="action-icons"><button class="icon-btn" onclick="duplicaTurno('${t.id}')"><i class=ig-file></i></button><button class="icon-btn" onclick="editRow('${t.id}')"><i class=ig-pencil></i></button><button class="icon-btn" onclick="delRow('${t.id}')"><i class=ig-trash></i></button></div>`;
             } else {
-                actionHtml = `<span class="icon-lock">🔒</span>`;
+                actionHtml = `<span class="icon-lock"><i class=ig-lock></i></span>`;
             }
 
             // APPLICA SFONDO ALLA RIGA
@@ -1729,8 +1757,8 @@
                 // Determine Archive Button Appearance
                 const isArchived = u.archived === true;
                 const archiveAction = isArchived 
-                    ? `<button class="card-action-btn" onclick="event.stopPropagation(); toggleArchive('${u.email}', false)" title="Ripristina">♻️</button>` 
-                    : `<button class="card-action-btn" onclick="event.stopPropagation(); toggleArchive('${u.email}', true)" title="Archivia">📂</button>`;
+                    ? `<button class="card-action-btn" onclick="event.stopPropagation(); toggleArchive('${u.email}', false)" title="Ripristina"><i class=ig-refresh></i></button>` 
+                    : `<button class="card-action-btn" onclick="event.stopPropagation(); toggleArchive('${u.email}', true)" title="Archivia"><i class=ig-folder></i></button>`;
                 
                 const cardClass = isArchived ? "user-card archived" : "user-card";
 
@@ -1739,7 +1767,7 @@
                         <div class="card-header">
                             <div class="card-name">${u.nome}</div>
                             <div class="card-actions-group">
-                                <button class="card-action-btn" onclick="event.stopPropagation(); openEditUser('${u.email}','${u.nome}')">✏️</button>
+                                <button class="card-action-btn" onclick="event.stopPropagation(); openEditUser('${u.email}','${u.nome}')"><i class=ig-pencil></i></button>
                                 ${archiveAction}
                             </div>
                         </div>
@@ -1794,9 +1822,9 @@
             Object.keys(historyData[y_hist]).sort((a,b) => b-a).forEach(m_hist => {
                 const data = historyData[y_hist][m_hist];
                 yearOre += data.ore; yearSoldi += data.soldi;
-                monthsHtml += `<div class="history-month-row"><span style="font-weight:500; min-width:80px; display:inline-block;">${mNames[m_hist]}</span><span style="font-size:0.75rem; color:var(--text-muted); margin-right:auto;">👤 ${data.collabs.size} collab.</span><span><strong>${Number(data.ore.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${data.soldi.toFixed(2)}</span></span></div>`;
+                monthsHtml += `<div class="history-month-row"><span style="font-weight:500; min-width:80px; display:inline-block;">${mNames[m_hist]}</span><span style="font-size:0.75rem; color:var(--text-muted); margin-right:auto;"><i class=ig-user></i> ${data.collabs.size} collab.</span><span><strong>${Number(data.ore.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${data.soldi.toFixed(2)}</span></span></div>`;
             });
-            histHtml += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span>📅 ${y_hist}</span><span><strong>${Number(yearOre.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${yearSoldi.toFixed(2)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
+            histHtml += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span><i class=ig-calendar></i> ${y_hist}</span><span><strong>${Number(yearOre.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${yearSoldi.toFixed(2)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
         });
         document.getElementById('admin-global-history-content').innerHTML = histHtml || '<p style="color:var(--text-muted); text-align:center; padding:10px; font-size: 0.85rem;">Nessuno storico presente.</p>';
         document.getElementById('admin-global-history-container').style.display = 'block';
@@ -1969,24 +1997,24 @@
 
             if (match) {
                 usedActualIds.add(match.id);
-                status = 'ok'; statusLabel = '✅ Corrisponde'; detailTxt = `${match.oraInizio}-${match.oraFine}`;
+                status = 'ok'; statusLabel = '<i class=ig-check-circle></i> Corrisponde'; detailTxt = `${match.oraInizio}-${match.oraFine}`;
                 okCount++;
             } else {
                 match = candidatesSameDay.find(a => a.mansione === p.mansione);
                 if (match) {
                     usedActualIds.add(match.id);
-                    status = 'warn'; statusLabel = '⚠️ Orario diverso';
+                    status = 'warn'; statusLabel = '<i class=ig-warning></i> Orario diverso';
                     detailTxt = `Reg.: ${match.oraInizio}-${match.oraFine} (${match.ore}h)`;
                     warnCount++;
                 } else {
                     match = candidatesSameDay[0];
                     if (match) {
                         usedActualIds.add(match.id);
-                        status = 'warn'; statusLabel = '⚠️ Mansione diversa';
+                        status = 'warn'; statusLabel = '<i class=ig-warning></i> Mansione diversa';
                         detailTxt = `Reg.: ${match.mansione} ${match.oraInizio}-${match.oraFine}`;
                         warnCount++;
                     } else {
-                        status = 'missing'; statusLabel = '❌ Non registrato'; detailTxt = '—';
+                        status = 'missing'; statusLabel = '<i class=ig-x-circle></i> Non registrato'; detailTxt = '—';
                         missCount++;
                     }
                 }
@@ -1994,10 +2022,10 @@
 
             return `<tr>
                 <td data-label="Data">${fmtDate(p.data)}</td>
-                <td data-label="Pianificato">${p.mansione}<br><span style="font-size:0.75rem; color:var(--text-muted)">${p.oraInizio}-${p.oraFine}</span>${p.sostituzioneDi ? `<br><span style="font-size:0.7rem; color:#ff9500; font-weight:600">🔄 Sostituzione di ${p.sostituzioneDi}</span>` : ''}${p.privato ? `<br><span style="font-size:0.7rem; color:var(--primary); font-weight:600">🔒 Privato</span>` : ''}</td>
+                <td data-label="Pianificato">${p.mansione}<br><span style="font-size:0.75rem; color:var(--text-muted)">${p.oraInizio}-${p.oraFine}</span>${p.sostituzioneDi ? `<br><span style="font-size:0.7rem; color:#ff9500; font-weight:600"><i class=ig-refresh></i> Sostituzione di ${p.sostituzioneDi}</span>` : ''}${p.privato ? `<br><span style="font-size:0.7rem; color:var(--primary); font-weight:600"><i class=ig-lock></i> Privato</span>` : ''}</td>
                 <td data-label="Stato"><span class="status-badge status-${status}">${statusLabel}</span></td>
                 <td data-label="Dettaglio" style="font-size:0.75rem; color:var(--text-muted)">${detailTxt}</td>
-                <td data-label="" class="actions-cell"><button class="icon-btn" onclick="deleteProgrammato('${p.id}','${p.sourceCollection}')" title="Elimina turno programmato">🗑️</button></td>
+                <td data-label="" class="actions-cell"><button class="icon-btn" onclick="deleteProgrammato('${p.id}','${p.sourceCollection}')" title="Elimina turno programmato"><i class=ig-trash></i></button></td>
             </tr>`;
         }).join('');
 
@@ -2005,16 +2033,16 @@
         let extraRows = extra.map(a => `<tr>
                 <td data-label="Data">${fmtDate(a.data)}</td>
                 <td data-label="Registrato">${a.mansione}<br><span style="font-size:0.75rem; color:var(--text-muted)">${a.oraInizio}-${a.oraFine}</span></td>
-                <td data-label="Stato"><span class="status-badge status-extra">🆕 Non pianificato</span></td>
+                <td data-label="Stato"><span class="status-badge status-extra"><i class=ig-new></i> Non pianificato</span></td>
                 <td data-label="Dettaglio" style="font-size:0.75rem; color:var(--text-muted)">${a.ore}h</td>
                 <td data-label=""></td>
             </tr>`).join('');
 
         document.getElementById('confronto-summary').innerHTML =
-            `<span class="status-badge status-ok">✅ Corrispondono: ${okCount}</span>
-             <span class="status-badge status-warn">⚠️ Differenze: ${warnCount}</span>
-             <span class="status-badge status-missing">❌ Non registrati: ${missCount}</span>
-             <span class="status-badge status-extra">🆕 Non pianificati: ${extra.length}</span>`;
+            `<span class="status-badge status-ok"><i class=ig-check-circle></i> Corrispondono: ${okCount}</span>
+             <span class="status-badge status-warn"><i class=ig-warning></i> Differenze: ${warnCount}</span>
+             <span class="status-badge status-missing"><i class=ig-x-circle></i> Non registrati: ${missCount}</span>
+             <span class="status-badge status-extra"><i class=ig-new></i> Non pianificati: ${extra.length}</span>`;
 
         let tbody = rows;
         if (extraRows) tbody += `<tr><td colspan="5" style="padding-top:14px; font-size:0.7rem; text-transform:uppercase; color:var(--text-muted); font-weight:700; background:transparent;">Turni registrati senza pianificazione</td></tr>` + extraRows;
@@ -2133,7 +2161,7 @@
 
             // APPLICA SFONDO ALLA RIGA
             const bg = getRoleBg(t.mansione);
-            const adminBadge = t.adminFlag ? `<span style="background:#fef3c7; color:#d97706; padding:2px 6px; border-radius:8px; font-size:0.6rem; font-weight:bold; margin-left:6px; white-space:nowrap;" title="Segnalato al collaboratore">⚙️ ADMIN</span>` : '';
+            const adminBadge = t.adminFlag ? `<span style="background:#fef3c7; color:#d97706; padding:2px 6px; border-radius:8px; font-size:0.6rem; font-weight:bold; margin-left:6px; white-space:nowrap;" title="Segnalato al collaboratore"><i class=ig-gear></i> ADMIN</span>` : '';
 
             // FORMATTAZIONE DATA CON GIORNO DELLA SETTIMANA
             const dateObj = new Date(t.data);
@@ -2147,7 +2175,7 @@
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
                     <td data-label="Ore"><strong>${t.ore}</strong></td>
                     <td data-label="Note">${t.note||''}</td>
-                    <td class="actions-cell"><div class="action-icons"><button class="icon-btn" onclick="editRow('${t.id}', true)">✏️</button><button class="icon-btn" onclick="delRow('${t.id}', true)">🗑️</button></div></td>
+                    <td class="actions-cell"><div class="action-icons"><button class="icon-btn" onclick="editRow('${t.id}', true)"><i class=ig-pencil></i></button><button class="icon-btn" onclick="delRow('${t.id}', true)"><i class=ig-trash></i></button></div></td>
                 </tr>
             `;
         });
@@ -2194,7 +2222,7 @@
                     yearOre += data.ore; yearSoldi += data.soldi;
                     monthsHtml += `<div class="history-month-row"><span style="font-weight:500;">${mNames[m]}</span><span><strong>${Number(data.ore.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${data.soldi.toFixed(2)}</span></span></div>`;
                 });
-                html += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span>📅 ${y}</span><span><strong>${Number(yearOre.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${yearSoldi.toFixed(2)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
+                html += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span><i class=ig-calendar></i> ${y}</span><span><strong>${Number(yearOre.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${yearSoldi.toFixed(2)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
             });
             contentDiv.innerHTML = html || '<p style="color:var(--text-muted); text-align:center; padding:10px; font-size: 0.85rem;">Nessuno storico presente.</p>';
         } catch(err) {
