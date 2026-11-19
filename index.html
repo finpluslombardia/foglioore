@@ -574,7 +574,7 @@
         @media (min-width: 601px) {
             .turni-list, .turni-list thead, .turni-list tbody { display: block; }
             .turni-list thead tr, .turni-list tbody tr {
-                display: grid; grid-template-columns: 1.2fr 1.5fr 1fr 0.6fr 2fr auto; align-items: center; gap: 14px;
+                display: grid; grid-template-columns: 1.2fr 1.2fr 1.7fr 0.6fr 1.5fr auto; align-items: center; gap: 14px;
             }
             .turni-list thead th { padding: 6px 18px; }
             .turni-list tbody tr {
@@ -659,8 +659,7 @@
         @media (min-width: 601px) {
             .filter-bar select { flex: 0 1 170px; min-width: 120px; }
             .filter-bar .filter-buttons { margin-left: auto; }
-            button[onclick="openAutocertModal()"] { width: auto; padding: 8px 18px; font-size: 13px; margin-bottom: 14px !important; }
-        }
+                    }
 
         /* desktop: pagina collaboratore su due colonne (nuovo turno | i miei turni) */
         @media (min-width: 1000px) {
@@ -668,15 +667,28 @@
             #collaborator-view > .hero, #collaborator-view > #c-stats-container,
             #collaborator-view > #collab-history-container, #collaborator-view > div[style*="text-align:center"] { grid-column: 1 / -1; }
             #collaborator-view > .form-box { grid-column: 1; grid-row: 3 / span 6; position: sticky; top: 16px; margin-bottom: 0; }
-            #collaborator-view > h3, #collaborator-view > .filter-bar, #collaborator-view > button[onclick="openAutocertModal()"],
+            #collaborator-view > h3, #collaborator-view > .filter-bar,
             #collaborator-view > .calendar-wrapper, #collaborator-view > .table-wrap { grid-column: 2; }
             #collaborator-view > h3 { margin-top: 0; }
             #collaborator-view > .filter-bar { flex-wrap: wrap; overflow: visible; }
             #collaborator-view > .filter-bar select { flex: 1 1 120px; }
             #collaborator-view > .filter-bar .filter-buttons { margin-left: 0; width: 100%; justify-content: flex-start; }
-            #collaborator-view > button[onclick="openAutocertModal()"] { justify-self: start; }
             #collaborator-view > .form-box { display: block; }
             #collaborator-view > .form-box .form-grid, #collaborator-view > .form-box [class*="grid"] { grid-template-columns: 1fr; }
+        }
+
+        /* ordine colonne desktop: data, orario, mansione, ore */
+        @media (min-width: 601px) {
+            .turni-list th:nth-child(3), .turni-list td:nth-child(3) { order: 2; }
+            .turni-list th:nth-child(2), .turni-list td:nth-child(2) { order: 3; }
+            .turni-list th:nth-child(n+4), .turni-list td:nth-child(n+4) { order: 4; }
+            .turni-list th:nth-child(5), .turni-list td:nth-child(5) { order: 5; }
+            .turni-list th:nth-child(6), .turni-list td:nth-child(6) { order: 6; }
+        }
+        .calendar-wrapper { max-width: 760px; }
+        @media (min-width: 601px) { #collaborator-view > .calendar-wrapper { width: 100%; box-sizing: border-box; } .turni-list td:nth-child(3) { white-space: nowrap; } }
+        @media (max-width: 600px) {
+            .turni-list tbody tr:not(.editing) td:nth-child(1) { color: var(--text-main); font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -803,10 +815,10 @@
             <div class="filter-buttons">
                 <button onclick="excelCollab()" class="btn-success"><i class=ig-download></i> Scarica Excel</button>
                 <button onclick="openPdfSignModal()" class="btn-danger"><i class=ig-file></i> Scarica PDF</button>
+                <button onclick="openAutocertModal()" class="btn-warning"><i class=ig-note></i> Autocertificazione</button>
             </div>
         </div>
         
-        <button onclick="openAutocertModal()" class="btn-warning" style="margin-bottom:20px"><i class=ig-note></i> Autocertificazione</button>
 
         <div class="calendar-wrapper">
             <div class="cal-header">
