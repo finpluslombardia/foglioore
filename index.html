@@ -37,13 +37,13 @@
             --dot-fitness: #ffcc00;
             --dot-segreteria: #8e8e93;
 
-            /* SFONDI RUOLI */
-            --bg-assistente: #ffecec;
-            --bg-istruttore: #eafbe7;
-            --bg-fitness: #fff8cc;
-            --bg-propaganda: #f6e4ff;
-            --bg-lezione: #e0f0ff;
-            --bg-segreteria: #f4f4f5;
+            /* SFONDI RUOLI (traslucidi per le righe in vetro smerigliato) */
+            --bg-assistente: rgba(255,59,48,0.12);
+            --bg-istruttore: rgba(52,199,89,0.12);
+            --bg-fitness: rgba(255,204,0,0.16);
+            --bg-propaganda: rgba(175,82,222,0.12);
+            --bg-lezione: rgba(0,122,255,0.10);
+            --bg-segreteria: rgba(142,142,147,0.12);
 
             /* LIQUID GLASS (iOS 26/27) */
             --glass-strong: rgba(255,255,255,0.65);
@@ -65,13 +65,13 @@
             --hover-btn: #3a3a3c;
             --primary-light: #0a2a4d;
 
-            /* SFONDI RUOLI DARK */
-            --bg-assistente: #3a1c1c;
-            --bg-istruttore: #1c3a1c;
-            --bg-fitness: #3a331c;
-            --bg-propaganda: #2e1c3a;
-            --bg-lezione: #1c2a3a;
-            --bg-segreteria: #2c2c2e;
+            /* SFONDI RUOLI DARK (traslucidi) */
+            --bg-assistente: rgba(255,69,58,0.22);
+            --bg-istruttore: rgba(48,209,88,0.20);
+            --bg-fitness: rgba(255,214,10,0.22);
+            --bg-propaganda: rgba(191,90,242,0.22);
+            --bg-lezione: rgba(10,132,255,0.20);
+            --bg-segreteria: rgba(174,174,178,0.16);
 
             /* LIQUID GLASS DARK */
             --glass-strong: rgba(28,28,30,0.6);
@@ -354,6 +354,15 @@
         td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
         td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
 
+        /* Righe tabella in vetro smerigliato (lo sfondo per-ruolo resta, ma traslucido) */
+        .table-wrap tbody tr {
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            backdrop-filter: blur(14px) saturate(160%);
+            -webkit-backdrop-filter: blur(14px) saturate(160%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+
         .action-icons { display: flex; gap: 8px; justify-content: flex-end; }
         .icon-btn { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1); border-radius:4px; font-size: 1rem; cursor: pointer; padding: 2px 5px; width: auto; color: var(--text-main); transition: 0.2s; }
         .icon-btn:hover { background: white; transform: scale(1.1); }
@@ -542,6 +551,49 @@
         .ig-warning { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8 21.3 20H2.7Z"/><path d="M12 9.5v4.4"/><path d="M12 16.8v.1" stroke-width="2.4"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8 21.3 20H2.7Z"/><path d="M12 9.5v4.4"/><path d="M12 16.8v.1" stroke-width="2.4"/></svg>'); }
         .ig-wrench { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.6 4.9L4 16.3l3.4 3.4 5.1-5.1a4 4 0 0 0 4.9-5.6l-2.6 2.6-2.4-.6-.6-2.4Z"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.6 4.9L4 16.3l3.4 3.4 5.1-5.1a4 4 0 0 0 4.9-5.6l-2.6 2.6-2.4-.6-.6-2.4Z"/></svg>'); }
         .ig-x-circle { -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>'); }
+
+        /* ===== REDESIGN PAGINA UTENTE (Registro Ore) ===== */
+        .hero {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;
+            padding: 26px 28px; margin-bottom: 14px; border-radius: 28px; color: #fff; position: relative; overflow: hidden;
+            background: linear-gradient(135deg, rgba(10,132,255,0.92), rgba(94,92,230,0.88) 55%, rgba(175,82,222,0.85));
+            box-shadow: 0 18px 40px rgba(10,80,200,0.25), inset 0 1px 1px rgba(255,255,255,0.5);
+        }
+        .hero::before { content: ""; position: absolute; top: -60%; left: -10%; width: 70%; height: 140%; background: radial-gradient(closest-side, rgba(255,255,255,0.35), transparent); pointer-events: none; }
+        .hero-stat { position: relative; display: flex; flex-direction: column; gap: 4px; }
+        .hero-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; }
+        .hero-val { font-size: 3rem; font-weight: 800; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+        .hero-val small { font-size: 1.1rem; font-weight: 600; opacity: 0.8; margin: 0 4px; letter-spacing: 0; }
+        .stats-container.breakdown { justify-content: flex-start; margin: 0 0 18px 0; gap: 8px; }
+        .stats-container.breakdown .stat-pill { padding: 6px 14px; border-radius: 999px; font-size: 0.78rem; }
+        .detail-title { font-size: 1.35rem; text-transform: none; letter-spacing: -0.01em; color: var(--text-main); }
+        .action-bar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+        .filter-bar select { border-radius: 999px; padding-left: 16px; }
+
+        /* turni come card (desktop); su mobile resta il layout a card esistente */
+        @media (min-width: 601px) {
+            .turni-list, .turni-list thead, .turni-list tbody { display: block; }
+            .turni-list thead tr, .turni-list tbody tr {
+                display: grid; grid-template-columns: 1.2fr 1.5fr 1fr 0.6fr 2fr auto; align-items: center; gap: 14px;
+            }
+            .turni-list thead th { padding: 6px 18px; }
+            .turni-list tbody tr {
+                padding: 12px 18px; margin-bottom: 10px; border-radius: 18px;
+                box-shadow: inset 4px 0 0 var(--accent, transparent), 0 4px 14px rgba(0,0,0,0.05), inset 0 1px 0 rgba(255,255,255,0.25);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .turni-list tbody tr:hover { transform: translateY(-2px); box-shadow: inset 4px 0 0 var(--accent, transparent), 0 10px 24px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.3); }
+            .turni-list td { padding: 0; border-radius: 0; }
+            .turni-list td:nth-child(2) { font-weight: 600; }
+            .turni-list td:nth-child(3) { font-variant-numeric: tabular-nums; color: var(--text-muted); }
+            .turni-list td:nth-child(4) strong { display: inline-block; min-width: 42px; text-align: center; padding: 4px 10px; border-radius: 999px; background: var(--glass-strong); color: var(--primary); font-size: 1rem; }
+            .turni-list td:nth-child(5) { color: var(--text-muted); font-size: 0.85rem; }
+        }
+        @media (hover: hover) and (min-width: 601px) {
+            .turni-list .action-icons { opacity: 0.45; transition: opacity 0.2s; }
+            .turni-list tbody tr:hover .action-icons { opacity: 1; }
+        }
+        @media (max-width: 600px) { .hero { padding: 20px; } .hero-val { font-size: 2.4rem; } }
     </style>
 </head>
 <body>
@@ -609,6 +661,12 @@
 
     <!-- 3. COLLABORATORE DASHBOARD (Registro) -->
     <div id="collaborator-view" class="view-section">
+        <div class="hero">
+            <div class="hero-stat"><span class="hero-label">Ore nel periodo</span><span class="hero-val"><span id="c-totale">0</span><small>h</small></span></div>
+            <div class="hero-stat"><span class="hero-label">Compenso stimato</span><span class="hero-val"><small>€</small><span id="c-soldi">0.00</span></span></div>
+        </div>
+        <div id="c-stats-container" class="stats-container breakdown"></div>
+
         <div class="form-box">
             <h3><i class=ig-plus></i> Nuovo Turno</h3>
             <div class="time-row">
@@ -681,15 +739,11 @@
         </div>
 
         <div class="table-wrap">
-            <table>
+            <table class="turni-list">
                 <thead><tr><th>Data</th><th>Mansione</th><th>Orario</th><th>Ore</th><th>Note</th><th style="text-align:right">Azioni</th></tr></thead>
                 <tbody id="collab-tbody"></tbody>
             </table>
         </div>
-        <div style="text-align:right; font-size:1.2rem; font-weight:700; margin-top:10px; color:var(--primary)">
-            Totale: <span id="c-totale">0</span> ore • <span style="color:var(--money-color)">€ <span id="c-soldi">0.00</span></span>
-        </div>
-        <div id="c-stats-container" class="stats-container"></div>
         
         <!-- NUOVA SEZIONE STORICO COMPENSI COLLABORATORE -->
         <div id="collab-history-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
@@ -777,13 +831,19 @@
 
     <!-- 5. ADMIN DETAIL -->
     <div id="admin-detail" class="view-section">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:var(--bg-body); padding:10px; border-radius:12px; border:1px solid var(--border-color)">
-            <h3 style="margin:0" id="detail-name">Utente</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; background:var(--glass-soft); backdrop-filter:blur(16px) saturate(160%); -webkit-backdrop-filter:blur(16px) saturate(160%); padding:10px; border-radius:14px; border:1px solid var(--glass-border)">
+            <h3 style="margin:0" id="detail-name" class="detail-title">Utente</h3>
             <div>
                 <button onclick="openAddShiftModal()" class="btn-primary" style="display:inline-flex; width:auto; margin-right:5px"><i class=ig-plus></i> Aggiungi Turno</button>
                 <button onclick="closeDetail()" class="btn-secondary" style="display:inline-flex; width:auto; padding:5px 15px; margin:0">Indietro</button>
             </div>
         </div>
+
+        <div class="hero">
+            <div class="hero-stat"><span class="hero-label">Ore nel periodo</span><span class="hero-val"><span id="d-totale">0</span><small>h</small></span></div>
+            <div class="hero-stat"><span class="hero-label">Compenso stimato</span><span class="hero-val"><small>€</small><span id="d-soldi">0.00</span></span></div>
+        </div>
+        <div id="d-stats-container" class="stats-container breakdown"></div>
 
         <div class="filter-bar" style="margin-bottom:15px">
             <select id="d-sort-order" onchange="renderAdminDetailTable()">
@@ -803,18 +863,16 @@
         </div>
 
         <div class="table-wrap">
-            <table>
+            <table class="turni-list">
                 <thead><tr><th>Data</th><th>Mansione</th><th>Orario</th><th>Ore</th><th>Note</th><th style="text-align:right">Azioni</th></tr></thead>
                 <tbody id="detail-tbody"></tbody>
             </table>
         </div>
-        <div style="text-align:right; font-weight:700; margin-top:10px">
-            Totale: <span id="d-totale">0</span> ore • <span style="color:var(--money-color)">€ <span id="d-soldi">0.00</span></span>
+        <div class="action-bar">
+        <button onclick="excelAdminDetail()" class="btn-success" style="width:auto"><i class=ig-download></i> Scarica Excel Utente</button>
+        <button onclick="openPdfSignModal(true)" class="btn-danger" style="width:auto"><i class=ig-file></i> Scarica PDF Utente</button>
+        <button onclick="openAutocertModal(true)" class="btn-warning" style="width:auto"><i class=ig-note></i> Autocertificazione</button>
         </div>
-        <div id="d-stats-container" class="stats-container"></div>
-        <button onclick="excelAdminDetail()" class="btn-success" style="margin-top:15px; width:auto"><i class=ig-download></i> Scarica Excel Utente</button>
-        <button onclick="openPdfSignModal(true)" class="btn-danger" style="margin-top:15px; width:auto"><i class=ig-file></i> Scarica PDF Utente</button>
-        <button onclick="openAutocertModal(true)" class="btn-warning" style="margin-top:15px; width:auto"><i class=ig-note></i> Autocertificazione</button>
         
         <!-- NUOVA SEZIONE VERIFICA TURNI PIANIFICATI (solo Admin) -->
         <div id="confronto-turni-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
@@ -1568,7 +1626,7 @@
             const numDate = dateObj.toLocaleDateString('it-IT');
             
             tbody.innerHTML += `
-                <tr id="row-${t.id}" style="background-color:${bg}">
+                <tr id="row-${t.id}" style="background-color:${bg}; --accent:${getColor(t.mansione)}">
                     <td data-label="Data"><span><span style="text-transform:capitalize">${shortDay}</span> ${numDate}</span></td>
                     <td data-label="Mansione">${t.mansione}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
@@ -2169,7 +2227,7 @@
             const numDate = dateObj.toLocaleDateString('it-IT');
 
             tbody.innerHTML += `
-                <tr id="arow-${t.id}" style="background-color:${bg}">
+                <tr id="arow-${t.id}" style="background-color:${bg}; --accent:${getColor(t.mansione)}">
                     <td data-label="Data"><span><span style="text-transform:capitalize">${shortDay}</span> ${numDate}</span></td>
                     <td data-label="Mansione">${t.mansione}${adminBadge}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
