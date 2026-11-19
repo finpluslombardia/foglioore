@@ -673,7 +673,7 @@
             #collaborator-view > .filter-bar { flex-wrap: wrap; overflow: visible; }
             #collaborator-view > .filter-bar select { flex: 1 1 120px; }
             #collaborator-view > .filter-bar .filter-buttons { margin-left: 0; width: 100%; justify-content: flex-start; }
-            #collaborator-view > .form-box { display: block; }
+            #collaborator-view > .form-box { display: block; margin-top: 0; }
             #collaborator-view > .form-box .form-grid, #collaborator-view > .form-box [class*="grid"] { grid-template-columns: 1fr; }
         }
 
@@ -700,6 +700,8 @@
         /* autocertificazione: accanto al PDF su desktop, sopra il calendario su mobile */
         .autocert-mob { display: none; }
         @media (max-width: 600px) { .autocert-mob { display: block; } .autocert-desk { display: none; } }
+        .hero { margin-bottom: 24px; }
+        @media (max-width: 600px) { .hero { margin-bottom: 16px; } }
     </style>
 </head>
 <body>
