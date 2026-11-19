@@ -654,6 +654,13 @@
             .turni-list tbody tr.open:not(.editing) td:nth-child(5) { grid-row: 3; }
             .turni-list tbody tr.open:not(.editing) td:nth-child(6) { grid-row: 4; }
         }
+
+        /* desktop: filtri e autocertificazione compatti */
+        @media (min-width: 601px) {
+            .filter-bar select { flex: 0 1 170px; min-width: 120px; }
+            .filter-bar .filter-buttons { margin-left: auto; }
+            button[onclick="openAutocertModal()"] { width: auto; padding: 8px 18px; font-size: 13px; margin-bottom: 14px !important; }
+        }
     </style>
 </head>
 <body>
