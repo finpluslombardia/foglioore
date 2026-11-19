@@ -664,11 +664,11 @@
         /* desktop: pagina collaboratore su due colonne (nuovo turno | i miei turni) */
         @media (min-width: 1000px) {
             #collaborator-view.active { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 24px; align-items: start; }
-            #collaborator-view > .hero, #collaborator-view > #c-stats-container,
+            #collaborator-view > .hero,
             #collaborator-view > #collab-history-container, #collaborator-view > div[style*="text-align:center"] { grid-column: 1 / -1; }
             #collaborator-view > .form-box { grid-column: 1; grid-row: 3 / span 6; position: sticky; top: 16px; margin-bottom: 0; }
             #collaborator-view > h3, #collaborator-view > .filter-bar,
-            #collaborator-view > .calendar-wrapper, #collaborator-view > .table-wrap { grid-column: 2; }
+            #collaborator-view > .calendar-wrapper, #collaborator-view > .table-wrap, #collaborator-view > .tot-box { grid-column: 2; }
             #collaborator-view > h3 { margin-top: 0; }
             #collaborator-view > .filter-bar { flex-wrap: wrap; overflow: visible; }
             #collaborator-view > .filter-bar select { flex: 1 1 120px; }
@@ -690,6 +690,16 @@
         @media (max-width: 600px) {
             .turni-list tbody tr:not(.editing) td:nth-child(1) { color: var(--text-main); font-size: 0.85rem; }
         }
+
+        /* totale sotto le schede */
+        .tot-box { margin-top: 6px; }
+        .tot-line { text-align: right; font-size: 1.15rem; font-weight: 700; color: var(--primary); }
+        .tot-money { color: var(--money-color); }
+        .tot-box .stats-container.breakdown { justify-content: flex-end; margin: 10px 0 0 0; }
+
+        /* autocertificazione: accanto al PDF su desktop, sopra il calendario su mobile */
+        .autocert-mob { display: none; }
+        @media (max-width: 600px) { .autocert-mob { display: block; } .autocert-desk { display: none; } }
     </style>
 </head>
 <body>
@@ -761,7 +771,6 @@
             <div class="hero-stat"><span class="hero-label">Ore nel periodo</span><span class="hero-val"><span id="c-totale">0</span><small>h</small></span></div>
             <div class="hero-stat"><span class="hero-label">Compenso stimato</span><span class="hero-val"><small>€</small><span id="c-soldi">0.00</span></span></div>
         </div>
-        <div id="c-stats-container" class="stats-container breakdown"></div>
 
         <div class="form-box">
             <h3><i class=ig-plus></i> Nuovo Turno</h3>
@@ -815,11 +824,12 @@
             <div class="filter-buttons">
                 <button onclick="excelCollab()" class="btn-success"><i class=ig-download></i> Scarica Excel</button>
                 <button onclick="openPdfSignModal()" class="btn-danger"><i class=ig-file></i> Scarica PDF</button>
-                <button onclick="openAutocertModal()" class="btn-warning"><i class=ig-note></i> Autocertificazione</button>
+                <button onclick="openAutocertModal()" class="btn-warning autocert-desk"><i class=ig-note></i> Autocertificazione</button>
             </div>
         </div>
         
 
+        <button onclick="openAutocertModal()" class="btn-warning autocert-mob" style="margin-bottom:20px"><i class=ig-note></i> Autocertificazione</button>
         <div class="calendar-wrapper">
             <div class="cal-header">
                 <button class="cal-nav" onclick="changeMonth(-1)">❮</button>
@@ -839,6 +849,10 @@
                 <thead><tr><th>Data</th><th>Mansione</th><th>Orario</th><th>Ore</th><th>Note</th><th style="text-align:right">Azioni</th></tr></thead>
                 <tbody id="collab-tbody"></tbody>
             </table>
+        </div>
+        <div class="tot-box">
+            <div class="tot-line">Totale: <span id="c-totale-b">0</span> ore • <span class="tot-money">€ <span id="c-soldi-b">0.00</span></span></div>
+            <div id="c-stats-container" class="stats-container breakdown"></div>
         </div>
         
         <!-- NUOVA SEZIONE STORICO COMPENSI COLLABORATORE -->
@@ -939,7 +953,6 @@
             <div class="hero-stat"><span class="hero-label">Ore nel periodo</span><span class="hero-val"><span id="d-totale">0</span><small>h</small></span></div>
             <div class="hero-stat"><span class="hero-label">Compenso stimato</span><span class="hero-val"><small>€</small><span id="d-soldi">0.00</span></span></div>
         </div>
-        <div id="d-stats-container" class="stats-container breakdown"></div>
 
         <div class="filter-bar" style="margin-bottom:15px">
             <select id="d-sort-order" onchange="renderAdminDetailTable()">
@@ -963,6 +976,10 @@
                 <thead><tr><th>Data</th><th>Mansione</th><th>Orario</th><th>Ore</th><th>Note</th><th style="text-align:right">Azioni</th></tr></thead>
                 <tbody id="detail-tbody"></tbody>
             </table>
+        </div>
+        <div class="tot-box">
+            <div class="tot-line">Totale: <span id="d-totale-b">0</span> ore • <span class="tot-money">€ <span id="d-soldi-b">0.00</span></span></div>
+            <div id="d-stats-container" class="stats-container breakdown"></div>
         </div>
         <div class="action-bar">
         <button onclick="excelAdminDetail()" class="btn-success" style="width:auto"><i class=ig-download></i> Scarica Excel Utente</button>
@@ -1735,6 +1752,8 @@
         document.getElementById('c-totale').innerText = Number(tot.toFixed(2));
         const soldiEl = document.getElementById('c-soldi');
         if(soldiEl) soldiEl.innerText = totSoldi.toFixed(2);
+        document.getElementById('c-totale-b').innerText = Number(tot.toFixed(2));
+        document.getElementById('c-soldi-b').innerText = totSoldi.toFixed(2);
         
         // UPDATED: Render pills with compact style
         Object.keys(breakdown).forEach(m => {
@@ -2337,6 +2356,8 @@
         
         document.getElementById('d-totale').innerText = Number(tot.toFixed(2));
         document.getElementById('d-soldi').innerText = totSoldi.toFixed(2);
+        document.getElementById('d-totale-b').innerText = Number(tot.toFixed(2));
+        document.getElementById('d-soldi-b').innerText = totSoldi.toFixed(2);
         
         // UPDATED: Render pills with compact style
         Object.keys(breakdown).forEach(m => {
