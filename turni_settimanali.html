@@ -282,7 +282,7 @@
         }
 
         .day-name { font-weight: 700; text-transform: uppercase; font-size: 0.75rem; color: var(--text-muted); }
-        .day-date { font-weight: 700; font-size: 1rem; }
+        .day-date { font-weight: 700; font-size: 1rem; color: var(--text-main); }
         .day-date.today { color: var(--primary); text-decoration: underline; text-decoration-thickness: 3px; }
 
         /* INDICATORI NOTE */
@@ -531,7 +531,6 @@
             backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%);
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
         }
-        .day-column { box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.3); }
         .shift-time-badge { background: var(--glass-strong); border: 1px solid var(--glass-border); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35); }
         [data-theme="dark"] .shift-time-badge { background: rgba(255,255,255,0.10); border-color: rgba(255,255,255,0.18); }
         @media (max-width: 900px) {
@@ -544,6 +543,45 @@
         .grid-section-title.seg, #grid-segreteria { display: none !important; }
         #grid-altri .day-column:nth-child(7) { display: none; }
         @media (min-width: 901px) { #grid-altri { grid-template-columns: repeat(6, 1fr); } }
+
+        /* niente ombre sulle tabelle settimanali */
+        .day-column { box-shadow: none; }
+        .shift-card, .shift-card:hover { box-shadow: none; }
+
+        /* liquid glass piu' evidente: sfondo vivo, contenitori trasparenti, card con velo colore */
+        body { background-image:
+            radial-gradient(at 12% 18%, rgba(10,132,255,0.42) 0, transparent 50%),
+            radial-gradient(at 88% 12%, rgba(175,82,222,0.34) 0, transparent 50%),
+            radial-gradient(at 70% 88%, rgba(52,199,89,0.28) 0, transparent 50%),
+            radial-gradient(at 8% 85%, rgba(255,149,0,0.24) 0, transparent 50%); }
+        [data-theme="dark"] body { background-image:
+            radial-gradient(at 12% 18%, rgba(10,132,255,0.35) 0, transparent 50%),
+            radial-gradient(at 88% 12%, rgba(175,82,222,0.30) 0, transparent 50%),
+            radial-gradient(at 70% 88%, rgba(52,199,89,0.20) 0, transparent 50%),
+            radial-gradient(at 8% 85%, rgba(255,149,0,0.16) 0, transparent 50%); }
+        .container { background: rgba(255,255,255,0.22); }
+        [data-theme="dark"] .container { background: rgba(28,28,30,0.30); }
+        .day-column {
+            background: linear-gradient(160deg, rgba(255,255,255,0.40), rgba(255,255,255,0.12));
+            border: 1px solid rgba(255,255,255,0.55);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), inset 0 -1px 0 rgba(255,255,255,0.15);
+        }
+        [data-theme="dark"] .day-column { background: linear-gradient(160deg, rgba(255,255,255,0.09), rgba(255,255,255,0.03)); border-color: rgba(255,255,255,0.14); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12); }
+        .shift-card {
+            background:
+                linear-gradient(90deg, color-mix(in srgb, var(--tint, transparent) 20%, transparent), transparent 75%),
+                linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0.34));
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+        }
+        [data-theme="dark"] .shift-card {
+            background:
+                linear-gradient(90deg, color-mix(in srgb, var(--tint, transparent) 28%, transparent), transparent 75%),
+                linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+            border-color: rgba(255,255,255,0.14); box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+        }
+        .shift-card.is-mine { border-color: var(--primary); }
+        .week-grid { padding-bottom: 0; }
     </style>
 </head>
 <body>
@@ -1249,6 +1287,7 @@
         const card = document.createElement('div');
         card.className = 'shift-card';
         card.style.borderLeftColor = colorVar;
+        card.style.setProperty('--tint', colorVar);
         if(isMyShift) card.classList.add('is-mine');
 
         let actions = "";
