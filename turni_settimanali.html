@@ -539,6 +539,11 @@
             .day-header { border-right: 1px solid var(--glass-border); border-radius: 0; background: var(--glass-soft); }
             .week-grid { gap: 12px; }
         }
+
+        /* vista: niente Segreteria, niente domenica negli Istruttori & Altri */
+        .grid-section-title.seg, #grid-segreteria { display: none !important; }
+        #grid-altri .day-column:nth-child(7) { display: none; }
+        @media (min-width: 901px) { #grid-altri { grid-template-columns: repeat(6, 1fr); } }
     </style>
 </head>
 <body>
