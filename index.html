@@ -762,12 +762,47 @@
         .rate-hist-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 0.78rem; padding: 4px 0; border-bottom: 1px solid var(--glass-border); }
 
         /* turni pianificati da registrare (collaboratore) */
+        /* --- MENU ADMIN A PILLOLE + NUOVE SEZIONI --- */
+        .atab { display: none; } .atab.active { display: block; animation: fadeIn 0.3s ease; }
+        .admin-tabs { display: flex; gap: 4px; padding: 5px; margin: 0 auto 20px; width: max-content; max-width: 100%; overflow-x: auto; border-radius: 999px; background: var(--glass-soft); border: 1px solid var(--glass-border); backdrop-filter: blur(var(--glass-blur)) saturate(170%); -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%); box-shadow: var(--glass-shadow); -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+        .admin-tabs::-webkit-scrollbar { display: none; }
+        .admin-tabs button { width: auto; flex: none; margin: 0; padding: 10px 20px; border-radius: 999px; background: transparent; color: var(--text-main); border: none; box-shadow: none; font-size: 0.95rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+        .admin-tabs button.active { background: var(--glass-strong); color: var(--primary); box-shadow: 0 2px 10px rgba(0,0,0,0.10), inset 0 1px 0 rgba(255,255,255,0.6); }
+        @media (max-width: 600px) { .admin-tabs { width: 100%; justify-content: flex-start; } .admin-tabs button { padding: 9px 14px; font-size: 0.85rem; } }
+        .st-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+        .st-kpi { display: flex; flex-direction: column; gap: 3px; padding: 12px 14px; border-radius: 16px; background: var(--glass-soft); border: 1px solid var(--glass-border); }
+        .st-kpi-l { font-size: 0.66rem; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); font-weight: 700; }
+        .st-kpi-v { font-size: 1.45rem; font-weight: 800; color: var(--text-main); line-height: 1.1; }
+        .st-kpi-s { font-size: 0.72rem; color: var(--text-muted); }
+        .st-hlist { display: flex; flex-direction: column; gap: 6px; }
+        .st-hrow { display: grid; grid-template-columns: 150px 1fr auto; gap: 10px; align-items: center; font-size: 0.8rem; }
+        .st-hl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .st-htrack { height: 10px; border-radius: 6px; background: rgba(142,142,147,0.18); overflow: hidden; }
+        .st-hfill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #5ac8fa, #0a84ff); }
+        .st-hv { color: var(--text-muted); font-variant-numeric: tabular-nums; text-align: right; }
+        @media (max-width: 600px) { .st-hrow { grid-template-columns: 90px 1fr; } .st-hv { grid-column: 1 / -1; text-align: left; margin-top: -4px; } }
+        .st-edit { width: auto; padding: 5px 12px; margin: 0 0 0 4px; font-size: 12px; border-radius: 10px; background: var(--glass-soft); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; display: inline-flex; }
+        @media (max-width: 600px) {
+            .st-table thead { display: table-header-group; }
+            .st-table tr { display: table-row; border: none; border-radius: 0; padding: 0; margin: 0; box-shadow: none; }
+            .st-table td, .st-table th { display: table-cell; padding: 6px 8px; border: none; border-bottom: 1px solid var(--glass-border); text-align: left; }
+            .st-table td.r, .st-table th.r { text-align: right; }
+            .st-table td:before { content: none; }
+            .st-table td:nth-child(n) { grid-column: auto; }
+            .st-table tfoot td { border-top: 2px solid var(--glass-border); border-bottom: none; }
+        }
+        .an-act { white-space: nowrap; }
+        @media (max-width: 600px) { .an-table { min-width: 0; } .an-stato { display: none !important; } .an-act { white-space: normal; } .an-act .st-edit { display: flex; margin: 0 0 4px auto; } }
+        .mo-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+        .mo-pill { width: auto; margin: 0; padding: 7px 13px; font-size: 13px; border-radius: 999px; background: var(--glass-soft); color: var(--text-main); border: 1px solid var(--glass-border); box-shadow: none; }
+        .mo-pill.active { background: var(--primary); color: #fff; border-color: transparent; }
         .plan-box { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--glass-border); }
         .plan-box h4 { margin: 0 0 8px 0; font-size: 0.85rem; }
         .plan-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; margin-bottom: 6px; border-radius: 12px; background: var(--glass-soft); border: 1px solid var(--glass-border); font-size: 0.82rem; }
         .plan-row .plan-info { display: flex; flex-direction: column; min-width: 0; }
         .plan-row .plan-sub { color: var(--text-muted); font-size: 0.75rem; }
         .plan-row button { width: auto; padding: 6px 12px; font-size: 12px; margin: 0; flex: none; }
+        .plan-more { background: none; border: none; box-shadow: none; color: var(--primary); font-weight: 700; font-size: 0.8rem; padding: 4px 2px; margin: 0 0 6px; width: auto; cursor: pointer; }
         .plan-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
         .plan-actions button { width: auto; padding: 7px 14px; font-size: 12px; margin: 0; }
     </style>
@@ -870,7 +905,6 @@
                 <div id="plan-list" style="font-size:0.8rem; color:var(--text-muted)">Caricamento...</div>
                 <div class="plan-actions">
                     <button id="plan-all-btn" class="btn-success" onclick="registraTuttiPianificati()" style="display:none"><i class=ig-check></i> Registra tutti</button>
-                    <button class="btn-secondary" onclick="scaricaIcs()"><i class=ig-calendar></i> Aggiungi al calendario (.ics)</button>
                 </div>
             </div>
         </div>
@@ -947,6 +981,14 @@
 
     <!-- 4. ADMIN DASHBOARD (Registro) -->
     <div id="admin-view" class="view-section">
+        <div class="admin-tabs">
+            <button data-tab="mese" class="active" onclick="switchAdminTab('mese')"><i class=ig-calendar></i> Questo mese</button>
+            <button data-tab="stagione" onclick="switchAdminTab('stagione')"><i class=ig-trend></i> Stagione</button>
+            <button data-tab="stat" onclick="switchAdminTab('stat')"><i class=ig-chart-bar></i> Statistiche</button>
+            <button data-tab="anag" onclick="switchAdminTab('anag')"><i class=ig-wrench></i> Anagrafiche</button>
+        </div>
+
+        <div id="atab-mese" class="atab active">
         <h3 style="margin-top:0">Riepilogo</h3>
         <div class="filter-bar">
             <input type="text" id="a-search" placeholder="Cerca collaboratore..." style="flex:2; min-width:180px; border-color:var(--primary)">
@@ -1001,35 +1043,53 @@
             <div id="admin-tot-breakdown" class="stats-container" style="justify-content: flex-start; margin-top: 0;"></div>
         </div>
 
+
+        </div>
+
+        <div id="atab-stagione" class="atab">
+            <h3 style="margin-top:0">Riepilogo stagionale</h3>
+            <div id="season-head"></div>
+            <div id="season-summary"></div>
+            <div id="season-editor-box" class="form-box" style="margin-top:22px">
+                <h3 style="margin-top:0"><i class=ig-wrench></i> Compensi effettivi</h3>
+                <div class="st-hint" style="margin:-4px 0 12px 0">Scegli il mese (anche passato) e inserisci quanto hanno realmente percepito i collaboratori, con eventuali aggiunte o detrazioni.</div>
+                <div id="season-editor"></div>
+            </div>
+        </div>
+
+        <div id="atab-stat" class="atab">
+            <h3 style="margin-top:0">Statistiche</h3>
+            <div class="filter-bar" style="margin-bottom:14px">
+                <select id="st-anno" onchange="renderAdminStats()"></select>
+                <select id="st-mese" onchange="renderAdminStats()"></select>
+            </div>
+            <div id="admin-stats-content"></div>
         <!-- NUOVA SEZIONE STORICO GLOBALE AZIENDALE -->
         <div id="admin-global-history-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; display: none;">
             <h3 style="color:var(--primary); margin-top:0"><i class=ig-trend></i> Riepilogo Storico Aziendale</h3>
             <div id="admin-global-history-content"></div>
         </div>
 
-        <!-- COMPENSI EFFETTIVI E STATISTICHE -->
-        <div id="admin-stats-panel" class="form-box" style="margin-top: 30px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; cursor:pointer" onclick="toggleStatsPanel()">
-                <h3 style="margin:0"><i class=ig-chart-bar></i> Compensi e statistiche</h3>
-                <span id="stats-chevron" style="color:var(--text-muted)">▾</span>
-            </div>
-            <div id="admin-stats-body" style="display:none; margin-top:14px">
-                <div class="filter-bar" style="margin-bottom:14px">
-                    <select id="st-anno" onchange="renderAdminStats()"></select>
-                    <select id="st-mese" onchange="renderAdminStats()"></select>
-                </div>
-                <div id="admin-stats-content"></div>
-            </div>
+
         </div>
 
-        <div style="margin-top: 40px;"></div>
-        <div class="form-box" style="background:var(--bg-body); border-color:var(--border-color)">
+        <div id="atab-anag" class="atab">
+            <h3 style="margin-top:0">Anagrafiche e compensi</h3>
+            <div class="filter-bar" style="margin-bottom:14px">
+                <input type="text" id="an-search" placeholder="Cerca collaboratore..." oninput="renderAnagList()" style="flex:2; min-width:180px">
+                <select id="an-status" onchange="renderAnagList()"><option value="active">Attivi</option><option value="arch">Archiviati</option><option value="all">Tutti</option></select>
+            </div>
+            <div id="anag-list"></div>
+            <div style="margin-top: 26px;"></div>
+                <div class="form-box" style="background:var(--bg-body); border-color:var(--border-color)">
             <h3 style="color:var(--primary); margin-top:0"><i class=ig-wrench></i> Anagrafica</h3>
             <div class="time-row" style="margin-bottom:0">
                 <input type="email" id="adm-email" placeholder="Email">
                 <input type="text" id="adm-name" placeholder="Cognome Nome">
             </div>
             <button onclick="saveAnagrafica()" class="btn-warning" style="margin-top:10px">Salva in Rubrica</button>
+        </div>
+    
         </div>
     </div>
 
@@ -1796,6 +1856,8 @@
         renderPianificati();
     }
 
+    let showAllPian = false;
+    window.togglePianAll = () => { showAllPian = !showAllPian; renderPianificati(); };
     function renderPianificati() {
         const box = document.getElementById('plan-list'); if(!box) return;
         const today = todayISO();
@@ -1811,14 +1873,16 @@
             return;
         }
         const gg = ["Dom","Lun","Mar","Mer","Gio","Ven","Sab"];
-        box.innerHTML = pianificatiDaRegistrare.map((p, i) => {
+        const tot = pianificatiDaRegistrare.length;
+        const visibili = (showAllPian || tot <= 3) ? tot : 3;
+        box.innerHTML = pianificatiDaRegistrare.slice(0, visibili).map((p, i) => {
             const d = new Date(p.data + 'T12:00:00');
             return `<div class="plan-row" style="border-left:4px solid ${getColor(p.mansione)}">
                 <div class="plan-info"><b>${gg[d.getDay()]} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} · ${p.oraInizio}-${p.oraFine}</b>
                 <span class="plan-sub">${p.mansione} · ${oreTra(p.oraInizio, p.oraFine)} ore</span></div>
                 <button class="btn-primary" onclick="registraPianificato(${i})">Registra</button></div>`;
-        }).join('');
-        if(allBtn) allBtn.style.display = pianificatiDaRegistrare.length > 1 ? 'inline-flex' : 'none';
+        }).join('') + (tot > 3 ? `<button class="plan-more" onclick="togglePianAll()">${showAllPian ? 'Mostra meno' : 'Mostra tutti (' + tot + ')'}</button>` : '');
+        if(allBtn) allBtn.style.display = tot > 1 ? 'inline-flex' : 'none';
     }
 
     async function salvaPianificato(p) {
@@ -1839,28 +1903,6 @@
             try { for(const p of pianificatiDaRegistrare.slice()) await salvaPianificato(p); toast(n + " turni registrati"); await loadCollabData(); }
             catch(e) { modal("Errore", e.message); }
         });
-    };
-
-    window.scaricaIcs = () => {
-        const today = todayISO();
-        const fut = mieiPianificati.filter(p => p.data >= today);
-        if(!fut.length) return modal("Calendario", "Non ci sono turni pianificati da oggi in poi.");
-        const z = (n) => String(n).padStart(2, '0');
-        const stamp = (dStr, t) => dStr.replace(/-/g, '') + 'T' + t.replace(':', '') + '00';
-        const nextDay = (dStr) => { const d = new Date(dStr + 'T12:00:00'); d.setDate(d.getDate() + 1); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`; };
-        const now = new Date();
-        const dtstamp = `${now.getUTCFullYear()}${z(now.getUTCMonth()+1)}${z(now.getUTCDate())}T${z(now.getUTCHours())}${z(now.getUTCMinutes())}${z(now.getUTCSeconds())}Z`;
-        const ev = fut.map((p, i) => {
-            const endDay = p.oraFine <= p.oraInizio ? nextDay(p.data) : p.data;
-            return ['BEGIN:VEVENT', `UID:${p.data}-${p.oraInizio}-${i}@finpluslombardia`, `DTSTAMP:${dtstamp}`,
-                `DTSTART;TZID=Europe/Rome:${stamp(p.data, p.oraInizio)}`, `DTEND;TZID=Europe/Rome:${stamp(endDay, p.oraFine)}`,
-                `SUMMARY:Turno ${p.mansione}`, 'LOCATION:Centro Federale Lampugnano', 'END:VEVENT'].join('\r\n');
-        });
-        const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//FIN PLUS LOMBARDIA//Foglio Ore//IT', 'CALSCALE:GREGORIAN', ...ev, 'END:VCALENDAR'].join('\r\n');
-        const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
-        const a = document.createElement('a'); a.href = url; a.download = 'miei_turni.ics';
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 4000);
     };
 
     async function loadCollabData() {
@@ -2099,17 +2141,37 @@
     };
 
 
-    // ===== COMPENSI EFFETTIVI + STATISTICHE (solo admin) =====
+    // ===== MENU ADMIN (pillole), STAGIONE, COMPENSI EFFETTIVI, STATISTICHE, ANAGRAFICHE =====
     const MESI_IT = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
     const eur = (n) => '€ ' + (Number(n) || 0).toFixed(2);
     const esc = (v) => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
-    let statsOpen = false;
+    const pad2 = (n) => String(n).padStart(2, '0');
+    const num2 = (n) => Number((n || 0).toFixed(2));
+    const SEASON_MONTHS = [9,10,11,12,1,2,3,4,5,6,7,8];
+    const seasonOf = (y, m) => m >= 9 ? y : y - 1;
+    const seasonLabel = (s) => `${s}/${String(s + 1).slice(2)}`;
+    const ymOf = (s, m) => m >= 9 ? `${s}-${pad2(m)}` : `${s + 1}-${pad2(m)}`;
+    const costoTurno = (t) => (t.ore || 0) * ratesFor(t.email, t.mansione, t.data);
+    const diffHtml = (d, dec) => `<span style="color:${d >= 0 ? 'var(--money-color)' : 'var(--danger, #ff3b30)'}">${d >= 0 ? '+' : ''}${d.toFixed(dec == null ? 2 : dec)}</span>`;
+    const pctHtml = (a, b) => b > 0 ? diffHtml((a - b) / b * 100, 0) + '%' : '—';
+    const kpi = (label, val, sub) => `<div class="st-kpi"><span class="st-kpi-l">${label}</span><span class="st-kpi-v">${val}</span>${sub ? `<span class="st-kpi-s">${sub}</span>` : ''}</div>`;
+    const hbar = (label, value, max, txt) => `<div class="st-hrow"><span class="st-hl">${label}</span><div class="st-htrack"><div class="st-hfill" style="width:${max > 0 ? (value / max * 100).toFixed(1) : 0}%"></div></div><span class="st-hv">${txt}</span></div>`;
+    let adminTab = 'mese';
+    let compensiLoaded = false;
 
-    window.toggleStatsPanel = async () => {
-        statsOpen = !statsOpen;
-        document.getElementById('admin-stats-body').style.display = statsOpen ? 'block' : 'none';
-        document.getElementById('stats-chevron').innerText = statsOpen ? '▴' : '▾';
-        if(statsOpen) { await renderAdminStats(true); }
+    window.switchAdminTab = async (name) => {
+        adminTab = name;
+        document.querySelectorAll('.atab').forEach(el => el.classList.toggle('active', el.id === 'atab-' + name));
+        document.querySelectorAll('.admin-tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+        await refreshAdminTab(false);
+    };
+
+    window.refreshAdminTab = async (reload) => {
+        try {
+            if (adminTab === 'stagione') await renderSeason(reload === true);
+            else if (adminTab === 'stat') await renderAdminStats(reload === true);
+            else if (adminTab === 'anag') renderAnagList();
+        } catch (e) { console.error(e); }
     };
 
     async function loadCompensi() {
@@ -2117,161 +2179,291 @@
             const snap = await getDocs(collection(db, "compensi_effettivi"));
             compensiMap = {};
             snap.forEach(d => compensiMap[d.id] = d.data());
-        } catch(e) { console.error(e); toast("Compensi non leggibili: controlla le regole Firestore"); }
+            compensiLoaded = true;
+        } catch (e) { console.error(e); toast("Compensi non leggibili: controlla le regole Firestore"); }
     }
 
-    window.renderAdminStats = async (reload) => {
-        const box = document.getElementById('admin-stats-content');
-        if(!box) return;
-        if(reload === true) await loadCompensi();
+    // ---------- STAGIONE (settembre → agosto) ----------
+    let seasonSel = null, seasonMonthSel = null;
+    const extraRows = {};   // ym -> [email aggiunti a mano nella tabella del mese]
 
-        // selettori anno/mese
-        const selA = document.getElementById('st-anno'), selM = document.getElementById('st-mese');
-        const years = new Set([new Date().getFullYear()]);
-        allTurniFull.forEach(t => { const y = parseInt((t.data || '').slice(0,4)); if(y) years.add(y); });
-        const yList = [...years].sort((a,b) => b-a);
-        const prevA = selA.value, prevM = selM.value;
-        if(selA.options.length !== yList.length) {
-            selA.innerHTML = yList.map(y => `<option value="${y}">${y}</option>`).join('');
-            selA.value = prevA && yList.includes(parseInt(prevA)) ? prevA : String(new Date().getFullYear());
-        }
-        if(!selM.options.length) {
-            selM.innerHTML = '<option value="all">Tutto l\'anno</option>' + MESI_IT.map((n,i) => `<option value="${i+1}">${n}</option>`).join('');
-            selM.value = String(new Date().getMonth() + 1);
-        } else if(prevM) selM.value = prevM;
-        const y = parseInt(selA.value), mSel = selM.value, mNum = mSel === 'all' ? null : parseInt(mSel);
-        const pad = (n) => String(n).padStart(2, '0');
-
-        const rows = {};                       // email -> {ore, stima}
-        const cur = Array.from({length:12}, () => ({ore:0, costo:0}));
-        const prv = Array.from({length:12}, () => ({ore:0, costo:0}));
-        const roles = {};                      // mansione -> {ore,costo,pore,pcosto}
-        const roleRow = (r) => roles[r] || (roles[r] = {ore:0, costo:0, pore:0, pcosto:0});
+    function seasonAgg(s) {
+        const months = SEASON_MONTHS.map(() => ({ ore: 0, costo: 0, eff: 0, anyEff: false, collabs: new Set() }));
+        const perUser = {};      // email -> {ore, stima, eff, anyEff}
+        const stimaKey = {};     // "email_YYYY-MM" -> stima
+        const row = (e) => perUser[e] || (perUser[e] = { ore: 0, stima: 0, eff: 0, anyEff: false });
         allTurniFull.forEach(t => {
-            const d = t.data || ''; const ty = parseInt(d.slice(0,4)), tm = parseInt(d.slice(5,7));
-            if(!ty || !tm) return;
-            const costo = (t.ore || 0) * ratesFor(t.email, t.mansione, d);
-            if(ty === y) {
-                cur[tm-1].ore += t.ore || 0; cur[tm-1].costo += costo;
-                if(!mNum || tm === mNum) {
-                    const r = rows[t.email] || (rows[t.email] = {ore:0, stima:0});
-                    r.ore += t.ore || 0; r.stima += costo;
-                    const rr = roleRow(t.mansione); rr.ore += t.ore || 0; rr.costo += costo;
-                }
-            } else if(ty === y-1) {
-                prv[tm-1].ore += t.ore || 0; prv[tm-1].costo += costo;
-                if(!mNum || tm === mNum) { const rr = roleRow(t.mansione); rr.pore += t.ore || 0; rr.pcosto += costo; }
+            const y = parseInt((t.data || '').slice(0, 4)), m = parseInt((t.data || '').slice(5, 7));
+            if (!y || !m || seasonOf(y, m) !== s) return;
+            const i = SEASON_MONTHS.indexOf(m), c = costoTurno(t);
+            months[i].ore += t.ore || 0; months[i].costo += c; months[i].collabs.add(t.email);
+            const r = row(t.email); r.ore += t.ore || 0; r.stima += c;
+            const k = `${t.email}_${y}-${pad2(m)}`; stimaKey[k] = (stimaKey[k] || 0) + c;
+        });
+        let diffTot = 0, effTot = 0, anyEff = false;
+        Object.entries(compensiMap).forEach(([k, c]) => {
+            if (!c || c.importo == null || !c.email || seasonOf(c.anno, c.mese) !== s) return;
+            const i = SEASON_MONTHS.indexOf(c.mese), v = Number(c.importo);
+            months[i].eff += v; months[i].anyEff = true;
+            const r = row(c.email); r.eff += v; r.anyEff = true; r.stimaSet = (r.stimaSet || 0) + (stimaKey[k] || 0);
+            effTot += v; anyEff = true; diffTot += v - (stimaKey[k] || 0);
+        });
+        return { months, perUser, effTot, anyEff, diffTot };
+    }
+
+    window.changeSeason = (v) => {
+        seasonSel = parseInt(v);
+        const now = new Date();
+        seasonMonthSel = (seasonSel === seasonOf(now.getFullYear(), now.getMonth() + 1)) ? now.getMonth() + 1 : 8;
+        renderSeason(false);
+    };
+    window.changeSeasonMonth = (m) => { seasonMonthSel = parseInt(m); renderSeasonEditor(); renderSeasonSummary(); };
+
+    window.renderSeason = async (reload) => {
+        if (reload || !compensiLoaded) await loadCompensi();
+        const now = new Date();
+        const curS = seasonOf(now.getFullYear(), now.getMonth() + 1);
+        if (seasonSel == null) { seasonSel = curS; seasonMonthSel = now.getMonth() + 1; }
+        const set = new Set([curS, seasonSel]);
+        allTurniFull.forEach(t => { const y = parseInt((t.data || '').slice(0, 4)), m = parseInt((t.data || '').slice(5, 7)); if (y && m) set.add(seasonOf(y, m)); });
+        Object.values(compensiMap).forEach(c => { if (c && c.anno && c.mese) set.add(seasonOf(c.anno, c.mese)); });
+        const list = [...set].sort((a, b) => b - a);
+        const box = document.getElementById('season-head');
+        box.innerHTML = `<div class="filter-bar" style="margin-bottom:12px"><select id="se-sel" onchange="changeSeason(this.value)" style="max-width:220px">${list.map(s => `<option value="${s}" ${s === seasonSel ? 'selected' : ''}>Stagione ${seasonLabel(s)}</option>`).join('')}</select><span class="st-hint" style="margin:0 0 0 6px">da settembre ${seasonSel} ad agosto ${seasonSel + 1}</span></div>`;
+        renderSeasonSummary();
+        renderSeasonEditor();
+    };
+
+    window.renderSeasonSummary = () => {
+        const box = document.getElementById('season-summary'); if (!box) return;
+        const s = seasonSel, now = new Date();
+        const isCur = s === seasonOf(now.getFullYear(), now.getMonth() + 1);
+        const lim = isCur ? SEASON_MONTHS.indexOf(now.getMonth() + 1) : 11;  // confronto "a pari periodo"
+        const cur = seasonAgg(s), prv = seasonAgg(s - 1);
+        const sum = (arr, f, to) => arr.slice(0, to + 1).reduce((a, x) => a + f(x), 0);
+        const ore = sum(cur.months, x => x.ore, 11), costo = sum(cur.months, x => x.costo, 11);
+        const oreC = sum(cur.months, x => x.ore, lim), costoC = sum(cur.months, x => x.costo, lim);
+        const oreP = sum(prv.months, x => x.ore, lim), costoP = sum(prv.months, x => x.costo, lim);
+        const attivi = Object.keys(cur.perUser).length;
+        let h = `<div class="st-kpis">` +
+            kpi('Ore stagione', num2(ore), `${pctHtml(oreC, oreP)} vs ${seasonLabel(s - 1)}${isCur ? ' (stesso periodo)' : ''}`) +
+            kpi('Costo stimato', eur(costo), `${pctHtml(costoC, costoP)} vs ${seasonLabel(s - 1)}${isCur ? ' (stesso periodo)' : ''}`) +
+            kpi('Effettivo pagato', cur.anyEff ? eur(cur.effTot) : '—', cur.anyEff ? 'somma dei mesi inseriti' : 'nessun importo inserito') +
+            kpi('Effettivo − stima', cur.anyEff ? diffHtml(cur.diffTot) : '—', 'solo dove hai inserito l\'effettivo') +
+            kpi('Collaboratori', attivi, 'con ore nella stagione') + `</div>`;
+        const maxC = Math.max(1, ...cur.months.map(x => x.costo), ...prv.months.map(x => x.costo));
+        h += `<h4 class="st-title" style="margin-top:18px">Mese per mese · ${seasonLabel(s)} a confronto con ${seasonLabel(s - 1)}</h4>
+            <div class="st-legend"><span><i class="st-dot st-cur"></i>${seasonLabel(s)}</span><span><i class="st-dot st-prv"></i>${seasonLabel(s - 1)}</span><span style="color:var(--text-muted)">(costo stimato)</span></div><div class="st-chart">` +
+            cur.months.map((x, i) => `<div class="st-col" title="${MESI_IT[SEASON_MONTHS[i] - 1]}: ${eur(x.costo)} (${seasonLabel(s - 1)}: ${eur(prv.months[i].costo)})"><div class="st-bars"><div class="st-bar st-prv" style="height:${(prv.months[i].costo / maxC * 100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.costo / maxC * 100).toFixed(1)}%"></div></div><span class="st-lbl">${MESI_IT[SEASON_MONTHS[i] - 1].slice(0, 3)}</span></div>`).join('') + `</div>`;
+        h += `<div class="st-scroll"><table class="st-table"><thead><tr><th>Mese</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Diff.</th><th class="r">Stima ${seasonLabel(s - 1)}</th><th class="r">Δ</th><th></th></tr></thead><tbody>`;
+        cur.months.forEach((x, i) => {
+            const m = SEASON_MONTHS[i];
+            let diff = '—';
+            if (x.anyEff) {
+                diff = diffHtml(x.eff - x.costo);
             }
+            h += `<tr ${m === seasonMonthSel ? 'style="background:var(--glass-soft)"' : ''}><td>${MESI_IT[m - 1]}</td><td class="r">${num2(x.ore)}</td><td class="r">${eur(x.costo)}</td><td class="r">${x.anyEff ? eur(x.eff) : '—'}</td><td class="r">${diff}</td><td class="r">${eur(prv.months[i].costo)}</td><td class="r">${pctHtml(x.costo, prv.months[i].costo)}</td><td class="r"><button class="st-edit" onclick="changeSeasonMonth(${m}); document.getElementById('season-editor-box').scrollIntoView({behavior:'smooth', block:'start'})">Modifica</button></td></tr>`;
         });
-        // anche chi ha un compenso inserito ma nessuna ora nel periodo
-        Object.values(compensiMap).forEach(c => {
-            if(c.anno === y && c.email && (!mNum || c.mese === mNum) && c.importo != null && !rows[c.email]) rows[c.email] = {ore:0, stima:0};
+        h += `</tbody><tfoot><tr><td><b>Stagione</b></td><td class="r">${num2(ore)}</td><td class="r">${eur(costo)}</td><td class="r">${cur.anyEff ? eur(cur.effTot) : '—'}</td><td class="r">${cur.anyEff ? diffHtml(cur.diffTot) : '—'}</td><td class="r">${eur(sum(prv.months, x => x.costo, 11))}</td><td class="r">${pctHtml(costo, sum(prv.months, x => x.costo, 11))}</td><td></td></tr></tfoot></table></div>`;
+        const users = Object.entries(cur.perUser).map(([e, r]) => ({ e, nome: rubrica[e]?.nome || e, ...r })).sort((a, b) => a.nome.localeCompare(b.nome));
+        h += `<h4 class="st-title" style="margin-top:18px">Per collaboratore · stagione ${seasonLabel(s)}</h4><div class="st-scroll"><table class="st-table"><thead><tr><th>Collaboratore</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Diff.</th></tr></thead><tbody>` +
+            users.map(u => `<tr><td>${esc(u.nome)}</td><td class="r">${num2(u.ore)}</td><td class="r">${eur(u.stima)}</td><td class="r">${u.anyEff ? eur(u.eff) : '—'}</td><td class="r">${u.anyEff ? diffHtml(u.eff - (u.stimaSet || 0)) : '—'}</td></tr>`).join('') +
+            (users.length ? '' : '<tr><td colspan="5" style="color:var(--text-muted)">Nessun turno nella stagione.</td></tr>') + `</tbody></table></div>
+            <div class="st-hint">La differenza confronta l'effettivo con la stima dei soli mesi in cui hai inserito l'importo.</div>`;
+        box.innerHTML = h;
+    };
+
+    window.renderSeasonEditor = () => {
+        const box = document.getElementById('season-editor'); if (!box) return;
+        const s = seasonSel, m = seasonMonthSel, ym = ymOf(s, m), y = parseInt(ym.slice(0, 4));
+        const pills = SEASON_MONTHS.map(mm => `<button class="mo-pill ${mm === m ? 'active' : ''}" onclick="changeSeasonMonth(${mm})">${MESI_IT[mm - 1].slice(0, 3)}</button>`).join('');
+        const rows = {};
+        allTurniFull.forEach(t => {
+            if (!(t.data || '').startsWith(ym)) return;
+            const r = rows[t.email] || (rows[t.email] = { ore: 0, stima: 0 });
+            r.ore += t.ore || 0; r.stima += costoTurno(t);
         });
-
-        const effettivoDi = (email) => {
-            if(mNum) { const c = compensiMap[`${email}_${y}-${pad(mNum)}`]; return c && c.importo != null ? Number(c.importo) : null; }
-            let sum = 0, any = false;
-            for(let i = 1; i <= 12; i++) { const c = compensiMap[`${email}_${y}-${pad(i)}`]; if(c && c.importo != null) { sum += Number(c.importo); any = true; } }
-            return any ? sum : null;
-        };
-
-        // --- 1. COMPENSI PER COLLABORATORE ---
-        const list = Object.entries(rows).map(([email, r]) => ({email, nome: rubrica[email]?.nome || email, ...r}))
-            .sort((a,b) => a.nome.localeCompare(b.nome));
-        const editable = !!mNum;
-        let h = `<h4 class="st-title">Compensi ${mNum ? MESI_IT[mNum-1] + ' ' : ''}${y}: stima e importo effettivo</h4>`;
-        if(!editable) h += `<div class="st-hint">Per inserire gli importi effettivi scegli un mese specifico. Qui vedi la somma dei mesi inseriti.</div>`;
-        h += `<div class="st-scroll"><table class="st-table" id="st-comp-table"><thead><tr><th>Collaboratore</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Differenza</th>${editable ? '<th>Nota</th>' : ''}</tr></thead><tbody>`;
+        Object.values(compensiMap).forEach(c => { if (c && c.email && c.anno === y && c.mese === m && !rows[c.email]) rows[c.email] = { ore: 0, stima: 0 }; });
+        (extraRows[ym] || []).forEach(e => { if (!rows[e]) rows[e] = { ore: 0, stima: 0 }; });
+        const list = Object.entries(rows).map(([email, r]) => ({ email, nome: rubrica[email]?.nome || email, ...r })).sort((a, b) => a.nome.localeCompare(b.nome));
+        const addable = Object.entries(rubrica).filter(([e, d]) => !rows[e]).sort((a, b) => (a[1].nome || '').localeCompare(b[1].nome || ''));
+        let h = `<div class="mo-pills">${pills}</div><h4 class="st-title">Compensi ${MESI_IT[m - 1]} ${y}: stima e importo effettivo</h4>
+            <div class="st-scroll"><table class="st-table" id="st-comp-table" data-ym="${ym}" data-y="${y}" data-m="${m}"><thead><tr><th>Collaboratore</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Differenza</th><th>Nota</th></tr></thead><tbody>`;
         list.forEach(u => {
-            const eff = effettivoDi(u.email);
-            const c = mNum ? compensiMap[`${u.email}_${y}-${pad(mNum)}`] : null;
-            const effCell = editable
-                ? `<input type="number" step="0.01" class="st-in" value="${eff == null ? '' : eff}" placeholder="—" onchange="saveCompenso(this)">`
-                : (eff == null ? '—' : eur(eff));
-            h += `<tr data-email="${esc(u.email)}" data-stima="${u.stima.toFixed(4)}">
-                <td>${esc(u.nome)}</td><td class="r">${Number(u.ore.toFixed(2))}</td><td class="r">${eur(u.stima)}</td>
-                <td class="r">${effCell}</td><td class="r st-diff">—</td>
-                ${editable ? `<td><input type="text" class="st-in st-note" value="${esc(c ? c.nota : '')}" placeholder="es. +20 rimborso" onchange="saveCompenso(this)"></td>` : ''}</tr>`;
+            const c = compensiMap[`${u.email}_${ym}`];
+            h += `<tr data-email="${esc(u.email)}" data-stima="${u.stima.toFixed(4)}"><td>${esc(u.nome)}</td><td class="r">${num2(u.ore)}</td><td class="r">${eur(u.stima)}</td>
+                <td class="r"><input type="number" step="0.01" class="st-in" value="${c && c.importo != null ? c.importo : ''}" placeholder="—" onchange="saveCompenso(this)"></td><td class="r st-diff">—</td>
+                <td><input type="text" class="st-in st-note" value="${esc(c ? c.nota : '')}" placeholder="es. +20 rimborso" onchange="saveCompenso(this)"></td></tr>`;
         });
-        h += `</tbody><tfoot><tr><td><b>Totale</b></td><td class="r" id="st-t-ore"></td><td class="r" id="st-t-stima"></td><td class="r" id="st-t-eff"></td><td class="r" id="st-t-diff"></td>${editable ? '<td></td>' : ''}</tr></tfoot></table></div>`;
-        h += `<div class="st-hint" id="st-t-note"></div>`;
-
-        // --- 2. MESE PER MESE (grafico + tabella) ---
-        const maxC = Math.max(1, ...cur.map(x => x.costo), ...prv.map(x => x.costo));
-        h += `<h4 class="st-title" style="margin-top:22px">Mese per mese: ${y} a confronto con ${y-1}</h4>
-            <div class="st-legend"><span><i class="st-dot st-cur"></i>${y}</span><span><i class="st-dot st-prv"></i>${y-1}</span><span style="color:var(--text-muted)">(costo stimato)</span></div>
-            <div class="st-chart">` +
-            cur.map((x,i) => `<div class="st-col" title="${MESI_IT[i]}: ${eur(x.costo)} (${y-1}: ${eur(prv[i].costo)})">
-                <div class="st-bars"><div class="st-bar st-prv" style="height:${(prv[i].costo/maxC*100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.costo/maxC*100).toFixed(1)}%"></div></div>
-                <span class="st-lbl">${MESI_IT[i].slice(0,3)}</span></div>`).join('') + `</div>`;
-        const delta = (a, b) => b > 0 ? ((a-b)/b*100) : null;
-        const fmtD = (d) => d == null ? '—' : `<span style="color:${d >= 0 ? 'var(--money-color)' : 'var(--danger, #ff3b30)'}">${d >= 0 ? '+' : ''}${d.toFixed(0)}%</span>`;
-        h += `<div class="st-scroll"><table class="st-table"><thead><tr><th>Mese</th><th class="r">Ore ${y}</th><th class="r">Costo ${y}</th><th class="r">Effettivo ${y}</th><th class="r">Ore ${y-1}</th><th class="r">Costo ${y-1}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
-        let tOre = 0, tCosto = 0, tPOre = 0, tPCosto = 0, tEff = 0;
-        cur.forEach((x,i) => {
-            let eff = 0, anyE = false;
-            Object.values(compensiMap).forEach(c => { if(c.anno === y && c.mese === i+1 && c.importo != null) { eff += Number(c.importo); anyE = true; } });
-            tOre += x.ore; tCosto += x.costo; tPOre += prv[i].ore; tPCosto += prv[i].costo; tEff += eff;
-            h += `<tr><td>${MESI_IT[i]}</td><td class="r">${Number(x.ore.toFixed(2))}</td><td class="r">${eur(x.costo)}</td><td class="r">${anyE ? eur(eff) : '—'}</td><td class="r">${Number(prv[i].ore.toFixed(2))}</td><td class="r">${eur(prv[i].costo)}</td><td class="r">${fmtD(delta(x.costo, prv[i].costo))}</td></tr>`;
-        });
-        h += `</tbody><tfoot><tr><td><b>Anno</b></td><td class="r">${Number(tOre.toFixed(2))}</td><td class="r">${eur(tCosto)}</td><td class="r">${eur(tEff)}</td><td class="r">${Number(tPOre.toFixed(2))}</td><td class="r">${eur(tPCosto)}</td><td class="r">${fmtD(delta(tCosto, tPCosto))}</td></tr></tfoot></table></div>`;
-
-        // --- 3. PER MANSIONE ---
-        h += `<h4 class="st-title" style="margin-top:22px">Per mansione: ${mNum ? MESI_IT[mNum-1] + ' ' : ''}${y} (confronto con ${y-1})</h4>
-            <div class="st-scroll"><table class="st-table"><thead><tr><th>Mansione</th><th class="r">Ore</th><th class="r">Costo</th><th class="r">Ore ${y-1}</th><th class="r">Costo ${y-1}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
-        Object.entries(roles).sort((a,b) => b[1].costo - a[1].costo).forEach(([r, v]) => {
-            h += `<tr style="background:${getRoleBg(r)}"><td>${esc(r)}</td><td class="r">${Number(v.ore.toFixed(2))}</td><td class="r">${eur(v.costo)}</td><td class="r">${Number(v.pore.toFixed(2))}</td><td class="r">${eur(v.pcosto)}</td><td class="r">${fmtD(delta(v.costo, v.pcosto))}</td></tr>`;
-        });
-        if(!Object.keys(roles).length) h += `<tr><td colspan="6" style="color:var(--text-muted)">Nessun turno nel periodo.</td></tr>`;
-        h += `</tbody></table></div>`;
-
+        if (!list.length) h += `<tr><td colspan="6" style="color:var(--text-muted)">Nessun turno in questo mese: aggiungi un collaboratore qui sotto se devi registrare un importo.</td></tr>`;
+        h += `</tbody><tfoot><tr><td><b>Totale</b></td><td class="r" id="st-t-ore"></td><td class="r" id="st-t-stima"></td><td class="r" id="st-t-eff"></td><td class="r" id="st-t-diff"></td><td></td></tr></tfoot></table></div><div class="st-hint" id="st-t-note"></div>`;
+        if (addable.length) h += `<div style="margin-top:10px"><select id="se-add" style="max-width:320px" onchange="addSeasonRow(this.value)"><option value="">+ Aggiungi collaboratore al mese…</option>${addable.map(([e, d]) => `<option value="${esc(e)}">${esc(d.nome || e)}${d.archived ? ' (archiviato)' : ''}</option>`).join('')}</select></div>`;
         box.innerHTML = h;
         recalcStatsTotals();
     };
 
+    window.addSeasonRow = (email) => {
+        if (!email) return;
+        const ym = ymOf(seasonSel, seasonMonthSel);
+        (extraRows[ym] = extraRows[ym] || []).push(email);
+        renderSeasonEditor();
+    };
+
     window.recalcStatsTotals = () => {
-        const tb = document.getElementById('st-comp-table'); if(!tb) return;
+        const tb = document.getElementById('st-comp-table'); if (!tb) return;
         let tOre = 0, tStima = 0, tEff = 0, tStimaSet = 0, nSet = 0, nTot = 0;
-        tb.querySelectorAll('tbody tr').forEach(tr => {
+        tb.querySelectorAll('tbody tr[data-email]').forEach(tr => {
             const stima = parseFloat(tr.dataset.stima) || 0;
             const inp = tr.querySelector('input.st-in:not(.st-note)');
-            let eff = null;
-            if(inp) eff = inp.value === '' ? null : parseFloat(inp.value);
-            else { const txt = tr.children[3].innerText.replace('€','').trim(); eff = (txt === '—' || txt === '') ? null : parseFloat(txt); }
-            nTot++;
-            tOre += parseFloat(tr.children[1].innerText) || 0; tStima += stima;
+            const eff = inp.value === '' ? null : parseFloat(inp.value);
+            nTot++; tOre += parseFloat(tr.children[1].innerText) || 0; tStima += stima;
             const diffCell = tr.querySelector('.st-diff');
-            if(eff != null && !isNaN(eff)) {
-                const d = eff - stima; nSet++; tEff += eff; tStimaSet += stima;
-                diffCell.innerHTML = `<span style="color:${d >= 0 ? 'var(--money-color)' : 'var(--danger, #ff3b30)'}">${d >= 0 ? '+' : ''}${d.toFixed(2)}</span>`;
-            } else diffCell.innerText = '—';
+            if (eff != null && !isNaN(eff)) { nSet++; tEff += eff; tStimaSet += stima; diffCell.innerHTML = diffHtml(eff - stima); }
+            else diffCell.innerText = '—';
         });
-        const set = (id, v) => { const el = document.getElementById(id); if(el) el.innerHTML = v; };
-        set('st-t-ore', Number(tOre.toFixed(2))); set('st-t-stima', eur(tStima)); set('st-t-eff', nSet ? eur(tEff) : '—');
-        const dd = tEff - tStimaSet;
-        set('st-t-diff', nSet ? `<span style="color:${dd >= 0 ? 'var(--money-color)' : 'var(--danger, #ff3b30)'}">${dd >= 0 ? '+' : ''}${dd.toFixed(2)}</span>` : '—');
-        set('st-t-note', nSet ? `Effettivo inserito per ${nSet} collaboratori su ${nTot}. La differenza è calcolata solo sui collaboratori con importo inserito.` : 'Nessun importo effettivo ancora inserito per questo periodo.');
+        const set = (id, v) => { const el = document.getElementById(id); if (el) el.innerHTML = v; };
+        set('st-t-ore', num2(tOre)); set('st-t-stima', eur(tStima)); set('st-t-eff', nSet ? eur(tEff) : '—');
+        set('st-t-diff', nSet ? diffHtml(tEff - tStimaSet) : '—');
+        set('st-t-note', nSet ? `Effettivo inserito per ${nSet} collaboratori su ${nTot}. La differenza è calcolata solo sui collaboratori con importo inserito.` : 'Nessun importo effettivo ancora inserito per questo mese.');
     };
 
     window.saveCompenso = async (el) => {
-        const tr = el.closest('tr'); if(!tr) return;
-        const email = tr.dataset.email;
-        const y = parseInt(document.getElementById('st-anno').value), mNum = parseInt(document.getElementById('st-mese').value);
-        if(!mNum) return;
-        const key = `${email}_${y}-${String(mNum).padStart(2,'0')}`;
+        const tr = el.closest('tr'); if (!tr) return;
+        const tb = document.getElementById('st-comp-table');
+        const email = tr.dataset.email, y = parseInt(tb.dataset.y), mNum = parseInt(tb.dataset.m), ym = tb.dataset.ym;
+        const key = `${email}_${ym}`;
         const impEl = tr.querySelector('input.st-in:not(.st-note)'), notaEl = tr.querySelector('input.st-note');
         const importo = impEl.value === '' ? null : parseFloat(impEl.value);
         const nota = notaEl ? notaEl.value.trim() : '';
         try {
-            if(importo == null && !nota) { await deleteDoc(doc(db, "compensi_effettivi", key)); delete compensiMap[key]; }
+            if (importo == null && !nota) { await deleteDoc(doc(db, "compensi_effettivi", key)); delete compensiMap[key]; }
             else {
                 const data = { email, anno: y, mese: mNum, importo, nota, updated_at: new Date() };
                 await setDoc(doc(db, "compensi_effettivi", key), data);
                 compensiMap[key] = data;
             }
             recalcStatsTotals();
+            renderSeasonSummary();
             toast("Salvato");
-        } catch(e) { modal("Errore", e.message + " (hai pubblicato le nuove regole Firestore?)"); }
+        } catch (e) { modal("Errore", e.message + " (hai pubblicato le nuove regole Firestore?)"); }
+    };
+
+    // ---------- STATISTICHE ----------
+    window.renderAdminStats = async (reload) => {
+        const box = document.getElementById('admin-stats-content'); if (!box) return;
+        if (reload || !compensiLoaded) await loadCompensi();
+        const selA = document.getElementById('st-anno'), selM = document.getElementById('st-mese');
+        const years = new Set([new Date().getFullYear()]);
+        allTurniFull.forEach(t => { const y = parseInt((t.data || '').slice(0, 4)); if (y) years.add(y); });
+        const yList = [...years].sort((a, b) => b - a);
+        const prevA = selA.value, prevM = selM.value;
+        if (selA.options.length !== yList.length) {
+            selA.innerHTML = yList.map(y => `<option value="${y}">${y}</option>`).join('');
+            selA.value = prevA && yList.includes(parseInt(prevA)) ? prevA : String(new Date().getFullYear());
+        }
+        if (!selM.options.length) {
+            selM.innerHTML = '<option value="all">Tutto l\'anno</option>' + MESI_IT.map((n, i) => `<option value="${i + 1}">${n}</option>`).join('');
+            selM.value = 'all';
+        } else if (prevM) selM.value = prevM;
+        const y = parseInt(selA.value), mSel = selM.value, mNum = mSel === 'all' ? null : parseInt(mSel);
+        const inP = (d, yy) => { const ty = parseInt(d.slice(0, 4)), tm = parseInt(d.slice(5, 7)); return ty === yy && (!mNum || tm === mNum); };
+
+        const cur = Array.from({ length: 12 }, () => ({ ore: 0, costo: 0, collabs: new Set() }));
+        const prv = Array.from({ length: 12 }, () => ({ ore: 0, costo: 0 }));
+        const roles = {}, users = {}, wd = Array(7).fill(0), fasce = { Mattina: 0, Pomeriggio: 0, Sera: 0 };
+        let nTurni = 0, nTurniP = 0, oreP = 0, costoP = 0, ore = 0, costo = 0;
+        const roleRow = (r) => roles[r] || (roles[r] = { ore: 0, costo: 0, pore: 0, pcosto: 0 });
+        allTurniFull.forEach(t => {
+            const d = t.data || ''; const ty = parseInt(d.slice(0, 4)), tm = parseInt(d.slice(5, 7));
+            if (!ty || !tm) return;
+            const c = costoTurno(t), o = t.ore || 0;
+            if (ty === y) {
+                cur[tm - 1].ore += o; cur[tm - 1].costo += c; cur[tm - 1].collabs.add(t.email);
+                if (!mNum || tm === mNum) {
+                    ore += o; costo += c; nTurni++;
+                    const rr = roleRow(t.mansione); rr.ore += o; rr.costo += c;
+                    const u = users[t.email] || (users[t.email] = { ore: 0, stima: 0 }); u.ore += o; u.stima += c;
+                    const dow = (new Date(d + 'T12:00:00').getDay() + 6) % 7; wd[dow] += o;
+                    const hh = parseInt((t.oraInizio || '').slice(0, 2));
+                    if (!isNaN(hh)) fasce[hh < 12 ? 'Mattina' : hh < 18 ? 'Pomeriggio' : 'Sera'] += o;
+                }
+            } else if (ty === y - 1) {
+                prv[tm - 1].ore += o; prv[tm - 1].costo += c;
+                if (!mNum || tm === mNum) { const rr = roleRow(t.mansione); rr.pore += o; rr.pcosto += c; oreP += o; costoP += c; nTurniP++; }
+            }
+        });
+        const periodo = `${mNum ? MESI_IT[mNum - 1] + ' ' : ''}${y}`;
+        const effOf = (email) => {
+            let sum = 0, any = false;
+            for (let i = 1; i <= 12; i++) { if (mNum && i !== mNum) continue; const c = compensiMap[`${email}_${y}-${pad2(i)}`]; if (c && c.importo != null) { sum += Number(c.importo); any = true; } }
+            return any ? sum : null;
+        };
+
+        let h = `<div class="st-kpis">` +
+            kpi('Ore', num2(ore), `${pctHtml(ore, oreP)} vs ${y - 1}`) +
+            kpi('Costo stimato', eur(costo), `${pctHtml(costo, costoP)} vs ${y - 1}`) +
+            kpi('Turni', nTurni, `${pctHtml(nTurni, nTurniP)} vs ${y - 1}`) +
+            kpi('Collaboratori attivi', Object.keys(users).length, periodo) +
+            kpi('Costo medio orario', ore ? eur(costo / ore) : '—', 'stima / ore') +
+            kpi('Ore medie per turno', nTurni ? num2(ore / nTurni) : '—', periodo) + `</div>`;
+
+        // mese per mese
+        const maxC = Math.max(1, ...cur.map(x => x.costo), ...prv.map(x => x.costo));
+        h += `<h4 class="st-title" style="margin-top:20px">Mese per mese: ${y} a confronto con ${y - 1}</h4>
+            <div class="st-legend"><span><i class="st-dot st-cur"></i>${y}</span><span><i class="st-dot st-prv"></i>${y - 1}</span><span style="color:var(--text-muted)">(costo stimato)</span></div><div class="st-chart">` +
+            cur.map((x, i) => `<div class="st-col" title="${MESI_IT[i]}: ${eur(x.costo)} (${y - 1}: ${eur(prv[i].costo)})"><div class="st-bars"><div class="st-bar st-prv" style="height:${(prv[i].costo / maxC * 100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.costo / maxC * 100).toFixed(1)}%"></div></div><span class="st-lbl">${MESI_IT[i].slice(0, 3)}</span></div>`).join('') + `</div>`;
+        h += `<div class="st-scroll"><table class="st-table"><thead><tr><th>Mese</th><th class="r">Collab.</th><th class="r">Ore ${y}</th><th class="r">Costo ${y}</th><th class="r">Effettivo ${y}</th><th class="r">Ore ${y - 1}</th><th class="r">Costo ${y - 1}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
+        let tOre = 0, tCosto = 0, tPOre = 0, tPCosto = 0, tEff = 0;
+        cur.forEach((x, i) => {
+            let eff = 0, anyE = false;
+            Object.values(compensiMap).forEach(c => { if (c && c.anno === y && c.mese === i + 1 && c.importo != null) { eff += Number(c.importo); anyE = true; } });
+            tOre += x.ore; tCosto += x.costo; tPOre += prv[i].ore; tPCosto += prv[i].costo; tEff += eff;
+            h += `<tr><td>${MESI_IT[i]}</td><td class="r">${x.collabs.size}</td><td class="r">${num2(x.ore)}</td><td class="r">${eur(x.costo)}</td><td class="r">${anyE ? eur(eff) : '—'}</td><td class="r">${num2(prv[i].ore)}</td><td class="r">${eur(prv[i].costo)}</td><td class="r">${pctHtml(x.costo, prv[i].costo)}</td></tr>`;
+        });
+        h += `</tbody><tfoot><tr><td><b>Anno</b></td><td></td><td class="r">${num2(tOre)}</td><td class="r">${eur(tCosto)}</td><td class="r">${eur(tEff)}</td><td class="r">${num2(tPOre)}</td><td class="r">${eur(tPCosto)}</td><td class="r">${pctHtml(tCosto, tPCosto)}</td></tr></tfoot></table></div>`;
+
+        // per mansione
+        const maxRole = Math.max(1, ...Object.values(roles).map(v => v.costo));
+        h += `<h4 class="st-title" style="margin-top:22px">Per mansione · ${periodo} (confronto con ${y - 1})</h4><div class="st-scroll"><table class="st-table"><thead><tr><th>Mansione</th><th class="r">Ore</th><th class="r">Costo</th><th class="r">% costo</th><th class="r">Ore ${y - 1}</th><th class="r">Costo ${y - 1}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
+        Object.entries(roles).filter(([, v]) => v.ore || v.pore).sort((a, b) => b[1].costo - a[1].costo).forEach(([r, v]) => {
+            h += `<tr style="background:${getRoleBg(r)}"><td>${esc(r)}</td><td class="r">${num2(v.ore)}</td><td class="r">${eur(v.costo)}</td><td class="r">${costo ? (v.costo / costo * 100).toFixed(0) + '%' : '—'}</td><td class="r">${num2(v.pore)}</td><td class="r">${eur(v.pcosto)}</td><td class="r">${pctHtml(v.costo, v.pcosto)}</td></tr>`;
+        });
+        if (!Object.keys(roles).length) h += `<tr><td colspan="7" style="color:var(--text-muted)">Nessun turno nel periodo.</td></tr>`;
+        h += `</tbody></table></div>`;
+
+        // top collaboratori
+        const top = Object.entries(users).map(([e, u]) => ({ e, nome: rubrica[e]?.nome || e, ...u })).sort((a, b) => b.ore - a.ore).slice(0, 10);
+        const maxOre = Math.max(1, ...top.map(u => u.ore));
+        h += `<h4 class="st-title" style="margin-top:22px">Collaboratori con più ore · ${periodo}</h4><div class="st-hlist">` +
+            top.map(u => { const eff = effOf(u.e); return hbar(esc(u.nome), u.ore, maxOre, `${num2(u.ore)} h · ${eur(u.stima)}${eff != null ? ' · eff. ' + eur(eff) : ''}`); }).join('') + (top.length ? '' : '<div class="st-hint">Nessun dato.</div>') + `</div>`;
+
+        // giorno della settimana + fascia
+        const gg = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'], maxW = Math.max(1, ...wd);
+        h += `<h4 class="st-title" style="margin-top:22px">Ore per giorno della settimana · ${periodo}</h4><div class="st-hlist">` + gg.map((g, i) => hbar(g, wd[i], maxW, num2(wd[i]) + ' h')).join('') + `</div>`;
+        const maxF = Math.max(1, ...Object.values(fasce));
+        h += `<h4 class="st-title" style="margin-top:22px">Ore per fascia oraria (inizio turno) · ${periodo}</h4><div class="st-hlist">` +
+            hbar('Mattina (prima delle 12)', fasce.Mattina, maxF, num2(fasce.Mattina) + ' h') + hbar('Pomeriggio (12–18)', fasce.Pomeriggio, maxF, num2(fasce.Pomeriggio) + ' h') + hbar('Sera (dalle 18)', fasce.Sera, maxF, num2(fasce.Sera) + ' h') + `</div>`;
+        box.innerHTML = h;
+    };
+
+    // ---------- ANAGRAFICHE ----------
+    window.renderAnagList = () => {
+        const box = document.getElementById('anag-list'); if (!box) return;
+        const q = (document.getElementById('an-search').value || '').trim().toLowerCase();
+        const st = document.getElementById('an-status').value;
+        const list = Object.entries(rubrica).map(([email, d]) => ({ email, ...d }))
+            .filter(u => (st === 'all' || (st === 'arch' ? u.archived === true : u.archived !== true)) && (!q || (u.nome || '').toLowerCase().includes(q) || u.email.toLowerCase().includes(q)))
+            .sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
+        const rates = (email) => { const r = rateSetFor(email, todayISO()); return Mansioni.filter(m => r[m]).map(m => `${m.split(' ')[0]} ${r[m]}`).join(' · ') || '<span style="color:var(--text-muted)">nessuna tariffa</span>'; };
+        let h = `<div class="st-scroll"><table class="st-table an-table"><thead><tr><th>Collaboratore</th><th>Tariffe orarie (€/h)</th><th class="an-stato">Stato</th><th class="r">Azioni</th></tr></thead><tbody>`;
+        list.forEach(u => {
+            const arch = u.archived === true;
+            h += `<tr ${arch ? 'style="opacity:.65"' : ''}><td><b>${esc(u.nome)}</b>${arch ? ' <span class="st-hint">(archiviato)</span>' : ''}<br><span class="st-hint">${esc(u.email)}</span></td><td>${rates(u.email)}${(u.storico || []).length > 1 ? ` <span class="st-hint">(${u.storico.length - 1} variazioni)</span>` : ''}</td><td class="an-stato">${arch ? 'Archiviato' : 'Attivo'}</td>
+                <td class="r an-act"><button class="st-edit" data-e="${esc(u.email)}" data-n="${esc(u.nome)}" onclick="openEditUser(this.dataset.e, this.dataset.n)">Modifica</button>
+                <button class="st-edit" onclick="toggleArchive('${esc(u.email)}', ${!arch})">${arch ? 'Ripristina' : 'Archivia'}</button></td></tr>`;
+        });
+        if (!list.length) h += `<tr><td colspan="4" style="color:var(--text-muted)">Nessun collaboratore trovato.</td></tr>`;
+        box.innerHTML = h + `</tbody></table></div>`;
     };
 
     window.loadAdminData = async () => {
@@ -2432,7 +2624,7 @@
             document.getElementById('admin-global-totals').style.display = 'block';
         }
 
-        if(statsOpen) renderAdminStats();
+        refreshAdminTab(false);
 
         // --- RENDER GLOBAL HISTORY ACCORDION ---
         const mNames = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
