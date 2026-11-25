@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="it" class="auth-pending">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -19,6 +19,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
+    <script>
+    // Formato italiano: migliaia con il punto, decimali con la virgola
+    window.itGroup = function(i) { return String(i).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
+    window.itDec = function(n, dec) {
+        var v = Number(n) || 0, d = dec == null ? 2 : dec, s = Math.abs(v).toFixed(d), p = s.split('.');
+        return (v < 0 && Number(s) > 0 ? '-' : '') + itGroup(p[0]) + (p[1] ? ',' + p[1] : '');
+    };
+    window.itMoney = function(n) { return itDec(n, 2); };
+    window.itOre = function(n) {
+        var v = Number((Number(n) || 0).toFixed(2)), p = String(Math.abs(v)).split('.');
+        return (v < 0 ? '-' : '') + itGroup(p[0]) + (p[1] ? ',' + p[1] : '');
+    };
+    </script>
     <style>
         /* --- 1. RESET & VARIABILI --- */
         :root {
@@ -611,7 +624,10 @@
         @media (max-width: 600px) { body { padding: 6px; } .container { padding: 8px; } .form-box { padding: 14px; } }
 
         /* titoli di sezione piu' evidenti */
-        .view-section h3:not(.detail-title) { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.04em; color: var(--text-main); padding-left: 10px; border-left: 3px solid var(--primary); line-height: 1.2; }
+        .view-section h3:not(.detail-title) { font-size: 1.3rem; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--sec-color, var(--primary)) !important; padding-left: 0; border-left: none; line-height: 1.25; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
+        .view-section h3 .sub, .gb-title .sub { font-size: 0.82rem; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--text-muted); }
+        .view-section h3.sec-green { --sec-color: #2fa84f; } .view-section h3.sec-orange { --sec-color: #f08a00; }
+        [data-theme="dark"] .view-section h3.sec-green { --sec-color: #30d158; } [data-theme="dark"] .view-section h3.sec-orange { --sec-color: #ff9f0a; }
 
         /* mobile: turno su una riga, tap per i dettagli */
         @media (max-width: 600px) {
@@ -740,7 +756,7 @@
         [data-theme="dark"] .form-box[style*="--bg-body"] { background: linear-gradient(160deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03)) !important; border-color: rgba(255,255,255,0.14) !important; }
 
         /* compensi e statistiche (admin) */
-        .st-title { margin: 0 0 8px 0; font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+        .st-title { margin: 0 0 10px 0; font-size: 1.05rem; font-weight: 700; color: var(--primary); }
         .st-hint { font-size: 0.75rem; color: var(--text-muted); margin: 6px 0 0 0; }
         .st-scroll { overflow-x: auto; }
         .st-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; min-width: 520px; }
@@ -791,6 +807,10 @@
             .st-table td:nth-child(n) { grid-column: auto; }
             .st-table tfoot td { border-top: 2px solid var(--glass-border); border-bottom: none; }
         }
+        /* --- NIENTE SCHERMATA DI LOGIN MENTRE SI RIPRISTINA LA SESSIONE --- */
+        html.auth-pending #login-view { display: none !important; }
+        html.auth-pending body::after { content: ""; position: fixed; top: 50%; left: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; border: 3px solid rgba(0,122,255,0.2); border-top-color: var(--primary); animation: authspin 0.8s linear infinite; }
+        @keyframes authspin { to { transform: rotate(360deg); } }
         /* --- BOX COLORATI LIQUID GLASS (stagione) --- */
         .glass-box { --t: 10,132,255; margin-top: 16px; padding: 18px; border-radius: 24px; position: relative;
             background: linear-gradient(135deg, rgba(var(--t),0.30), rgba(var(--t),0.10) 62%, rgba(255,255,255,0.16)), var(--glass-soft);
@@ -798,7 +818,8 @@
             backdrop-filter: blur(var(--glass-blur)) saturate(180%); -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
             box-shadow: inset 0 1px 1px rgba(255,255,255,0.7), inset 0 -1px 1px rgba(var(--t),0.15); }
         .glass-box.gb-blue { --t: 10,132,255; } .glass-box.gb-sky { --t: 90,200,250; } .glass-box.gb-deep { --t: 40,90,230; } .glass-box.gb-cyan { --t: 50,200,215; }
-        .gb-title { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .gb-title { font-size: 1.15rem; font-weight: 700; letter-spacing: 0; color: rgb(var(--t)); color: color-mix(in srgb, rgb(var(--t)) 62%, #000); margin-bottom: 14px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 10px; }
+        [data-theme="dark"] .gb-title { color: rgb(var(--t)); }
         .glass-box .st-kpi { background: rgba(255,255,255,0.35); }
         [data-theme="dark"] .glass-box .st-kpi { background: rgba(255,255,255,0.08); }
         @media (max-width: 600px) { .glass-box { padding: 14px; border-radius: 20px; } }
@@ -816,6 +837,13 @@
             #cards-container .stat-group { text-align: left; min-width: 0; } #cards-container .stat-group.right { text-align: right; min-width: 0; }
             #cards-container .card-stats-row { min-width: 0; justify-content: space-between; border-top: 1px solid var(--glass-border); padding-top: 6px; margin-top: 6px; }
         }
+        .soglia { display: inline-block; margin-left: 8px; padding: 2px 9px; border-radius: 999px; font-size: 0.66rem; font-weight: 800; white-space: nowrap; vertical-align: middle; }
+        .soglia.s1 { background: rgba(255,159,10,0.22); color: #b36200; border: 1px solid rgba(255,159,10,0.5); }
+        .soglia.s2 { background: rgba(255,59,48,0.20); color: #c4180f; border: 1px solid rgba(255,59,48,0.5); }
+        [data-theme="dark"] .soglia.s1 { color: #ffb340; } [data-theme="dark"] .soglia.s2 { color: #ff6961; }
+        .an-hist summary { cursor: pointer; list-style: none; } .an-hist summary::-webkit-details-marker { display: none; }
+        .an-hist summary::before { content: '▸ '; color: var(--text-muted); } .an-hist[open] summary::before { content: '▾ '; }
+        .an-hist-row { font-size: 0.75rem; color: var(--text-muted); padding: 2px 0 0 14px; }
         .an-act { white-space: nowrap; }
         @media (max-width: 600px) { .an-table { min-width: 0; } .an-stato { display: none !important; } .an-act { white-space: normal; } .an-act .st-edit { display: flex; margin: 0 0 4px auto; } }
         .mo-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
@@ -903,7 +931,7 @@
         </div>
 
         <div class="form-box">
-            <h3><i class=ig-plus></i> Nuovo Turno</h3>
+            <h3><i class=ig-plus></i> Nuovo turno <span class="sub">Registra le tue ore</span></h3>
             <div class="time-row">
                 <div><label>Data</label><input type="date" id="c-data"></div>
                 <div><label>Mansione</label>
@@ -934,7 +962,7 @@
             </div>
         </div>
 
-        <h3><i class=ig-calendar></i> I Miei Turni</h3>
+        <h3><i class=ig-calendar></i> I miei turni <span class="sub">Elenco e calendario del periodo</span></h3>
 
         <div class="filter-bar">
             <select id="c-sort-order" onchange="renderCollabTable()">
@@ -995,7 +1023,7 @@
         
         <!-- NUOVA SEZIONE STORICO COMPENSI COLLABORATORE -->
         <div id="collab-history-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-            <h3 style="color:var(--primary); margin-top:0"><i class=ig-chart-bar></i> Il Mio Storico Compensi</h3>
+            <h3 class="sec-orange" style="margin-top:0"><i class=ig-chart-bar></i> Il mio storico compensi <span class="sub">Tutti gli anni</span></h3>
             <div id="collab-history-content"></div>
         </div>
         
@@ -1014,7 +1042,7 @@
         </div>
 
         <div id="atab-mese" class="atab active">
-        <h3 style="margin-top:0">Riepilogo</h3>
+        <h3 style="margin-top:0">Riepilogo <span class="sub">Ore e compensi stimati per collaboratore</span></h3>
         <div class="filter-bar">
             <input type="text" id="a-search" placeholder="Cerca collaboratore..." style="flex:2; min-width:180px; border-color:var(--primary)">
             
@@ -1050,7 +1078,7 @@
         <div id="cards-container" class="cards-grid"></div>
 
         <div id="admin-global-totals" class="form-box" style="margin-top: 20px; display: none;">
-            <h3 style="color:var(--text-main); margin-top:0; font-size: 1.1rem;"><i class=ig-chart-bar></i> Totali Selezionati</h3>
+            <h3 class="sec-green" style="margin-top:0"><i class=ig-chart-bar></i> Totali selezionati <span class="sub">Somma del periodo filtrato</span></h3>
             <div style="display:flex; justify-content:space-between; align-items:flex-end; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
                 <div>
                     <span class="stat-label" style="font-size:0.75rem;">TOTALE ORE</span>
@@ -1072,18 +1100,18 @@
         </div>
 
         <div id="atab-stagione" class="atab">
-            <h3 style="margin-top:0">Riepilogo stagionale</h3>
+            <h3 style="margin-top:0">Riepilogo stagionale <span class="sub">Compensi, stima ed effettivo da settembre ad agosto</span></h3>
             <div id="season-head"></div>
             <div id="season-summary"></div>
             <div id="season-editor-box" class="glass-box gb-cyan">
-                <div class="gb-title"><i class=ig-wrench></i> Compensi effettivi</div>
+                <div class="gb-title"><i class=ig-wrench></i> Compensi effettivi <span class="sub">Quanto hanno realmente percepito, mese per mese</span></div>
                 <div class="st-hint" style="margin:-4px 0 12px 0">Scegli il mese (anche passato) e inserisci quanto hanno realmente percepito i collaboratori, con eventuali aggiunte o detrazioni.</div>
                 <div id="season-editor"></div>
             </div>
         </div>
 
         <div id="atab-stat" class="atab">
-            <h3 style="margin-top:0">Statistiche</h3>
+            <h3 style="margin-top:0">Statistiche <span class="sub">Andamento e confronto con l'anno precedente</span></h3>
             <div class="filter-bar" style="margin-bottom:14px">
                 <select id="st-anno" onchange="renderAdminStats()"></select>
                 <select id="st-mese" onchange="renderAdminStats()"></select>
@@ -1091,7 +1119,7 @@
             <div id="admin-stats-content"></div>
         <!-- NUOVA SEZIONE STORICO GLOBALE AZIENDALE -->
         <div id="admin-global-history-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; display: none;">
-            <h3 style="color:var(--primary); margin-top:0"><i class=ig-trend></i> Riepilogo Storico Aziendale</h3>
+            <h3 class="sec-orange" style="margin-top:0"><i class=ig-trend></i> Riepilogo storico aziendale <span class="sub">Tutti gli anni</span></h3>
             <div id="admin-global-history-content"></div>
         </div>
 
@@ -1099,7 +1127,7 @@
         </div>
 
         <div id="atab-anag" class="atab">
-            <h3 style="margin-top:0">Anagrafiche e compensi</h3>
+            <h3 style="margin-top:0">Anagrafiche e compensi <span class="sub">Dati, tariffe orarie e archiviati</span></h3>
             <div class="filter-bar" style="margin-bottom:14px">
                 <input type="text" id="an-search" placeholder="Cerca collaboratore..." oninput="renderAnagList()" style="flex:2; min-width:180px">
                 <select id="an-status" onchange="renderAnagList()"><option value="active">Attivi</option><option value="arch">Archiviati</option><option value="all">Tutti</option></select>
@@ -1107,7 +1135,7 @@
             <div id="anag-list"></div>
             <div style="margin-top: 26px;"></div>
                 <div class="form-box" style="background:var(--bg-body); border-color:var(--border-color)">
-            <h3 style="color:var(--primary); margin-top:0"><i class=ig-wrench></i> Anagrafica</h3>
+            <h3 style="margin-top:0"><i class=ig-wrench></i> Nuova anagrafica <span class="sub">Aggiungi un collaboratore in rubrica</span></h3>
             <div class="time-row" style="margin-bottom:0">
                 <input type="email" id="adm-email" placeholder="Email">
                 <input type="text" id="adm-name" placeholder="Cognome Nome">
@@ -1168,7 +1196,7 @@
         
         <!-- NUOVA SEZIONE VERIFICA TURNI PIANIFICATI (solo Admin) -->
         <div id="confronto-turni-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-            <h3 style="color:var(--primary); margin-top:0"><i class=ig-search></i> Verifica Turni Pianificati</h3>
+            <h3 style="margin-top:0"><i class=ig-search></i> Verifica turni pianificati <span class="sub">Pianificato e registrato a confronto</span></h3>
             <p style="font-size:0.8rem; color:var(--text-muted); margin:0 0 10px 0;">Confronto tra i turni assegnati in Programmazione Turni e le ore registrate dal collaboratore, per il periodo selezionato nei filtri sopra.</p>
             <div id="confronto-summary" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
             <div class="table-wrap">
@@ -1181,7 +1209,7 @@
 
         <!-- NUOVA SEZIONE STORICO COMPENSI -->
         <div id="admin-history-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-            <h3 style="color:var(--primary); margin-top:0"><i class=ig-chart-bar></i> Storico Compensi (Tutti gli anni)</h3>
+            <h3 class="sec-orange" style="margin-top:0"><i class=ig-chart-bar></i> Storico compensi <span class="sub">Tutti gli anni</span></h3>
             <div id="admin-history-content"></div>
         </div>
     </div>
@@ -1310,15 +1338,15 @@
     <div class="modal-box" style="max-height:92vh; overflow-y:auto">
         <h3>Modifica Utente & Tariffe</h3>
         <input type="text" id="edit-name-input" placeholder="Cognome Nome" style="margin-bottom:15px; font-weight:bold">
-        <div style="max-height:250px; overflow-y:auto; border:1px solid var(--border-color); padding:10px; border-radius:8px; margin-bottom:15px">
-            <h4 style="margin:0 0 10px 0; font-size:0.75rem; color:var(--text-muted); text-transform:uppercase">Tariffe Orarie (€)</h4>
-            <div id="rate-inputs-container"></div>
+        <div style="border:1px solid var(--border-color); padding:12px; border-radius:12px; margin-bottom:15px">
+            <label style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase">Tariffe valide dal</label>
+            <input type="date" id="edit-rate-from" onchange="onRateDateChange(true)" style="margin-bottom:6px">
+            <div id="rate-mode-hint" style="font-size:0.72rem; color:var(--text-muted); margin-bottom:10px"></div>
+            <h4 style="margin:0 0 6px 0; font-size:0.75rem; color:var(--text-muted); text-transform:uppercase">Tariffe orarie (€)</h4>
+            <div id="rate-inputs-container" style="max-height:230px; overflow-y:auto"></div>
         </div>
         <div style="margin-bottom:15px">
-            <label style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase">Se cambi le tariffe, valgono dal</label>
-            <input type="date" id="edit-rate-from">
-            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:4px">I turni precedenti a questa data mantengono le tariffe di prima.</div>
-            <div id="rate-history-list" style="margin-top:10px"></div>
+            <div id="rate-history-list"></div>
         </div>
         <div style="display:flex; gap:10px">
             <button class="btn-secondary" onclick="document.getElementById('edit-user-modal').style.display='none'">Annulla</button>
@@ -1531,7 +1559,9 @@
     }
 
     // SWITCH VIEW
+    setTimeout(() => document.documentElement.classList.remove('auth-pending'), 8000); // sicurezza: dopo 8s mostra comunque la pagina
     window.switchView = (viewId) => {
+        document.documentElement.classList.remove('auth-pending');
         document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
         const target = document.getElementById(viewId);
         if(target) target.classList.add('active');
@@ -1966,9 +1996,9 @@
             Object.keys(historyData[y]).sort((a,b) => b-a).forEach(m => {
                 const data = historyData[y][m];
                 yearOre += data.ore; yearSoldi += data.soldi;
-                monthsHtml += `<div class="history-month-row"><span style="font-weight:500;">${mNames[m]}</span><span><strong>${Number(data.ore.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${data.soldi.toFixed(2)}</span></span></div>`;
+                monthsHtml += `<div class="history-month-row"><span style="font-weight:500;">${mNames[m]}</span><span><strong>${itOre(data.ore)}</strong> ore • <span style="color:var(--money-color)">€ ${itMoney(data.soldi)}</span></span></div>`;
             });
-            html += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span><i class=ig-calendar></i> ${y}</span><span><strong>${Number(yearOre.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${yearSoldi.toFixed(2)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
+            html += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span><i class=ig-calendar></i> ${y}</span><span><strong>${itOre(yearOre)}</strong> ore • <span style="color:var(--money-color)">€ ${itMoney(yearSoldi)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
         });
         
         contentDiv.innerHTML = html || '<p style="color:var(--text-muted); text-align:center; padding:10px; font-size: 0.85rem;">Nessuno storico presente.</p>';
@@ -2034,23 +2064,23 @@
                     <td data-label="Data"><span class="d-full"><span style="text-transform:capitalize">${shortDay}</span> ${numDate}</span><span class="d-short" style="text-transform:capitalize">${shortDay} ${String(dateObj.getDate()).padStart(2,'0')}</span></td>
                     <td data-label="Mansione">${t.mansione}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
-                    <td data-label="Ore"><strong>${t.ore}</strong></td>
+                    <td data-label="Ore"><strong>${itOre(t.ore)}</strong></td>
                     <td data-label="Note">${t.note||''}</td>
                     <td class="actions-cell">${actionHtml}</td>
                 </tr>
             `;
         });
-        document.getElementById('c-totale').innerText = Number(tot.toFixed(2));
+        document.getElementById('c-totale').innerText = itOre(tot);
         const soldiEl = document.getElementById('c-soldi');
-        if(soldiEl) soldiEl.innerText = totSoldi.toFixed(2);
-        document.getElementById('c-totale-b').innerText = Number(tot.toFixed(2));
-        document.getElementById('c-soldi-b').innerText = totSoldi.toFixed(2);
+        if(soldiEl) soldiEl.innerText = itMoney(totSoldi);
+        document.getElementById('c-totale-b').innerText = itOre(tot);
+        document.getElementById('c-soldi-b').innerText = itMoney(totSoldi);
         
         // UPDATED: Render pills with compact style
         Object.keys(breakdown).forEach(m => {
             const bg = getRoleBg(m);
             const textColor = "var(--text-main)"; 
-            statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${Number(breakdown[m].toFixed(2))}</div>`;
+            statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${itOre(breakdown[m])}</div>`;
         });
     };
 
@@ -2069,83 +2099,98 @@
         catch(e) { modal("Errore", e.message); }
     };
 
-    let editInitialRates = {};
+    let editInitialRates = {}, editDateTouched = false;
+    const fmtDa = (da) => da === '1970-01-01' ? "Dall'inizio" : 'Dal ' + da.split('-').reverse().join('/');
+    const storicoOf = (email) => {
+        const r = rubrica[email] || {};
+        if (r.storico && r.storico.length) return r.storico.map(x => ({ da: x.da, tariffe: { ...x.tariffe } }));
+        return [{ da: '1970-01-01', tariffe: { ...(r.tariffe || {}) } }];
+    };
+    const pickRates = (st, dateStr) => { let ch = st[0]; for (const e of st) { if (e.da <= dateStr) ch = e; else break; } return ch.tariffe || {}; };
+    const ratesTxt = (t) => Mansioni.filter(m => t && t[m]).map(m => `${m.split(' ')[0]} ${t[m]}`).join(' · ') || '—';
+    window.ratesTxt = ratesTxt; window.fmtDa = fmtDa; window.storicoOf = storicoOf;
+
     window.renderRateHistory = (email) => {
         const box = document.getElementById('rate-history-list');
-        const st = rubrica[email]?.storico || [];
-        if(!st.length) { box.innerHTML = '<div style="font-size:0.75rem; color:var(--text-muted)">Nessuna variazione registrata: le tariffe sopra valgono per tutti i turni.</div>'; return; }
-        const fmt = (da) => da === '1970-01-01' ? 'Iniziale' : 'Dal ' + da.split('-').reverse().join('/');
-        box.innerHTML = '<div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px">Storico tariffe</div>' +
-            st.map(e => {
-                const txt = Mansioni.filter(m => e.tariffe && e.tariffe[m]).map(m => `${m.split(' ')[0]} ${e.tariffe[m]}`).join(' · ') || '—';
+        const st = storicoOf(email), sel = document.getElementById('edit-rate-from').value;
+        box.innerHTML = '<div style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px; font-weight:700">Storico tariffe</div>' +
+            st.slice().reverse().map(e => {
                 const del = st.length > 1 ? `<button class="card-action-btn" title="Elimina" onclick="delTariffaStorico('${email}','${e.da}')"><i class=ig-trash></i></button>` : '';
-                return `<div class="rate-hist-row"><span><b>${fmt(e.da)}</b> — ${txt}</span>${del}</div>`;
+                return `<div class="rate-hist-row" ${e.da === sel ? 'style="background:var(--glass-soft); border-radius:8px; padding-left:6px"' : ''}><span><b>${fmtDa(e.da)}</b> — ${ratesTxt(e.tariffe)}</span><span style="white-space:nowrap"><button class="card-action-btn" title="Modifica" onclick="editRateEntry('${e.da}')"><i class=ig-pencil></i></button>${del}</span></div>`;
             }).join('');
     };
 
+    window.onRateDateChange = (touch) => {
+        const email = currentEditEmail; if (!email) return;
+        const da = document.getElementById('edit-rate-from').value || todayISO();
+        if (touch) editDateTouched = true;
+        const st = storicoOf(email), exact = st.find(x => x.da === da);
+        const rates = exact ? exact.tariffe : pickRates(st, da);
+        editInitialRates = {};
+        Mansioni.forEach(m => { const v = rates[m] || 0; editInitialRates[m] = v; const el = document.getElementById(`rate-${m}`); if (el) el.value = v; });
+        const hint = document.getElementById('rate-mode-hint');
+        hint.innerHTML = exact ? `Stai modificando la variazione <b>${fmtDa(da).toLowerCase()}</b>.`
+            : `Salvando crei una <b>nuova variazione</b> dal ${da.split('-').reverse().join('/')}: i turni precedenti mantengono le tariffe di prima.`;
+        renderRateHistory(email);
+    };
+
+    window.editRateEntry = (da) => {
+        document.getElementById('edit-rate-from').value = da;
+        onRateDateChange(true);
+        document.getElementById('rate-inputs-container').scrollIntoView({ block: 'nearest' });
+    };
+
     window.openEditUser = (email, nome) => {
-        currentEditEmail = email;
+        currentEditEmail = email; editDateTouched = false;
         document.getElementById('edit-name-input').value = nome;
         const container = document.getElementById('rate-inputs-container');
-        container.innerHTML = "";
-        const userRates = rateSetFor(email, todayISO());
-        editInitialRates = {};
-        Mansioni.forEach(m => {
-            const val = userRates[m] || 0;
-            editInitialRates[m] = val;
-            container.innerHTML += `<div class="rate-matrix-row"><span class="rate-label">${m}</span><input type="number" id="rate-${m}" value="${val}" step="0.5" class="rate-input" placeholder="0"></div>`;
-        });
+        container.innerHTML = Mansioni.map(m => `<div class="rate-matrix-row"><span class="rate-label">${m}</span><input type="number" id="rate-${m}" value="0" step="0.5" class="rate-input" placeholder="0"></div>`).join('');
         document.getElementById('edit-rate-from').value = todayISO();
-        renderRateHistory(email);
-        document.getElementById('edit-user-modal').style.display='flex';
+        onRateDateChange(false);
+        document.getElementById('edit-user-modal').style.display = 'flex';
     };
 
     window.saveEditUser = async () => {
-        if(!currentEditEmail) return;
+        if (!currentEditEmail) return;
         try {
-            const n = document.getElementById('edit-name-input').value;
+            const email = currentEditEmail, n = document.getElementById('edit-name-input').value;
             const newRates = {};
             Mansioni.forEach(m => { newRates[m] = parseFloat(document.getElementById(`rate-${m}`).value) || 0; });
+            const da = document.getElementById('edit-rate-from').value || todayISO();
+            let st = storicoOf(email);
+            const exact = st.find(x => x.da === da);
             const changed = Mansioni.some(m => newRates[m] !== (editInitialRates[m] || 0));
+            const upsert = changed || (editDateTouched && !exact);
             const payload = { nome: n };
-            let newStorico = null;
-            if(changed) {
-                const da = document.getElementById('edit-rate-from').value || todayISO();
-                let st = (rubrica[currentEditEmail]?.storico || []).map(x => ({ da: x.da, tariffe: { ...x.tariffe } }));
-                if(!st.length) st.push({ da: '1970-01-01', tariffe: { ...(rubrica[currentEditEmail]?.tariffe || {}) } });
-                const idx = st.findIndex(x => x.da === da);
-                if(idx >= 0) st[idx].tariffe = newRates; else st.push({ da, tariffe: newRates });
-                st.sort((a,b) => a.da.localeCompare(b.da));
-                newStorico = st;
+            if (upsert) {
+                if (exact) exact.tariffe = newRates; else st.push({ da, tariffe: newRates });
+                st.sort((a, b) => a.da.localeCompare(b.da));
                 payload.tariffe_storico = st;
+                payload.tariffe = pickRates(st, todayISO());
             }
-            if(rubrica[currentEditEmail]) {
-                rubrica[currentEditEmail].nome = n;
-                if(newStorico) rubrica[currentEditEmail].storico = newStorico;
+            await setDoc(doc(db, "anagrafica", email), payload, { merge: true });
+            if (rubrica[email]) {
+                rubrica[email].nome = n;
+                if (upsert) { rubrica[email].storico = st; rubrica[email].tariffe = payload.tariffe; }
             }
-            if(changed) payload.tariffe = rateSetFor(currentEditEmail, todayISO());
-            await setDoc(doc(db, "anagrafica", currentEditEmail), payload, { merge: true });
-            if(rubrica[currentEditEmail] && changed) rubrica[currentEditEmail].tariffe = payload.tariffe;
-
-            toast("Aggiornato");
-            document.getElementById('edit-user-modal').style.display='none';
+            toast(upsert ? "Tariffe salvate nello storico" : "Aggiornato");
+            document.getElementById('edit-user-modal').style.display = 'none';
             loadAdminData();
-        } catch(e) { modal("Errore", e.message); }
+        } catch (e) { modal("Errore", e.message); }
     };
 
     window.delTariffaStorico = (email, da) => {
-        modal("Elimina tariffe", "Eliminare questa variazione di tariffe? I turni di quel periodo useranno le tariffe precedenti.", async () => {
+        modal("Elimina variazione", "Eliminare questa variazione di tariffe? I turni di quel periodo useranno le tariffe della variazione precedente.", async () => {
             try {
-                const st = (rubrica[email]?.storico || []).filter(x => x.da !== da);
-                if(!st.length) return;
-                rubrica[email].storico = st;
-                const cur = rateSetFor(email, todayISO());
+                const st = storicoOf(email).filter(x => x.da !== da);
+                if (!st.length) return;
+                const cur = pickRates(st, todayISO());
                 await setDoc(doc(db, "anagrafica", email), { tariffe_storico: st, tariffe: cur }, { merge: true });
-                rubrica[email].tariffe = cur;
-                renderRateHistory(email);
+                rubrica[email].storico = st; rubrica[email].tariffe = cur;
+                onRateDateChange(false);
                 toast("Variazione eliminata");
                 loadAdminData();
-            } catch(e) { modal("Errore", e.message); }
+            } catch (e) { modal("Errore", e.message); }
         });
     };
 
@@ -2168,16 +2213,16 @@
 
     // ===== MENU ADMIN (pillole), STAGIONE, COMPENSI EFFETTIVI, STATISTICHE, ANAGRAFICHE =====
     const MESI_IT = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
-    const eur = (n) => '€ ' + (Number(n) || 0).toFixed(2);
+    const eur = (n) => '€ ' + itMoney(n);
     const esc = (v) => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
     const pad2 = (n) => String(n).padStart(2, '0');
-    const num2 = (n) => Number((n || 0).toFixed(2));
+    const num2 = (n) => itOre(n);
     const SEASON_MONTHS = [9,10,11,12,1,2,3,4,5,6,7,8];
     const seasonOf = (y, m) => m >= 9 ? y : y - 1;
     const seasonLabel = (s) => `${s}/${String(s + 1).slice(2)}`;
     const ymOf = (s, m) => m >= 9 ? `${s}-${pad2(m)}` : `${s + 1}-${pad2(m)}`;
     const costoTurno = (t) => (t.ore || 0) * ratesFor(t.email, t.mansione, t.data);
-    const diffHtml = (d, dec) => `<span style="color:${d >= 0 ? 'var(--money-color)' : 'var(--danger, #ff3b30)'}">${d >= 0 ? '+' : ''}${d.toFixed(dec == null ? 2 : dec)}</span>`;
+    const diffHtml = (d, dec) => `<span style="color:${d >= 0 ? 'var(--money-color)' : 'var(--danger, #ff3b30)'}">${d >= 0 ? '+' : ''}${itDec(d, dec == null ? 2 : dec)}</span>`;
     const pctHtml = (a, b) => b > 0 ? diffHtml((a - b) / b * 100, 0) + '%' : '—';
     const kpi = (label, val, sub) => `<div class="st-kpi"><span class="st-kpi-l">${label}</span><span class="st-kpi-v">${val}</span>${sub ? `<span class="st-kpi-s">${sub}</span>` : ''}</div>`;
     const hbar = (label, value, max, txt) => `<div class="st-hrow"><span class="st-hl">${label}</span><div class="st-htrack"><div class="st-hfill" style="width:${max > 0 ? (value / max * 100).toFixed(1) : 0}%"></div></div><span class="st-hv">${txt}</span></div>`;
@@ -2254,7 +2299,7 @@
         Object.values(compensiMap).forEach(c => { if (c && c.anno && c.mese) set.add(seasonOf(c.anno, c.mese)); });
         const list = [...set].sort((a, b) => b - a);
         const box = document.getElementById('season-head');
-        box.innerHTML = `<div class="filter-bar" style="margin-bottom:12px"><select id="se-sel" onchange="changeSeason(this.value)" style="max-width:220px">${list.map(s => `<option value="${s}" ${s === seasonSel ? 'selected' : ''}>Stagione ${seasonLabel(s)}</option>`).join('')}</select><span class="st-hint" style="margin:0 0 0 6px">da settembre ${seasonSel} ad agosto ${seasonSel + 1}</span></div>`;
+        box.innerHTML = `<div class="filter-bar" style="margin-bottom:12px"><select id="se-sel" onchange="changeSeason(this.value)" style="max-width:220px">${list.map(s => `<option value="${s}" ${s === seasonSel ? 'selected' : ''}>Stagione ${seasonLabel(s)}</option>`).join('')}</select><span class="st-hint" style="margin:0 0 0 6px">da settembre ${seasonSel} ad agosto ${seasonSel + 1}</span><div class="filter-buttons" style="margin-left:auto"><button onclick="exportSeasonXlsx()" class="btn-success"><i class=ig-download></i> Scarica Excel stagione</button></div></div>`;
         renderSeasonSummary();
         renderSeasonEditor();
     };
@@ -2270,14 +2315,14 @@
         const oreC = sum(cur.months, x => x.ore, lim), costoC = sum(cur.months, x => x.costo, lim);
         const oreP = sum(prv.months, x => x.ore, lim), costoP = sum(prv.months, x => x.costo, lim);
         const attivi = Object.keys(cur.perUser).length;
-        let h = `<div class="glass-box gb-blue"><div class="gb-title">Riepilogo stagione ${seasonLabel(s)}</div><div class="st-kpis">` +
+        let h = `<div class="glass-box gb-blue"><div class="gb-title">Riepilogo stagione ${seasonLabel(s)} <span class="sub">Ore, costo e confronto con la stagione precedente</span></div><div class="st-kpis">` +
             kpi('Ore stagione', num2(ore), `${pctHtml(oreC, oreP)} vs ${seasonLabel(s - 1)}${isCur ? ' (stesso periodo)' : ''}`) +
             kpi('Costo stimato', eur(costo), `${pctHtml(costoC, costoP)} vs ${seasonLabel(s - 1)}${isCur ? ' (stesso periodo)' : ''}`) +
             kpi('Effettivo pagato', cur.anyEff ? eur(cur.effTot) : '—', cur.anyEff ? 'somma dei mesi inseriti' : 'nessun importo inserito') +
             kpi('Effettivo − stima', cur.anyEff ? diffHtml(cur.diffTot) : '—', 'solo dove hai inserito l\'effettivo') +
             kpi('Collaboratori', attivi, 'con ore nella stagione') + `</div></div>`;
         const maxC = Math.max(1, ...cur.months.map(x => x.costo), ...prv.months.map(x => x.costo));
-        h += `<div class="glass-box gb-sky"><div class="gb-title">Mese per mese · ${seasonLabel(s)} a confronto con ${seasonLabel(s - 1)}</div>
+        h += `<div class="glass-box gb-sky"><div class="gb-title">Mese per mese <span class="sub">${seasonLabel(s)} a confronto con ${seasonLabel(s - 1)}</span></div>
             <div class="st-legend"><span><i class="st-dot st-cur"></i>${seasonLabel(s)}</span><span><i class="st-dot st-prv"></i>${seasonLabel(s - 1)}</span><span style="color:var(--text-muted)">(costo stimato)</span></div><div class="st-chart">` +
             cur.months.map((x, i) => `<div class="st-col" title="${MESI_IT[SEASON_MONTHS[i] - 1]}: ${eur(x.costo)} (${seasonLabel(s - 1)}: ${eur(prv.months[i].costo)})"><div class="st-bars"><div class="st-bar st-prv" style="height:${(prv.months[i].costo / maxC * 100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.costo / maxC * 100).toFixed(1)}%"></div></div><span class="st-lbl">${MESI_IT[SEASON_MONTHS[i] - 1].slice(0, 3)}</span></div>`).join('') + `</div>`;
         h += `<div class="st-scroll"><table class="st-table"><thead><tr><th>Mese</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Diff.</th><th class="r">Stima ${seasonLabel(s - 1)}</th><th class="r">Δ</th><th></th></tr></thead><tbody>`;
@@ -2290,11 +2335,12 @@
             h += `<tr ${m === seasonMonthSel ? 'style="background:var(--glass-soft)"' : ''}><td>${MESI_IT[m - 1]}</td><td class="r">${num2(x.ore)}</td><td class="r">${eur(x.costo)}</td><td class="r">${x.anyEff ? eur(x.eff) : '—'}</td><td class="r">${diff}</td><td class="r">${eur(prv.months[i].costo)}</td><td class="r">${pctHtml(x.costo, prv.months[i].costo)}</td><td class="r"><button class="st-edit" onclick="changeSeasonMonth(${m}); document.getElementById('season-editor-box').scrollIntoView({behavior:'smooth', block:'start'})">Modifica</button></td></tr>`;
         });
         h += `</tbody><tfoot><tr><td><b>Stagione</b></td><td class="r">${num2(ore)}</td><td class="r">${eur(costo)}</td><td class="r">${cur.anyEff ? eur(cur.effTot) : '—'}</td><td class="r">${cur.anyEff ? diffHtml(cur.diffTot) : '—'}</td><td class="r">${eur(sum(prv.months, x => x.costo, 11))}</td><td class="r">${pctHtml(costo, sum(prv.months, x => x.costo, 11))}</td><td></td></tr></tfoot></table></div></div>`;
+        const pidx = buildPayIndex();
         const users = Object.entries(cur.perUser).map(([e, r]) => ({ e, nome: rubrica[e]?.nome || e, ...r })).sort((a, b) => a.nome.localeCompare(b.nome));
-        h += `<div class="glass-box gb-deep"><div class="gb-title">Per collaboratore · stagione ${seasonLabel(s)}</div><div class="st-scroll"><table class="st-table"><thead><tr><th>Collaboratore</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Diff.</th></tr></thead><tbody>` +
-            users.map(u => `<tr><td>${esc(u.nome)}</td><td class="r">${num2(u.ore)}</td><td class="r">${eur(u.stima)}</td><td class="r">${u.anyEff ? eur(u.eff) : '—'}</td><td class="r">${u.anyEff ? diffHtml(u.eff - (u.stimaSet || 0)) : '—'}</td></tr>`).join('') +
-            (users.length ? '' : '<tr><td colspan="5" style="color:var(--text-muted)">Nessun turno nella stagione.</td></tr>') + `</tbody></table></div>
-            <div class="st-hint">La differenza confronta l'effettivo con la stima dei soli mesi in cui hai inserito l'importo.</div></div>`;
+        h += `<div class="glass-box gb-deep"><div class="gb-title">Per collaboratore <span class="sub">Stagione ${seasonLabel(s)} e soglie annuali</span></div><div class="st-scroll"><table class="st-table"><thead><tr><th>Collaboratore</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Diff.</th><th class="r">Anno solare ${s}</th><th class="r">Anno solare ${s + 1}</th></tr></thead><tbody>` +
+            users.map(u => { const a = yearPay(pidx, u.e, s), b = yearPay(pidx, u.e, s + 1); return `<tr><td>${esc(u.nome)}</td><td class="r">${num2(u.ore)}</td><td class="r">${eur(u.stima)}</td><td class="r">${u.anyEff ? eur(u.eff) : '—'}</td><td class="r">${u.anyEff ? diffHtml(u.eff - (u.stimaSet || 0)) : '—'}</td><td class="r">${eur(a)}${sogliaBadge(a)}</td><td class="r">${eur(b)}${sogliaBadge(b)}</td></tr>`; }).join('') +
+            (users.length ? '' : '<tr><td colspan="7" style="color:var(--text-muted)">Nessun turno nella stagione.</td></tr>') + `</tbody></table></div>
+            <div class="st-hint">La differenza confronta l'effettivo con la stima dei soli mesi in cui hai inserito l'importo. Le colonne Anno solare sommano i compensi dei 12 mesi (effettivo se inserito, altrimenti stima) e segnalano il superamento di ${itGroup(SOGLIA1)} € e ${itGroup(SOGLIA2)} €.</div></div>`;
         box.innerHTML = h;
     };
 
@@ -2316,7 +2362,7 @@
             <div class="st-scroll"><table class="st-table" id="st-comp-table" data-ym="${ym}" data-y="${y}" data-m="${m}"><thead><tr><th>Collaboratore</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Differenza</th><th>Nota</th></tr></thead><tbody>`;
         list.forEach(u => {
             const c = compensiMap[`${u.email}_${ym}`];
-            h += `<tr data-email="${esc(u.email)}" data-stima="${u.stima.toFixed(4)}"><td>${esc(u.nome)}</td><td class="r">${num2(u.ore)}</td><td class="r">${eur(u.stima)}</td>
+            h += `<tr data-email="${esc(u.email)}" data-stima="${u.stima.toFixed(4)}" data-ore="${u.ore}"><td>${esc(u.nome)}</td><td class="r">${num2(u.ore)}</td><td class="r">${eur(u.stima)}</td>
                 <td class="r"><input type="number" step="0.01" class="st-in" value="${c && c.importo != null ? c.importo : ''}" placeholder="—" onchange="saveCompenso(this)"></td><td class="r st-diff">—</td>
                 <td><input type="text" class="st-in st-note" value="${esc(c ? c.nota : '')}" placeholder="es. +20 rimborso" onchange="saveCompenso(this)"></td></tr>`;
         });
@@ -2341,7 +2387,7 @@
             const stima = parseFloat(tr.dataset.stima) || 0;
             const inp = tr.querySelector('input.st-in:not(.st-note)');
             const eff = inp.value === '' ? null : parseFloat(inp.value);
-            nTot++; tOre += parseFloat(tr.children[1].innerText) || 0; tStima += stima;
+            nTot++; tOre += parseFloat(tr.dataset.ore) || 0; tStima += stima;
             const diffCell = tr.querySelector('.st-diff');
             if (eff != null && !isNaN(eff)) { nSet++; tEff += eff; tStimaSet += stima; diffCell.innerHTML = diffHtml(eff - stima); }
             else diffCell.innerText = '—';
@@ -2371,6 +2417,104 @@
             renderSeasonSummary();
             toast("Salvato");
         } catch (e) { modal("Errore", e.message + " (hai pubblicato le nuove regole Firestore?)"); }
+    };
+
+    // ---------- SOGLIE ANNO SOLARE + EXPORT EXCEL ----------
+    const SOGLIA1 = 5000, SOGLIA2 = 15000;
+    function buildPayIndex() {
+        const idx = {};
+        allTurniFull.forEach(t => {
+            const d = t.data || ''; if (d.length < 7) return;
+            const k = `${t.email}_${d.slice(0, 7)}`;
+            const r = idx[k] || (idx[k] = { ore: 0, stima: 0 });
+            r.ore += t.ore || 0; r.stima += costoTurno(t);
+        });
+        return idx;
+    }
+    // compenso del mese: effettivo se inserito, altrimenti stima
+    const payOf = (idx, email, y, m) => {
+        const k = `${email}_${y}-${pad2(m)}`, c = compensiMap[k];
+        if (c && c.importo != null) return Number(c.importo);
+        return idx[k] ? idx[k].stima : 0;
+    };
+    const yearPay = (idx, email, y) => { let s = 0; for (let m = 1; m <= 12; m++) s += payOf(idx, email, y, m); return s; };
+    const sogliaBadge = (v) => v > SOGLIA2 ? `<span class="soglia s2" title="Superata la soglia di ${itGroup(SOGLIA2)} € (anno solare)">oltre ${itGroup(SOGLIA2)} €</span>`
+        : v > SOGLIA1 ? `<span class="soglia s1" title="Superata la soglia di ${itGroup(SOGLIA1)} € (anno solare)">oltre ${itGroup(SOGLIA1)} €</span>` : '';
+    const sogliaTxt = (v) => v > SOGLIA2 ? `Oltre ${itGroup(SOGLIA2)}` : v > SOGLIA1 ? `Oltre ${itGroup(SOGLIA1)}` : '';
+
+    function loadXlsxLib() {
+        if (window.XLSX) return Promise.resolve();
+        return new Promise((res, rej) => {
+            const sc = document.createElement('script');
+            sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+            sc.onload = res; sc.onerror = () => rej(new Error('Libreria Excel non raggiungibile (controlla la connessione)'));
+            document.head.appendChild(sc);
+        });
+    }
+
+    window.exportSeasonXlsx = async () => {
+        try {
+            if (!compensiLoaded) await loadCompensi();
+            await loadXlsxLib();
+            const s = seasonSel, idx = buildPayIndex(), cur = seasonAgg(s), prv = seasonAgg(s - 1), lbl = seasonLabel(s);
+            const mesi = SEASON_MONTHS.map(m => MESI_IT[m - 1]);
+            const money = '#,##0.00';
+            const mk = (aoa, fmtFrom, widths) => {
+                const ws = XLSX.utils.aoa_to_sheet(aoa);
+                Object.keys(ws).forEach(a => { if (a[0] !== '!' && ws[a].t === 'n') { const c = XLSX.utils.decode_cell(a); if (c.r > 0 && c.c >= fmtFrom) ws[a].z = money; } });
+                ws['!cols'] = widths.map(w => ({ wch: w }));
+                return ws;
+            };
+            // 1. mese per mese
+            const a1 = [['Mese', 'Ore', 'Stima (€)', 'Effettivo (€)', 'Differenza (€)', `Stima ${seasonLabel(s - 1)} (€)`, 'Variazione stima']];
+            let tO = 0, tC = 0, tE = 0, tP = 0, anyE = false, tDiff = 0;
+            cur.months.forEach((x, i) => {
+                const p = prv.months[i].costo;
+                a1.push([mesi[i], Number(x.ore.toFixed(2)), Number(x.costo.toFixed(2)), x.anyEff ? Number(x.eff.toFixed(2)) : '', x.anyEff ? Number((x.eff - x.costo).toFixed(2)) : '', Number(p.toFixed(2)), p > 0 ? Number(((x.costo - p) / p).toFixed(4)) : '']);
+                tO += x.ore; tC += x.costo; tP += p; if (x.anyEff) { tE += x.eff; anyE = true; tDiff += x.eff - x.costo; }
+            });
+            a1.push(['TOTALE', Number(tO.toFixed(2)), Number(tC.toFixed(2)), anyE ? Number(tE.toFixed(2)) : '', anyE ? Number(tDiff.toFixed(2)) : '', Number(tP.toFixed(2)), tP > 0 ? Number(((tC - tP) / tP).toFixed(4)) : '']);
+            const ws1 = mk(a1, 1, [16, 10, 14, 14, 15, 18, 16]);
+            Object.keys(ws1).forEach(a => { if (a[0] !== '!' && XLSX.utils.decode_cell(a).c === 6 && ws1[a].t === 'n') ws1[a].z = '0.0%'; });
+            // 2. matrici per collaboratore
+            const emails = new Set();
+            SEASON_MONTHS.forEach(m => { const ym = ymOf(s, m); Object.keys(idx).forEach(k => { if (k.endsWith('_' + ym)) emails.add(k.slice(0, k.length - 8)); }); Object.values(compensiMap).forEach(c => { if (c && c.email && c.importo != null && c.anno + '-' + pad2(c.mese) === ym) emails.add(c.email); }); });
+            const users = [...emails].map(e => ({ e, nome: rubrica[e]?.nome || e })).sort((a, b) => a.nome.localeCompare(b.nome));
+            const y1 = s, y2 = s + 1;
+            const matrix = (kind) => {
+                const head = ['Collaboratore', ...mesi, 'TOTALE'];
+                if (kind === 'pay') head.push(`Anno solare ${y1}`, `Anno solare ${y2}`, `Soglia ${y1}`, `Soglia ${y2}`);
+                const aoa = [head], colTot = Array(12).fill(0); let gTot = 0, g1 = 0, g2 = 0;
+                users.forEach(u => {
+                    const row = [u.nome]; let tot = 0, any = false;
+                    SEASON_MONTHS.forEach((m, i) => {
+                        const ym = ymOf(s, m), k = `${u.e}_${ym}`, y = parseInt(ym.slice(0, 4)), c = compensiMap[k];
+                        let v;
+                        if (kind === 'pay') v = payOf(idx, u.e, y, m);
+                        else if (kind === 'stima') v = idx[k] ? idx[k].stima : 0;
+                        else if (kind === 'ore') v = idx[k] ? idx[k].ore : 0;
+                        else v = c && c.importo != null ? Number(c.importo) : null;
+                        if (v == null) row.push(''); else { v = Number(v.toFixed(2)); row.push(v); tot += v; colTot[i] += v; any = true; }
+                    });
+                    row.push(kind === 'eff' && !any ? '' : Number(tot.toFixed(2))); gTot += tot;
+                    if (kind === 'pay') { const a = yearPay(idx, u.e, y1), b = yearPay(idx, u.e, y2); g1 += a; g2 += b; row.push(Number(a.toFixed(2)), Number(b.toFixed(2)), sogliaTxt(a), sogliaTxt(b)); }
+                    aoa.push(row);
+                });
+                const tr = ['TOTALE', ...colTot.map(v => Number(v.toFixed(2))), Number(gTot.toFixed(2))];
+                if (kind === 'pay') tr.push(Number(g1.toFixed(2)), Number(g2.toFixed(2)), '', '');
+                aoa.push(tr);
+                return aoa;
+            };
+            const w = [26, ...Array(12).fill(12), 14, 16, 16, 14, 14];
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws1, 'Mese per mese');
+            XLSX.utils.book_append_sheet(wb, mk(matrix('pay'), 1, w), 'Compensi collaboratori');
+            XLSX.utils.book_append_sheet(wb, mk(matrix('stima'), 1, w), 'Solo stima');
+            XLSX.utils.book_append_sheet(wb, mk(matrix('eff'), 1, w), 'Solo effettivo');
+            XLSX.utils.book_append_sheet(wb, mk(matrix('ore'), 1, w), 'Ore');
+            XLSX.writeFile(wb, `Compensi_stagione_${s}-${String(s + 1).slice(2)}.xlsx`);
+            toast("Excel scaricato");
+        } catch (e) { modal("Errore export", e.message); }
     };
 
     // ---------- STATISTICHE ----------
@@ -2479,11 +2623,16 @@
         const list = Object.entries(rubrica).map(([email, d]) => ({ email, ...d }))
             .filter(u => (st === 'all' || (st === 'arch' ? u.archived === true : u.archived !== true)) && (!q || (u.nome || '').toLowerCase().includes(q) || u.email.toLowerCase().includes(q)))
             .sort((a, b) => (a.nome || '').localeCompare(b.nome || ''));
-        const rates = (email) => { const r = rateSetFor(email, todayISO()); return Mansioni.filter(m => r[m]).map(m => `${m.split(' ')[0]} ${r[m]}`).join(' · ') || '<span style="color:var(--text-muted)">nessuna tariffa</span>'; };
+        const rates = (email) => {
+            const r = rateSetFor(email, todayISO()), st = storicoOf(email).slice().reverse();
+            const cur = Mansioni.filter(m => r[m]).map(m => `${m.split(' ')[0]} ${r[m]}`).join(' · ') || '<span style="color:var(--text-muted)">nessuna tariffa</span>';
+            if (st.length < 2) return cur;
+            return `<details class="an-hist"><summary>${cur} <span class="st-hint">(storico: ${st.length})</span></summary>${st.map(e => `<div class="an-hist-row"><b>${fmtDa(e.da)}</b> — ${ratesTxt(e.tariffe)}</div>`).join('')}</details>`;
+        };
         let h = `<div class="st-scroll"><table class="st-table an-table"><thead><tr><th>Collaboratore</th><th>Tariffe orarie (€/h)</th><th class="an-stato">Stato</th><th class="r">Azioni</th></tr></thead><tbody>`;
         list.forEach(u => {
             const arch = u.archived === true;
-            h += `<tr ${arch ? 'style="opacity:.65"' : ''}><td><b>${esc(u.nome)}</b>${arch ? ' <span class="st-hint">(archiviato)</span>' : ''}<br><span class="st-hint">${esc(u.email)}</span></td><td>${rates(u.email)}${(u.storico || []).length > 1 ? ` <span class="st-hint">(${u.storico.length - 1} variazioni)</span>` : ''}</td><td class="an-stato">${arch ? 'Archiviato' : 'Attivo'}</td>
+            h += `<tr ${arch ? 'style="opacity:.65"' : ''}><td><b>${esc(u.nome)}</b>${arch ? ' <span class="st-hint">(archiviato)</span>' : ''}<br><span class="st-hint">${esc(u.email)}</span></td><td>${rates(u.email)}</td><td class="an-stato">${arch ? 'Archiviato' : 'Attivo'}</td>
                 <td class="r an-act"><button class="st-edit" data-e="${esc(u.email)}" data-n="${esc(u.nome)}" onclick="openEditUser(this.dataset.e, this.dataset.n)">Modifica</button>
                 <button class="st-edit" onclick="toggleArchive('${esc(u.email)}', ${!arch})">${arch ? 'Ripristina' : 'Archivia'}</button></td></tr>`;
         });
@@ -2608,8 +2757,8 @@
                         </div>
                         <div class="card-sub">${u.email}</div>
                         <div class="card-stats-row">
-                            <div class="stat-group"><span class="stat-label">ORE</span><span class="stat-val-h">${Number(u.ore.toFixed(2))}</span></div>
-                            <div class="stat-group right"><span class="stat-label">STIMA</span><span class="stat-val-m">€ ${u.soldi.toFixed(2)}</span></div>
+                            <div class="stat-group"><span class="stat-label">ORE</span><span class="stat-val-h">${itOre(u.ore)}</span></div>
+                            <div class="stat-group right"><span class="stat-label">STIMA</span><span class="stat-val-m">€ ${itMoney(u.soldi)}</span></div>
                         </div>
                     </div>
                 `;
@@ -2634,8 +2783,8 @@
                 }
             });
 
-            document.getElementById('admin-tot-ore').innerText = Number(globalTotOre.toFixed(2));
-            document.getElementById('admin-tot-soldi').innerText = '€ ' + globalTotSoldi.toFixed(2);
+            document.getElementById('admin-tot-ore').innerText = itOre(globalTotOre);
+            document.getElementById('admin-tot-soldi').innerText = '€ ' + itMoney(globalTotSoldi);
             document.getElementById('admin-tot-collab').innerText = activeCollabs.size;
             
             const breakdownBox = document.getElementById('admin-tot-breakdown');
@@ -2643,7 +2792,7 @@
             Object.keys(globalBreakdown).forEach(m_role => {
                 const bg = getRoleBg(m_role);
                 const textColor = "var(--text-main)"; 
-                breakdownBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m_role}: ${Number(globalBreakdown[m_role].toFixed(2))}</div>`;
+                breakdownBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m_role}: ${itOre(globalBreakdown[m_role])}</div>`;
             });
             
             document.getElementById('admin-global-totals').style.display = 'block';
@@ -2659,9 +2808,9 @@
             Object.keys(historyData[y_hist]).sort((a,b) => b-a).forEach(m_hist => {
                 const data = historyData[y_hist][m_hist];
                 yearOre += data.ore; yearSoldi += data.soldi;
-                monthsHtml += `<div class="history-month-row"><span style="font-weight:500; min-width:80px; display:inline-block;">${mNames[m_hist]}</span><span style="font-size:0.75rem; color:var(--text-muted); margin-right:auto;"><i class=ig-user></i> ${data.collabs.size} collab.</span><span><strong>${Number(data.ore.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${data.soldi.toFixed(2)}</span></span></div>`;
+                monthsHtml += `<div class="history-month-row"><span style="font-weight:500; min-width:80px; display:inline-block;">${mNames[m_hist]}</span><span style="font-size:0.75rem; color:var(--text-muted); margin-right:auto;"><i class=ig-user></i> ${data.collabs.size} collab.</span><span><strong>${itOre(data.ore)}</strong> ore • <span style="color:var(--money-color)">€ ${itMoney(data.soldi)}</span></span></div>`;
             });
-            histHtml += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span><i class=ig-calendar></i> ${y_hist}</span><span><strong>${Number(yearOre.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${yearSoldi.toFixed(2)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
+            histHtml += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span><i class=ig-calendar></i> ${y_hist}</span><span><strong>${itOre(yearOre)}</strong> ore • <span style="color:var(--money-color)">€ ${itMoney(yearSoldi)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
         });
         document.getElementById('admin-global-history-content').innerHTML = histHtml || '<p style="color:var(--text-muted); text-align:center; padding:10px; font-size: 0.85rem;">Nessuno storico presente.</p>';
         document.getElementById('admin-global-history-container').style.display = 'block';
@@ -2841,7 +2990,7 @@
                 if (match) {
                     usedActualIds.add(match.id);
                     status = 'warn'; statusLabel = '<i class=ig-warning></i> Orario diverso';
-                    detailTxt = `Reg.: ${match.oraInizio}-${match.oraFine} (${match.ore}h)`;
+                    detailTxt = `Reg.: ${match.oraInizio}-${match.oraFine} (${itOre(match.ore)}h)`;
                     warnCount++;
                 } else {
                     match = candidatesSameDay[0];
@@ -2871,7 +3020,7 @@
                 <td data-label="Data">${fmtDate(a.data)}</td>
                 <td data-label="Registrato">${a.mansione}<br><span style="font-size:0.75rem; color:var(--text-muted)">${a.oraInizio}-${a.oraFine}</span></td>
                 <td data-label="Stato"><span class="status-badge status-extra"><i class=ig-new></i> Non pianificato</span></td>
-                <td data-label="Dettaglio" style="font-size:0.75rem; color:var(--text-muted)">${a.ore}h</td>
+                <td data-label="Dettaglio" style="font-size:0.75rem; color:var(--text-muted)">${itOre(a.ore)}h</td>
                 <td data-label=""></td>
             </tr>`).join('');
 
@@ -3011,23 +3160,23 @@
                     <td data-label="Data"><span class="d-full"><span style="text-transform:capitalize">${shortDay}</span> ${numDate}</span><span class="d-short" style="text-transform:capitalize">${shortDay} ${String(dateObj.getDate()).padStart(2,'0')}</span></td>
                     <td data-label="Mansione">${t.mansione}${adminBadge}</td>
                     <td data-label="Orario">${t.oraInizio}-${t.oraFine}</td>
-                    <td data-label="Ore"><strong>${t.ore}</strong></td>
+                    <td data-label="Ore"><strong>${itOre(t.ore)}</strong></td>
                     <td data-label="Note">${t.note||''}</td>
                     <td class="actions-cell"><div class="action-icons"><button class="icon-btn" onclick="editRow('${t.id}', true)"><i class=ig-pencil></i></button><button class="icon-btn" onclick="delRow('${t.id}', true)"><i class=ig-trash></i></button></div></td>
                 </tr>
             `;
         });
         
-        document.getElementById('d-totale').innerText = Number(tot.toFixed(2));
-        document.getElementById('d-soldi').innerText = totSoldi.toFixed(2);
-        document.getElementById('d-totale-b').innerText = Number(tot.toFixed(2));
-        document.getElementById('d-soldi-b').innerText = totSoldi.toFixed(2);
+        document.getElementById('d-totale').innerText = itOre(tot);
+        document.getElementById('d-soldi').innerText = itMoney(totSoldi);
+        document.getElementById('d-totale-b').innerText = itOre(tot);
+        document.getElementById('d-soldi-b').innerText = itMoney(totSoldi);
         
         // UPDATED: Render pills with compact style
         Object.keys(breakdown).forEach(m => {
             const bg = getRoleBg(m);
             const textColor = "var(--text-main)"; 
-            statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${Number(breakdown[m].toFixed(2))}</div>`;
+            statsBox.innerHTML += `<div class="stat-pill" style="background:${bg}; color:${textColor}; border:1px solid rgba(0,0,0,0.1)">${m}: ${itOre(breakdown[m])}</div>`;
         });
     };
 
@@ -3060,9 +3209,9 @@
                 Object.keys(historyData[y]).sort((a,b) => b-a).forEach(m => {
                     const data = historyData[y][m];
                     yearOre += data.ore; yearSoldi += data.soldi;
-                    monthsHtml += `<div class="history-month-row"><span style="font-weight:500;">${mNames[m]}</span><span><strong>${Number(data.ore.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${data.soldi.toFixed(2)}</span></span></div>`;
+                    monthsHtml += `<div class="history-month-row"><span style="font-weight:500;">${mNames[m]}</span><span><strong>${itOre(data.ore)}</strong> ore • <span style="color:var(--money-color)">€ ${itMoney(data.soldi)}</span></span></div>`;
                 });
-                html += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span><i class=ig-calendar></i> ${y}</span><span><strong>${Number(yearOre.toFixed(2))}</strong> ore • <span style="color:var(--money-color)">€ ${yearSoldi.toFixed(2)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
+                html += `<button class="history-year-btn" onclick="this.classList.toggle('active'); var panel = this.nextElementSibling; if (panel.style.display === 'block') { panel.style.display = 'none'; } else { panel.style.display = 'block'; }"><span><i class=ig-calendar></i> ${y}</span><span><strong>${itOre(yearOre)}</strong> ore • <span style="color:var(--money-color)">€ ${itMoney(yearSoldi)}</span> ▾</span></button><div class="history-year-content">${monthsHtml}</div>`;
             });
             contentDiv.innerHTML = html || '<p style="color:var(--text-muted); text-align:center; padding:10px; font-size: 0.85rem;">Nessuno storico presente.</p>';
         } catch(err) {
@@ -3491,7 +3640,7 @@
                         .filter(t => t.mansione.includes(key))
                         .reduce((sum, t) => sum + t.ore, 0);
                     if (hours > 0) {
-                        row[index + 3] = hours.toString();
+                        row[index + 3] = itOre(hours);
                         totals[index] += hours;
                     }
                 });
@@ -3501,7 +3650,7 @@
         }
 
         // Totals Row
-        const totalRow = ["TOTALE", "", "", ...totals.map(t => t > 0 ? t.toString() : ""), ""];
+        const totalRow = ["TOTALE", "", "", ...totals.map(t => t > 0 ? itOre(t) : ""), ""];
         tableBody.push(totalRow);
 
         doc.autoTable({
