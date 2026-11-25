@@ -1074,6 +1074,7 @@
     <div id="admin-view" class="view-section">
         <div class="admin-tabs">
             <button data-tab="mese" class="active" onclick="switchAdminTab('mese')"><i class=ig-calendar></i> Questo mese</button>
+            <button data-tab="compensi" onclick="switchAdminTab('compensi')"><i class=ig-wrench></i> Compensi</button>
             <button data-tab="stagione" onclick="switchAdminTab('stagione')"><i class=ig-trend></i> Stagione</button>
             <button data-tab="anno" onclick="switchAdminTab('anno')"><i class=ig-calendar></i> Anno solare</button>
             <button data-tab="stat" onclick="switchAdminTab('stat')"><i class=ig-chart-bar></i> Statistiche</button>
@@ -1139,15 +1140,20 @@
 
         </div>
 
+        <div id="atab-compensi" class="atab">
+            <h3 style="margin-top:0">Compensi effettivi <span class="sub">Lordo e netto realmente pagati, mese per mese</span></h3>
+            <div id="comp-head"></div>
+            <div id="season-editor-box" class="glass-box gb-cyan">
+                <div class="gb-title"><i class=ig-wrench></i> Inserimento mensile <span class="sub">Quanto hanno realmente percepito, mese per mese</span></div>
+                <div class="st-hint" style="margin:-4px 0 12px 0">Scegli il mese (anche passato) e inserisci il lordo effettivo di ogni collaboratore, con eventuali aggiunte o detrazioni. I totali si aggiornano mentre scrivi.</div>
+                <div id="season-editor"></div>
+            </div>
+        </div>
+
         <div id="atab-stagione" class="atab">
             <h3 style="margin-top:0">Riepilogo stagionale <span class="sub">Ore e compensi lordi da settembre ad agosto</span></h3>
             <div id="season-head"></div>
             <div id="season-summary"></div>
-            <div id="season-editor-box" class="glass-box gb-cyan">
-                <div class="gb-title"><i class=ig-wrench></i> Compensi effettivi <span class="sub">Quanto hanno realmente percepito, mese per mese</span></div>
-                <div class="st-hint" style="margin:-4px 0 12px 0">Scegli il mese (anche passato) e inserisci il lordo effettivo di ogni collaboratore, con eventuali aggiunte o detrazioni. I totali si aggiornano mentre scrivi.</div>
-                <div id="season-editor"></div>
-            </div>
         </div>
 
         <div id="atab-anno" class="atab">
@@ -2307,7 +2313,7 @@
 
     window.refreshAdminTab = async (reload) => {
         try {
-            if (adminTab === 'stagione') await renderSeason(reload === true);
+            if (adminTab === 'stagione' || adminTab === 'compensi') await renderSeason(reload === true);
             else if (adminTab === 'anno') await renderAnno(reload === true);
             else if (adminTab === 'stat') await renderAdminStats(reload === true);
             else if (adminTab === 'anag') renderAnagList();
@@ -2370,8 +2376,9 @@
         allTurniFull.forEach(t => { const y = parseInt((t.data || '').slice(0, 4)), m = parseInt((t.data || '').slice(5, 7)); if (y && m) set.add(seasonOf(y, m)); });
         Object.values(compensiMap).forEach(c => { if (c && c.anno && c.mese) set.add(seasonOf(c.anno, c.mese)); });
         const list = [...set].sort((a, b) => b - a);
-        const box = document.getElementById('season-head');
-        box.innerHTML = `<div class="filter-bar" style="margin-bottom:12px"><select id="se-sel" onchange="changeSeason(this.value)" style="max-width:220px">${list.map(s => `<option value="${s}" ${s === seasonSel ? 'selected' : ''}>Stagione ${seasonLabel(s)}</option>`).join('')}</select><span class="st-hint" style="margin:0 0 0 6px">da settembre ${seasonSel} ad agosto ${seasonSel + 1}</span></div>`;
+        const headHtml = (sid) => `<div class="filter-bar" style="margin-bottom:12px"><select id="${sid}" onchange="changeSeason(this.value)" style="max-width:220px">${list.map(s => `<option value="${s}" ${s === seasonSel ? 'selected' : ''}>Stagione ${seasonLabel(s)}</option>`).join('')}</select><span class="st-hint" style="margin:0 0 0 6px">da settembre ${seasonSel} ad agosto ${seasonSel + 1}</span></div>`;
+        document.getElementById('season-head').innerHTML = headHtml('se-sel');
+        const ch = document.getElementById('comp-head'); if (ch) ch.innerHTML = headHtml('co-sel');
         renderSeasonSummary();
         renderSeasonEditor();
     };
@@ -2407,7 +2414,7 @@
             const lSub = x.n && x.nEff < x.n ? `<span class="ct-sub">${x.nEff ? `effettivo ${x.nEff} su ${x.n}` : 'da stima'}</span>` : '';
             h += `<tr class="${m === seasonMonthSel ? 'ct-sel' : ''}"><td class="ct-name">${MESI_IT[m - 1]} ${y}</td><td class="ct-ore">${num2(x.ore)}</td><td class="ct-stima">${eur(x.stima)}</td>
                 <td class="ct-lordo ct-hl">${eur(x.lordo)}${lSub}</td><td class="ct-muted">${eur(p.lordo)}${pcSub(x.lordo, p.lordo)}</td>
-                <td class="r"><button class="st-edit" onclick="changeSeasonMonth(${m}); document.getElementById('season-editor-box').scrollIntoView({behavior:'smooth', block:'start'})">Modifica</button></td></tr>`;
+                <td class="r"><button class="st-edit" onclick="changeSeasonMonth(${m}); switchAdminTab('compensi')">Modifica</button></td></tr>`;
         });
         h += `</tbody><tfoot><tr><td>Totale stagione</td><td class="ct-ore">${num2(T.ore)}</td><td class="ct-stima">${eur(T.stima)}</td><td class="ct-lordo ct-hl">${eur(T.lordo)}</td><td class="ct-muted">${eur(prv.tot.lordo)}${pcSub(T.lordo, prv.tot.lordo)}</td><td></td></tr></tfoot></table></div></div>`;
 
