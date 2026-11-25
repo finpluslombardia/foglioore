@@ -771,6 +771,7 @@
     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
         <a onclick="tryGoHome()" class="back-link">❮ Torna al Foglio Ore</a>
         <div style="display:flex; gap:10px;">
+            <button id="btn-ics" class="btn-secondary hidden" onclick="scaricaIcs()" title="Aggiungi i miei turni al calendario (.ics)" style="padding: 5px 10px;"><i class=ig-calendar></i> Calendario</button>
             <button id="btn-download-pdf" class="btn-danger hidden" onclick="downloadWeeklyPdf()" title="Scarica PDF"><i class=ig-file></i> PDF</button>
             <button id="btn-private-shifts" class="btn-secondary" onclick="openPrivateShiftsModal()" style="padding: 5px 10px;" title="Turni Privati"><i class=ig-lock></i></button>
             <button id="theme-btn" class="btn-secondary" onclick="toggleTheme()" style="padding: 5px 10px;"><i class=ig-moon></i></button>
@@ -937,6 +938,39 @@
     };
 
     window.applyUserFilter = (email) => { activeUserFilter = email; renderShiftsFromData(); };
+    window.scaricaIcs = () => {
+        const me = currentUser.email.toLowerCase();
+        const today = new Date().toLocaleDateString('sv-SE');
+        const seen = new Set(), fut = [];
+        const add = (date, role, start, end) => {
+            if(!date || !start || !end || date < today) return;
+            const k = `${date}|${role}|${start}|${end}`; if(seen.has(k)) return; seen.add(k);
+            fut.push({ data: date, mansione: role, oraInizio: start, oraFine: end });
+        };
+        allShiftsData.forEach(s => {
+            const sub = s.sostituto && s.sostituto.email ? s.sostituto.email.toLowerCase() : null;
+            if (sub ? sub === me : (s.email || '').toLowerCase() === me) add(s.date, s.role, s.start, s.end);
+        });
+        allPrivateShiftsData.forEach(s => { if ((s.email || '').toLowerCase() === me) add(s.date, s.role, s.start, s.end); });
+        fut.sort((a, b) => (a.data + a.oraInizio).localeCompare(b.data + b.oraInizio));
+        if(!fut.length) return window.toast("Nessun turno da oggi in poi");
+        const z = (n) => String(n).padStart(2, '0');
+        const stamp = (dStr, t) => dStr.replace(/-/g, '') + 'T' + t.replace(':', '') + '00';
+        const nextDay = (dStr) => { const d = new Date(dStr + 'T12:00:00'); d.setDate(d.getDate() + 1); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`; };
+        const now = new Date();
+        const dtstamp = `${now.getUTCFullYear()}${z(now.getUTCMonth()+1)}${z(now.getUTCDate())}T${z(now.getUTCHours())}${z(now.getUTCMinutes())}${z(now.getUTCSeconds())}Z`;
+        const ev = fut.map((p, i) => {
+            const endDay = p.oraFine <= p.oraInizio ? nextDay(p.data) : p.data;
+            return ['BEGIN:VEVENT', `UID:${p.data}-${p.oraInizio}-${i}@finpluslombardia`, `DTSTAMP:${dtstamp}`,
+                `DTSTART;TZID=Europe/Rome:${stamp(p.data, p.oraInizio)}`, `DTEND;TZID=Europe/Rome:${stamp(endDay, p.oraFine)}`,
+                `SUMMARY:Turno ${p.mansione}`, 'LOCATION:Centro Federale Lampugnano', 'END:VEVENT'].join('\r\n');
+        });
+        const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//FIN PLUS LOMBARDIA//Turni//IT', 'CALSCALE:GREGORIAN', ...ev, 'END:VCALENDAR'].join('\r\n');
+        const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+        const a = document.createElement('a'); a.href = url; a.download = 'miei_turni.ics';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+    };
     window.toggleMyShifts = () => { onlyMyShifts = document.getElementById('collab-me-filter').checked; renderShiftsFromData(); };
 
     onAuthStateChanged(auth, async (user) => {
@@ -947,6 +981,7 @@
             
             // Show Download PDF button for everyone
             document.getElementById('btn-download-pdf').classList.remove('hidden');
+            document.getElementById('btn-ics').classList.remove('hidden');
 
             if (canManageShifts) {
                 document.getElementById('btn-add-shift').classList.remove('hidden');
