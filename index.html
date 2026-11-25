@@ -281,7 +281,10 @@
         /* mobile: tema ed Esci in fondo alla pagina */
         #mob-bottom-actions { display: none; }
         @media (max-width: 600px) {
-            #mob-bottom-actions { display: flex; justify-content: center; align-items: center; gap: 12px; margin: 26px 0 8px; }
+            #mob-bottom-actions { display: flex; justify-content: center; align-items: center; gap: 10px; margin: 26px 0 8px; padding-top: 18px; border-top: 1px solid var(--glass-border); }
+            #mob-bottom-actions #pwd-btn { display: none; margin: 0 !important; }
+            body:has(#collaborator-view.active) #mob-bottom-actions #pwd-btn { display: inline-flex; }
+            #pwd-home:empty { display: none; }
             #mob-bottom-actions:empty { display: none; }
         }
         .badge { 
@@ -928,7 +931,7 @@
         <div class="header-actions">
             <!-- TASTO PER ANDARE ALLA SECONDA PAGINA (Turni Settimanali) -->
             <button id="week-btn" class="icon-btn-header btn-turni hidden" onclick="window.location.href='turni_settimanali.html'" title="Turni Settimanali">
-                📅 <span>Turni</span>
+                <i class=ig-calendar></i> <span>Turni</span>
             </button>
 
             <button id="notice-btn" class="icon-btn-header hidden" onclick="openNotices()">
@@ -1073,8 +1076,8 @@
             <div id="collab-history-content"></div>
         </div>
         
-        <div style="text-align:center; margin-top:30px">
-            <button onclick="document.getElementById('pwd-modal').style.display='flex'" class="btn-secondary" style="width:auto; margin:0 auto; font-size:0.8rem">Cambia Password</button>
+        <div id="pwd-home" style="text-align:center; margin-top:30px">
+            <button id="pwd-btn" onclick="document.getElementById('pwd-modal').style.display='flex'" class="btn-secondary" style="width:auto; margin:0 auto; font-size:0.8rem">Cambia Password</button>
         </div>
     </div>
 
@@ -1473,9 +1476,10 @@
     const place = () => {
         const bar = document.getElementById('mob-bottom-actions'), head = document.querySelector('.header-actions');
         const t = document.getElementById('theme-btn'), l = document.getElementById('logout-btn');
+        const pw = document.getElementById('pwd-btn'), pwHome = document.getElementById('pwd-home');
         if (!bar || !head || !t || !l) return;
-        if (mq.matches) { bar.appendChild(t); bar.appendChild(l); }
-        else { head.appendChild(t); head.appendChild(l); }
+        if (mq.matches) { if (pw) bar.appendChild(pw); bar.appendChild(t); bar.appendChild(l); }
+        else { if (pw && pwHome) pwHome.appendChild(pw); head.appendChild(t); head.appendChild(l); }
     };
     place();
     (mq.addEventListener ? mq.addEventListener('change', place) : mq.addListener(place));
