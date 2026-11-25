@@ -803,6 +803,9 @@
         [data-theme="dark"] .ct-table .ct-ore { color: #64b5ff; } [data-theme="dark"] .ct-table .ct-stima { color: #a5a3ff; } [data-theme="dark"] .ct-table .ct-lordo { color: #ff9f5a; } [data-theme="dark"] .ct-table .ct-tax { color: #ff7aa2; } [data-theme="dark"] .ct-table .ct-netto { color: #4cd97b; }
         .ct-table .ct-hl { background: rgba(0,0,0,0.035); } [data-theme="dark"] .ct-table .ct-hl { background: rgba(255,255,255,0.04); }
         .ct-table tr.ct-sel td { background: rgba(10,132,255,0.08); }
+        .ct-table .ct-muted { color: var(--text-muted); }
+        .ct-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: middle; border: 1px solid rgba(0,0,0,0.15); }
+        .ct-table .st-htrack { min-width: 120px; }
         .ct-sub { display: block; font-size: 0.7rem; font-weight: 500; margin-top: 0; line-height: 1.2; color: var(--text-muted); }
         .st-table.ct-table tfoot td { font-weight: 700; border-top: 1px solid var(--glass-border); border-bottom: none; background: rgba(10,132,255,0.07); }
         .ct-table tfoot .ct-name, .ct-table tfoot td:first-child { color: var(--text-main); }
@@ -2794,50 +2797,53 @@
             return any ? sum : null;
         };
 
-        let h = `<div class="st-kpis">` +
+        const pcSub = (a, b) => b > 0 ? `<span class="ct-sub">${a >= b ? '<span style="color:var(--money-color)">▲ +' : '<span style="color:var(--danger,#ff3b30)">▼ '}${itDec((a - b) / b * 100, 1)}%</span> vs ${LP}</span>` : '';
+        let h = `<div class="glass-box gb-blue"><div class="gb-title">Riepilogo ${periodo} <span class="sub">Confronto con ${LP}</span></div><div class="st-kpis">` +
             kpi('Ore', num2(ore), `${pctHtml(ore, oreP)} vs ${LP}`) +
             kpi('Costo stimato', eur(costo), `${pctHtml(costo, costoP)} vs ${LP}`) +
             kpi('Turni', nTurni, `${pctHtml(nTurni, nTurniP)} vs ${LP}`) +
             kpi('Collaboratori attivi', Object.keys(users).length, periodo) +
             kpi('Costo medio orario', ore ? eur(costo / ore) : '—', 'stima / ore') +
-            kpi('Ore medie per turno', nTurni ? num2(ore / nTurni) : '—', periodo) + `</div>`;
+            kpi('Ore medie per turno', nTurni ? num2(ore / nTurni) : '—', periodo) + `</div></div>`;
 
         // mese per mese
         const maxC = Math.max(1, ...cur.map(x => x.costo), ...prv.map(x => x.costo));
-        h += `<h4 class="st-title" style="margin-top:20px">Mese per mese: ${L} a confronto con ${LP}</h4>
+        h += `<div class="glass-box gb-sky"><div class="gb-title">Mese per mese <span class="sub">${L} a confronto con ${LP}</span></div>
             <div class="st-legend"><span><i class="st-dot st-cur"></i>${L}</span><span><i class="st-dot st-prv"></i>${LP}</span><span style="color:var(--text-muted)">(costo stimato)</span></div><div class="st-chart">` +
             cur.map((x, i) => `<div class="st-col" title="${MESI_IT[SEASON_MONTHS[i] - 1]}: ${eur(x.costo)} (${LP}: ${eur(prv[i].costo)})"><div class="st-bars"><div class="st-bar st-prv" style="height:${(prv[i].costo / maxC * 100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.costo / maxC * 100).toFixed(1)}%"></div></div><span class="st-lbl">${MESI_IT[SEASON_MONTHS[i] - 1].slice(0, 3)}</span></div>`).join('') + `</div>`;
-        h += `<div class="st-scroll"><table class="st-table"><thead><tr><th>Mese</th><th class="r">Collab.</th><th class="r">Ore ${L}</th><th class="r">Costo ${L}</th><th class="r">Effettivo ${L}</th><th class="r">Ore ${LP}</th><th class="r">Costo ${LP}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
-        let tOre = 0, tCosto = 0, tPOre = 0, tPCosto = 0, tEff = 0;
+        h += `<div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Mese</th><th>Collab.</th><th>Ore ${L}</th><th>Costo ${L}</th><th>Effettivo ${L}</th><th>Ore ${LP}</th><th class="ct-hl">Costo ${LP}</th></tr></thead><tbody>`;
+        let tOre = 0, tCosto = 0, tPOre = 0, tPCosto = 0, tEff = 0, tAnyE = false;
         cur.forEach((x, i) => {
             let eff = 0, anyE = false;
             Object.values(compensiMap).forEach(c => { if (c && c.importo != null && c.mese === SEASON_MONTHS[i] && seasonOf(c.anno, c.mese) === y) { eff += Number(c.importo); anyE = true; } });
-            tOre += x.ore; tCosto += x.costo; tPOre += prv[i].ore; tPCosto += prv[i].costo; tEff += eff;
-            h += `<tr><td>${MESI_IT[SEASON_MONTHS[i] - 1]}</td><td class="r">${x.collabs.size}</td><td class="r">${num2(x.ore)}</td><td class="r">${eur(x.costo)}</td><td class="r">${anyE ? eur(eff) : '—'}</td><td class="r">${num2(prv[i].ore)}</td><td class="r">${eur(prv[i].costo)}</td><td class="r">${pctHtml(x.costo, prv[i].costo)}</td></tr>`;
+            tOre += x.ore; tCosto += x.costo; tPOre += prv[i].ore; tPCosto += prv[i].costo; tEff += eff; if (anyE) tAnyE = true;
+            const m = SEASON_MONTHS[i], yy = parseInt(ymOf(y, m).slice(0, 4));
+            h += `<tr><td class="ct-name">${MESI_IT[m - 1]} ${yy}</td><td class="ct-ore">${x.collabs.size}</td><td class="ct-ore">${num2(x.ore)}</td><td class="ct-stima">${eur(x.costo)}${pcSub(x.costo, prv[i].costo)}</td><td class="ct-lordo">${anyE ? eur(eff) : '—'}</td><td class="ct-muted">${num2(prv[i].ore)}</td><td class="ct-muted ct-hl">${eur(prv[i].costo)}</td></tr>`;
         });
-        h += `</tbody><tfoot><tr><td><b>Stagione</b></td><td></td><td class="r">${num2(tOre)}</td><td class="r">${eur(tCosto)}</td><td class="r">${eur(tEff)}</td><td class="r">${num2(tPOre)}</td><td class="r">${eur(tPCosto)}</td><td class="r">${pctHtml(tCosto, tPCosto)}</td></tr></tfoot></table></div>`;
+        h += `</tbody><tfoot><tr><td>Totale stagione</td><td></td><td class="ct-ore">${num2(tOre)}</td><td class="ct-stima">${eur(tCosto)}${pcSub(tCosto, tPCosto)}</td><td class="ct-lordo">${tAnyE ? eur(tEff) : '—'}</td><td class="ct-muted">${num2(tPOre)}</td><td class="ct-muted ct-hl">${eur(tPCosto)}</td></tr></tfoot></table></div></div>`;
 
         // per mansione
-        const maxRole = Math.max(1, ...Object.values(roles).map(v => v.costo));
-        h += `<h4 class="st-title" style="margin-top:22px">Per mansione · ${periodo} (confronto con ${LP})</h4><div class="st-scroll"><table class="st-table"><thead><tr><th>Mansione</th><th class="r">Ore</th><th class="r">Costo</th><th class="r">% costo</th><th class="r">Ore ${LP}</th><th class="r">Costo ${LP}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
+        h += `<div class="glass-box gb-deep"><div class="gb-title">Per mansione <span class="sub">${periodo} · confronto con ${LP}</span></div><div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Mansione</th><th>Ore</th><th>Costo</th><th>% costo</th><th>Ore ${LP}</th><th class="ct-hl">Costo ${LP}</th></tr></thead><tbody>`;
         Object.entries(roles).filter(([, v]) => v.ore || v.pore).sort((a, b) => b[1].costo - a[1].costo).forEach(([r, v]) => {
-            h += `<tr style="background:${getRoleBg(r)}"><td>${esc(r)}</td><td class="r">${num2(v.ore)}</td><td class="r">${eur(v.costo)}</td><td class="r">${costo ? (v.costo / costo * 100).toFixed(0) + '%' : '—'}</td><td class="r">${num2(v.pore)}</td><td class="r">${eur(v.pcosto)}</td><td class="r">${pctHtml(v.costo, v.pcosto)}</td></tr>`;
+            h += `<tr><td class="ct-name"><i class="ct-dot" style="background:${getRoleBg(r)}"></i>${esc(r)}</td><td class="ct-ore">${num2(v.ore)}</td><td class="ct-stima">${eur(v.costo)}${pcSub(v.costo, v.pcosto)}</td><td class="ct-lordo">${costo ? (v.costo / costo * 100).toFixed(0) + '%' : '—'}</td><td class="ct-muted">${num2(v.pore)}</td><td class="ct-muted ct-hl">${eur(v.pcosto)}</td></tr>`;
         });
-        if (!Object.keys(roles).length) h += `<tr><td colspan="7" style="color:var(--text-muted)">Nessun turno nel periodo.</td></tr>`;
-        h += `</tbody></table></div>`;
+        if (!Object.keys(roles).length) h += `<tr><td colspan="6" style="color:var(--text-muted)">Nessun turno nel periodo.</td></tr>`;
+        h += `</tbody><tfoot><tr><td>Totale</td><td class="ct-ore">${num2(ore)}</td><td class="ct-stima">${eur(costo)}${pcSub(costo, costoP)}</td><td class="ct-lordo">${costo ? '100%' : '—'}</td><td class="ct-muted">${num2(oreP)}</td><td class="ct-muted ct-hl">${eur(costoP)}</td></tr></tfoot></table></div></div>`;
 
         // top collaboratori
         const top = Object.entries(users).map(([e, u]) => ({ e, nome: rubrica[e]?.nome || e, ...u })).sort((a, b) => b.ore - a.ore).slice(0, 10);
-        const maxOre = Math.max(1, ...top.map(u => u.ore));
-        h += `<h4 class="st-title" style="margin-top:22px">Collaboratori con più ore · ${periodo}</h4><div class="st-hlist">` +
-            top.map(u => { const eff = effOf(u.e); return hbar(esc(u.nome), u.ore, maxOre, `${num2(u.ore)} h · ${eur(u.stima)}${eff != null ? ' · eff. ' + eur(eff) : ''}`); }).join('') + (top.length ? '' : '<div class="st-hint">Nessun dato.</div>') + `</div>`;
+        h += `<div class="glass-box gb-cyan"><div class="gb-title">Collaboratori con più ore <span class="sub">${periodo} · primi 10</span></div><div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>#</th><th>Collaboratore</th><th>Ore</th><th>Stima foglio ore</th><th class="ct-hl">Lordo effettivo</th></tr></thead><tbody>` +
+            top.map((u, i) => { const eff = effOf(u.e); return `<tr><td class="ct-muted">${i + 1}</td><td class="ct-name">${esc(u.nome)}</td><td class="ct-ore">${num2(u.ore)}</td><td class="ct-stima">${eur(u.stima)}</td><td class="ct-lordo ct-hl">${eff != null ? eur(eff) : '—'}</td></tr>`; }).join('') +
+            (top.length ? '' : '<tr><td colspan="5" style="color:var(--text-muted)">Nessun dato.</td></tr>') + `</tbody></table></div></div>`;
 
         // giorno della settimana + fascia
-        const gg = ['Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab', 'Dom'], maxW = Math.max(1, ...wd);
-        h += `<h4 class="st-title" style="margin-top:22px">Ore per giorno della settimana · ${periodo}</h4><div class="st-hlist">` + gg.map((g, i) => hbar(g, wd[i], maxW, num2(wd[i]) + ' h')).join('') + `</div>`;
-        const maxF = Math.max(1, ...Object.values(fasce));
-        h += `<h4 class="st-title" style="margin-top:22px">Ore per fascia oraria (inizio turno) · ${periodo}</h4><div class="st-hlist">` +
-            hbar('Mattina (prima delle 12)', fasce.Mattina, maxF, num2(fasce.Mattina) + ' h') + hbar('Pomeriggio (12–18)', fasce.Pomeriggio, maxF, num2(fasce.Pomeriggio) + ' h') + hbar('Sera (dalle 18)', fasce.Sera, maxF, num2(fasce.Sera) + ' h') + `</div>`;
+        const gg = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'], maxW = Math.max(1, ...wd), totW = wd.reduce((a, b) => a + b, 0);
+        const fasceL = [['Mattina (prima delle 12)', fasce.Mattina], ['Pomeriggio (12–18)', fasce.Pomeriggio], ['Sera (dalle 18)', fasce.Sera]], maxF = Math.max(1, ...Object.values(fasce)), totF = fasceL.reduce((a, x) => a + x[1], 0);
+        const barRow = (lbl, v, max, tot) => `<tr><td class="ct-name">${lbl}</td><td class="ct-ore">${num2(v)} h</td><td class="ct-muted">${tot ? Math.round(v / tot * 100) + '%' : '—'}</td><td style="width:45%"><div class="st-htrack"><div class="st-hfill" style="width:${(v / max * 100).toFixed(1)}%"></div></div></td></tr>`;
+        h += `<div class="glass-box gb-blue"><div class="gb-title">Ore per giorno della settimana <span class="sub">${periodo}</span></div><div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Giorno</th><th>Ore</th><th>%</th><th></th></tr></thead><tbody>` +
+            gg.map((g, i) => barRow(g, wd[i], maxW, totW)).join('') + `</tbody></table></div></div>`;
+        h += `<div class="glass-box gb-sky"><div class="gb-title">Ore per fascia oraria <span class="sub">${periodo} · in base all'inizio del turno</span></div><div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Fascia</th><th>Ore</th><th>%</th><th></th></tr></thead><tbody>` +
+            fasceL.map(([l, v]) => barRow(l, v, maxF, totF)).join('') + `</tbody></table></div></div>`;
         box.innerHTML = h;
     };
 
