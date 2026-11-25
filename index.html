@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a84ff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Foglio Ore">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="data:image/png;base64,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">
     <title>Foglio ore</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -87,8 +93,8 @@
             background-color: var(--bg-body);
             background-image:
                 radial-gradient(at 15% 20%, rgba(10,132,255,0.18) 0, transparent 55%),
-                radial-gradient(at 85% 15%, rgba(175,82,222,0.14) 0, transparent 55%),
-                radial-gradient(at 50% 90%, rgba(52,199,89,0.12) 0, transparent 55%);
+                radial-gradient(at 85% 15%, rgba(90,200,250,0.14) 0, transparent 55%),
+                radial-gradient(at 50% 90%, rgba(0,100,235,0.12) 0, transparent 55%);
             background-attachment: fixed;
             color: var(--text-main); margin: 0; padding: 15px;
             font-size: 14px; -webkit-font-smoothing: antialiased;
@@ -96,8 +102,8 @@
         [data-theme="dark"] body {
             background-image:
                 radial-gradient(at 15% 20%, rgba(10,132,255,0.25) 0, transparent 55%),
-                radial-gradient(at 85% 15%, rgba(175,82,222,0.20) 0, transparent 55%),
-                radial-gradient(at 50% 90%, rgba(52,199,89,0.15) 0, transparent 55%);
+                radial-gradient(at 85% 15%, rgba(90,200,250,0.20) 0, transparent 55%),
+                radial-gradient(at 50% 90%, rgba(0,100,235,0.15) 0, transparent 55%);
         }
 
         .container {
@@ -706,14 +712,14 @@
         /* liquid glass piu' evidente: sfondo vivo, contenitori trasparenti, riquadri in vetro */
         body { background-image:
             radial-gradient(at 12% 18%, rgba(10,132,255,0.42) 0, transparent 50%),
-            radial-gradient(at 88% 12%, rgba(175,82,222,0.34) 0, transparent 50%),
-            radial-gradient(at 70% 88%, rgba(52,199,89,0.28) 0, transparent 50%),
-            radial-gradient(at 8% 85%, rgba(255,149,0,0.24) 0, transparent 50%); }
+            radial-gradient(at 88% 12%, rgba(90,200,250,0.34) 0, transparent 50%),
+            radial-gradient(at 70% 88%, rgba(0,100,235,0.28) 0, transparent 50%),
+            radial-gradient(at 8% 85%, rgba(100,210,255,0.24) 0, transparent 50%); }
         [data-theme="dark"] body { background-image:
             radial-gradient(at 12% 18%, rgba(10,132,255,0.35) 0, transparent 50%),
-            radial-gradient(at 88% 12%, rgba(175,82,222,0.30) 0, transparent 50%),
-            radial-gradient(at 70% 88%, rgba(52,199,89,0.20) 0, transparent 50%),
-            radial-gradient(at 8% 85%, rgba(255,149,0,0.16) 0, transparent 50%); }
+            radial-gradient(at 88% 12%, rgba(90,200,250,0.30) 0, transparent 50%),
+            radial-gradient(at 70% 88%, rgba(0,100,235,0.20) 0, transparent 50%),
+            radial-gradient(at 8% 85%, rgba(100,210,255,0.16) 0, transparent 50%); }
         @media (min-width: 601px) {
             .container { background: rgba(255,255,255,0.22); }
             [data-theme="dark"] .container { background: rgba(28,28,30,0.30); }
@@ -732,6 +738,38 @@
 
         .form-box[style*="--bg-body"] { background: linear-gradient(160deg, rgba(255,255,255,0.50), rgba(255,255,255,0.20)) !important; border-color: rgba(255,255,255,0.6) !important; }
         [data-theme="dark"] .form-box[style*="--bg-body"] { background: linear-gradient(160deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03)) !important; border-color: rgba(255,255,255,0.14) !important; }
+
+        /* compensi e statistiche (admin) */
+        .st-title { margin: 0 0 8px 0; font-size: 0.9rem; font-weight: 700; color: var(--text-main); }
+        .st-hint { font-size: 0.75rem; color: var(--text-muted); margin: 6px 0 0 0; }
+        .st-scroll { overflow-x: auto; }
+        .st-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; min-width: 520px; }
+        .st-table th { text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); padding: 6px 8px; border-bottom: 1px solid var(--glass-border); }
+        .st-table td { padding: 6px 8px; border-bottom: 1px solid var(--glass-border); }
+        .st-table tfoot td { border-top: 2px solid var(--glass-border); border-bottom: none; font-weight: 700; }
+        .st-table .r { text-align: right; font-variant-numeric: tabular-nums; }
+        .st-in { width: 110px; padding: 5px 8px; text-align: right; border-radius: 8px; font-size: 0.82rem; }
+        .st-in.st-note { width: 100%; min-width: 130px; text-align: left; }
+        .st-legend { display: flex; gap: 14px; font-size: 0.75rem; margin-bottom: 6px; align-items: center; }
+        .st-dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; }
+        .st-cur { background: linear-gradient(180deg, #5ac8fa, #0a84ff); }
+        .st-prv { background: rgba(142,142,147,0.45); }
+        .st-chart { display: flex; gap: 6px; align-items: flex-end; height: 130px; padding: 6px 4px 0; margin-bottom: 12px; }
+        .st-col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; }
+        .st-bars { flex: 1; width: 100%; display: flex; gap: 2px; align-items: flex-end; justify-content: center; }
+        .st-bar { width: 42%; border-radius: 4px 4px 0 0; min-height: 1px; }
+        .st-lbl { font-size: 0.62rem; color: var(--text-muted); margin-top: 4px; }
+        .rate-hist-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 0.78rem; padding: 4px 0; border-bottom: 1px solid var(--glass-border); }
+
+        /* turni pianificati da registrare (collaboratore) */
+        .plan-box { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--glass-border); }
+        .plan-box h4 { margin: 0 0 8px 0; font-size: 0.85rem; }
+        .plan-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 10px; margin-bottom: 6px; border-radius: 12px; background: var(--glass-soft); border: 1px solid var(--glass-border); font-size: 0.82rem; }
+        .plan-row .plan-info { display: flex; flex-direction: column; min-width: 0; }
+        .plan-row .plan-sub { color: var(--text-muted); font-size: 0.75rem; }
+        .plan-row button { width: auto; padding: 6px 12px; font-size: 12px; margin: 0; flex: none; }
+        .plan-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+        .plan-actions button { width: auto; padding: 7px 14px; font-size: 12px; margin: 0; }
     </style>
 </head>
 <body>
@@ -826,6 +864,15 @@
             </div>
             <label>Note</label><input type="text" id="c-note" placeholder="Opzionale">
             <button id="btn-salva" onclick="salvaOre()" class="btn-primary" style="margin-top:15px">Registra Turno</button>
+
+            <div class="plan-box">
+                <h4><i class=ig-calendar></i> Dai turni pianificati</h4>
+                <div id="plan-list" style="font-size:0.8rem; color:var(--text-muted)">Caricamento...</div>
+                <div class="plan-actions">
+                    <button id="plan-all-btn" class="btn-success" onclick="registraTuttiPianificati()" style="display:none"><i class=ig-check></i> Registra tutti</button>
+                    <button class="btn-secondary" onclick="scaricaIcs()"><i class=ig-calendar></i> Aggiungi al calendario (.ics)</button>
+                </div>
+            </div>
         </div>
 
         <h3><i class=ig-calendar></i> I Miei Turni</h3>
@@ -958,6 +1005,21 @@
         <div id="admin-global-history-container" style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; display: none;">
             <h3 style="color:var(--primary); margin-top:0"><i class=ig-trend></i> Riepilogo Storico Aziendale</h3>
             <div id="admin-global-history-content"></div>
+        </div>
+
+        <!-- COMPENSI EFFETTIVI E STATISTICHE -->
+        <div id="admin-stats-panel" class="form-box" style="margin-top: 30px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; cursor:pointer" onclick="toggleStatsPanel()">
+                <h3 style="margin:0"><i class=ig-chart-bar></i> Compensi e statistiche</h3>
+                <span id="stats-chevron" style="color:var(--text-muted)">▾</span>
+            </div>
+            <div id="admin-stats-body" style="display:none; margin-top:14px">
+                <div class="filter-bar" style="margin-bottom:14px">
+                    <select id="st-anno" onchange="renderAdminStats()"></select>
+                    <select id="st-mese" onchange="renderAdminStats()"></select>
+                </div>
+                <div id="admin-stats-content"></div>
+            </div>
         </div>
 
         <div style="margin-top: 40px;"></div>
@@ -1160,12 +1222,18 @@
 </div>
 
 <div id="edit-user-modal" class="modal-overlay" style="display:none">
-    <div class="modal-box">
+    <div class="modal-box" style="max-height:92vh; overflow-y:auto">
         <h3>Modifica Utente & Tariffe</h3>
         <input type="text" id="edit-name-input" placeholder="Cognome Nome" style="margin-bottom:15px; font-weight:bold">
         <div style="max-height:250px; overflow-y:auto; border:1px solid var(--border-color); padding:10px; border-radius:8px; margin-bottom:15px">
             <h4 style="margin:0 0 10px 0; font-size:0.75rem; color:var(--text-muted); text-transform:uppercase">Tariffe Orarie (€)</h4>
             <div id="rate-inputs-container"></div>
+        </div>
+        <div style="margin-bottom:15px">
+            <label style="font-size:0.75rem; color:var(--text-muted); text-transform:uppercase">Se cambi le tariffe, valgono dal</label>
+            <input type="date" id="edit-rate-from">
+            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:4px">I turni precedenti a questa data mantengono le tariffe di prima.</div>
+            <div id="rate-history-list" style="margin-top:10px"></div>
         </div>
         <div style="display:flex; gap:10px">
             <button class="btn-secondary" onclick="document.getElementById('edit-user-modal').style.display='none'">Annulla</button>
@@ -1240,9 +1308,35 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     
+
+    // --- APP INSTALLABILE (PWA): manifest generato al volo ---
+    (function(){
+        try {
+            const m = { name: "Foglio Ore", short_name: "Foglio Ore", start_url: location.origin + location.pathname,
+                scope: location.origin + location.pathname.replace(/[^/]*$/, ''), display: "standalone",
+                background_color: "#e8f1ff", theme_color: "#0a84ff",
+                icons: [{ src: "data:image/png;base64,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", sizes: "512x512", type: "image/png", purpose: "any" }] };
+            const l = document.createElement('link'); l.rel = 'manifest';
+            l.href = URL.createObjectURL(new Blob([JSON.stringify(m)], { type: 'application/manifest+json' }));
+            document.head.appendChild(l);
+        } catch(e) {}
+    })();
     const ADMIN_EMAIL = "a.chiodini01@gmail.com"; 
     let currentUser = null;
     let rubrica = {}; 
+    let allTurniFull = []; // tutti i turni (admin), per statistiche e compensi
+    let compensiMap = {};  // compensi effettivi: chiave "email_YYYY-MM"
+    const todayISO = () => new Date().toLocaleDateString('sv-SE');
+    // Tariffe valide in una certa data: usa lo storico (tariffe_storico) se c'e', altrimenti le tariffe attuali.
+    const rateSetFor = (email, dateStr) => {
+        const r = rubrica[email]; if(!r) return {};
+        const st = r.storico;
+        if(!st || !st.length) return r.tariffe || {};
+        let chosen = st[0];
+        for(const e of st) { if(e.da <= dateStr) chosen = e; else break; }
+        return chosen.tariffe || {};
+    };
+    const ratesFor = (email, mansione, dateStr) => (rateSetFor(email, dateStr)[mansione] || 0);
     let allTurni = []; 
     let detailUserEmail = null;
     let currentEditEmail = null;
@@ -1496,6 +1590,7 @@
                     rubrica[d.id] = { 
                         nome: data.nome || "Senza Nome", 
                         tariffe: data.tariffe || {},
+                        storico: (data.tariffe_storico || []).slice().sort((a,b) => a.da.localeCompare(b.da)),
                         archived: data.archived || false,
                         uid: data.uid || null
                     };
@@ -1672,6 +1767,102 @@
         renderCollabTable();
     };
 
+
+    // ===== TURNI PIANIFICATI: registrazione in un tocco + calendario .ics =====
+    let mieiPianificati = [];
+    let pianificatiDaRegistrare = [];
+    const oreTra = (i, f) => { let d = (new Date(`1970-01-01T${f}`) - new Date(`1970-01-01T${i}`)) / 36e5; if(d < 0) d += 24; return Math.round(d * 100) / 100; };
+
+    async function loadMieiPianificati() {
+        try {
+            const e = currentUser.email, list = [], seen = new Set();
+            const add = (data, tag) => {
+                if(!data.date || !data.start || !data.end) return;
+                const k = `${data.date}|${data.role}|${data.start}|${data.end}`;
+                if(seen.has(k)) return; seen.add(k);
+                list.push({ data: data.date, mansione: data.role, oraInizio: data.start, oraFine: data.end, tag });
+            };
+            const s1 = await getDocs(query(collection(db, "programmazione_turni"), where("email", "==", e)));
+            s1.forEach(d => { const x = d.data(); if(x.sostituto && x.sostituto.email) return; add(x, 'p'); });
+            const s2 = await getDocs(query(collection(db, "programmazione_turni"), where("sostituto.email", "==", e)));
+            s2.forEach(d => add(d.data(), 'p'));
+            try {
+                const s3 = await getDocs(query(collection(db, "turni_privati"), where("email", "==", e)));
+                s3.forEach(d => add(d.data(), 'priv'));
+            } catch(_) {}
+            list.sort((a, b) => (a.data + a.oraInizio).localeCompare(b.data + b.oraInizio));
+            mieiPianificati = list;
+        } catch(err) { console.error(err); mieiPianificati = []; }
+        renderPianificati();
+    }
+
+    function renderPianificati() {
+        const box = document.getElementById('plan-list'); if(!box) return;
+        const today = todayISO();
+        const from = new Date(); from.setDate(from.getDate() - 14);
+        const fromISO = from.toLocaleDateString('sv-SE');
+        pianificatiDaRegistrare = mieiPianificati.filter(p =>
+            p.data <= today && p.data >= fromISO && !isLocked(p.data) &&
+            !myTurni.some(t => t.data === p.data && t.mansione === p.mansione && t.oraInizio === p.oraInizio && t.oraFine === p.oraFine));
+        const allBtn = document.getElementById('plan-all-btn');
+        if(!pianificatiDaRegistrare.length) {
+            box.innerHTML = 'Nessun turno pianificato da registrare (ultimi 14 giorni).';
+            if(allBtn) allBtn.style.display = 'none';
+            return;
+        }
+        const gg = ["Dom","Lun","Mar","Mer","Gio","Ven","Sab"];
+        box.innerHTML = pianificatiDaRegistrare.map((p, i) => {
+            const d = new Date(p.data + 'T12:00:00');
+            return `<div class="plan-row" style="border-left:4px solid ${getColor(p.mansione)}">
+                <div class="plan-info"><b>${gg[d.getDay()]} ${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')} · ${p.oraInizio}-${p.oraFine}</b>
+                <span class="plan-sub">${p.mansione} · ${oreTra(p.oraInizio, p.oraFine)} ore</span></div>
+                <button class="btn-primary" onclick="registraPianificato(${i})">Registra</button></div>`;
+        }).join('');
+        if(allBtn) allBtn.style.display = pianificatiDaRegistrare.length > 1 ? 'inline-flex' : 'none';
+    }
+
+    async function salvaPianificato(p) {
+        await addDoc(collection(db, "turni"), {
+            uid: currentUser.uid, email: currentUser.email, data: p.data, mansione: p.mansione,
+            ore: oreTra(p.oraInizio, p.oraFine), oraInizio: p.oraInizio, oraFine: p.oraFine,
+            note: "", created_at: new Date()
+        });
+    }
+    window.registraPianificato = async (i) => {
+        const p = pianificatiDaRegistrare[i]; if(!p) return;
+        try { await salvaPianificato(p); toast("Turno registrato"); await loadCollabData(); }
+        catch(e) { modal("Errore", e.message); }
+    };
+    window.registraTuttiPianificati = () => {
+        const n = pianificatiDaRegistrare.length; if(!n) return;
+        modal("Registra tutti", `Registrare ${n} turni pianificati con gli orari previsti?`, async () => {
+            try { for(const p of pianificatiDaRegistrare.slice()) await salvaPianificato(p); toast(n + " turni registrati"); await loadCollabData(); }
+            catch(e) { modal("Errore", e.message); }
+        });
+    };
+
+    window.scaricaIcs = () => {
+        const today = todayISO();
+        const fut = mieiPianificati.filter(p => p.data >= today);
+        if(!fut.length) return modal("Calendario", "Non ci sono turni pianificati da oggi in poi.");
+        const z = (n) => String(n).padStart(2, '0');
+        const stamp = (dStr, t) => dStr.replace(/-/g, '') + 'T' + t.replace(':', '') + '00';
+        const nextDay = (dStr) => { const d = new Date(dStr + 'T12:00:00'); d.setDate(d.getDate() + 1); return `${d.getFullYear()}-${z(d.getMonth()+1)}-${z(d.getDate())}`; };
+        const now = new Date();
+        const dtstamp = `${now.getUTCFullYear()}${z(now.getUTCMonth()+1)}${z(now.getUTCDate())}T${z(now.getUTCHours())}${z(now.getUTCMinutes())}${z(now.getUTCSeconds())}Z`;
+        const ev = fut.map((p, i) => {
+            const endDay = p.oraFine <= p.oraInizio ? nextDay(p.data) : p.data;
+            return ['BEGIN:VEVENT', `UID:${p.data}-${p.oraInizio}-${i}@finpluslombardia`, `DTSTAMP:${dtstamp}`,
+                `DTSTART;TZID=Europe/Rome:${stamp(p.data, p.oraInizio)}`, `DTEND;TZID=Europe/Rome:${stamp(endDay, p.oraFine)}`,
+                `SUMMARY:Turno ${p.mansione}`, 'LOCATION:Centro Federale Lampugnano', 'END:VEVENT'].join('\r\n');
+        });
+        const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//FIN PLUS LOMBARDIA//Foglio Ore//IT', 'CALSCALE:GREGORIAN', ...ev, 'END:VCALENDAR'].join('\r\n');
+        const url = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+        const a = document.createElement('a'); a.href = url; a.download = 'miei_turni.ics';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 4000);
+    };
+
     async function loadCollabData() {
         const q = query(collection(db, "turni"), where("uid", "==", currentUser.uid), orderBy("data", "desc"));
         const snap = await getDocs(q);
@@ -1680,6 +1871,7 @@
         renderCalendar(); 
         renderCollabTable();
         loadCollabHistory(); // AGGIUNTO CARICAMENTO STORICO
+        loadMieiPianificati();
     }
 
     window.loadCollabHistory = () => {
@@ -1696,7 +1888,7 @@
              if(!historyData[y]) historyData[y] = {};
              if(!historyData[y][m]) historyData[y][m] = { ore: 0, soldi: 0 };
              historyData[y][m].ore += t.ore;
-             historyData[y][m].soldi += t.ore * (userRates[t.mansione] || 0);
+             historyData[y][m].soldi += t.ore * ratesFor(currentUser.email, t.mansione, t.data);
         });
         
         const mNames = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
@@ -1748,7 +1940,7 @@
 
         filtered.forEach(t => {
             tot += t.ore;
-            const rate = myRates[t.mansione] || 0;
+            const rate = ratesFor(currentUser.email, t.mansione, t.data);
             totSoldi += (t.ore * rate);
 
             if(!breakdown[t.mansione]) breakdown[t.mansione]=0;
@@ -1810,43 +2002,86 @@
         catch(e) { modal("Errore", e.message); }
     };
 
-    window.openEditUser = (email, nome) => { 
-        currentEditEmail = email; 
+    let editInitialRates = {};
+    window.renderRateHistory = (email) => {
+        const box = document.getElementById('rate-history-list');
+        const st = rubrica[email]?.storico || [];
+        if(!st.length) { box.innerHTML = '<div style="font-size:0.75rem; color:var(--text-muted)">Nessuna variazione registrata: le tariffe sopra valgono per tutti i turni.</div>'; return; }
+        const fmt = (da) => da === '1970-01-01' ? 'Iniziale' : 'Dal ' + da.split('-').reverse().join('/');
+        box.innerHTML = '<div style="font-size:0.7rem; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px">Storico tariffe</div>' +
+            st.map(e => {
+                const txt = Mansioni.filter(m => e.tariffe && e.tariffe[m]).map(m => `${m.split(' ')[0]} ${e.tariffe[m]}`).join(' · ') || '—';
+                const del = st.length > 1 ? `<button class="card-action-btn" title="Elimina" onclick="delTariffaStorico('${email}','${e.da}')"><i class=ig-trash></i></button>` : '';
+                return `<div class="rate-hist-row"><span><b>${fmt(e.da)}</b> — ${txt}</span>${del}</div>`;
+            }).join('');
+    };
+
+    window.openEditUser = (email, nome) => {
+        currentEditEmail = email;
         document.getElementById('edit-name-input').value = nome;
         const container = document.getElementById('rate-inputs-container');
         container.innerHTML = "";
-        const userRates = rubrica[email]?.tariffe || {};
+        const userRates = rateSetFor(email, todayISO());
+        editInitialRates = {};
         Mansioni.forEach(m => {
             const val = userRates[m] || 0;
+            editInitialRates[m] = val;
             container.innerHTML += `<div class="rate-matrix-row"><span class="rate-label">${m}</span><input type="number" id="rate-${m}" value="${val}" step="0.5" class="rate-input" placeholder="0"></div>`;
         });
-        document.getElementById('edit-user-modal').style.display='flex'; 
+        document.getElementById('edit-rate-from').value = todayISO();
+        renderRateHistory(email);
+        document.getElementById('edit-user-modal').style.display='flex';
     };
 
     window.saveEditUser = async () => {
         if(!currentEditEmail) return;
-        try { 
+        try {
             const n = document.getElementById('edit-name-input').value;
             const newRates = {};
-            Mansioni.forEach(m => {
-                const val = parseFloat(document.getElementById(`rate-${m}`).value) || 0;
-                newRates[m] = val;
-            });
-            // Keep archive status
-            await setDoc(doc(db, "anagrafica", currentEditEmail), { nome: n, tariffe: newRates }, { merge: true });
-            
-            // Local update
+            Mansioni.forEach(m => { newRates[m] = parseFloat(document.getElementById(`rate-${m}`).value) || 0; });
+            const changed = Mansioni.some(m => newRates[m] !== (editInitialRates[m] || 0));
+            const payload = { nome: n };
+            let newStorico = null;
+            if(changed) {
+                const da = document.getElementById('edit-rate-from').value || todayISO();
+                let st = (rubrica[currentEditEmail]?.storico || []).map(x => ({ da: x.da, tariffe: { ...x.tariffe } }));
+                if(!st.length) st.push({ da: '1970-01-01', tariffe: { ...(rubrica[currentEditEmail]?.tariffe || {}) } });
+                const idx = st.findIndex(x => x.da === da);
+                if(idx >= 0) st[idx].tariffe = newRates; else st.push({ da, tariffe: newRates });
+                st.sort((a,b) => a.da.localeCompare(b.da));
+                newStorico = st;
+                payload.tariffe_storico = st;
+            }
             if(rubrica[currentEditEmail]) {
                 rubrica[currentEditEmail].nome = n;
-                rubrica[currentEditEmail].tariffe = newRates;
+                if(newStorico) rubrica[currentEditEmail].storico = newStorico;
             }
-            
-            toast("Aggiornato"); 
-            document.getElementById('edit-user-modal').style.display='none'; 
-            loadAdminData(); 
+            if(changed) payload.tariffe = rateSetFor(currentEditEmail, todayISO());
+            await setDoc(doc(db, "anagrafica", currentEditEmail), payload, { merge: true });
+            if(rubrica[currentEditEmail] && changed) rubrica[currentEditEmail].tariffe = payload.tariffe;
+
+            toast("Aggiornato");
+            document.getElementById('edit-user-modal').style.display='none';
+            loadAdminData();
         } catch(e) { modal("Errore", e.message); }
     };
-    
+
+    window.delTariffaStorico = (email, da) => {
+        modal("Elimina tariffe", "Eliminare questa variazione di tariffe? I turni di quel periodo useranno le tariffe precedenti.", async () => {
+            try {
+                const st = (rubrica[email]?.storico || []).filter(x => x.da !== da);
+                if(!st.length) return;
+                rubrica[email].storico = st;
+                const cur = rateSetFor(email, todayISO());
+                await setDoc(doc(db, "anagrafica", email), { tariffe_storico: st, tariffe: cur }, { merge: true });
+                rubrica[email].tariffe = cur;
+                renderRateHistory(email);
+                toast("Variazione eliminata");
+                loadAdminData();
+            } catch(e) { modal("Errore", e.message); }
+        });
+    };
+
     // ARCHIVE FUNCTIONALITY
     window.toggleArchive = async (email, archiveStatus) => {
         // Confirm action
@@ -1861,6 +2096,182 @@
                  modal("Errore", e.message);
              }
         });
+    };
+
+
+    // ===== COMPENSI EFFETTIVI + STATISTICHE (solo admin) =====
+    const MESI_IT = ["Gennaio","Febbraio","Marzo","Aprile","Maggio","Giugno","Luglio","Agosto","Settembre","Ottobre","Novembre","Dicembre"];
+    const eur = (n) => '€ ' + (Number(n) || 0).toFixed(2);
+    const esc = (v) => String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+    let statsOpen = false;
+
+    window.toggleStatsPanel = async () => {
+        statsOpen = !statsOpen;
+        document.getElementById('admin-stats-body').style.display = statsOpen ? 'block' : 'none';
+        document.getElementById('stats-chevron').innerText = statsOpen ? '▴' : '▾';
+        if(statsOpen) { await renderAdminStats(true); }
+    };
+
+    async function loadCompensi() {
+        try {
+            const snap = await getDocs(collection(db, "compensi_effettivi"));
+            compensiMap = {};
+            snap.forEach(d => compensiMap[d.id] = d.data());
+        } catch(e) { console.error(e); toast("Compensi non leggibili: controlla le regole Firestore"); }
+    }
+
+    window.renderAdminStats = async (reload) => {
+        const box = document.getElementById('admin-stats-content');
+        if(!box) return;
+        if(reload === true) await loadCompensi();
+
+        // selettori anno/mese
+        const selA = document.getElementById('st-anno'), selM = document.getElementById('st-mese');
+        const years = new Set([new Date().getFullYear()]);
+        allTurniFull.forEach(t => { const y = parseInt((t.data || '').slice(0,4)); if(y) years.add(y); });
+        const yList = [...years].sort((a,b) => b-a);
+        const prevA = selA.value, prevM = selM.value;
+        if(selA.options.length !== yList.length) {
+            selA.innerHTML = yList.map(y => `<option value="${y}">${y}</option>`).join('');
+            selA.value = prevA && yList.includes(parseInt(prevA)) ? prevA : String(new Date().getFullYear());
+        }
+        if(!selM.options.length) {
+            selM.innerHTML = '<option value="all">Tutto l\'anno</option>' + MESI_IT.map((n,i) => `<option value="${i+1}">${n}</option>`).join('');
+            selM.value = String(new Date().getMonth() + 1);
+        } else if(prevM) selM.value = prevM;
+        const y = parseInt(selA.value), mSel = selM.value, mNum = mSel === 'all' ? null : parseInt(mSel);
+        const pad = (n) => String(n).padStart(2, '0');
+
+        const rows = {};                       // email -> {ore, stima}
+        const cur = Array.from({length:12}, () => ({ore:0, costo:0}));
+        const prv = Array.from({length:12}, () => ({ore:0, costo:0}));
+        const roles = {};                      // mansione -> {ore,costo,pore,pcosto}
+        const roleRow = (r) => roles[r] || (roles[r] = {ore:0, costo:0, pore:0, pcosto:0});
+        allTurniFull.forEach(t => {
+            const d = t.data || ''; const ty = parseInt(d.slice(0,4)), tm = parseInt(d.slice(5,7));
+            if(!ty || !tm) return;
+            const costo = (t.ore || 0) * ratesFor(t.email, t.mansione, d);
+            if(ty === y) {
+                cur[tm-1].ore += t.ore || 0; cur[tm-1].costo += costo;
+                if(!mNum || tm === mNum) {
+                    const r = rows[t.email] || (rows[t.email] = {ore:0, stima:0});
+                    r.ore += t.ore || 0; r.stima += costo;
+                    const rr = roleRow(t.mansione); rr.ore += t.ore || 0; rr.costo += costo;
+                }
+            } else if(ty === y-1) {
+                prv[tm-1].ore += t.ore || 0; prv[tm-1].costo += costo;
+                if(!mNum || tm === mNum) { const rr = roleRow(t.mansione); rr.pore += t.ore || 0; rr.pcosto += costo; }
+            }
+        });
+        // anche chi ha un compenso inserito ma nessuna ora nel periodo
+        Object.values(compensiMap).forEach(c => {
+            if(c.anno === y && c.email && (!mNum || c.mese === mNum) && c.importo != null && !rows[c.email]) rows[c.email] = {ore:0, stima:0};
+        });
+
+        const effettivoDi = (email) => {
+            if(mNum) { const c = compensiMap[`${email}_${y}-${pad(mNum)}`]; return c && c.importo != null ? Number(c.importo) : null; }
+            let sum = 0, any = false;
+            for(let i = 1; i <= 12; i++) { const c = compensiMap[`${email}_${y}-${pad(i)}`]; if(c && c.importo != null) { sum += Number(c.importo); any = true; } }
+            return any ? sum : null;
+        };
+
+        // --- 1. COMPENSI PER COLLABORATORE ---
+        const list = Object.entries(rows).map(([email, r]) => ({email, nome: rubrica[email]?.nome || email, ...r}))
+            .sort((a,b) => a.nome.localeCompare(b.nome));
+        const editable = !!mNum;
+        let h = `<h4 class="st-title">Compensi ${mNum ? MESI_IT[mNum-1] + ' ' : ''}${y}: stima e importo effettivo</h4>`;
+        if(!editable) h += `<div class="st-hint">Per inserire gli importi effettivi scegli un mese specifico. Qui vedi la somma dei mesi inseriti.</div>`;
+        h += `<div class="st-scroll"><table class="st-table" id="st-comp-table"><thead><tr><th>Collaboratore</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Differenza</th>${editable ? '<th>Nota</th>' : ''}</tr></thead><tbody>`;
+        list.forEach(u => {
+            const eff = effettivoDi(u.email);
+            const c = mNum ? compensiMap[`${u.email}_${y}-${pad(mNum)}`] : null;
+            const effCell = editable
+                ? `<input type="number" step="0.01" class="st-in" value="${eff == null ? '' : eff}" placeholder="—" onchange="saveCompenso(this)">`
+                : (eff == null ? '—' : eur(eff));
+            h += `<tr data-email="${esc(u.email)}" data-stima="${u.stima.toFixed(4)}">
+                <td>${esc(u.nome)}</td><td class="r">${Number(u.ore.toFixed(2))}</td><td class="r">${eur(u.stima)}</td>
+                <td class="r">${effCell}</td><td class="r st-diff">—</td>
+                ${editable ? `<td><input type="text" class="st-in st-note" value="${esc(c ? c.nota : '')}" placeholder="es. +20 rimborso" onchange="saveCompenso(this)"></td>` : ''}</tr>`;
+        });
+        h += `</tbody><tfoot><tr><td><b>Totale</b></td><td class="r" id="st-t-ore"></td><td class="r" id="st-t-stima"></td><td class="r" id="st-t-eff"></td><td class="r" id="st-t-diff"></td>${editable ? '<td></td>' : ''}</tr></tfoot></table></div>`;
+        h += `<div class="st-hint" id="st-t-note"></div>`;
+
+        // --- 2. MESE PER MESE (grafico + tabella) ---
+        const maxC = Math.max(1, ...cur.map(x => x.costo), ...prv.map(x => x.costo));
+        h += `<h4 class="st-title" style="margin-top:22px">Mese per mese: ${y} a confronto con ${y-1}</h4>
+            <div class="st-legend"><span><i class="st-dot st-cur"></i>${y}</span><span><i class="st-dot st-prv"></i>${y-1}</span><span style="color:var(--text-muted)">(costo stimato)</span></div>
+            <div class="st-chart">` +
+            cur.map((x,i) => `<div class="st-col" title="${MESI_IT[i]}: ${eur(x.costo)} (${y-1}: ${eur(prv[i].costo)})">
+                <div class="st-bars"><div class="st-bar st-prv" style="height:${(prv[i].costo/maxC*100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.costo/maxC*100).toFixed(1)}%"></div></div>
+                <span class="st-lbl">${MESI_IT[i].slice(0,3)}</span></div>`).join('') + `</div>`;
+        const delta = (a, b) => b > 0 ? ((a-b)/b*100) : null;
+        const fmtD = (d) => d == null ? '—' : `<span style="color:${d >= 0 ? 'var(--money-color)' : 'var(--danger, #ff3b30)'}">${d >= 0 ? '+' : ''}${d.toFixed(0)}%</span>`;
+        h += `<div class="st-scroll"><table class="st-table"><thead><tr><th>Mese</th><th class="r">Ore ${y}</th><th class="r">Costo ${y}</th><th class="r">Effettivo ${y}</th><th class="r">Ore ${y-1}</th><th class="r">Costo ${y-1}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
+        let tOre = 0, tCosto = 0, tPOre = 0, tPCosto = 0, tEff = 0;
+        cur.forEach((x,i) => {
+            let eff = 0, anyE = false;
+            Object.values(compensiMap).forEach(c => { if(c.anno === y && c.mese === i+1 && c.importo != null) { eff += Number(c.importo); anyE = true; } });
+            tOre += x.ore; tCosto += x.costo; tPOre += prv[i].ore; tPCosto += prv[i].costo; tEff += eff;
+            h += `<tr><td>${MESI_IT[i]}</td><td class="r">${Number(x.ore.toFixed(2))}</td><td class="r">${eur(x.costo)}</td><td class="r">${anyE ? eur(eff) : '—'}</td><td class="r">${Number(prv[i].ore.toFixed(2))}</td><td class="r">${eur(prv[i].costo)}</td><td class="r">${fmtD(delta(x.costo, prv[i].costo))}</td></tr>`;
+        });
+        h += `</tbody><tfoot><tr><td><b>Anno</b></td><td class="r">${Number(tOre.toFixed(2))}</td><td class="r">${eur(tCosto)}</td><td class="r">${eur(tEff)}</td><td class="r">${Number(tPOre.toFixed(2))}</td><td class="r">${eur(tPCosto)}</td><td class="r">${fmtD(delta(tCosto, tPCosto))}</td></tr></tfoot></table></div>`;
+
+        // --- 3. PER MANSIONE ---
+        h += `<h4 class="st-title" style="margin-top:22px">Per mansione: ${mNum ? MESI_IT[mNum-1] + ' ' : ''}${y} (confronto con ${y-1})</h4>
+            <div class="st-scroll"><table class="st-table"><thead><tr><th>Mansione</th><th class="r">Ore</th><th class="r">Costo</th><th class="r">Ore ${y-1}</th><th class="r">Costo ${y-1}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
+        Object.entries(roles).sort((a,b) => b[1].costo - a[1].costo).forEach(([r, v]) => {
+            h += `<tr style="background:${getRoleBg(r)}"><td>${esc(r)}</td><td class="r">${Number(v.ore.toFixed(2))}</td><td class="r">${eur(v.costo)}</td><td class="r">${Number(v.pore.toFixed(2))}</td><td class="r">${eur(v.pcosto)}</td><td class="r">${fmtD(delta(v.costo, v.pcosto))}</td></tr>`;
+        });
+        if(!Object.keys(roles).length) h += `<tr><td colspan="6" style="color:var(--text-muted)">Nessun turno nel periodo.</td></tr>`;
+        h += `</tbody></table></div>`;
+
+        box.innerHTML = h;
+        recalcStatsTotals();
+    };
+
+    window.recalcStatsTotals = () => {
+        const tb = document.getElementById('st-comp-table'); if(!tb) return;
+        let tOre = 0, tStima = 0, tEff = 0, tStimaSet = 0, nSet = 0, nTot = 0;
+        tb.querySelectorAll('tbody tr').forEach(tr => {
+            const stima = parseFloat(tr.dataset.stima) || 0;
+            const inp = tr.querySelector('input.st-in:not(.st-note)');
+            let eff = null;
+            if(inp) eff = inp.value === '' ? null : parseFloat(inp.value);
+            else { const txt = tr.children[3].innerText.replace('€','').trim(); eff = (txt === '—' || txt === '') ? null : parseFloat(txt); }
+            nTot++;
+            tOre += parseFloat(tr.children[1].innerText) || 0; tStima += stima;
+            const diffCell = tr.querySelector('.st-diff');
+            if(eff != null && !isNaN(eff)) {
+                const d = eff - stima; nSet++; tEff += eff; tStimaSet += stima;
+                diffCell.innerHTML = `<span style="color:${d >= 0 ? 'var(--money-color)' : 'var(--danger, #ff3b30)'}">${d >= 0 ? '+' : ''}${d.toFixed(2)}</span>`;
+            } else diffCell.innerText = '—';
+        });
+        const set = (id, v) => { const el = document.getElementById(id); if(el) el.innerHTML = v; };
+        set('st-t-ore', Number(tOre.toFixed(2))); set('st-t-stima', eur(tStima)); set('st-t-eff', nSet ? eur(tEff) : '—');
+        const dd = tEff - tStimaSet;
+        set('st-t-diff', nSet ? `<span style="color:${dd >= 0 ? 'var(--money-color)' : 'var(--danger, #ff3b30)'}">${dd >= 0 ? '+' : ''}${dd.toFixed(2)}</span>` : '—');
+        set('st-t-note', nSet ? `Effettivo inserito per ${nSet} collaboratori su ${nTot}. La differenza è calcolata solo sui collaboratori con importo inserito.` : 'Nessun importo effettivo ancora inserito per questo periodo.');
+    };
+
+    window.saveCompenso = async (el) => {
+        const tr = el.closest('tr'); if(!tr) return;
+        const email = tr.dataset.email;
+        const y = parseInt(document.getElementById('st-anno').value), mNum = parseInt(document.getElementById('st-mese').value);
+        if(!mNum) return;
+        const key = `${email}_${y}-${String(mNum).padStart(2,'0')}`;
+        const impEl = tr.querySelector('input.st-in:not(.st-note)'), notaEl = tr.querySelector('input.st-note');
+        const importo = impEl.value === '' ? null : parseFloat(impEl.value);
+        const nota = notaEl ? notaEl.value.trim() : '';
+        try {
+            if(importo == null && !nota) { await deleteDoc(doc(db, "compensi_effettivi", key)); delete compensiMap[key]; }
+            else {
+                const data = { email, anno: y, mese: mNum, importo, nota, updated_at: new Date() };
+                await setDoc(doc(db, "compensi_effettivi", key), data);
+                compensiMap[key] = data;
+            }
+            recalcStatsTotals();
+            toast("Salvato");
+        } catch(e) { modal("Errore", e.message + " (hai pubblicato le nuove regole Firestore?)"); }
     };
 
     window.loadAdminData = async () => {
@@ -1891,12 +2302,14 @@
         const q = query(collection(db, "turni"), orderBy("data", "desc"));
         const snap = await getDocs(q);
         allTurni = [];
+        allTurniFull = [];
         userUidMap = {};
         
         const historyData = {}; // Nuovo oggetto per lo storico globale aziendale
 
         snap.forEach(d => {
             const t = d.data(); 
+            allTurniFull.push({id: d.id, ...t});
             const date = new Date(t.data);
             
             // Map email to uid for everyone
@@ -1908,7 +2321,7 @@
             if(!historyData[y_hist]) historyData[y_hist] = {};
             if(!historyData[y_hist][m_hist]) historyData[y_hist][m_hist] = { ore: 0, soldi: 0, collabs: new Set() };
             historyData[y_hist][m_hist].ore += t.ore;
-            const tariffaHist = rubrica[t.email]?.tariffe[t.mansione] || 0;
+            const tariffaHist = ratesFor(t.email, t.mansione, t.data);
             historyData[y_hist][m_hist].soldi += t.ore * tariffaHist;
             historyData[y_hist][m_hist].collabs.add(t.email);
             
@@ -1931,7 +2344,7 @@
 
                 if(stats[userEmail]) {
                     stats[userEmail].ore += t.ore;
-                    const tariffaOraria = stats[userEmail].tariffe[t.mansione] || 0;
+                    const tariffaOraria = ratesFor(userEmail, t.mansione, t.data);
                     stats[userEmail].soldi += (t.ore * tariffaOraria);
                     const ts = t.created_at ? t.created_at.seconds : date.getTime()/1000;
                     if(ts > stats[userEmail].last) stats[userEmail].last = ts;
@@ -1995,7 +2408,7 @@
             allTurni.forEach(t => {
                 if(validEmails.includes(t.email)) {
                     globalTotOre += t.ore;
-                    const tariffa = rubrica[t.email]?.tariffe[t.mansione] || 0;
+                    const tariffa = ratesFor(t.email, t.mansione, t.data);
                     globalTotSoldi += (t.ore * tariffa);
                     
                     if(!globalBreakdown[t.mansione]) globalBreakdown[t.mansione] = 0;
@@ -2018,6 +2431,8 @@
             
             document.getElementById('admin-global-totals').style.display = 'block';
         }
+
+        if(statsOpen) renderAdminStats();
 
         // --- RENDER GLOBAL HISTORY ACCORDION ---
         const mNames = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
@@ -2359,7 +2774,7 @@
 
         userShifts.forEach(t => {
             tot += t.ore;
-            const rate = userRates[t.mansione] || 0;
+            const rate = ratesFor(detailUserEmail, t.mansione, t.data);
             totSoldi += (t.ore * rate);
 
             if(!breakdown[t.mansione]) breakdown[t.mansione]=0;
@@ -2419,7 +2834,7 @@
                  if(!historyData[y]) historyData[y] = {};
                  if(!historyData[y][m]) historyData[y][m] = { ore: 0, soldi: 0 };
                  historyData[y][m].ore += t.ore;
-                 historyData[y][m].soldi += t.ore * (userRates[t.mansione] || 0);
+                 historyData[y][m].soldi += t.ore * ratesFor(email, t.mansione, t.data);
             });
             const mNames = ["", "Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
             let html = '';
