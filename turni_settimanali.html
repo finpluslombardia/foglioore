@@ -783,7 +783,7 @@
 <div class="container">
     <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
         <a onclick="tryGoHome()" class="back-link">❮ Torna al Foglio Ore</a>
-        <div style="display:flex; gap:10px;">
+        <div id="top-actions" style="display:flex; gap:10px;">
             <button id="btn-ics" class="btn-secondary hidden" onclick="scaricaIcs()" title="Aggiungi i miei turni al calendario (.ics)" style="padding: 5px 10px;"><i class=ig-calendar></i> Esporta su calendario</button>
             <button id="btn-download-pdf" class="btn-danger hidden" onclick="downloadWeeklyPdf()" title="Scarica PDF"><i class=ig-file></i> PDF</button>
             <button id="btn-private-shifts" class="btn-secondary" onclick="openPrivateShiftsModal()" style="padding: 5px 10px;" title="Turni Privati"><i class=ig-lock></i></button>
@@ -855,6 +855,23 @@
     </div>
 </div>
 
+<style>
+    @media (max-width: 600px) { #top-actions.mob-actions { margin: 10px 0 4px; flex-wrap: wrap; gap: 8px !important; } #top-actions.mob-actions #btn-ics { flex: 1 1 100%; justify-content: center; white-space: nowrap; } #top-actions.mob-actions #btn-download-pdf { flex: 1; } }
+</style>
+<script>
+(function () {
+    // mobile: pulsanti (calendario, PDF, privati, tema) sotto il titolo invece che sopra
+    const mq = window.matchMedia('(max-width: 600px)');
+    const place = () => {
+        const a = document.getElementById('top-actions'), h2 = document.querySelector('.week-header h2'), home = document.querySelector('.back-link');
+        if (!a || !h2 || !home) return;
+        if (mq.matches) { h2.after(a); a.classList.add('mob-actions'); }
+        else { home.parentNode.appendChild(a); a.classList.remove('mob-actions'); }
+    };
+    place();
+    (mq.addEventListener ? mq.addEventListener('change', place) : mq.addListener(place));
+})();
+</script>
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
