@@ -779,6 +779,40 @@
 
         /* turni pianificati da registrare (collaboratore) */
         /* --- MENU ADMIN A PILLOLE + NUOVE SEZIONI --- */
+        .ex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; } @media (max-width: 800px) { .ex-grid { grid-template-columns: 1fr; } }
+        .ex-card { background: rgba(255,255,255,0.35); border: 1px solid rgba(255,255,255,0.55); border-radius: 20px; padding: 14px 16px; }
+        [data-theme="dark"] .ex-card { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.12); }
+        .ex-h { font-weight: 700; font-size: 1rem; margin-bottom: 2px; }
+        .ex-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .ex-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.8); color: var(--primary); font-weight: 600; font-size: 0.85rem; cursor: pointer; margin: 0; width: auto; }
+        [data-theme="dark"] .ex-chip { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); }
+        .ex-chip input { width: 16px; height: 16px; margin: 0; padding: 0; accent-color: var(--primary); flex: none; }
+        .ex-links { display: flex; gap: 14px; margin-top: 10px; }
+        .ex-links button { width: auto; flex: none; margin: 0; padding: 0; background: none; border: none; box-shadow: none; color: var(--primary); font-size: 0.85rem; font-weight: 500; }
+        .tax-note { margin-top: 10px; padding: 10px 14px; border-radius: 16px; font-size: 0.85rem; line-height: 1.4; color: var(--text-main); background: rgba(10,132,255,0.10); border: 1px solid rgba(10,132,255,0.25); }
+        .ct-wrap { border-radius: 22px; background: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.75); overflow-x: auto; box-shadow: 0 4px 18px rgba(0,60,140,0.06); }
+        [data-theme="dark"] .ct-wrap { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.12); }
+        .st-table.ct-table { font-size: 1rem; min-width: 720px; }
+        .st-table.ct-table th { font-size: 0.72rem; font-weight: 600; letter-spacing: .09em; padding: 18px; white-space: nowrap; text-align: left; border-bottom: 1px solid var(--glass-border); }
+        .st-table.ct-table td { padding: 18px; border-bottom: 1px solid rgba(0,0,0,0.05); font-variant-numeric: tabular-nums; white-space: nowrap; }
+        [data-theme="dark"] .st-table.ct-table td { border-bottom-color: rgba(255,255,255,0.06); }
+        .st-table.ct-table th.r, .st-table.ct-table td.r { text-align: right; }
+        .st-table.ct-table tbody tr:last-child td { border-bottom: none; }
+        .ct-table .ct-name { font-weight: 500; color: var(--text-main); }
+        .ct-table .ct-ore { color: #0a84ff; } .ct-table .ct-stima { color: #5e5ce6; } .ct-table .ct-lordo { color: #e8590c; } .ct-table .ct-tax { color: #d6336c; } .ct-table .ct-netto { color: #1f9d55; font-weight: 600; }
+        [data-theme="dark"] .ct-table .ct-ore { color: #64b5ff; } [data-theme="dark"] .ct-table .ct-stima { color: #a5a3ff; } [data-theme="dark"] .ct-table .ct-lordo { color: #ff9f5a; } [data-theme="dark"] .ct-table .ct-tax { color: #ff7aa2; } [data-theme="dark"] .ct-table .ct-netto { color: #4cd97b; }
+        .ct-table .ct-hl { background: rgba(0,0,0,0.035); } [data-theme="dark"] .ct-table .ct-hl { background: rgba(255,255,255,0.04); }
+        .ct-table tr.ct-sel td { background: rgba(10,132,255,0.08); }
+        .ct-sub { display: block; font-size: 0.74rem; font-weight: 500; margin-top: 3px; color: var(--text-muted); }
+        .st-table.ct-table tfoot td { font-weight: 700; border-top: 1px solid var(--glass-border); border-bottom: none; background: rgba(10,132,255,0.07); }
+        .ct-table tfoot .ct-name, .ct-table tfoot td:first-child { color: var(--text-main); }
+        .ct-table .st-in { width: 130px; font-size: 0.95rem; padding: 8px 10px; text-align: left; border-radius: 10px; }
+        .ct-table .st-in.st-note { width: 100%; min-width: 150px; }
+        .ct-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+        .ct-cfg { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 0.85rem; color: var(--text-muted); }
+        .ct-cfg input { width: 78px !important; min-width: 0; flex: none !important; padding: 6px 8px; margin: 0; border-radius: 10px; font-size: 0.85rem; text-align: right; }
+        .ct-cfg .st-edit { flex: none; width: auto; margin-left: 6px; }
+        @media (max-width: 600px) { .st-table.ct-table td, .st-table.ct-table th { padding: 12px; } .st-table.ct-table { font-size: 0.92rem; } }
         .atab { display: none; } .atab.active { display: block; animation: fadeIn 0.3s ease; }
         .admin-tabs { display: flex; gap: 4px; padding: 5px; margin: 0 auto 20px; width: max-content; max-width: 100%; overflow-x: auto; border-radius: 999px; background: var(--glass-soft); border: 1px solid var(--glass-border); backdrop-filter: blur(var(--glass-blur)) saturate(170%); -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(170%); box-shadow: var(--glass-shadow); -webkit-overflow-scrolling: touch; scrollbar-width: none; }
         .admin-tabs::-webkit-scrollbar { display: none; }
@@ -1018,6 +1052,7 @@
         </div>
         <div class="tot-box">
             <div class="tot-line">Totale: <span id="c-totale-b">0</span> ore • <span class="tot-money">€ <span id="c-soldi-b">0.00</span></span></div>
+            <div id="c-tax-note"></div>
             <div id="c-stats-container" class="stats-container breakdown"></div>
         </div>
         
@@ -1039,6 +1074,7 @@
             <button data-tab="stagione" onclick="switchAdminTab('stagione')"><i class=ig-trend></i> Stagione</button>
             <button data-tab="stat" onclick="switchAdminTab('stat')"><i class=ig-chart-bar></i> Statistiche</button>
             <button data-tab="anag" onclick="switchAdminTab('anag')"><i class=ig-wrench></i> Anagrafiche</button>
+            <button data-tab="export" onclick="switchAdminTab('export')"><i class=ig-download></i> Esporta</button>
         </div>
 
         <div id="atab-mese" class="atab active">
@@ -1105,13 +1141,13 @@
             <div id="season-summary"></div>
             <div id="season-editor-box" class="glass-box gb-cyan">
                 <div class="gb-title"><i class=ig-wrench></i> Compensi effettivi <span class="sub">Quanto hanno realmente percepito, mese per mese</span></div>
-                <div class="st-hint" style="margin:-4px 0 12px 0">Scegli il mese (anche passato) e inserisci quanto hanno realmente percepito i collaboratori, con eventuali aggiunte o detrazioni.</div>
+                <div class="st-hint" style="margin:-4px 0 12px 0">Scegli il mese (anche passato) e inserisci il lordo effettivo di ogni collaboratore, con eventuali aggiunte o detrazioni. Il netto si aggiorna mentre scrivi.</div>
                 <div id="season-editor"></div>
             </div>
         </div>
 
         <div id="atab-stat" class="atab">
-            <h3 style="margin-top:0">Statistiche <span class="sub">Andamento e confronto con l'anno precedente</span></h3>
+            <h3 style="margin-top:0">Statistiche <span class="sub">Andamento e confronto con la stagione precedente (settembre → agosto)</span></h3>
             <div class="filter-bar" style="margin-bottom:14px">
                 <select id="st-anno" onchange="renderAdminStats()"></select>
                 <select id="st-mese" onchange="renderAdminStats()"></select>
@@ -1143,6 +1179,11 @@
             <button onclick="saveAnagrafica()" class="btn-warning" style="margin-top:10px">Salva in Rubrica</button>
         </div>
     
+        </div>
+
+        <div id="atab-export" class="atab">
+            <h3 style="margin-top:0">Esporta dati <span class="sub">Scegli stagioni, mesi e fogli dell'Excel</span></h3>
+            <div id="export-content"></div>
         </div>
     </div>
 
@@ -1405,7 +1446,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, updatePassword, sendPasswordResetEmail, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, query, where, getDocs, orderBy, deleteDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs, getDoc, orderBy, deleteDoc, doc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAi5AwcIcjgLGyI7E8x4ndcYCI9DUIybeA",
@@ -1965,6 +2006,13 @@
         const snap = await getDocs(q);
         myTurni = [];
         snap.forEach(d => myTurni.push({id: d.id, ...d.data()}));
+        // compensi effettivi inseriti dall'admin (per l'avviso soglie); se non leggibili si usa la stima
+        try {
+            const cs = await getDocs(query(collection(db, "compensi_effettivi"), where("email", "==", currentUser.email)));
+            compensiMap = {}; cs.forEach(d => { if (d.id !== '_config') compensiMap[d.id] = d.data(); });
+            const cf = await getDoc(doc(db, "compensi_effettivi", "_config"));
+            if (cf.exists()) { const c = cf.data() || {}; taxCfg = { inps: Number(c.inps ?? 4.84), irpef: Number(c.irpef ?? 23) }; }
+        } catch (e) { console.warn("compensi non leggibili", e); }
         renderCalendar(); 
         renderCollabTable();
         loadCollabHistory(); // AGGIUNTO CARICAMENTO STORICO
@@ -2075,6 +2123,18 @@
         if(soldiEl) soldiEl.innerText = itMoney(totSoldi);
         document.getElementById('c-totale-b').innerText = itOre(tot);
         document.getElementById('c-soldi-b').innerText = itMoney(totSoldi);
+        // avviso soglie anno solare: lordo = effettivo inserito dall'admin, altrimenti stima
+        (() => {
+            const el = document.getElementById('c-tax-note'); if (!el) return;
+            const yy = /^\d{4}$/.test(y) ? parseInt(y) : new Date().getFullYear();
+            const idx = {};
+            myTurni.forEach(t => { const d = t.data || ''; if (d.length < 7) return; const k = `${currentUser.email}_${d.slice(0, 7)}`; const r = idx[k] || (idx[k] = { ore: 0, stima: 0 }); r.ore += t.ore || 0; r.stima += (t.ore || 0) * ratesFor(currentUser.email, t.mansione, t.data); });
+            const yi = yearInfo(idx, currentUser.email, yy);
+            const pI = itDec(taxCfg.inps, 2) + '%', pR = itDec(taxCfg.irpef, 0) + '%';
+            if (yi.tot > SOGLIA2) el.innerHTML = `<div class="tax-note"><b>Importi lordi.</b> Nel ${yy} il tuo compenso lordo è € ${itMoney(yi.tot)}: trattenuta INPS del ${pI} sulla parte oltre ${itGroup(SOGLIA1)} € (€ ${itMoney(yi.tinps)}) e IRPEF del ${pR} sulla parte oltre ${itGroup(SOGLIA2)} € (€ ${itMoney(yi.tirpef)}). Netto stimato dell'anno: € ${itMoney(yi.tot - yi.ttot)}.</div>`;
+            else if (yi.tot > SOGLIA1) el.innerHTML = `<div class="tax-note"><b>Importi lordi.</b> Nel ${yy} il tuo compenso lordo è € ${itMoney(yi.tot)}: trattenuta INPS del ${pI} solo sulla parte oltre ${itGroup(SOGLIA1)} € (€ ${itMoney(yi.tinps)}). Netto stimato dell'anno: € ${itMoney(yi.tot - yi.ttot)}.</div>`;
+            else el.innerHTML = '';
+        })();
         
         // UPDATED: Render pills with compact style
         Object.keys(breakdown).forEach(m => {
@@ -2241,6 +2301,7 @@
             if (adminTab === 'stagione') await renderSeason(reload === true);
             else if (adminTab === 'stat') await renderAdminStats(reload === true);
             else if (adminTab === 'anag') renderAnagList();
+            else if (adminTab === 'export') await renderExport(reload === true);
         } catch (e) { console.error(e); }
     };
 
@@ -2248,13 +2309,14 @@
         try {
             const snap = await getDocs(collection(db, "compensi_effettivi"));
             compensiMap = {};
-            snap.forEach(d => compensiMap[d.id] = d.data());
+            snap.forEach(d => { if (d.id === '_config') { const c = d.data() || {}; taxCfg = { inps: Number(c.inps ?? 4.84), irpef: Number(c.irpef ?? 23) }; } else compensiMap[d.id] = d.data(); });
             compensiLoaded = true;
         } catch (e) { console.error(e); toast("Compensi non leggibili: controlla le regole Firestore"); }
     }
 
     // ---------- STAGIONE (settembre → agosto) ----------
-    let seasonSel = null, seasonMonthSel = null;
+    let seasonSel = null, seasonMonthSel = null, seasonYearSel = null;
+    let taxCfg = { inps: 4.84, irpef: 23 };
     const extraRows = {};   // ym -> [email aggiunti a mano nella tabella del mese]
 
     function seasonAgg(s) {
@@ -2299,7 +2361,7 @@
         Object.values(compensiMap).forEach(c => { if (c && c.anno && c.mese) set.add(seasonOf(c.anno, c.mese)); });
         const list = [...set].sort((a, b) => b - a);
         const box = document.getElementById('season-head');
-        box.innerHTML = `<div class="filter-bar" style="margin-bottom:12px"><select id="se-sel" onchange="changeSeason(this.value)" style="max-width:220px">${list.map(s => `<option value="${s}" ${s === seasonSel ? 'selected' : ''}>Stagione ${seasonLabel(s)}</option>`).join('')}</select><span class="st-hint" style="margin:0 0 0 6px">da settembre ${seasonSel} ad agosto ${seasonSel + 1}</span><div class="filter-buttons" style="margin-left:auto"><button onclick="exportSeasonXlsx()" class="btn-success"><i class=ig-download></i> Scarica Excel stagione</button></div></div>`;
+        box.innerHTML = `<div class="filter-bar" style="margin-bottom:12px"><select id="se-sel" onchange="changeSeason(this.value)" style="max-width:220px">${list.map(s => `<option value="${s}" ${s === seasonSel ? 'selected' : ''}>Stagione ${seasonLabel(s)}</option>`).join('')}</select><span class="st-hint" style="margin:0 0 0 6px">da settembre ${seasonSel} ad agosto ${seasonSel + 1}</span></div>`;
         renderSeasonSummary();
         renderSeasonEditor();
     };
@@ -2309,39 +2371,70 @@
         const s = seasonSel, now = new Date();
         const isCur = s === seasonOf(now.getFullYear(), now.getMonth() + 1);
         const lim = isCur ? SEASON_MONTHS.indexOf(now.getMonth() + 1) : 11;  // confronto "a pari periodo"
-        const cur = seasonAgg(s), prv = seasonAgg(s - 1);
+        const idx = buildPayIndex(), cache = {};
+        const cur = seasonNet(s, idx, cache), prv = seasonNet(s - 1, idx, cache);
         const sum = (arr, f, to) => arr.slice(0, to + 1).reduce((a, x) => a + f(x), 0);
-        const ore = sum(cur.months, x => x.ore, 11), costo = sum(cur.months, x => x.costo, 11);
-        const oreC = sum(cur.months, x => x.ore, lim), costoC = sum(cur.months, x => x.costo, lim);
-        const oreP = sum(prv.months, x => x.ore, lim), costoP = sum(prv.months, x => x.costo, lim);
-        const attivi = Object.keys(cur.perUser).length;
-        let h = `<div class="glass-box gb-blue"><div class="gb-title">Riepilogo stagione ${seasonLabel(s)} <span class="sub">Ore, costo e confronto con la stagione precedente</span></div><div class="st-kpis">` +
-            kpi('Ore stagione', num2(ore), `${pctHtml(oreC, oreP)} vs ${seasonLabel(s - 1)}${isCur ? ' (stesso periodo)' : ''}`) +
-            kpi('Costo stimato', eur(costo), `${pctHtml(costoC, costoP)} vs ${seasonLabel(s - 1)}${isCur ? ' (stesso periodo)' : ''}`) +
-            kpi('Effettivo pagato', cur.anyEff ? eur(cur.effTot) : '—', cur.anyEff ? 'somma dei mesi inseriti' : 'nessun importo inserito') +
-            kpi('Effettivo − stima', cur.anyEff ? diffHtml(cur.diffTot) : '—', 'solo dove hai inserito l\'effettivo') +
-            kpi('Collaboratori', attivi, 'con ore nella stagione') + `</div></div>`;
-        const maxC = Math.max(1, ...cur.months.map(x => x.costo), ...prv.months.map(x => x.costo));
-        h += `<div class="glass-box gb-sky"><div class="gb-title">Mese per mese <span class="sub">${seasonLabel(s)} a confronto con ${seasonLabel(s - 1)}</span></div>
-            <div class="st-legend"><span><i class="st-dot st-cur"></i>${seasonLabel(s)}</span><span><i class="st-dot st-prv"></i>${seasonLabel(s - 1)}</span><span style="color:var(--text-muted)">(costo stimato)</span></div><div class="st-chart">` +
-            cur.months.map((x, i) => `<div class="st-col" title="${MESI_IT[SEASON_MONTHS[i] - 1]}: ${eur(x.costo)} (${seasonLabel(s - 1)}: ${eur(prv.months[i].costo)})"><div class="st-bars"><div class="st-bar st-prv" style="height:${(prv.months[i].costo / maxC * 100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.costo / maxC * 100).toFixed(1)}%"></div></div><span class="st-lbl">${MESI_IT[SEASON_MONTHS[i] - 1].slice(0, 3)}</span></div>`).join('') + `</div>`;
-        h += `<div class="st-scroll"><table class="st-table"><thead><tr><th>Mese</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Diff.</th><th class="r">Stima ${seasonLabel(s - 1)}</th><th class="r">Δ</th><th></th></tr></thead><tbody>`;
+        const T = cur.tot, L = seasonLabel(s), LP = seasonLabel(s - 1);
+        const oreC = sum(cur.months, x => x.ore, lim), oreP = sum(prv.months, x => x.ore, lim);
+        const stC = sum(cur.months, x => x.stima, lim), stP = sum(prv.months, x => x.stima, lim);
+        const pcSub = (a, b) => b > 0 ? `<span class="ct-sub">${a >= b ? '<span style="color:var(--money-color)">▲ +' : '<span style="color:var(--danger,#ff3b30)">▼ '}${itDec((a - b) / b * 100, 1)}%</span> vs ${LP}</span>` : '';
+        let h = `<div class="glass-box gb-blue"><div class="gb-title">Riepilogo stagione ${L} <span class="sub">Ore, compensi lordi e netti</span></div><div class="st-kpis">` +
+            kpi('Ore stagione', num2(T.ore), `${pctHtml(oreC, oreP)} vs ${LP}${isCur ? ' (stesso periodo)' : ''}`) +
+            kpi('Stima foglio ore', eur(T.stima), `${pctHtml(stC, stP)} vs ${LP}${isCur ? ' (stesso periodo)' : ''}`) +
+            kpi('Lordo effettivo', eur(T.lordo), T.nEff ? 'effettivo dove inserito, altrimenti stima' : 'nessun effettivo inserito: è la stima') +
+            kpi('Trattenute', eur(T.lordo - T.netto), `INPS ${itDec(taxCfg.inps, 2)}% · IRPEF ${itDec(taxCfg.irpef, 0)}%`) +
+            kpi('Netto effettivo', eur(T.netto), 'lordo meno trattenute') +
+            kpi('Collaboratori', Object.keys(cur.users).length, 'con compensi nella stagione') + `</div></div>`;
+
+        // MESE PER MESE
+        const maxC = Math.max(1, ...cur.months.map(x => x.lordo), ...prv.months.map(x => x.lordo));
+        h += `<div class="glass-box gb-sky"><div class="gb-title">Mese per mese <span class="sub">${L} a confronto con ${LP}</span></div>
+            <div class="st-legend"><span><i class="st-dot st-cur"></i>${L}</span><span><i class="st-dot st-prv"></i>${LP}</span><span style="color:var(--text-muted)">(lordo effettivo)</span></div><div class="st-chart">` +
+            cur.months.map((x, i) => `<div class="st-col" title="${MESI_IT[SEASON_MONTHS[i] - 1]}: ${eur(x.lordo)} (${LP}: ${eur(prv.months[i].lordo)})"><div class="st-bars"><div class="st-bar st-prv" style="height:${(prv.months[i].lordo / maxC * 100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.lordo / maxC * 100).toFixed(1)}%"></div></div><span class="st-lbl">${MESI_IT[SEASON_MONTHS[i] - 1].slice(0, 3)}</span></div>`).join('') + `</div>`;
+        h += `<div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Mese</th><th>Ore</th><th>Stima foglio ore</th><th>Lordo effettivo</th><th>Trattenute</th><th class="ct-hl">Netto effettivo</th><th></th></tr></thead><tbody>`;
         cur.months.forEach((x, i) => {
-            const m = SEASON_MONTHS[i];
-            let diff = '—';
-            if (x.anyEff) {
-                diff = diffHtml(x.eff - x.costo);
-            }
-            h += `<tr ${m === seasonMonthSel ? 'style="background:var(--glass-soft)"' : ''}><td>${MESI_IT[m - 1]}</td><td class="r">${num2(x.ore)}</td><td class="r">${eur(x.costo)}</td><td class="r">${x.anyEff ? eur(x.eff) : '—'}</td><td class="r">${diff}</td><td class="r">${eur(prv.months[i].costo)}</td><td class="r">${pctHtml(x.costo, prv.months[i].costo)}</td><td class="r"><button class="st-edit" onclick="changeSeasonMonth(${m}); document.getElementById('season-editor-box').scrollIntoView({behavior:'smooth', block:'start'})">Modifica</button></td></tr>`;
+            const m = SEASON_MONTHS[i], y = parseInt(ymOf(s, m).slice(0, 4)), p = prv.months[i];
+            const lSub = x.n && x.nEff < x.n ? `<span class="ct-sub">${x.nEff ? `effettivo ${x.nEff} su ${x.n}` : 'da stima'}</span>` : '';
+            h += `<tr class="${m === seasonMonthSel ? 'ct-sel' : ''}"><td class="ct-name">${MESI_IT[m - 1]} ${y}</td><td class="ct-ore">${num2(x.ore)}</td><td class="ct-stima">${eur(x.stima)}${pcSub(x.stima, p.stima)}</td>
+                <td class="ct-lordo">${eur(x.lordo)}${lSub}</td><td class="ct-tax">${x.lordo - x.netto > 0.004 ? eur(x.lordo - x.netto) : '—'}</td><td class="ct-netto ct-hl">${eur(x.netto)}</td>
+                <td class="r"><button class="st-edit" onclick="changeSeasonMonth(${m}); document.getElementById('season-editor-box').scrollIntoView({behavior:'smooth', block:'start'})">Modifica</button></td></tr>`;
         });
-        h += `</tbody><tfoot><tr><td><b>Stagione</b></td><td class="r">${num2(ore)}</td><td class="r">${eur(costo)}</td><td class="r">${cur.anyEff ? eur(cur.effTot) : '—'}</td><td class="r">${cur.anyEff ? diffHtml(cur.diffTot) : '—'}</td><td class="r">${eur(sum(prv.months, x => x.costo, 11))}</td><td class="r">${pctHtml(costo, sum(prv.months, x => x.costo, 11))}</td><td></td></tr></tfoot></table></div></div>`;
-        const pidx = buildPayIndex();
-        const users = Object.entries(cur.perUser).map(([e, r]) => ({ e, nome: rubrica[e]?.nome || e, ...r })).sort((a, b) => a.nome.localeCompare(b.nome));
-        h += `<div class="glass-box gb-deep"><div class="gb-title">Per collaboratore <span class="sub">Stagione ${seasonLabel(s)} e soglie annuali</span></div><div class="st-scroll"><table class="st-table"><thead><tr><th>Collaboratore</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Diff.</th><th class="r">Anno solare ${s}</th><th class="r">Anno solare ${s + 1}</th></tr></thead><tbody>` +
-            users.map(u => { const a = yearPay(pidx, u.e, s), b = yearPay(pidx, u.e, s + 1); return `<tr><td>${esc(u.nome)}</td><td class="r">${num2(u.ore)}</td><td class="r">${eur(u.stima)}</td><td class="r">${u.anyEff ? eur(u.eff) : '—'}</td><td class="r">${u.anyEff ? diffHtml(u.eff - (u.stimaSet || 0)) : '—'}</td><td class="r">${eur(a)}${sogliaBadge(a)}</td><td class="r">${eur(b)}${sogliaBadge(b)}</td></tr>`; }).join('') +
-            (users.length ? '' : '<tr><td colspan="7" style="color:var(--text-muted)">Nessun turno nella stagione.</td></tr>') + `</tbody></table></div>
-            <div class="st-hint">La differenza confronta l'effettivo con la stima dei soli mesi in cui hai inserito l'importo. Le colonne Anno solare sommano i compensi dei 12 mesi (effettivo se inserito, altrimenti stima) e segnalano il superamento di ${itGroup(SOGLIA1)} € e ${itGroup(SOGLIA2)} €.</div></div>`;
+        h += `</tbody><tfoot><tr><td>Totale stagione</td><td class="ct-ore">${num2(T.ore)}</td><td class="ct-stima">${eur(T.stima)}${pcSub(T.stima, prv.tot.stima)}</td><td class="ct-lordo">${eur(T.lordo)}</td><td class="ct-tax">${eur(T.lordo - T.netto)}</td><td class="ct-netto ct-hl">${eur(T.netto)}</td><td></td></tr></tfoot></table></div></div>`;
+
+        // PER COLLABORATORE (stagione)
+        const users = Object.entries(cur.users).map(([e, r]) => ({ e, nome: rubrica[e]?.nome || e, ...r })).sort((a, b) => a.nome.localeCompare(b.nome));
+        h += `<div class="glass-box gb-deep"><div class="gb-title">Compensi per collaboratore <span class="sub">Stagione ${L} (settembre ${s} – agosto ${s + 1})</span></div>
+            <div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Collaboratore</th><th>Ore</th><th>Stima foglio ore</th><th>Lordo effettivo</th><th>Trattenute</th><th class="ct-hl">Netto effettivo</th></tr></thead><tbody>` +
+            users.map(u => `<tr><td class="ct-name">${esc(u.nome)}</td><td class="ct-ore">${num2(u.ore)}</td><td class="ct-stima">${eur(u.stima)}</td><td class="ct-lordo">${eur(u.lordo)}${u.nEff < u.nMesi ? `<span class="ct-sub">${u.nEff ? `effettivo in ${u.nEff} mesi su ${u.nMesi}` : 'da stima'}</span>` : ''}</td><td class="ct-tax">${u.lordo - u.netto > 0.004 ? eur(u.lordo - u.netto) : '—'}</td><td class="ct-netto ct-hl">${eur(u.netto)}</td></tr>`).join('') +
+            (users.length ? '' : '<tr><td colspan="6" style="color:var(--text-muted)">Nessun compenso nella stagione.</td></tr>') +
+            `</tbody><tfoot><tr><td>Totale stagione</td><td class="ct-ore">${num2(T.ore)}</td><td class="ct-stima">${eur(T.stima)}</td><td class="ct-lordo">${eur(T.lordo)}</td><td class="ct-tax">${eur(T.lordo - T.netto)}</td><td class="ct-netto ct-hl">${eur(T.netto)}</td></tr></tfoot></table></div>
+            <div class="st-hint">Lordo effettivo = importo inserito dall'admin; se manca si usa la stima del foglio ore. Le trattenute si calcolano sull'anno solare e solo sulla parte che supera le soglie.</div></div>`;
+
+        // ANNO SOLARE
+        const yA = seasonYearSel && (seasonYearSel === s || seasonYearSel === s + 1) ? seasonYearSel : (isCur ? now.getFullYear() : s + 1);
+        const yUsers = Object.keys(rubrica).concat(Object.keys(idx).map(k => k.slice(0, k.length - 8)), Object.values(compensiMap).map(c => c && c.email))
+            .filter((e, i, arr) => e && arr.indexOf(e) === i).map(e => ({ e, nome: rubrica[e]?.nome || e, ...yearInfo(idx, e, yA, cache) })).filter(u => u.tot > 0).sort((a, b) => b.tot - a.tot);
+        const yt = { lordo: 0, inps: 0, irpef: 0 };
+        yUsers.forEach(u => { yt.lordo += u.tot; yt.inps += u.tinps; yt.irpef += u.tirpef; });
+        h += `<div class="glass-box gb-blue"><div class="gb-title">Anno solare ${yA} <span class="sub">Gennaio – dicembre: soglie e trattenute</span></div>
+            <div class="ct-bar"><div class="mo-pills" style="margin:0">${[s, s + 1].map(y => `<button class="mo-pill ${y === yA ? 'active' : ''}" onclick="seasonYearSel=${y}; renderSeasonSummary()">${y}</button>`).join('')}</div>
+            <div class="ct-cfg">INPS <input type="number" step="0.01" id="cfg-inps" value="${taxCfg.inps}"> % oltre ${itGroup(SOGLIA1)} € &nbsp;·&nbsp; IRPEF <input type="number" step="0.01" id="cfg-irpef" value="${taxCfg.irpef}"> % oltre ${itGroup(SOGLIA2)} € <button class="st-edit" onclick="saveTaxCfg()">Salva aliquote</button></div></div>
+            <div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Collaboratore</th><th>Lordo ${yA}</th><th>INPS ${itDec(taxCfg.inps, 2)}%</th><th>IRPEF ${itDec(taxCfg.irpef, 0)}%</th><th class="ct-hl">Netto ${yA}</th><th>Soglia</th></tr></thead><tbody>` +
+            yUsers.map(u => `<tr><td class="ct-name">${esc(u.nome)}</td><td class="ct-lordo">${eur(u.tot)}</td><td class="ct-tax">${u.tinps > 0.004 ? eur(u.tinps) : '—'}</td><td class="ct-tax">${u.tirpef > 0.004 ? eur(u.tirpef) : '—'}</td><td class="ct-netto ct-hl">${eur(u.tot - u.ttot)}</td><td>${sogliaBadge(u.tot) || '<span style="color:var(--text-muted)">—</span>'}</td></tr>`).join('') +
+            (yUsers.length ? '' : `<tr><td colspan="6" style="color:var(--text-muted)">Nessun compenso nel ${yA}.</td></tr>`) +
+            `</tbody><tfoot><tr><td>Totale anno solare ${yA}</td><td class="ct-lordo">${eur(yt.lordo)}</td><td class="ct-tax">${eur(yt.inps)}</td><td class="ct-tax">${eur(yt.irpef)}</td><td class="ct-netto ct-hl">${eur(yt.lordo - yt.inps - yt.irpef)}</td><td></td></tr></tfoot></table></div>
+            <div class="st-hint">INPS solo sulla parte oltre ${itGroup(SOGLIA1)} €, IRPEF solo sulla parte oltre ${itGroup(SOGLIA2)} €, calcolate sul totale progressivo dell'anno (gennaio → dicembre).</div></div>`;
         box.innerHTML = h;
+    };
+
+    window.saveTaxCfg = async () => {
+        const i = parseFloat(document.getElementById('cfg-inps').value), r = parseFloat(document.getElementById('cfg-irpef').value);
+        if (isNaN(i) || isNaN(r) || i < 0 || r < 0 || i > 100 || r > 100) return modal("Aliquote", "Inserisci percentuali valide (0–100).");
+        try {
+            await setDoc(doc(db, "compensi_effettivi", "_config"), { inps: i, irpef: r, updated_at: new Date() });
+            taxCfg = { inps: i, irpef: r };
+            renderSeasonSummary(); renderSeasonEditor(); toast("Aliquote salvate");
+        } catch (e) { modal("Errore", e.message + " (hai pubblicato le nuove regole Firestore?)"); }
     };
 
     window.renderSeasonEditor = () => {
@@ -2358,16 +2451,17 @@
         (extraRows[ym] || []).forEach(e => { if (!rows[e]) rows[e] = { ore: 0, stima: 0 }; });
         const list = Object.entries(rows).map(([email, r]) => ({ email, nome: rubrica[email]?.nome || email, ...r })).sort((a, b) => a.nome.localeCompare(b.nome));
         const addable = Object.entries(rubrica).filter(([e, d]) => !rows[e]).sort((a, b) => (a[1].nome || '').localeCompare(b[1].nome || ''));
-        let h = `<div class="mo-pills">${pills}</div><h4 class="st-title">Compensi ${MESI_IT[m - 1]} ${y}: stima e importo effettivo</h4>
-            <div class="st-scroll"><table class="st-table" id="st-comp-table" data-ym="${ym}" data-y="${y}" data-m="${m}"><thead><tr><th>Collaboratore</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Differenza</th><th>Nota</th></tr></thead><tbody>`;
+        let h = `<div class="mo-pills">${pills}</div><h4 class="st-title">Compensi ${MESI_IT[m - 1]} ${y}</h4>
+            <div class="ct-wrap"><table class="st-table ct-table" id="st-comp-table" data-ym="${ym}" data-y="${y}" data-m="${m}"><thead><tr><th>Collaboratore</th><th>Ore</th><th>Stima foglio ore</th><th>Lordo effettivo</th><th class="ct-hl">Netto effettivo</th><th>Totale stagione</th><th>Totale anno ${y}</th><th>Nota</th></tr></thead><tbody>`;
         list.forEach(u => {
             const c = compensiMap[`${u.email}_${ym}`];
-            h += `<tr data-email="${esc(u.email)}" data-stima="${u.stima.toFixed(4)}" data-ore="${u.ore}"><td>${esc(u.nome)}</td><td class="r">${num2(u.ore)}</td><td class="r">${eur(u.stima)}</td>
-                <td class="r"><input type="number" step="0.01" class="st-in" value="${c && c.importo != null ? c.importo : ''}" placeholder="—" onchange="saveCompenso(this)"></td><td class="r st-diff">—</td>
+            h += `<tr data-email="${esc(u.email)}" data-stima="${u.stima.toFixed(4)}" data-ore="${u.ore}"><td class="ct-name">${esc(u.nome)}</td><td class="ct-ore">${num2(u.ore)}</td><td class="ct-stima">${eur(u.stima)}</td>
+                <td><input type="number" step="0.01" class="st-in" value="${c && c.importo != null ? c.importo : ''}" placeholder="${itMoney(u.stima)}" oninput="recalcStatsTotals()" onchange="saveCompenso(this)"></td>
+                <td class="ct-netto ct-hl st-net">—</td><td class="ct-lordo st-tseas">—</td><td class="ct-lordo st-tyear">—</td>
                 <td><input type="text" class="st-in st-note" value="${esc(c ? c.nota : '')}" placeholder="es. +20 rimborso" onchange="saveCompenso(this)"></td></tr>`;
         });
-        if (!list.length) h += `<tr><td colspan="6" style="color:var(--text-muted)">Nessun turno in questo mese: aggiungi un collaboratore qui sotto se devi registrare un importo.</td></tr>`;
-        h += `</tbody><tfoot><tr><td><b>Totale</b></td><td class="r" id="st-t-ore"></td><td class="r" id="st-t-stima"></td><td class="r" id="st-t-eff"></td><td class="r" id="st-t-diff"></td><td></td></tr></tfoot></table></div><div class="st-hint" id="st-t-note"></div>`;
+        if (!list.length) h += `<tr><td colspan="8" style="color:var(--text-muted)">Nessun turno in questo mese: aggiungi un collaboratore qui sotto se devi registrare un importo.</td></tr>`;
+        h += `</tbody><tfoot><tr><td>Totale ${MESI_IT[m - 1].toLowerCase()}</td><td class="ct-ore" id="st-t-ore"></td><td class="ct-stima" id="st-t-stima"></td><td class="ct-lordo" id="st-t-eff"></td><td class="ct-netto ct-hl" id="st-t-net"></td><td class="ct-lordo" id="st-t-seas"></td><td class="ct-lordo" id="st-t-year"></td><td></td></tr></tfoot></table></div><div class="st-hint" id="st-t-note"></div>`;
         if (addable.length) h += `<div style="margin-top:10px"><select id="se-add" style="max-width:320px" onchange="addSeasonRow(this.value)"><option value="">+ Aggiungi collaboratore al mese…</option>${addable.map(([e, d]) => `<option value="${esc(e)}">${esc(d.nome || e)}${d.archived ? ' (archiviato)' : ''}</option>`).join('')}</select></div>`;
         box.innerHTML = h;
         recalcStatsTotals();
@@ -2380,22 +2474,29 @@
         renderSeasonEditor();
     };
 
+    // ricalcola netto e totali della tabella del mese (usa i valori nei campi, anche non ancora salvati)
     window.recalcStatsTotals = () => {
         const tb = document.getElementById('st-comp-table'); if (!tb) return;
-        let tOre = 0, tStima = 0, tEff = 0, tStimaSet = 0, nSet = 0, nTot = 0;
+        const s = seasonSel, m = parseInt(tb.dataset.m), y = parseInt(tb.dataset.y), ym = tb.dataset.ym;
+        const idx = buildPayIndex();
+        let tOre = 0, tStima = 0, tL = 0, tN = 0, tS = 0, tY = 0, nSet = 0, nTot = 0;
         tb.querySelectorAll('tbody tr[data-email]').forEach(tr => {
-            const stima = parseFloat(tr.dataset.stima) || 0;
+            const e = tr.dataset.email, stima = parseFloat(tr.dataset.stima) || 0;
             const inp = tr.querySelector('input.st-in:not(.st-note)');
-            const eff = inp.value === '' ? null : parseFloat(inp.value);
-            nTot++; tOre += parseFloat(tr.dataset.ore) || 0; tStima += stima;
-            const diffCell = tr.querySelector('.st-diff');
-            if (eff != null && !isNaN(eff)) { nSet++; tEff += eff; tStimaSet += stima; diffCell.innerHTML = diffHtml(eff - stima); }
-            else diffCell.innerText = '—';
+            const v = inp.value === '' ? null : parseFloat(inp.value);
+            const over = {}; if (v != null && !isNaN(v)) { over[`${e}_${ym}`] = v; nSet++; }
+            nTot++;
+            const yi = yearInfo(idx, e, y, null, over);
+            const lordo = yi.g[m - 1], netto = lordo - yi.t[m - 1];
+            let seas = 0; SEASON_MONTHS.forEach(mm => { const yy = parseInt(ymOf(s, mm).slice(0, 4)); seas += yy === y ? yi.g[mm - 1] : yearInfo(idx, e, yy).g[mm - 1]; });
+            tOre += parseFloat(tr.dataset.ore) || 0; tStima += stima; tL += lordo; tN += netto; tS += seas; tY += yi.tot;
+            tr.querySelector('.st-net').innerHTML = eur(netto) + (yi.t[m - 1] > 0.004 ? `<span class="ct-sub">trattenute ${eur(yi.t[m - 1])}</span>` : '');
+            tr.querySelector('.st-tseas').innerHTML = eur(seas);
+            tr.querySelector('.st-tyear').innerHTML = eur(yi.tot) + sogliaBadge(yi.tot);
         });
         const set = (id, v) => { const el = document.getElementById(id); if (el) el.innerHTML = v; };
-        set('st-t-ore', num2(tOre)); set('st-t-stima', eur(tStima)); set('st-t-eff', nSet ? eur(tEff) : '—');
-        set('st-t-diff', nSet ? diffHtml(tEff - tStimaSet) : '—');
-        set('st-t-note', nSet ? `Effettivo inserito per ${nSet} collaboratori su ${nTot}. La differenza è calcolata solo sui collaboratori con importo inserito.` : 'Nessun importo effettivo ancora inserito per questo mese.');
+        set('st-t-ore', num2(tOre)); set('st-t-stima', eur(tStima)); set('st-t-eff', eur(tL)); set('st-t-net', eur(tN)); set('st-t-seas', eur(tS)); set('st-t-year', eur(tY));
+        set('st-t-note', (nSet ? `Lordo effettivo inserito per ${nSet} collaboratori su ${nTot}; per gli altri vale la stima (mostrata in grigio nel campo).` : 'Nessun importo effettivo ancora inserito: lordo e netto sono calcolati sulla stima.') + ` Le trattenute (INPS ${itDec(taxCfg.inps, 2)}% oltre ${itGroup(SOGLIA1)} €, IRPEF ${itDec(taxCfg.irpef, 0)}% oltre ${itGroup(SOGLIA2)} €) si applicano solo alla parte eccedente, sul progressivo dell'anno solare.`);
     };
 
     window.saveCompenso = async (el) => {
@@ -2440,6 +2541,47 @@
     const yearPay = (idx, email, y) => { let s = 0; for (let m = 1; m <= 12; m++) s += payOf(idx, email, y, m); return s; };
     const sogliaBadge = (v) => v > SOGLIA2 ? `<span class="soglia s2" title="Superata la soglia di ${itGroup(SOGLIA2)} € (anno solare)">oltre ${itGroup(SOGLIA2)} €</span>`
         : v > SOGLIA1 ? `<span class="soglia s1" title="Superata la soglia di ${itGroup(SOGLIA1)} € (anno solare)">oltre ${itGroup(SOGLIA1)} €</span>` : '';
+    // trattenute: INPS sulla parte oltre SOGLIA1, IRPEF sulla parte oltre SOGLIA2 (progressivo anno solare)
+    const taxSplit = (x) => ({ inps: taxCfg.inps / 100 * Math.max(0, x - SOGLIA1), irpef: taxCfg.irpef / 100 * Math.max(0, x - SOGLIA2) });
+    // per un collaboratore e un anno solare: lordo mese per mese (effettivo, altrimenti stima) e trattenute di ogni mese
+    function yearInfo(idx, email, y, cache, over) {
+        const ck = email + '_' + y; if (cache && cache[ck]) return cache[ck];
+        const r = { g: [], t: [], inps: [], irpef: [], eff: [], tot: 0, tinps: 0, tirpef: 0, ttot: 0 };
+        let cum = 0;
+        for (let m = 1; m <= 12; m++) {
+            const k = `${email}_${y}-${pad2(m)}`, c = compensiMap[k];
+            let g, isE;
+            if (over && over[k] != null) { g = over[k]; isE = true; }
+            else if (c && c.importo != null) { g = Number(c.importo); isE = true; }
+            else { g = idx[k] ? idx[k].stima : 0; isE = false; }
+            const a = taxSplit(cum), b = taxSplit(cum + g), i = b.inps - a.inps, ir = b.irpef - a.irpef;
+            r.g.push(g); r.eff.push(isE); r.inps.push(i); r.irpef.push(ir); r.t.push(i + ir);
+            cum += g; r.tinps += i; r.tirpef += ir;
+        }
+        r.tot = cum; r.ttot = r.tinps + r.tirpef;
+        if (cache) cache[ck] = r;
+        return r;
+    }
+    // stagione: totali per mese e per collaboratore (ore, stima, lordo effettivo, netto)
+    function seasonNet(s, idx, cache) {
+        const months = SEASON_MONTHS.map(() => ({ ore: 0, stima: 0, lordo: 0, netto: 0, n: 0, nEff: 0 }));
+        const users = {}, tot = { ore: 0, stima: 0, lordo: 0, netto: 0, nEff: 0 };
+        const emails = new Set();
+        SEASON_MONTHS.forEach(m => { const ym = ymOf(s, m); Object.keys(idx).forEach(k => { if (k.endsWith('_' + ym)) emails.add(k.slice(0, k.length - 8)); }); });
+        Object.values(compensiMap).forEach(c => { if (c && c.email && c.importo != null && seasonOf(c.anno, c.mese) === s) emails.add(c.email); });
+        emails.forEach(e => {
+            const u = { ore: 0, stima: 0, lordo: 0, netto: 0, nEff: 0, nMesi: 0 };
+            SEASON_MONTHS.forEach((m, i) => {
+                const ym = ymOf(s, m), y = parseInt(ym.slice(0, 4)), k = `${e}_${ym}`, yi = yearInfo(idx, e, y, cache);
+                const ore = idx[k] ? idx[k].ore : 0, st = idx[k] ? idx[k].stima : 0, g = yi.g[m - 1], net = g - yi.t[m - 1];
+                if (!ore && !g && !yi.eff[m - 1]) return;
+                const x = months[i]; x.ore += ore; x.stima += st; x.lordo += g; x.netto += net; x.n++; if (yi.eff[m - 1]) x.nEff++;
+                u.ore += ore; u.stima += st; u.lordo += g; u.netto += net; u.nMesi++; if (yi.eff[m - 1]) u.nEff++;
+            });
+            if (u.nMesi) { users[e] = u; tot.ore += u.ore; tot.stima += u.stima; tot.lordo += u.lordo; tot.netto += u.netto; tot.nEff += u.nEff; }
+        });
+        return { months, users, tot };
+    }
     const sogliaTxt = (v) => v > SOGLIA2 ? `Oltre ${itGroup(SOGLIA2)}` : v > SOGLIA1 ? `Oltre ${itGroup(SOGLIA1)}` : '';
 
     function loadXlsxLib() {
@@ -2452,67 +2594,149 @@
         });
     }
 
-    window.exportSeasonXlsx = async () => {
+    // ---------- ESPORTA (pillola) ----------
+    const exState = { init: false, seasons: new Set(), months: new Set(), fogli: new Set(['mese', 'collab', 'anno']), valori: new Set(['pay']), growth: true };
+    const exAllSeasons = () => {
+        const set = new Set([seasonOf(new Date().getFullYear(), new Date().getMonth() + 1)]);
+        allTurniFull.forEach(t => { const y = parseInt((t.data || '').slice(0, 4)), m = parseInt((t.data || '').slice(5, 7)); if (y && m) set.add(seasonOf(y, m)); });
+        Object.values(compensiMap).forEach(c => { if (c && c.anno && c.mese) set.add(seasonOf(c.anno, c.mese)); });
+        return [...set].sort((a, b) => b - a);
+    };
+    window.exToggle = (k, v, on) => {
+        const set = k === 's' ? exState.seasons : k === 'm' ? exState.months : k === 'f' ? exState.fogli : exState.valori;
+        if (on) set.add(v); else set.delete(v);
+    };
+    window.exAll = (k, mode) => {
+        const now = new Date(), curS = seasonOf(now.getFullYear(), now.getMonth() + 1);
+        if (k === 's') { exState.seasons = new Set(mode === 'all' ? exAllSeasons() : mode === 'cur' ? [curS] : []); }
+        else { exState.months = new Set(mode === 'all' ? SEASON_MONTHS : mode === 'cur' ? [now.getMonth() + 1] : []); }
+        renderExport();
+    };
+    window.renderExport = async (reload) => {
+        const box = document.getElementById('export-content'); if (!box) return;
+        if (reload || !compensiLoaded) await loadCompensi();
+        const now = new Date();
+        if (!exState.init) { exState.init = true; exState.seasons = new Set([seasonOf(now.getFullYear(), now.getMonth() + 1)]); exState.months = new Set(SEASON_MONTHS); }
+        const chip = (k, v, label, on) => `<label class="ex-chip"><input type="checkbox" ${on ? 'checked' : ''} onchange="exToggle('${k}','${v}',this.checked)"> ${label}</label>`;
+        const chipN = (k, v, label, on) => `<label class="ex-chip"><input type="checkbox" ${on ? 'checked' : ''} onchange="exToggle('${k}',${v},this.checked)"> ${label}</label>`;
+        const links = (k, c1) => `<div class="ex-links"><button onclick="exAll('${k}','all')">Tutt${k === 's' ? 'e' : 'i'}</button><button onclick="exAll('${k}','none')">Nessun${k === 's' ? 'a' : 'o'}</button><button onclick="exAll('${k}','cur')">${c1}</button></div>`;
+        box.innerHTML =
+            `<div class="glass-box gb-blue"><div class="gb-title">1 · Cosa esportare <span class="sub">Stagioni e mesi (da settembre ad agosto)</span></div>
+                <div class="ex-grid">
+                    <div class="ex-card"><div class="ex-h">Stagioni</div><div class="st-hint">Una colonna (o un foglio) per ogni stagione scelta.</div>
+                        <div class="ex-chips">${exAllSeasons().map(s => chipN('s', s, 'Stagione ' + seasonLabel(s), exState.seasons.has(s))).join('')}</div>${links('s', 'Solo in corso')}</div>
+                    <div class="ex-card"><div class="ex-h">Mesi</div><div class="st-hint">Quali mesi includere.</div>
+                        <div class="ex-chips">${SEASON_MONTHS.map(m => chipN('m', m, MESI_IT[m - 1].slice(0, 3), exState.months.has(m))).join('')}</div>${links('m', 'Solo mese in corso')}</div>
+                </div></div>
+            <div class="glass-box gb-sky"><div class="gb-title">2 · Fogli dell'Excel <span class="sub">Ogni voce selezionata genera i suoi fogli nello stesso file</span></div>
+                <div class="ex-grid">
+                    <div class="ex-card"><div class="ex-h">Fogli</div>
+                        <div class="ex-chips">${chip('f', 'mese', 'Mese per mese (stagioni a confronto)', exState.fogli.has('mese'))}${chip('f', 'collab', 'Per collaboratore (mese per mese)', exState.fogli.has('collab'))}${chip('f', 'anno', 'Anno solare con soglie 5.000 / 15.000 €', exState.fogli.has('anno'))}</div>
+                        <div class="st-hint" style="margin-top:8px">I fogli "Anno solare" comprendono sempre tutti i 12 mesi, perché le soglie si calcolano sull'intero anno.</div></div>
+                    <div class="ex-card"><div class="ex-h">Valori per collaboratore</div>
+                        <div class="ex-chips">${chip('v', 'pay', 'Compenso (effettivo, altrimenti stima)', exState.valori.has('pay'))}${chip('v', 'stima', 'Solo stima', exState.valori.has('stima'))}${chip('v', 'eff', 'Solo effettivo', exState.valori.has('eff'))}${chip('v', 'ore', 'Ore', exState.valori.has('ore'))}</div>
+                        <div class="ex-h" style="margin-top:14px">Opzioni</div>
+                        <div class="ex-chips"><label class="ex-chip"><input type="checkbox" ${exState.growth ? 'checked' : ''} onchange="exState_growth(this.checked)"> Aggiungi % di crescita tra stagioni</label></div></div>
+                </div></div>
+            <div class="glass-box gb-deep" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap"><div class="st-hint" style="margin:0;flex:1;min-width:200px">I compensi usano l'importo effettivo se inserito, altrimenti la stima da ore e tariffe.</div>
+                <button onclick="exportCustomXlsx()" class="btn-success" style="width:auto"><i class=ig-download></i> Scarica Excel</button></div>`;
+    };
+    window.exState_growth = (on) => { exState.growth = on; };
+
+    window.exportCustomXlsx = async () => {
         try {
+            if (!exState.seasons.size) return modal("Esporta", "Scegli almeno una stagione.");
+            if (!exState.months.size) return modal("Esporta", "Scegli almeno un mese.");
+            if (!exState.fogli.size) return modal("Esporta", "Scegli almeno un foglio.");
+            if (exState.fogli.has('collab') && !exState.valori.size) return modal("Esporta", "Per i fogli per collaboratore scegli almeno un valore.");
             if (!compensiLoaded) await loadCompensi();
             await loadXlsxLib();
-            const s = seasonSel, idx = buildPayIndex(), cur = seasonAgg(s), prv = seasonAgg(s - 1), lbl = seasonLabel(s);
-            const mesi = SEASON_MONTHS.map(m => MESI_IT[m - 1]);
+            const idx = buildPayIndex();
+            const seasons = [...exState.seasons].sort((a, b) => a - b);
+            const months = SEASON_MONTHS.filter(m => exState.months.has(m));
+            const mesi = months.map(m => MESI_IT[m - 1]);
             const money = '#,##0.00';
-            const mk = (aoa, fmtFrom, widths) => {
+            const sl = (s) => `${String(s).slice(2)}-${String(s + 1).slice(2)}`;
+            const mk = (aoa, widths) => {
                 const ws = XLSX.utils.aoa_to_sheet(aoa);
-                Object.keys(ws).forEach(a => { if (a[0] !== '!' && ws[a].t === 'n') { const c = XLSX.utils.decode_cell(a); if (c.r > 0 && c.c >= fmtFrom) ws[a].z = money; } });
+                Object.keys(ws).forEach(a => {
+                    if (a[0] === '!' || ws[a].t !== 'n') return;
+                    const c = XLSX.utils.decode_cell(a); if (c.r === 0 || c.c === 0) return;
+                    ws[a].z = String(aoa[0][c.c] || '').startsWith('Var.') ? '0.0%' : money;
+                });
                 ws['!cols'] = widths.map(w => ({ wch: w }));
                 return ws;
             };
-            // 1. mese per mese
-            const a1 = [['Mese', 'Ore', 'Stima (€)', 'Effettivo (€)', 'Differenza (€)', `Stima ${seasonLabel(s - 1)} (€)`, 'Variazione stima']];
-            let tO = 0, tC = 0, tE = 0, tP = 0, anyE = false, tDiff = 0;
-            cur.months.forEach((x, i) => {
-                const p = prv.months[i].costo;
-                a1.push([mesi[i], Number(x.ore.toFixed(2)), Number(x.costo.toFixed(2)), x.anyEff ? Number(x.eff.toFixed(2)) : '', x.anyEff ? Number((x.eff - x.costo).toFixed(2)) : '', Number(p.toFixed(2)), p > 0 ? Number(((x.costo - p) / p).toFixed(4)) : '']);
-                tO += x.ore; tC += x.costo; tP += p; if (x.anyEff) { tE += x.eff; anyE = true; tDiff += x.eff - x.costo; }
-            });
-            a1.push(['TOTALE', Number(tO.toFixed(2)), Number(tC.toFixed(2)), anyE ? Number(tE.toFixed(2)) : '', anyE ? Number(tDiff.toFixed(2)) : '', Number(tP.toFixed(2)), tP > 0 ? Number(((tC - tP) / tP).toFixed(4)) : '']);
-            const ws1 = mk(a1, 1, [16, 10, 14, 14, 15, 18, 16]);
-            Object.keys(ws1).forEach(a => { if (a[0] !== '!' && XLSX.utils.decode_cell(a).c === 6 && ws1[a].t === 'n') ws1[a].z = '0.0%'; });
-            // 2. matrici per collaboratore
-            const emails = new Set();
-            SEASON_MONTHS.forEach(m => { const ym = ymOf(s, m); Object.keys(idx).forEach(k => { if (k.endsWith('_' + ym)) emails.add(k.slice(0, k.length - 8)); }); Object.values(compensiMap).forEach(c => { if (c && c.email && c.importo != null && c.anno + '-' + pad2(c.mese) === ym) emails.add(c.email); }); });
-            const users = [...emails].map(e => ({ e, nome: rubrica[e]?.nome || e })).sort((a, b) => a.nome.localeCompare(b.nome));
-            const y1 = s, y2 = s + 1;
-            const matrix = (kind) => {
-                const head = ['Collaboratore', ...mesi, 'TOTALE'];
-                if (kind === 'pay') head.push(`Anno solare ${y1}`, `Anno solare ${y2}`, `Soglia ${y1}`, `Soglia ${y2}`);
-                const aoa = [head], colTot = Array(12).fill(0); let gTot = 0, g1 = 0, g2 = 0;
-                users.forEach(u => {
-                    const row = [u.nome]; let tot = 0, any = false;
-                    SEASON_MONTHS.forEach((m, i) => {
-                        const ym = ymOf(s, m), k = `${u.e}_${ym}`, y = parseInt(ym.slice(0, 4)), c = compensiMap[k];
-                        let v;
-                        if (kind === 'pay') v = payOf(idx, u.e, y, m);
-                        else if (kind === 'stima') v = idx[k] ? idx[k].stima : 0;
-                        else if (kind === 'ore') v = idx[k] ? idx[k].ore : 0;
-                        else v = c && c.importo != null ? Number(c.importo) : null;
-                        if (v == null) row.push(''); else { v = Number(v.toFixed(2)); row.push(v); tot += v; colTot[i] += v; any = true; }
+            const wb = XLSX.utils.book_new();
+
+            // 1. mese per mese: righe = mesi, colonne = stagioni
+            if (exState.fogli.has('mese')) {
+                const head = ['Mese'], aggs = seasons.map(s => seasonAgg(s));
+                seasons.forEach((s, j) => { head.push(`Ore ${seasonLabel(s)}`, `Stima ${seasonLabel(s)} (€)`, `Effettivo ${seasonLabel(s)} (€)`); if (exState.growth && j > 0) head.push(`Var. stima ${seasonLabel(s)}`); });
+                const aoa = [head], tot = seasons.map(() => ({ ore: 0, costo: 0, eff: 0, any: false }));
+                months.forEach(m => {
+                    const i = SEASON_MONTHS.indexOf(m), row = [MESI_IT[m - 1]];
+                    seasons.forEach((s, j) => {
+                        const x = aggs[j].months[i];
+                        row.push(Number(x.ore.toFixed(2)), Number(x.costo.toFixed(2)), x.anyEff ? Number(x.eff.toFixed(2)) : '');
+                        tot[j].ore += x.ore; tot[j].costo += x.costo; if (x.anyEff) { tot[j].eff += x.eff; tot[j].any = true; }
+                        if (exState.growth && j > 0) { const p = aggs[j - 1].months[i].costo; row.push(p > 0 ? Number(((x.costo - p) / p).toFixed(4)) : ''); }
                     });
-                    row.push(kind === 'eff' && !any ? '' : Number(tot.toFixed(2))); gTot += tot;
-                    if (kind === 'pay') { const a = yearPay(idx, u.e, y1), b = yearPay(idx, u.e, y2); g1 += a; g2 += b; row.push(Number(a.toFixed(2)), Number(b.toFixed(2)), sogliaTxt(a), sogliaTxt(b)); }
                     aoa.push(row);
                 });
-                const tr = ['TOTALE', ...colTot.map(v => Number(v.toFixed(2))), Number(gTot.toFixed(2))];
-                if (kind === 'pay') tr.push(Number(g1.toFixed(2)), Number(g2.toFixed(2)), '', '');
+                const tr = ['TOTALE'];
+                seasons.forEach((s, j) => { tr.push(Number(tot[j].ore.toFixed(2)), Number(tot[j].costo.toFixed(2)), tot[j].any ? Number(tot[j].eff.toFixed(2)) : ''); if (exState.growth && j > 0) tr.push(tot[j - 1].costo > 0 ? Number(((tot[j].costo - tot[j - 1].costo) / tot[j - 1].costo).toFixed(4)) : ''); });
                 aoa.push(tr);
-                return aoa;
-            };
-            const w = [26, ...Array(12).fill(12), 14, 16, 16, 14, 14];
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws1, 'Mese per mese');
-            XLSX.utils.book_append_sheet(wb, mk(matrix('pay'), 1, w), 'Compensi collaboratori');
-            XLSX.utils.book_append_sheet(wb, mk(matrix('stima'), 1, w), 'Solo stima');
-            XLSX.utils.book_append_sheet(wb, mk(matrix('eff'), 1, w), 'Solo effettivo');
-            XLSX.utils.book_append_sheet(wb, mk(matrix('ore'), 1, w), 'Ore');
-            XLSX.writeFile(wb, `Compensi_stagione_${s}-${String(s + 1).slice(2)}.xlsx`);
+                XLSX.utils.book_append_sheet(wb, mk(aoa, [16, ...Array(head.length - 1).fill(16)]), 'Mese per mese');
+            }
+
+            // 2. per collaboratore: un foglio per valore e stagione
+            if (exState.fogli.has('collab')) {
+                const VAL = { pay: 'Compenso', stima: 'Stima', eff: 'Effettivo', ore: 'Ore' };
+                const order = ['pay', 'stima', 'eff', 'ore'].filter(k => exState.valori.has(k));
+                seasons.slice().reverse().forEach(s => {
+                    const emails = new Set();
+                    months.forEach(m => { const ym = ymOf(s, m); Object.keys(idx).forEach(k => { if (k.endsWith('_' + ym)) emails.add(k.slice(0, k.length - 8)); }); Object.values(compensiMap).forEach(c => { if (c && c.email && c.importo != null && c.anno + '-' + pad2(c.mese) === ym) emails.add(c.email); }); });
+                    const users = [...emails].map(e => ({ e, nome: rubrica[e]?.nome || e })).sort((a, b) => a.nome.localeCompare(b.nome));
+                    order.forEach(kind => {
+                        const aoa = [['Collaboratore', ...mesi, 'TOTALE']], colTot = Array(months.length).fill(0); let gTot = 0;
+                        users.forEach(u => {
+                            const row = [u.nome]; let tot = 0, any = false;
+                            months.forEach((m, i) => {
+                                const ym = ymOf(s, m), k = `${u.e}_${ym}`, y = parseInt(ym.slice(0, 4)), c = compensiMap[k];
+                                let v;
+                                if (kind === 'pay') v = payOf(idx, u.e, y, m);
+                                else if (kind === 'stima') v = idx[k] ? idx[k].stima : 0;
+                                else if (kind === 'ore') v = idx[k] ? idx[k].ore : 0;
+                                else v = c && c.importo != null ? Number(c.importo) : null;
+                                if (v == null) row.push(''); else { v = Number(v.toFixed(2)); row.push(v); tot += v; colTot[i] += v; any = true; }
+                            });
+                            row.push(kind === 'eff' && !any ? '' : Number(tot.toFixed(2))); gTot += tot; aoa.push(row);
+                        });
+                        aoa.push(['TOTALE', ...colTot.map(v => Number(v.toFixed(2))), Number(gTot.toFixed(2))]);
+                        XLSX.utils.book_append_sheet(wb, mk(aoa, [26, ...Array(months.length).fill(12), 14]), `${VAL[kind]} ${sl(s)}`);
+                    });
+                });
+            }
+
+            // 3. anno solare con soglie
+            if (exState.fogli.has('anno')) {
+                const ys = new Set(); seasons.forEach(s => { ys.add(s); ys.add(s + 1); });
+                [...ys].sort((a, b) => a - b).forEach(y => {
+                    const aoa = [['Collaboratore', ...MESI_IT, `TOTALE ${y}`, 'Soglia']], colTot = Array(12).fill(0); let gT = 0;
+                    const us = Object.keys(rubrica).concat(Object.keys(idx).map(k => k.slice(0, k.length - 8)), Object.values(compensiMap).map(c => c && c.email))
+                        .filter((e, i, arr) => e && arr.indexOf(e) === i).map(e => ({ e, nome: rubrica[e]?.nome || e })).filter(u => yearPay(idx, u.e, y) > 0).sort((a, b) => a.nome.localeCompare(b.nome));
+                    if (!us.length) return;
+                    us.forEach(u => {
+                        const row = [u.nome]; let tot = 0;
+                        for (let m = 1; m <= 12; m++) { const v = Number(payOf(idx, u.e, y, m).toFixed(2)); row.push(v); tot += v; colTot[m - 1] += v; }
+                        row.push(Number(tot.toFixed(2)), sogliaTxt(tot)); gT += tot; aoa.push(row);
+                    });
+                    aoa.push(['TOTALE', ...colTot.map(v => Number(v.toFixed(2))), Number(gT.toFixed(2)), '']);
+                    XLSX.utils.book_append_sheet(wb, mk(aoa, [26, ...Array(12).fill(12), 14, 16]), `Anno solare ${y}`);
+                });
+            }
+            XLSX.writeFile(wb, seasons.length === 1 ? `Compensi_stagione_${seasons[0]}-${String(seasons[0] + 1).slice(2)}.xlsx` : 'Compensi_stagioni.xlsx');
             toast("Excel scaricato");
         } catch (e) { modal("Errore export", e.message); }
     };
@@ -2522,20 +2746,21 @@
         const box = document.getElementById('admin-stats-content'); if (!box) return;
         if (reload || !compensiLoaded) await loadCompensi();
         const selA = document.getElementById('st-anno'), selM = document.getElementById('st-mese');
-        const years = new Set([new Date().getFullYear()]);
-        allTurniFull.forEach(t => { const y = parseInt((t.data || '').slice(0, 4)); if (y) years.add(y); });
+        const nowD = new Date(), curS0 = seasonOf(nowD.getFullYear(), nowD.getMonth() + 1);
+        const years = new Set([curS0]);
+        allTurniFull.forEach(t => { const ty = parseInt((t.data || '').slice(0, 4)), tm = parseInt((t.data || '').slice(5, 7)); if (ty && tm) years.add(seasonOf(ty, tm)); });
         const yList = [...years].sort((a, b) => b - a);
         const prevA = selA.value, prevM = selM.value;
         if (selA.options.length !== yList.length) {
-            selA.innerHTML = yList.map(y => `<option value="${y}">${y}</option>`).join('');
-            selA.value = prevA && yList.includes(parseInt(prevA)) ? prevA : String(new Date().getFullYear());
+            selA.innerHTML = yList.map(y => `<option value="${y}">Stagione ${seasonLabel(y)}</option>`).join('');
+            selA.value = prevA && yList.includes(parseInt(prevA)) ? prevA : String(curS0);
         }
         if (!selM.options.length) {
-            selM.innerHTML = '<option value="all">Tutto l\'anno</option>' + MESI_IT.map((n, i) => `<option value="${i + 1}">${n}</option>`).join('');
+            selM.innerHTML = '<option value="all">Tutta la stagione</option>' + SEASON_MONTHS.map(m => `<option value="${m}">${MESI_IT[m - 1]}</option>`).join('');
             selM.value = 'all';
         } else if (prevM) selM.value = prevM;
         const y = parseInt(selA.value), mSel = selM.value, mNum = mSel === 'all' ? null : parseInt(mSel);
-        const inP = (d, yy) => { const ty = parseInt(d.slice(0, 4)), tm = parseInt(d.slice(5, 7)); return ty === yy && (!mNum || tm === mNum); };
+        const L = seasonLabel(y), LP = seasonLabel(y - 1);
 
         const cur = Array.from({ length: 12 }, () => ({ ore: 0, costo: 0, collabs: new Set() }));
         const prv = Array.from({ length: 12 }, () => ({ ore: 0, costo: 0 }));
@@ -2546,8 +2771,9 @@
             const d = t.data || ''; const ty = parseInt(d.slice(0, 4)), tm = parseInt(d.slice(5, 7));
             if (!ty || !tm) return;
             const c = costoTurno(t), o = t.ore || 0;
-            if (ty === y) {
-                cur[tm - 1].ore += o; cur[tm - 1].costo += c; cur[tm - 1].collabs.add(t.email);
+            const si = SEASON_MONTHS.indexOf(tm), ts = seasonOf(ty, tm);
+            if (ts === y) {
+                cur[si].ore += o; cur[si].costo += c; cur[si].collabs.add(t.email);
                 if (!mNum || tm === mNum) {
                     ore += o; costo += c; nTurni++;
                     const rr = roleRow(t.mansione); rr.ore += o; rr.costo += c;
@@ -2556,44 +2782,44 @@
                     const hh = parseInt((t.oraInizio || '').slice(0, 2));
                     if (!isNaN(hh)) fasce[hh < 12 ? 'Mattina' : hh < 18 ? 'Pomeriggio' : 'Sera'] += o;
                 }
-            } else if (ty === y - 1) {
-                prv[tm - 1].ore += o; prv[tm - 1].costo += c;
+            } else if (ts === y - 1) {
+                prv[si].ore += o; prv[si].costo += c;
                 if (!mNum || tm === mNum) { const rr = roleRow(t.mansione); rr.pore += o; rr.pcosto += c; oreP += o; costoP += c; nTurniP++; }
             }
         });
-        const periodo = `${mNum ? MESI_IT[mNum - 1] + ' ' : ''}${y}`;
+        const periodo = `${mNum ? MESI_IT[mNum - 1] + ' ' : ''}${L}`;
         const effOf = (email) => {
             let sum = 0, any = false;
-            for (let i = 1; i <= 12; i++) { if (mNum && i !== mNum) continue; const c = compensiMap[`${email}_${y}-${pad2(i)}`]; if (c && c.importo != null) { sum += Number(c.importo); any = true; } }
+            for (const i of SEASON_MONTHS) { if (mNum && i !== mNum) continue; const c = compensiMap[`${email}_${ymOf(y, i)}`]; if (c && c.importo != null) { sum += Number(c.importo); any = true; } }
             return any ? sum : null;
         };
 
         let h = `<div class="st-kpis">` +
-            kpi('Ore', num2(ore), `${pctHtml(ore, oreP)} vs ${y - 1}`) +
-            kpi('Costo stimato', eur(costo), `${pctHtml(costo, costoP)} vs ${y - 1}`) +
-            kpi('Turni', nTurni, `${pctHtml(nTurni, nTurniP)} vs ${y - 1}`) +
+            kpi('Ore', num2(ore), `${pctHtml(ore, oreP)} vs ${LP}`) +
+            kpi('Costo stimato', eur(costo), `${pctHtml(costo, costoP)} vs ${LP}`) +
+            kpi('Turni', nTurni, `${pctHtml(nTurni, nTurniP)} vs ${LP}`) +
             kpi('Collaboratori attivi', Object.keys(users).length, periodo) +
             kpi('Costo medio orario', ore ? eur(costo / ore) : '—', 'stima / ore') +
             kpi('Ore medie per turno', nTurni ? num2(ore / nTurni) : '—', periodo) + `</div>`;
 
         // mese per mese
         const maxC = Math.max(1, ...cur.map(x => x.costo), ...prv.map(x => x.costo));
-        h += `<h4 class="st-title" style="margin-top:20px">Mese per mese: ${y} a confronto con ${y - 1}</h4>
-            <div class="st-legend"><span><i class="st-dot st-cur"></i>${y}</span><span><i class="st-dot st-prv"></i>${y - 1}</span><span style="color:var(--text-muted)">(costo stimato)</span></div><div class="st-chart">` +
-            cur.map((x, i) => `<div class="st-col" title="${MESI_IT[i]}: ${eur(x.costo)} (${y - 1}: ${eur(prv[i].costo)})"><div class="st-bars"><div class="st-bar st-prv" style="height:${(prv[i].costo / maxC * 100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.costo / maxC * 100).toFixed(1)}%"></div></div><span class="st-lbl">${MESI_IT[i].slice(0, 3)}</span></div>`).join('') + `</div>`;
-        h += `<div class="st-scroll"><table class="st-table"><thead><tr><th>Mese</th><th class="r">Collab.</th><th class="r">Ore ${y}</th><th class="r">Costo ${y}</th><th class="r">Effettivo ${y}</th><th class="r">Ore ${y - 1}</th><th class="r">Costo ${y - 1}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
+        h += `<h4 class="st-title" style="margin-top:20px">Mese per mese: ${L} a confronto con ${LP}</h4>
+            <div class="st-legend"><span><i class="st-dot st-cur"></i>${L}</span><span><i class="st-dot st-prv"></i>${LP}</span><span style="color:var(--text-muted)">(costo stimato)</span></div><div class="st-chart">` +
+            cur.map((x, i) => `<div class="st-col" title="${MESI_IT[SEASON_MONTHS[i] - 1]}: ${eur(x.costo)} (${LP}: ${eur(prv[i].costo)})"><div class="st-bars"><div class="st-bar st-prv" style="height:${(prv[i].costo / maxC * 100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.costo / maxC * 100).toFixed(1)}%"></div></div><span class="st-lbl">${MESI_IT[SEASON_MONTHS[i] - 1].slice(0, 3)}</span></div>`).join('') + `</div>`;
+        h += `<div class="st-scroll"><table class="st-table"><thead><tr><th>Mese</th><th class="r">Collab.</th><th class="r">Ore ${L}</th><th class="r">Costo ${L}</th><th class="r">Effettivo ${L}</th><th class="r">Ore ${LP}</th><th class="r">Costo ${LP}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
         let tOre = 0, tCosto = 0, tPOre = 0, tPCosto = 0, tEff = 0;
         cur.forEach((x, i) => {
             let eff = 0, anyE = false;
-            Object.values(compensiMap).forEach(c => { if (c && c.anno === y && c.mese === i + 1 && c.importo != null) { eff += Number(c.importo); anyE = true; } });
+            Object.values(compensiMap).forEach(c => { if (c && c.importo != null && c.mese === SEASON_MONTHS[i] && seasonOf(c.anno, c.mese) === y) { eff += Number(c.importo); anyE = true; } });
             tOre += x.ore; tCosto += x.costo; tPOre += prv[i].ore; tPCosto += prv[i].costo; tEff += eff;
-            h += `<tr><td>${MESI_IT[i]}</td><td class="r">${x.collabs.size}</td><td class="r">${num2(x.ore)}</td><td class="r">${eur(x.costo)}</td><td class="r">${anyE ? eur(eff) : '—'}</td><td class="r">${num2(prv[i].ore)}</td><td class="r">${eur(prv[i].costo)}</td><td class="r">${pctHtml(x.costo, prv[i].costo)}</td></tr>`;
+            h += `<tr><td>${MESI_IT[SEASON_MONTHS[i] - 1]}</td><td class="r">${x.collabs.size}</td><td class="r">${num2(x.ore)}</td><td class="r">${eur(x.costo)}</td><td class="r">${anyE ? eur(eff) : '—'}</td><td class="r">${num2(prv[i].ore)}</td><td class="r">${eur(prv[i].costo)}</td><td class="r">${pctHtml(x.costo, prv[i].costo)}</td></tr>`;
         });
-        h += `</tbody><tfoot><tr><td><b>Anno</b></td><td></td><td class="r">${num2(tOre)}</td><td class="r">${eur(tCosto)}</td><td class="r">${eur(tEff)}</td><td class="r">${num2(tPOre)}</td><td class="r">${eur(tPCosto)}</td><td class="r">${pctHtml(tCosto, tPCosto)}</td></tr></tfoot></table></div>`;
+        h += `</tbody><tfoot><tr><td><b>Stagione</b></td><td></td><td class="r">${num2(tOre)}</td><td class="r">${eur(tCosto)}</td><td class="r">${eur(tEff)}</td><td class="r">${num2(tPOre)}</td><td class="r">${eur(tPCosto)}</td><td class="r">${pctHtml(tCosto, tPCosto)}</td></tr></tfoot></table></div>`;
 
         // per mansione
         const maxRole = Math.max(1, ...Object.values(roles).map(v => v.costo));
-        h += `<h4 class="st-title" style="margin-top:22px">Per mansione · ${periodo} (confronto con ${y - 1})</h4><div class="st-scroll"><table class="st-table"><thead><tr><th>Mansione</th><th class="r">Ore</th><th class="r">Costo</th><th class="r">% costo</th><th class="r">Ore ${y - 1}</th><th class="r">Costo ${y - 1}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
+        h += `<h4 class="st-title" style="margin-top:22px">Per mansione · ${periodo} (confronto con ${LP})</h4><div class="st-scroll"><table class="st-table"><thead><tr><th>Mansione</th><th class="r">Ore</th><th class="r">Costo</th><th class="r">% costo</th><th class="r">Ore ${LP}</th><th class="r">Costo ${LP}</th><th class="r">Δ costo</th></tr></thead><tbody>`;
         Object.entries(roles).filter(([, v]) => v.ore || v.pore).sort((a, b) => b[1].costo - a[1].costo).forEach(([r, v]) => {
             h += `<tr style="background:${getRoleBg(r)}"><td>${esc(r)}</td><td class="r">${num2(v.ore)}</td><td class="r">${eur(v.costo)}</td><td class="r">${costo ? (v.costo / costo * 100).toFixed(0) + '%' : '—'}</td><td class="r">${num2(v.pore)}</td><td class="r">${eur(v.pcosto)}</td><td class="r">${pctHtml(v.costo, v.pcosto)}</td></tr>`;
         });
