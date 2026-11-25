@@ -791,6 +791,31 @@
             .st-table td:nth-child(n) { grid-column: auto; }
             .st-table tfoot td { border-top: 2px solid var(--glass-border); border-bottom: none; }
         }
+        /* --- BOX COLORATI LIQUID GLASS (stagione) --- */
+        .glass-box { --t: 10,132,255; margin-top: 16px; padding: 18px; border-radius: 24px; position: relative;
+            background: linear-gradient(135deg, rgba(var(--t),0.30), rgba(var(--t),0.10) 62%, rgba(255,255,255,0.16)), var(--glass-soft);
+            border: 1px solid rgba(var(--t),0.38);
+            backdrop-filter: blur(var(--glass-blur)) saturate(180%); -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+            box-shadow: inset 0 1px 1px rgba(255,255,255,0.7), inset 0 -1px 1px rgba(var(--t),0.15); }
+        .glass-box.gb-blue { --t: 10,132,255; } .glass-box.gb-sky { --t: 90,200,250; } .glass-box.gb-deep { --t: 40,90,230; } .glass-box.gb-cyan { --t: 50,200,215; }
+        .gb-title { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; color: var(--text-main); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .glass-box .st-kpi { background: rgba(255,255,255,0.35); }
+        [data-theme="dark"] .glass-box .st-kpi { background: rgba(255,255,255,0.08); }
+        @media (max-width: 600px) { .glass-box { padding: 14px; border-radius: 20px; } }
+        /* --- RIEPILOGO MESE A ELENCO --- */
+        #cards-container.cards-grid { display: flex; flex-direction: column; gap: 6px; }
+        #cards-container .user-card { display: grid; grid-template-columns: minmax(0,1fr) auto auto; grid-template-areas: "name stats act" "sub stats act"; align-items: center; column-gap: 20px; padding: 10px 16px; }
+        #cards-container .card-header { display: contents; }
+        #cards-container .card-name { grid-area: name; margin: 0; }
+        #cards-container .card-sub { grid-area: sub; margin: 0; }
+        #cards-container .card-actions-group { grid-area: act; }
+        #cards-container .card-stats-row { grid-area: stats; border-top: none; padding: 0; gap: 28px; justify-content: flex-end; min-width: 210px; }
+        #cards-container .stat-group { min-width: 64px; text-align: right; } #cards-container .stat-group.right { min-width: 110px; }
+        @media (max-width: 600px) {
+            #cards-container .user-card { grid-template-columns: minmax(0,1fr) auto; grid-template-areas: "name act" "sub act" "stats stats"; row-gap: 2px; }
+            #cards-container .stat-group { text-align: left; min-width: 0; } #cards-container .stat-group.right { text-align: right; min-width: 0; }
+            #cards-container .card-stats-row { min-width: 0; justify-content: space-between; border-top: 1px solid var(--glass-border); padding-top: 6px; margin-top: 6px; }
+        }
         .an-act { white-space: nowrap; }
         @media (max-width: 600px) { .an-table { min-width: 0; } .an-stato { display: none !important; } .an-act { white-space: normal; } .an-act .st-edit { display: flex; margin: 0 0 4px auto; } }
         .mo-pills { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
@@ -1050,8 +1075,8 @@
             <h3 style="margin-top:0">Riepilogo stagionale</h3>
             <div id="season-head"></div>
             <div id="season-summary"></div>
-            <div id="season-editor-box" class="form-box" style="margin-top:22px">
-                <h3 style="margin-top:0"><i class=ig-wrench></i> Compensi effettivi</h3>
+            <div id="season-editor-box" class="glass-box gb-cyan">
+                <div class="gb-title"><i class=ig-wrench></i> Compensi effettivi</div>
                 <div class="st-hint" style="margin:-4px 0 12px 0">Scegli il mese (anche passato) e inserisci quanto hanno realmente percepito i collaboratori, con eventuali aggiunte o detrazioni.</div>
                 <div id="season-editor"></div>
             </div>
@@ -1533,7 +1558,7 @@
             const cards = document.querySelectorAll('.user-card');
             cards.forEach(card => {
                 const name = card.querySelector('.card-name').innerText.toLowerCase();
-                if(name.includes(term)) card.style.display = "block";
+                if(name.includes(term)) card.style.display = "";
                 else card.style.display = "none";
             });
         });
@@ -2245,14 +2270,14 @@
         const oreC = sum(cur.months, x => x.ore, lim), costoC = sum(cur.months, x => x.costo, lim);
         const oreP = sum(prv.months, x => x.ore, lim), costoP = sum(prv.months, x => x.costo, lim);
         const attivi = Object.keys(cur.perUser).length;
-        let h = `<div class="st-kpis">` +
+        let h = `<div class="glass-box gb-blue"><div class="gb-title">Riepilogo stagione ${seasonLabel(s)}</div><div class="st-kpis">` +
             kpi('Ore stagione', num2(ore), `${pctHtml(oreC, oreP)} vs ${seasonLabel(s - 1)}${isCur ? ' (stesso periodo)' : ''}`) +
             kpi('Costo stimato', eur(costo), `${pctHtml(costoC, costoP)} vs ${seasonLabel(s - 1)}${isCur ? ' (stesso periodo)' : ''}`) +
             kpi('Effettivo pagato', cur.anyEff ? eur(cur.effTot) : '—', cur.anyEff ? 'somma dei mesi inseriti' : 'nessun importo inserito') +
             kpi('Effettivo − stima', cur.anyEff ? diffHtml(cur.diffTot) : '—', 'solo dove hai inserito l\'effettivo') +
-            kpi('Collaboratori', attivi, 'con ore nella stagione') + `</div>`;
+            kpi('Collaboratori', attivi, 'con ore nella stagione') + `</div></div>`;
         const maxC = Math.max(1, ...cur.months.map(x => x.costo), ...prv.months.map(x => x.costo));
-        h += `<h4 class="st-title" style="margin-top:18px">Mese per mese · ${seasonLabel(s)} a confronto con ${seasonLabel(s - 1)}</h4>
+        h += `<div class="glass-box gb-sky"><div class="gb-title">Mese per mese · ${seasonLabel(s)} a confronto con ${seasonLabel(s - 1)}</div>
             <div class="st-legend"><span><i class="st-dot st-cur"></i>${seasonLabel(s)}</span><span><i class="st-dot st-prv"></i>${seasonLabel(s - 1)}</span><span style="color:var(--text-muted)">(costo stimato)</span></div><div class="st-chart">` +
             cur.months.map((x, i) => `<div class="st-col" title="${MESI_IT[SEASON_MONTHS[i] - 1]}: ${eur(x.costo)} (${seasonLabel(s - 1)}: ${eur(prv.months[i].costo)})"><div class="st-bars"><div class="st-bar st-prv" style="height:${(prv.months[i].costo / maxC * 100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.costo / maxC * 100).toFixed(1)}%"></div></div><span class="st-lbl">${MESI_IT[SEASON_MONTHS[i] - 1].slice(0, 3)}</span></div>`).join('') + `</div>`;
         h += `<div class="st-scroll"><table class="st-table"><thead><tr><th>Mese</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Diff.</th><th class="r">Stima ${seasonLabel(s - 1)}</th><th class="r">Δ</th><th></th></tr></thead><tbody>`;
@@ -2264,12 +2289,12 @@
             }
             h += `<tr ${m === seasonMonthSel ? 'style="background:var(--glass-soft)"' : ''}><td>${MESI_IT[m - 1]}</td><td class="r">${num2(x.ore)}</td><td class="r">${eur(x.costo)}</td><td class="r">${x.anyEff ? eur(x.eff) : '—'}</td><td class="r">${diff}</td><td class="r">${eur(prv.months[i].costo)}</td><td class="r">${pctHtml(x.costo, prv.months[i].costo)}</td><td class="r"><button class="st-edit" onclick="changeSeasonMonth(${m}); document.getElementById('season-editor-box').scrollIntoView({behavior:'smooth', block:'start'})">Modifica</button></td></tr>`;
         });
-        h += `</tbody><tfoot><tr><td><b>Stagione</b></td><td class="r">${num2(ore)}</td><td class="r">${eur(costo)}</td><td class="r">${cur.anyEff ? eur(cur.effTot) : '—'}</td><td class="r">${cur.anyEff ? diffHtml(cur.diffTot) : '—'}</td><td class="r">${eur(sum(prv.months, x => x.costo, 11))}</td><td class="r">${pctHtml(costo, sum(prv.months, x => x.costo, 11))}</td><td></td></tr></tfoot></table></div>`;
+        h += `</tbody><tfoot><tr><td><b>Stagione</b></td><td class="r">${num2(ore)}</td><td class="r">${eur(costo)}</td><td class="r">${cur.anyEff ? eur(cur.effTot) : '—'}</td><td class="r">${cur.anyEff ? diffHtml(cur.diffTot) : '—'}</td><td class="r">${eur(sum(prv.months, x => x.costo, 11))}</td><td class="r">${pctHtml(costo, sum(prv.months, x => x.costo, 11))}</td><td></td></tr></tfoot></table></div></div>`;
         const users = Object.entries(cur.perUser).map(([e, r]) => ({ e, nome: rubrica[e]?.nome || e, ...r })).sort((a, b) => a.nome.localeCompare(b.nome));
-        h += `<h4 class="st-title" style="margin-top:18px">Per collaboratore · stagione ${seasonLabel(s)}</h4><div class="st-scroll"><table class="st-table"><thead><tr><th>Collaboratore</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Diff.</th></tr></thead><tbody>` +
+        h += `<div class="glass-box gb-deep"><div class="gb-title">Per collaboratore · stagione ${seasonLabel(s)}</div><div class="st-scroll"><table class="st-table"><thead><tr><th>Collaboratore</th><th class="r">Ore</th><th class="r">Stima</th><th class="r">Effettivo</th><th class="r">Diff.</th></tr></thead><tbody>` +
             users.map(u => `<tr><td>${esc(u.nome)}</td><td class="r">${num2(u.ore)}</td><td class="r">${eur(u.stima)}</td><td class="r">${u.anyEff ? eur(u.eff) : '—'}</td><td class="r">${u.anyEff ? diffHtml(u.eff - (u.stimaSet || 0)) : '—'}</td></tr>`).join('') +
             (users.length ? '' : '<tr><td colspan="5" style="color:var(--text-muted)">Nessun turno nella stagione.</td></tr>') + `</tbody></table></div>
-            <div class="st-hint">La differenza confronta l'effettivo con la stima dei soli mesi in cui hai inserito l'importo.</div>`;
+            <div class="st-hint">La differenza confronta l'effettivo con la stima dei soli mesi in cui hai inserito l'importo.</div></div>`;
         box.innerHTML = h;
     };
 
