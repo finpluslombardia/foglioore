@@ -1075,6 +1075,7 @@
         <div class="admin-tabs">
             <button data-tab="mese" class="active" onclick="switchAdminTab('mese')"><i class=ig-calendar></i> Questo mese</button>
             <button data-tab="stagione" onclick="switchAdminTab('stagione')"><i class=ig-trend></i> Stagione</button>
+            <button data-tab="anno" onclick="switchAdminTab('anno')"><i class=ig-calendar></i> Anno solare</button>
             <button data-tab="stat" onclick="switchAdminTab('stat')"><i class=ig-chart-bar></i> Statistiche</button>
             <button data-tab="anag" onclick="switchAdminTab('anag')"><i class=ig-wrench></i> Anagrafiche</button>
             <button data-tab="export" onclick="switchAdminTab('export')"><i class=ig-download></i> Esporta</button>
@@ -1139,14 +1140,19 @@
         </div>
 
         <div id="atab-stagione" class="atab">
-            <h3 style="margin-top:0">Riepilogo stagionale <span class="sub">Compensi, stima ed effettivo da settembre ad agosto</span></h3>
+            <h3 style="margin-top:0">Riepilogo stagionale <span class="sub">Ore e compensi lordi da settembre ad agosto</span></h3>
             <div id="season-head"></div>
             <div id="season-summary"></div>
             <div id="season-editor-box" class="glass-box gb-cyan">
                 <div class="gb-title"><i class=ig-wrench></i> Compensi effettivi <span class="sub">Quanto hanno realmente percepito, mese per mese</span></div>
-                <div class="st-hint" style="margin:-4px 0 12px 0">Scegli il mese (anche passato) e inserisci il lordo effettivo di ogni collaboratore, con eventuali aggiunte o detrazioni. Il netto si aggiorna mentre scrivi.</div>
+                <div class="st-hint" style="margin:-4px 0 12px 0">Scegli il mese (anche passato) e inserisci il lordo effettivo di ogni collaboratore, con eventuali aggiunte o detrazioni. I totali si aggiornano mentre scrivi.</div>
                 <div id="season-editor"></div>
             </div>
+        </div>
+
+        <div id="atab-anno" class="atab">
+            <h3 style="margin-top:0">Anno solare <span class="sub">Anno fiscale da gennaio a dicembre: soglie, trattenute e netto</span></h3>
+            <div id="anno-content"></div>
         </div>
 
         <div id="atab-stat" class="atab">
@@ -2134,8 +2140,8 @@
             myTurni.forEach(t => { const d = t.data || ''; if (d.length < 7) return; const k = `${currentUser.email}_${d.slice(0, 7)}`; const r = idx[k] || (idx[k] = { ore: 0, stima: 0 }); r.ore += t.ore || 0; r.stima += (t.ore || 0) * ratesFor(currentUser.email, t.mansione, t.data); });
             const yi = yearInfo(idx, currentUser.email, yy);
             const pI = itDec(taxCfg.inps, 2) + '%', pR = itDec(taxCfg.irpef, 0) + '%';
-            if (yi.tot > SOGLIA2) el.innerHTML = `<div class="tax-note"><b>Importi lordi.</b> Nel ${yy} il tuo compenso lordo è € ${itMoney(yi.tot)}: trattenuta INPS del ${pI} sulla parte oltre ${itGroup(SOGLIA1)} € (€ ${itMoney(yi.tinps)}) e IRPEF del ${pR} sulla parte oltre ${itGroup(SOGLIA2)} € (€ ${itMoney(yi.tirpef)}). Netto stimato dell'anno: € ${itMoney(yi.tot - yi.ttot)}.</div>`;
-            else if (yi.tot > SOGLIA1) el.innerHTML = `<div class="tax-note"><b>Importi lordi.</b> Nel ${yy} il tuo compenso lordo è € ${itMoney(yi.tot)}: trattenuta INPS del ${pI} solo sulla parte oltre ${itGroup(SOGLIA1)} € (€ ${itMoney(yi.tinps)}). Netto stimato dell'anno: € ${itMoney(yi.tot - yi.ttot)}.</div>`;
+            if (yi.tot > SOGLIA2) el.innerHTML = `<div class="tax-note"><b>Importi lordi.</b> Nel ${yy} il tuo compenso lordo è € ${itMoney(yi.tot)}: trattenuta INPS del ${pI} sulla parte oltre ${itGroup(SOGLIA1)} € (€ ${itMoney(yi.tinps)}) e IRPEF del ${pR} sulla parte oltre ${itGroup(SOGLIA2)} € (€ ${itMoney(yi.tirpef)}). Netto dell'anno: € ${itMoney(yi.tnet)}.</div>`;
+            else if (yi.tot > SOGLIA1) el.innerHTML = `<div class="tax-note"><b>Importi lordi.</b> Nel ${yy} il tuo compenso lordo è € ${itMoney(yi.tot)}: trattenuta INPS del ${pI} solo sulla parte oltre ${itGroup(SOGLIA1)} € (€ ${itMoney(yi.tinps)}). Netto dell'anno: € ${itMoney(yi.tnet)}.</div>`;
             else el.innerHTML = '';
         })();
         
@@ -2302,6 +2308,7 @@
     window.refreshAdminTab = async (reload) => {
         try {
             if (adminTab === 'stagione') await renderSeason(reload === true);
+            else if (adminTab === 'anno') await renderAnno(reload === true);
             else if (adminTab === 'stat') await renderAdminStats(reload === true);
             else if (adminTab === 'anag') renderAnagList();
             else if (adminTab === 'export') await renderExport(reload === true);
@@ -2378,15 +2385,15 @@
         const cur = seasonNet(s, idx, cache), prv = seasonNet(s - 1, idx, cache);
         const sum = (arr, f, to) => arr.slice(0, to + 1).reduce((a, x) => a + f(x), 0);
         const T = cur.tot, L = seasonLabel(s), LP = seasonLabel(s - 1);
+        const per = isCur ? ' (stesso periodo)' : '';
         const oreC = sum(cur.months, x => x.ore, lim), oreP = sum(prv.months, x => x.ore, lim);
         const stC = sum(cur.months, x => x.stima, lim), stP = sum(prv.months, x => x.stima, lim);
+        const lC = sum(cur.months, x => x.lordo, lim), lP = sum(prv.months, x => x.lordo, lim);
         const pcSub = (a, b) => b > 0 ? `<span class="ct-sub">${a >= b ? '<span style="color:var(--money-color)">▲ +' : '<span style="color:var(--danger,#ff3b30)">▼ '}${itDec((a - b) / b * 100, 1)}%</span> vs ${LP}</span>` : '';
-        let h = `<div class="glass-box gb-blue"><div class="gb-title">Riepilogo stagione ${L} <span class="sub">Ore, compensi lordi e netti</span></div><div class="st-kpis">` +
-            kpi('Ore stagione', num2(T.ore), `${pctHtml(oreC, oreP)} vs ${LP}${isCur ? ' (stesso periodo)' : ''}`) +
-            kpi('Stima foglio ore', eur(T.stima), `${pctHtml(stC, stP)} vs ${LP}${isCur ? ' (stesso periodo)' : ''}`) +
-            kpi('Lordo effettivo', eur(T.lordo), T.nEff ? 'effettivo dove inserito, altrimenti stima' : 'nessun effettivo inserito: è la stima') +
-            kpi('Trattenute', eur(T.lordo - T.netto), `INPS ${itDec(taxCfg.inps, 2)}% · IRPEF ${itDec(taxCfg.irpef, 0)}%`) +
-            kpi('Netto effettivo', eur(T.netto), 'lordo meno trattenute') +
+        let h = `<div class="glass-box gb-blue"><div class="gb-title">Riepilogo stagione ${L} <span class="sub">Ore e compensi lordi</span></div><div class="st-kpis">` +
+            kpi('Ore stagione', num2(T.ore), `${pctHtml(oreC, oreP)} vs ${LP}${per}`) +
+            kpi('Stima foglio ore', eur(T.stima), `${pctHtml(stC, stP)} vs ${LP}${per}`) +
+            kpi('Lordo effettivo', eur(T.lordo), T.nEff ? `${pctHtml(lC, lP)} vs ${LP}${per}` : 'nessun effettivo inserito: è la stima') +
             kpi('Collaboratori', Object.keys(cur.users).length, 'con compensi nella stagione') + `</div></div>`;
 
         // MESE PER MESE
@@ -2394,39 +2401,77 @@
         h += `<div class="glass-box gb-sky"><div class="gb-title">Mese per mese <span class="sub">${L} a confronto con ${LP}</span></div>
             <div class="st-legend"><span><i class="st-dot st-cur"></i>${L}</span><span><i class="st-dot st-prv"></i>${LP}</span><span style="color:var(--text-muted)">(lordo effettivo)</span></div><div class="st-chart">` +
             cur.months.map((x, i) => `<div class="st-col" title="${MESI_IT[SEASON_MONTHS[i] - 1]}: ${eur(x.lordo)} (${LP}: ${eur(prv.months[i].lordo)})"><div class="st-bars"><div class="st-bar st-prv" style="height:${(prv.months[i].lordo / maxC * 100).toFixed(1)}%"></div><div class="st-bar st-cur" style="height:${(x.lordo / maxC * 100).toFixed(1)}%"></div></div><span class="st-lbl">${MESI_IT[SEASON_MONTHS[i] - 1].slice(0, 3)}</span></div>`).join('') + `</div>`;
-        h += `<div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Mese</th><th>Ore</th><th>Stima foglio ore</th><th>Lordo effettivo</th><th>Trattenute</th><th class="ct-hl">Netto effettivo</th><th></th></tr></thead><tbody>`;
+        h += `<div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Mese</th><th>Ore</th><th>Stima foglio ore</th><th class="ct-hl">Lordo effettivo</th><th>Lordo ${LP}</th><th></th></tr></thead><tbody>`;
         cur.months.forEach((x, i) => {
             const m = SEASON_MONTHS[i], y = parseInt(ymOf(s, m).slice(0, 4)), p = prv.months[i];
             const lSub = x.n && x.nEff < x.n ? `<span class="ct-sub">${x.nEff ? `effettivo ${x.nEff} su ${x.n}` : 'da stima'}</span>` : '';
-            h += `<tr class="${m === seasonMonthSel ? 'ct-sel' : ''}"><td class="ct-name">${MESI_IT[m - 1]} ${y}</td><td class="ct-ore">${num2(x.ore)}</td><td class="ct-stima">${eur(x.stima)}${pcSub(x.stima, p.stima)}</td>
-                <td class="ct-lordo">${eur(x.lordo)}${lSub}</td><td class="ct-tax">${x.lordo - x.netto > 0.004 ? eur(x.lordo - x.netto) : '—'}</td><td class="ct-netto ct-hl">${eur(x.netto)}</td>
+            h += `<tr class="${m === seasonMonthSel ? 'ct-sel' : ''}"><td class="ct-name">${MESI_IT[m - 1]} ${y}</td><td class="ct-ore">${num2(x.ore)}</td><td class="ct-stima">${eur(x.stima)}</td>
+                <td class="ct-lordo ct-hl">${eur(x.lordo)}${lSub}</td><td class="ct-muted">${eur(p.lordo)}${pcSub(x.lordo, p.lordo)}</td>
                 <td class="r"><button class="st-edit" onclick="changeSeasonMonth(${m}); document.getElementById('season-editor-box').scrollIntoView({behavior:'smooth', block:'start'})">Modifica</button></td></tr>`;
         });
-        h += `</tbody><tfoot><tr><td>Totale stagione</td><td class="ct-ore">${num2(T.ore)}</td><td class="ct-stima">${eur(T.stima)}${pcSub(T.stima, prv.tot.stima)}</td><td class="ct-lordo">${eur(T.lordo)}</td><td class="ct-tax">${eur(T.lordo - T.netto)}</td><td class="ct-netto ct-hl">${eur(T.netto)}</td><td></td></tr></tfoot></table></div></div>`;
+        h += `</tbody><tfoot><tr><td>Totale stagione</td><td class="ct-ore">${num2(T.ore)}</td><td class="ct-stima">${eur(T.stima)}</td><td class="ct-lordo ct-hl">${eur(T.lordo)}</td><td class="ct-muted">${eur(prv.tot.lordo)}${pcSub(T.lordo, prv.tot.lordo)}</td><td></td></tr></tfoot></table></div></div>`;
 
         // PER COLLABORATORE (stagione)
         const users = Object.entries(cur.users).map(([e, r]) => ({ e, nome: rubrica[e]?.nome || e, ...r })).sort((a, b) => a.nome.localeCompare(b.nome));
         h += `<div class="glass-box gb-deep"><div class="gb-title">Compensi per collaboratore <span class="sub">Stagione ${L} (settembre ${s} – agosto ${s + 1})</span></div>
-            <div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Collaboratore</th><th>Ore</th><th>Stima foglio ore</th><th>Lordo effettivo</th><th>Trattenute</th><th class="ct-hl">Netto effettivo</th></tr></thead><tbody>` +
-            users.map(u => `<tr><td class="ct-name">${esc(u.nome)}</td><td class="ct-ore">${num2(u.ore)}</td><td class="ct-stima">${eur(u.stima)}</td><td class="ct-lordo">${eur(u.lordo)}${u.nEff < u.nMesi ? `<span class="ct-sub">${u.nEff ? `effettivo in ${u.nEff} mesi su ${u.nMesi}` : 'da stima'}</span>` : ''}</td><td class="ct-tax">${u.lordo - u.netto > 0.004 ? eur(u.lordo - u.netto) : '—'}</td><td class="ct-netto ct-hl">${eur(u.netto)}</td></tr>`).join('') +
-            (users.length ? '' : '<tr><td colspan="6" style="color:var(--text-muted)">Nessun compenso nella stagione.</td></tr>') +
-            `</tbody><tfoot><tr><td>Totale stagione</td><td class="ct-ore">${num2(T.ore)}</td><td class="ct-stima">${eur(T.stima)}</td><td class="ct-lordo">${eur(T.lordo)}</td><td class="ct-tax">${eur(T.lordo - T.netto)}</td><td class="ct-netto ct-hl">${eur(T.netto)}</td></tr></tfoot></table></div>
-            <div class="st-hint">Lordo effettivo = importo inserito dall'admin; se manca si usa la stima del foglio ore. Le trattenute si calcolano sull'anno solare e solo sulla parte che supera le soglie.</div></div>`;
+            <div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Collaboratore</th><th>Ore</th><th>Stima foglio ore</th><th class="ct-hl">Lordo effettivo</th></tr></thead><tbody>` +
+            users.map(u => `<tr><td class="ct-name">${esc(u.nome)}</td><td class="ct-ore">${num2(u.ore)}</td><td class="ct-stima">${eur(u.stima)}</td><td class="ct-lordo ct-hl">${eur(u.lordo)}${u.nEff < u.nMesi ? `<span class="ct-sub">${u.nEff ? `effettivo in ${u.nEff} mesi su ${u.nMesi}` : 'da stima'}</span>` : ''}</td></tr>`).join('') +
+            (users.length ? '' : '<tr><td colspan="4" style="color:var(--text-muted)">Nessun compenso nella stagione.</td></tr>') +
+            `</tbody><tfoot><tr><td>Totale stagione</td><td class="ct-ore">${num2(T.ore)}</td><td class="ct-stima">${eur(T.stima)}</td><td class="ct-lordo ct-hl">${eur(T.lordo)}</td></tr></tfoot></table></div>
+            <div class="st-hint">Lordo effettivo = importo inserito dall'admin; se manca si usa la stima del foglio ore. Soglie e trattenute sono nella pillola Anno solare.</div></div>`;
+        box.innerHTML = h;
+    };
 
-        // ANNO SOLARE
-        const yA = seasonYearSel && (seasonYearSel === s || seasonYearSel === s + 1) ? seasonYearSel : (isCur ? now.getFullYear() : s + 1);
-        const yUsers = Object.keys(rubrica).concat(Object.keys(idx).map(k => k.slice(0, k.length - 8)), Object.values(compensiMap).map(c => c && c.email))
-            .filter((e, i, arr) => e && arr.indexOf(e) === i).map(e => ({ e, nome: rubrica[e]?.nome || e, ...yearInfo(idx, e, yA, cache) })).filter(u => u.tot > 0).sort((a, b) => b.tot - a.tot);
-        const yt = { lordo: 0, inps: 0, irpef: 0 };
-        yUsers.forEach(u => { yt.lordo += u.tot; yt.inps += u.tinps; yt.irpef += u.tirpef; });
-        h += `<div class="glass-box gb-blue"><div class="gb-title">Anno solare ${yA} <span class="sub">Gennaio – dicembre: soglie e trattenute</span></div>
-            <div class="ct-bar"><div class="mo-pills" style="margin:0">${[s, s + 1].map(y => `<button class="mo-pill ${y === yA ? 'active' : ''}" onclick="seasonYearSel=${y}; renderSeasonSummary()">${y}</button>`).join('')}</div>
-            <div class="ct-cfg">INPS <input type="number" step="0.01" id="cfg-inps" value="${taxCfg.inps}"> % oltre ${itGroup(SOGLIA1)} € &nbsp;·&nbsp; IRPEF <input type="number" step="0.01" id="cfg-irpef" value="${taxCfg.irpef}"> % oltre ${itGroup(SOGLIA2)} € <button class="st-edit" onclick="saveTaxCfg()">Salva aliquote</button></div></div>
-            <div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Collaboratore</th><th>Lordo ${yA}</th><th>INPS ${itDec(taxCfg.inps, 2)}%</th><th>IRPEF ${itDec(taxCfg.irpef, 0)}%</th><th class="ct-hl">Netto ${yA}</th><th>Soglia</th></tr></thead><tbody>` +
-            yUsers.map(u => `<tr><td class="ct-name">${esc(u.nome)}</td><td class="ct-lordo">${eur(u.tot)}</td><td class="ct-tax">${u.tinps > 0.004 ? eur(u.tinps) : '—'}</td><td class="ct-tax">${u.tirpef > 0.004 ? eur(u.tirpef) : '—'}</td><td class="ct-netto ct-hl">${eur(u.tot - u.ttot)}</td><td>${sogliaBadge(u.tot) || '<span style="color:var(--text-muted)">—</span>'}</td></tr>`).join('') +
-            (yUsers.length ? '' : `<tr><td colspan="6" style="color:var(--text-muted)">Nessun compenso nel ${yA}.</td></tr>`) +
-            `</tbody><tfoot><tr><td>Totale anno solare ${yA}</td><td class="ct-lordo">${eur(yt.lordo)}</td><td class="ct-tax">${eur(yt.inps)}</td><td class="ct-tax">${eur(yt.irpef)}</td><td class="ct-netto ct-hl">${eur(yt.lordo - yt.inps - yt.irpef)}</td><td></td></tr></tfoot></table></div>
-            <div class="st-hint">INPS solo sulla parte oltre ${itGroup(SOGLIA1)} €, IRPEF solo sulla parte oltre ${itGroup(SOGLIA2)} €, calcolate sul totale progressivo dell'anno (gennaio → dicembre).</div></div>`;
+    // ---------- ANNO SOLARE (fiscale: gennaio → dicembre) ----------
+    let annoSel = null;
+    window.setAnno = (v) => { annoSel = parseInt(v); renderAnno(); };
+    window.renderAnno = async (reload) => {
+        const box = document.getElementById('anno-content'); if (!box) return;
+        if (reload || !compensiLoaded) await loadCompensi();
+        const now = new Date(); if (annoSel == null) annoSel = now.getFullYear();
+        const y = annoSel, idx = buildPayIndex(), cache = {};
+        const years = new Set([now.getFullYear(), y]);
+        Object.keys(idx).forEach(k => { const yy = parseInt(k.slice(-7, -3)); if (yy) years.add(yy); });
+        Object.values(compensiMap).forEach(c => { if (c && c.anno) years.add(c.anno); });
+        const emails = new Set();
+        Object.keys(idx).forEach(k => { if (k.slice(-7, -3) === String(y)) emails.add(k.slice(0, k.length - 8)); });
+        Object.values(compensiMap).forEach(c => { if (c && c.email && c.importo != null && c.anno === y) emails.add(c.email); });
+        const months = Array.from({ length: 12 }, () => ({ ore: 0, stima: 0, lordo: 0, inps: 0, irpef: 0, netto: 0, n: 0, nEff: 0, nMan: 0 }));
+        const T = { ore: 0, stima: 0, lordo: 0, inps: 0, irpef: 0, netto: 0 };
+        const users = [...emails].map(e => {
+            const yi = yearInfo(idx, e, y, cache), u = { e, nome: rubrica[e]?.nome || e, ore: 0, stima: 0, lordo: yi.tot, inps: yi.tinps, irpef: yi.tirpef, netto: yi.tnet, nMan: yi.nMan, nEff: 0, nMesi: 0 };
+            for (let m = 1; m <= 12; m++) {
+                const k = `${e}_${y}-${pad2(m)}`, ore = idx[k] ? idx[k].ore : 0, st = idx[k] ? idx[k].stima : 0, g = yi.g[m - 1];
+                if (!ore && !g && !yi.eff[m - 1] && !yi.netMan[m - 1]) continue;
+                const x = months[m - 1]; x.ore += ore; x.stima += st; x.lordo += g; x.inps += yi.inps[m - 1]; x.irpef += yi.irpef[m - 1]; x.netto += yi.net[m - 1]; x.n++; if (yi.eff[m - 1]) x.nEff++; if (yi.netMan[m - 1]) x.nMan++;
+                u.ore += ore; u.stima += st; u.nMesi++; if (yi.eff[m - 1]) u.nEff++;
+            }
+            T.ore += u.ore; T.stima += u.stima; T.lordo += u.lordo; T.inps += u.inps; T.irpef += u.irpef; T.netto += u.netto;
+            return u;
+        }).filter(u => u.nMesi).sort((a, b) => a.nome.localeCompare(b.nome));
+        const n1 = users.filter(u => u.lordo > SOGLIA1 && u.lordo <= SOGLIA2).length, n2 = users.filter(u => u.lordo > SOGLIA2).length;
+        const tx = (v) => v > 0.004 ? eur(v) : '—';
+        let h = `<div class="filter-bar" style="margin-bottom:12px"><select id="an-year" onchange="setAnno(this.value)" style="max-width:220px">${[...years].sort((a, b) => b - a).map(v => `<option value="${v}" ${v === y ? 'selected' : ''}>Anno ${v}</option>`).join('')}</select><span class="st-hint" style="margin:0 0 0 6px">da gennaio a dicembre ${y} (anno fiscale)</span></div>`;
+        h += `<div class="glass-box gb-blue"><div class="gb-title">Riepilogo ${y} <span class="sub">Lordo, trattenute e netto</span></div><div class="st-kpis">` +
+            kpi('Lordo effettivo', eur(T.lordo), 'effettivo dove inserito, altrimenti stima') +
+            kpi(`INPS ${itDec(taxCfg.inps, 2)}%`, eur(T.inps), `sulla parte oltre ${itGroup(SOGLIA1)} €`) +
+            kpi(`IRPEF ${itDec(taxCfg.irpef, 0)}%`, eur(T.irpef), `sulla parte oltre ${itGroup(SOGLIA2)} €`) +
+            kpi('Netto effettivo', eur(T.netto), 'inserito dall\'admin o lordo meno trattenute') +
+            kpi(`Oltre ${itGroup(SOGLIA1)} €`, n1, 'collaboratori (solo INPS)') +
+            kpi(`Oltre ${itGroup(SOGLIA2)} €`, n2, 'collaboratori (INPS + IRPEF)') + `</div>
+            <div class="ct-cfg" style="margin-top:14px">Aliquote: INPS <input type="number" step="0.01" id="cfg-inps" value="${taxCfg.inps}"> % oltre ${itGroup(SOGLIA1)} € &nbsp;·&nbsp; IRPEF <input type="number" step="0.01" id="cfg-irpef" value="${taxCfg.irpef}"> % oltre ${itGroup(SOGLIA2)} € <button class="st-edit" onclick="saveTaxCfg()">Salva aliquote</button></div></div>`;
+
+        h += `<div class="glass-box gb-deep"><div class="gb-title">Per collaboratore <span class="sub">${y} · soglie e trattenute</span></div>
+            <div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Collaboratore</th><th>Ore</th><th>Stima foglio ore</th><th>Lordo effettivo</th><th>INPS</th><th>IRPEF</th><th class="ct-hl">Netto effettivo</th><th>Soglia</th></tr></thead><tbody>` +
+            users.map(u => `<tr><td class="ct-name">${esc(u.nome)}</td><td class="ct-ore">${num2(u.ore)}</td><td class="ct-stima">${eur(u.stima)}</td><td class="ct-lordo">${eur(u.lordo)}${u.nEff < u.nMesi ? `<span class="ct-sub">${u.nEff ? `effettivo in ${u.nEff} mesi su ${u.nMesi}` : 'da stima'}</span>` : ''}</td><td class="ct-tax">${tx(u.inps)}</td><td class="ct-tax">${tx(u.irpef)}</td><td class="ct-netto ct-hl">${eur(u.netto)}${u.nMan ? `<span class="ct-sub">modificato in ${u.nMan} mes${u.nMan === 1 ? 'e' : 'i'}</span>` : ''}</td><td>${sogliaBadge(u.lordo) || '<span style="color:var(--text-muted)">—</span>'}</td></tr>`).join('') +
+            (users.length ? '' : `<tr><td colspan="8" style="color:var(--text-muted)">Nessun compenso nel ${y}.</td></tr>`) +
+            `</tbody><tfoot><tr><td>Totale anno solare</td><td class="ct-ore">${num2(T.ore)}</td><td class="ct-stima">${eur(T.stima)}</td><td class="ct-lordo">${eur(T.lordo)}</td><td class="ct-tax">${eur(T.inps)}</td><td class="ct-tax">${eur(T.irpef)}</td><td class="ct-netto ct-hl">${eur(T.netto)}</td><td></td></tr></tfoot></table></div></div>`;
+
+        h += `<div class="glass-box gb-sky"><div class="gb-title">Mese per mese <span class="sub">${y} · trattenute sul progressivo dell'anno</span></div>
+            <div class="ct-wrap"><table class="st-table ct-table"><thead><tr><th>Mese</th><th>Ore</th><th>Stima foglio ore</th><th>Lordo effettivo</th><th>INPS</th><th>IRPEF</th><th class="ct-hl">Netto effettivo</th></tr></thead><tbody>` +
+            months.map((x, i) => `<tr><td class="ct-name">${MESI_IT[i]} ${y}</td><td class="ct-ore">${num2(x.ore)}</td><td class="ct-stima">${eur(x.stima)}</td><td class="ct-lordo">${eur(x.lordo)}${x.n && x.nEff < x.n ? `<span class="ct-sub">${x.nEff ? `effettivo ${x.nEff} su ${x.n}` : 'da stima'}</span>` : ''}</td><td class="ct-tax">${tx(x.inps)}</td><td class="ct-tax">${tx(x.irpef)}</td><td class="ct-netto ct-hl">${eur(x.netto)}${x.nMan ? `<span class="ct-sub">modificato (${x.nMan})</span>` : ''}</td></tr>`).join('') +
+            `</tbody><tfoot><tr><td>Totale anno solare</td><td class="ct-ore">${num2(T.ore)}</td><td class="ct-stima">${eur(T.stima)}</td><td class="ct-lordo">${eur(T.lordo)}</td><td class="ct-tax">${eur(T.inps)}</td><td class="ct-tax">${eur(T.irpef)}</td><td class="ct-netto ct-hl">${eur(T.netto)}</td></tr></tfoot></table></div>
+            <div class="st-hint">INPS solo sulla parte oltre ${itGroup(SOGLIA1)} €, IRPEF solo sulla parte oltre ${itGroup(SOGLIA2)} €, calcolate sul totale progressivo dell'anno: le trattenute partono dal mese in cui la soglia viene superata. Se nei Compensi effettivi hai inserito il netto, vale quello.</div></div>`;
         box.innerHTML = h;
     };
 
@@ -2436,7 +2481,7 @@
         try {
             await setDoc(doc(db, "compensi_effettivi", "_config"), { inps: i, irpef: r, updated_at: new Date() });
             taxCfg = { inps: i, irpef: r };
-            renderSeasonSummary(); renderSeasonEditor(); toast("Aliquote salvate");
+            renderAnno(); toast("Aliquote salvate");
         } catch (e) { modal("Errore", e.message + " (hai pubblicato le nuove regole Firestore?)"); }
     };
 
@@ -2455,16 +2500,17 @@
         const list = Object.entries(rows).map(([email, r]) => ({ email, nome: rubrica[email]?.nome || email, ...r })).sort((a, b) => a.nome.localeCompare(b.nome));
         const addable = Object.entries(rubrica).filter(([e, d]) => !rows[e]).sort((a, b) => (a[1].nome || '').localeCompare(b[1].nome || ''));
         let h = `<div class="mo-pills">${pills}</div><h4 class="st-title">Compensi ${MESI_IT[m - 1]} ${y}</h4>
-            <div class="ct-wrap"><table class="st-table ct-table" id="st-comp-table" data-ym="${ym}" data-y="${y}" data-m="${m}"><thead><tr><th>Collaboratore</th><th>Ore</th><th>Stima foglio ore</th><th>Lordo effettivo</th><th class="ct-hl">Netto effettivo</th><th>Totale stagione</th><th>Totale anno ${y}</th><th>Nota</th></tr></thead><tbody>`;
+            <div class="ct-wrap"><table class="st-table ct-table" id="st-comp-table" data-ym="${ym}" data-y="${y}" data-m="${m}"><thead><tr><th>Collaboratore</th><th>Ore</th><th>Stima foglio ore</th><th class="ct-hl">Lordo effettivo</th><th class="ct-hl">Netto effettivo</th><th>Totale stagione</th><th>Nota</th></tr></thead><tbody>`;
         list.forEach(u => {
             const c = compensiMap[`${u.email}_${ym}`];
             h += `<tr data-email="${esc(u.email)}" data-stima="${u.stima.toFixed(4)}" data-ore="${u.ore}"><td class="ct-name">${esc(u.nome)}</td><td class="ct-ore">${num2(u.ore)}</td><td class="ct-stima">${eur(u.stima)}</td>
-                <td><input type="number" step="0.01" class="st-in" value="${c && c.importo != null ? c.importo : ''}" placeholder="${itMoney(u.stima)}" oninput="recalcStatsTotals()" onchange="saveCompenso(this)"></td>
-                <td class="ct-netto ct-hl st-net">—</td><td class="ct-lordo st-tseas">—</td><td class="ct-lordo st-tyear">—</td>
+                <td class="ct-hl"><input type="number" step="0.01" class="st-in st-lordo" value="${c && c.importo != null ? c.importo : ''}" placeholder="${itMoney(u.stima)}" oninput="recalcStatsTotals()" onchange="saveCompenso(this)"></td>
+                <td class="ct-hl"><input type="number" step="0.01" class="st-in st-netin" value="${c && c.netto != null ? c.netto : ''}" placeholder="—" oninput="recalcStatsTotals()" onchange="saveCompenso(this)"></td>
+                <td class="ct-lordo st-tseas">—</td>
                 <td><input type="text" class="st-in st-note" value="${esc(c ? c.nota : '')}" placeholder="es. +20 rimborso" onchange="saveCompenso(this)"></td></tr>`;
         });
-        if (!list.length) h += `<tr><td colspan="8" style="color:var(--text-muted)">Nessun turno in questo mese: aggiungi un collaboratore qui sotto se devi registrare un importo.</td></tr>`;
-        h += `</tbody><tfoot><tr><td>Totale ${MESI_IT[m - 1].toLowerCase()}</td><td class="ct-ore" id="st-t-ore"></td><td class="ct-stima" id="st-t-stima"></td><td class="ct-lordo" id="st-t-eff"></td><td class="ct-netto ct-hl" id="st-t-net"></td><td class="ct-lordo" id="st-t-seas"></td><td class="ct-lordo" id="st-t-year"></td><td></td></tr></tfoot></table></div><div class="st-hint" id="st-t-note"></div>`;
+        if (!list.length) h += `<tr><td colspan="7" style="color:var(--text-muted)">Nessun turno in questo mese: aggiungi un collaboratore qui sotto se devi registrare un importo.</td></tr>`;
+        h += `</tbody><tfoot><tr><td>Totale ${MESI_IT[m - 1].toLowerCase()}</td><td class="ct-ore" id="st-t-ore"></td><td class="ct-stima" id="st-t-stima"></td><td class="ct-lordo ct-hl" id="st-t-eff"></td><td class="ct-netto ct-hl" id="st-t-net"></td><td class="ct-lordo" id="st-t-seas"></td><td></td></tr></tfoot></table></div><div class="st-hint" id="st-t-note"></div>`;
         if (addable.length) h += `<div style="margin-top:10px"><select id="se-add" style="max-width:320px" onchange="addSeasonRow(this.value)"><option value="">+ Aggiungi collaboratore al mese…</option>${addable.map(([e, d]) => `<option value="${esc(e)}">${esc(d.nome || e)}${d.archived ? ' (archiviato)' : ''}</option>`).join('')}</select></div>`;
         box.innerHTML = h;
         recalcStatsTotals();
@@ -2477,29 +2523,30 @@
         renderSeasonEditor();
     };
 
-    // ricalcola netto e totali della tabella del mese (usa i valori nei campi, anche non ancora salvati)
+    // ricalcola i totali della tabella del mese (usa i valori nei campi, anche non ancora salvati)
     window.recalcStatsTotals = () => {
         const tb = document.getElementById('st-comp-table'); if (!tb) return;
-        const s = seasonSel, m = parseInt(tb.dataset.m), y = parseInt(tb.dataset.y), ym = tb.dataset.ym;
+        const s = seasonSel, ym = tb.dataset.ym, y = parseInt(tb.dataset.y), m = parseInt(tb.dataset.m);
         const idx = buildPayIndex();
-        let tOre = 0, tStima = 0, tL = 0, tN = 0, tS = 0, tY = 0, nSet = 0, nTot = 0;
+        let tOre = 0, tStima = 0, tL = 0, tS = 0, tN = 0, nSet = 0, nTot = 0;
         tb.querySelectorAll('tbody tr[data-email]').forEach(tr => {
             const e = tr.dataset.email, stima = parseFloat(tr.dataset.stima) || 0;
-            const inp = tr.querySelector('input.st-in:not(.st-note)');
+            const inp = tr.querySelector('input.st-lordo'), nin = tr.querySelector('input.st-netin');
             const v = inp.value === '' ? null : parseFloat(inp.value);
-            const over = {}; if (v != null && !isNaN(v)) { over[`${e}_${ym}`] = v; nSet++; }
-            nTot++;
-            const yi = yearInfo(idx, e, y, null, over);
-            const lordo = yi.g[m - 1], netto = lordo - yi.t[m - 1];
-            let seas = 0; SEASON_MONTHS.forEach(mm => { const yy = parseInt(ymOf(s, mm).slice(0, 4)); seas += yy === y ? yi.g[mm - 1] : yearInfo(idx, e, yy).g[mm - 1]; });
-            tOre += parseFloat(tr.dataset.ore) || 0; tStima += stima; tL += lordo; tN += netto; tS += seas; tY += yi.tot;
-            tr.querySelector('.st-net').innerHTML = eur(netto) + (yi.t[m - 1] > 0.004 ? `<span class="ct-sub">trattenute ${eur(yi.t[m - 1])}</span>` : '');
+            const has = v != null && !isNaN(v); if (has) nSet++; nTot++;
+            const nv = nin.value === '' ? null : parseFloat(nin.value);
+            const k = `${e}_${ym}`, over = {}, overN = {}; if (has) over[k] = v; overN[k] = nv != null && !isNaN(nv) ? nv : null;
+            const yi = yearInfo(idx, e, y, null, over, overN);
+            const lordo = yi.g[m - 1], calcN = lordo - yi.t[m - 1];
+            nin.placeholder = itMoney(calcN); tN += yi.net[m - 1];
+            let seas = 0;
+            SEASON_MONTHS.forEach(mm => { const ymm = ymOf(s, mm); seas += ymm === ym ? lordo : payOf(idx, e, parseInt(ymm.slice(0, 4)), mm); });
+            tOre += parseFloat(tr.dataset.ore) || 0; tStima += stima; tL += lordo; tS += seas;
             tr.querySelector('.st-tseas').innerHTML = eur(seas);
-            tr.querySelector('.st-tyear').innerHTML = eur(yi.tot) + sogliaBadge(yi.tot);
         });
         const set = (id, v) => { const el = document.getElementById(id); if (el) el.innerHTML = v; };
-        set('st-t-ore', num2(tOre)); set('st-t-stima', eur(tStima)); set('st-t-eff', eur(tL)); set('st-t-net', eur(tN)); set('st-t-seas', eur(tS)); set('st-t-year', eur(tY));
-        set('st-t-note', (nSet ? `Lordo effettivo inserito per ${nSet} collaboratori su ${nTot}; per gli altri vale la stima (mostrata in grigio nel campo).` : 'Nessun importo effettivo ancora inserito: lordo e netto sono calcolati sulla stima.') + ` Le trattenute (INPS ${itDec(taxCfg.inps, 2)}% oltre ${itGroup(SOGLIA1)} €, IRPEF ${itDec(taxCfg.irpef, 0)}% oltre ${itGroup(SOGLIA2)} €) si applicano solo alla parte eccedente, sul progressivo dell'anno solare.`);
+        set('st-t-ore', num2(tOre)); set('st-t-stima', eur(tStima)); set('st-t-eff', eur(tL)); set('st-t-net', eur(tN)); set('st-t-seas', eur(tS));
+        set('st-t-note', (nSet ? `Lordo effettivo inserito per ${nSet} collaboratori su ${nTot}; per gli altri vale la stima (mostrata in grigio nel campo).` : 'Nessun importo effettivo ancora inserito: vale la stima del foglio ore.') + ' Il netto, se lo lasci vuoto, è calcolato (lordo meno trattenute oltre soglia, mostrato in grigio); se lo inserisci, vale il tuo importo.');
     };
 
     window.saveCompenso = async (el) => {
@@ -2507,13 +2554,14 @@
         const tb = document.getElementById('st-comp-table');
         const email = tr.dataset.email, y = parseInt(tb.dataset.y), mNum = parseInt(tb.dataset.m), ym = tb.dataset.ym;
         const key = `${email}_${ym}`;
-        const impEl = tr.querySelector('input.st-in:not(.st-note)'), notaEl = tr.querySelector('input.st-note');
-        const importo = impEl.value === '' ? null : parseFloat(impEl.value);
+        const impEl = tr.querySelector('input.st-lordo'), netEl = tr.querySelector('input.st-netin'), notaEl = tr.querySelector('input.st-note');
+        const importo = impEl.value === '' || isNaN(parseFloat(impEl.value)) ? null : parseFloat(impEl.value);
+        const netto = !netEl || netEl.value === '' || isNaN(parseFloat(netEl.value)) ? null : parseFloat(netEl.value);
         const nota = notaEl ? notaEl.value.trim() : '';
         try {
-            if (importo == null && !nota) { await deleteDoc(doc(db, "compensi_effettivi", key)); delete compensiMap[key]; }
+            if (importo == null && netto == null && !nota) { await deleteDoc(doc(db, "compensi_effettivi", key)); delete compensiMap[key]; }
             else {
-                const data = { email, anno: y, mese: mNum, importo, nota, updated_at: new Date() };
+                const data = { email, anno: y, mese: mNum, importo, netto, nota, updated_at: new Date() };
                 await setDoc(doc(db, "compensi_effettivi", key), data);
                 compensiMap[key] = data;
             }
@@ -2547,9 +2595,9 @@
     // trattenute: INPS sulla parte oltre SOGLIA1, IRPEF sulla parte oltre SOGLIA2 (progressivo anno solare)
     const taxSplit = (x) => ({ inps: taxCfg.inps / 100 * Math.max(0, x - SOGLIA1), irpef: taxCfg.irpef / 100 * Math.max(0, x - SOGLIA2) });
     // per un collaboratore e un anno solare: lordo mese per mese (effettivo, altrimenti stima) e trattenute di ogni mese
-    function yearInfo(idx, email, y, cache, over) {
+    function yearInfo(idx, email, y, cache, over, overN) {
         const ck = email + '_' + y; if (cache && cache[ck]) return cache[ck];
-        const r = { g: [], t: [], inps: [], irpef: [], eff: [], tot: 0, tinps: 0, tirpef: 0, ttot: 0 };
+        const r = { g: [], t: [], inps: [], irpef: [], eff: [], net: [], netMan: [], tot: 0, tinps: 0, tirpef: 0, ttot: 0, tnet: 0, nMan: 0 };
         let cum = 0;
         for (let m = 1; m <= 12; m++) {
             const k = `${email}_${y}-${pad2(m)}`, c = compensiMap[k];
@@ -2559,6 +2607,11 @@
             else { g = idx[k] ? idx[k].stima : 0; isE = false; }
             const a = taxSplit(cum), b = taxSplit(cum + g), i = b.inps - a.inps, ir = b.irpef - a.irpef;
             r.g.push(g); r.eff.push(isE); r.inps.push(i); r.irpef.push(ir); r.t.push(i + ir);
+            // netto: quello inserito dall'admin (se c'è), altrimenti lordo meno trattenute
+            let nv = g - i - ir, man = false;
+            if (overN && k in overN) { if (overN[k] != null) { nv = overN[k]; man = true; } }
+            else if (c && c.netto != null) { nv = Number(c.netto); man = true; }
+            r.net.push(nv); r.netMan.push(man); r.tnet += nv; if (man) r.nMan++;
             cum += g; r.tinps += i; r.tirpef += ir;
         }
         r.tot = cum; r.ttot = r.tinps + r.tirpef;
@@ -2576,8 +2629,8 @@
             const u = { ore: 0, stima: 0, lordo: 0, netto: 0, nEff: 0, nMesi: 0 };
             SEASON_MONTHS.forEach((m, i) => {
                 const ym = ymOf(s, m), y = parseInt(ym.slice(0, 4)), k = `${e}_${ym}`, yi = yearInfo(idx, e, y, cache);
-                const ore = idx[k] ? idx[k].ore : 0, st = idx[k] ? idx[k].stima : 0, g = yi.g[m - 1], net = g - yi.t[m - 1];
-                if (!ore && !g && !yi.eff[m - 1]) return;
+                const ore = idx[k] ? idx[k].ore : 0, st = idx[k] ? idx[k].stima : 0, g = yi.g[m - 1], net = yi.net[m - 1];
+                if (!ore && !g && !yi.eff[m - 1] && !yi.netMan[m - 1]) return;
                 const x = months[i]; x.ore += ore; x.stima += st; x.lordo += g; x.netto += net; x.n++; if (yi.eff[m - 1]) x.nEff++;
                 u.ore += ore; u.stima += st; u.lordo += g; u.netto += net; u.nMesi++; if (yi.eff[m - 1]) u.nEff++;
             });
@@ -2598,20 +2651,27 @@
     }
 
     // ---------- ESPORTA (pillola) ----------
-    const exState = { init: false, seasons: new Set(), months: new Set(), fogli: new Set(['mese', 'collab', 'anno']), valori: new Set(['pay']), growth: true };
+    const exState = { init: false, seasons: new Set(), months: new Set(), years: new Set(), fogli: new Set(['mese', 'collab', 'anno']), valori: new Set(['pay']), growth: true };
     const exAllSeasons = () => {
         const set = new Set([seasonOf(new Date().getFullYear(), new Date().getMonth() + 1)]);
         allTurniFull.forEach(t => { const y = parseInt((t.data || '').slice(0, 4)), m = parseInt((t.data || '').slice(5, 7)); if (y && m) set.add(seasonOf(y, m)); });
         Object.values(compensiMap).forEach(c => { if (c && c.anno && c.mese) set.add(seasonOf(c.anno, c.mese)); });
         return [...set].sort((a, b) => b - a);
     };
+    const exAllYears = () => {
+        const set = new Set([new Date().getFullYear()]);
+        allTurniFull.forEach(t => { const y = parseInt((t.data || '').slice(0, 4)); if (y) set.add(y); });
+        Object.values(compensiMap).forEach(c => { if (c && c.anno) set.add(c.anno); });
+        return [...set].sort((a, b) => b - a);
+    };
     window.exToggle = (k, v, on) => {
-        const set = k === 's' ? exState.seasons : k === 'm' ? exState.months : k === 'f' ? exState.fogli : exState.valori;
+        const set = k === 's' ? exState.seasons : k === 'm' ? exState.months : k === 'y' ? exState.years : k === 'f' ? exState.fogli : exState.valori;
         if (on) set.add(v); else set.delete(v);
     };
     window.exAll = (k, mode) => {
         const now = new Date(), curS = seasonOf(now.getFullYear(), now.getMonth() + 1);
         if (k === 's') { exState.seasons = new Set(mode === 'all' ? exAllSeasons() : mode === 'cur' ? [curS] : []); }
+        else if (k === 'y') { exState.years = new Set(mode === 'all' ? exAllYears() : mode === 'cur' ? [now.getFullYear()] : []); }
         else { exState.months = new Set(mode === 'all' ? SEASON_MONTHS : mode === 'cur' ? [now.getMonth() + 1] : []); }
         renderExport();
     };
@@ -2619,23 +2679,25 @@
         const box = document.getElementById('export-content'); if (!box) return;
         if (reload || !compensiLoaded) await loadCompensi();
         const now = new Date();
-        if (!exState.init) { exState.init = true; exState.seasons = new Set([seasonOf(now.getFullYear(), now.getMonth() + 1)]); exState.months = new Set(SEASON_MONTHS); }
+        if (!exState.init) { exState.init = true; exState.seasons = new Set([seasonOf(now.getFullYear(), now.getMonth() + 1)]); exState.months = new Set(SEASON_MONTHS); exState.years = new Set([now.getFullYear()]); }
         const chip = (k, v, label, on) => `<label class="ex-chip"><input type="checkbox" ${on ? 'checked' : ''} onchange="exToggle('${k}','${v}',this.checked)"> ${label}</label>`;
         const chipN = (k, v, label, on) => `<label class="ex-chip"><input type="checkbox" ${on ? 'checked' : ''} onchange="exToggle('${k}',${v},this.checked)"> ${label}</label>`;
         const links = (k, c1) => `<div class="ex-links"><button onclick="exAll('${k}','all')">Tutt${k === 's' ? 'e' : 'i'}</button><button onclick="exAll('${k}','none')">Nessun${k === 's' ? 'a' : 'o'}</button><button onclick="exAll('${k}','cur')">${c1}</button></div>`;
         box.innerHTML =
-            `<div class="glass-box gb-blue"><div class="gb-title">1 · Cosa esportare <span class="sub">Stagioni e mesi (da settembre ad agosto)</span></div>
+            `<div class="glass-box gb-blue"><div class="gb-title">1 · Cosa esportare <span class="sub">Stagioni (settembre → agosto) e/o anni solari (gennaio → dicembre)</span></div>
                 <div class="ex-grid">
                     <div class="ex-card"><div class="ex-h">Stagioni</div><div class="st-hint">Una colonna (o un foglio) per ogni stagione scelta.</div>
                         <div class="ex-chips">${exAllSeasons().map(s => chipN('s', s, 'Stagione ' + seasonLabel(s), exState.seasons.has(s))).join('')}</div>${links('s', 'Solo in corso')}</div>
                     <div class="ex-card"><div class="ex-h">Mesi</div><div class="st-hint">Quali mesi includere.</div>
                         <div class="ex-chips">${SEASON_MONTHS.map(m => chipN('m', m, MESI_IT[m - 1].slice(0, 3), exState.months.has(m))).join('')}</div>${links('m', 'Solo mese in corso')}</div>
+                    <div class="ex-card"><div class="ex-h">Anni solari</div><div class="st-hint">Per il foglio "Anno solare": un foglio per ogni anno scelto, sempre da gennaio a dicembre.</div>
+                        <div class="ex-chips">${exAllYears().map(y => chipN('y', y, 'Anno ' + y, exState.years.has(y))).join('')}</div>${links('y', 'Solo anno in corso')}</div>
                 </div></div>
             <div class="glass-box gb-sky"><div class="gb-title">2 · Fogli dell'Excel <span class="sub">Ogni voce selezionata genera i suoi fogli nello stesso file</span></div>
                 <div class="ex-grid">
                     <div class="ex-card"><div class="ex-h">Fogli</div>
-                        <div class="ex-chips">${chip('f', 'mese', 'Mese per mese (stagioni a confronto)', exState.fogli.has('mese'))}${chip('f', 'collab', 'Per collaboratore (mese per mese)', exState.fogli.has('collab'))}${chip('f', 'anno', 'Anno solare con soglie 5.000 / 15.000 €', exState.fogli.has('anno'))}</div>
-                        <div class="st-hint" style="margin-top:8px">I fogli "Anno solare" comprendono sempre tutti i 12 mesi, perché le soglie si calcolano sull'intero anno.</div></div>
+                        <div class="ex-chips">${chip('f', 'mese', 'Mese per mese (stagioni a confronto)', exState.fogli.has('mese'))}${chip('f', 'collab', 'Per collaboratore (mese per mese)', exState.fogli.has('collab'))}${chip('f', 'anno', 'Anno solare: soglie, trattenute e netto', exState.fogli.has('anno'))}</div>
+                        <div class="st-hint" style="margin-top:8px">I primi due fogli usano stagioni e mesi scelti; il foglio "Anno solare" usa gli anni solari scelti. Per esportare solo l'anno solare togli la spunta agli altri due.</div></div>
                     <div class="ex-card"><div class="ex-h">Valori per collaboratore</div>
                         <div class="ex-chips">${chip('v', 'pay', 'Compenso (effettivo, altrimenti stima)', exState.valori.has('pay'))}${chip('v', 'stima', 'Solo stima', exState.valori.has('stima'))}${chip('v', 'eff', 'Solo effettivo', exState.valori.has('eff'))}${chip('v', 'ore', 'Ore', exState.valori.has('ore'))}</div>
                         <div class="ex-h" style="margin-top:14px">Opzioni</div>
@@ -2648,9 +2710,11 @@
 
     window.exportCustomXlsx = async () => {
         try {
-            if (!exState.seasons.size) return modal("Esporta", "Scegli almeno una stagione.");
-            if (!exState.months.size) return modal("Esporta", "Scegli almeno un mese.");
             if (!exState.fogli.size) return modal("Esporta", "Scegli almeno un foglio.");
+            const needS = exState.fogli.has('mese') || exState.fogli.has('collab');
+            if (needS && !exState.seasons.size) return modal("Esporta", "Scegli almeno una stagione (oppure togli i fogli Mese per mese / Per collaboratore).");
+            if (needS && !exState.months.size) return modal("Esporta", "Scegli almeno un mese.");
+            if (exState.fogli.has('anno') && !exState.years.size) return modal("Esporta", "Scegli almeno un anno solare.");
             if (exState.fogli.has('collab') && !exState.valori.size) return modal("Esporta", "Per i fogli per collaboratore scegli almeno un valore.");
             if (!compensiLoaded) await loadCompensi();
             await loadXlsxLib();
@@ -2722,24 +2786,27 @@
                 });
             }
 
-            // 3. anno solare con soglie
+            // 3. anno solare: lordo mese per mese, trattenute, netto, soglia
+            const years = [...exState.years].sort((a, b) => a - b);
             if (exState.fogli.has('anno')) {
-                const ys = new Set(); seasons.forEach(s => { ys.add(s); ys.add(s + 1); });
-                [...ys].sort((a, b) => a - b).forEach(y => {
-                    const aoa = [['Collaboratore', ...MESI_IT, `TOTALE ${y}`, 'Soglia']], colTot = Array(12).fill(0); let gT = 0;
+                years.forEach(y => {
+                    const aoa = [['Collaboratore', ...MESI_IT, `Lordo ${y}`, 'INPS (€)', 'IRPEF (€)', `Netto ${y}`, 'Soglia']], colTot = Array(12).fill(0); let gT = 0, gI = 0, gR = 0, gN = 0;
                     const us = Object.keys(rubrica).concat(Object.keys(idx).map(k => k.slice(0, k.length - 8)), Object.values(compensiMap).map(c => c && c.email))
-                        .filter((e, i, arr) => e && arr.indexOf(e) === i).map(e => ({ e, nome: rubrica[e]?.nome || e })).filter(u => yearPay(idx, u.e, y) > 0).sort((a, b) => a.nome.localeCompare(b.nome));
-                    if (!us.length) return;
+                        .filter((e, i, arr) => e && arr.indexOf(e) === i).map(e => ({ e, nome: rubrica[e]?.nome || e, yi: yearInfo(idx, e, y) })).filter(u => u.yi.tot > 0 || u.yi.nMan).sort((a, b) => a.nome.localeCompare(b.nome));
                     us.forEach(u => {
-                        const row = [u.nome]; let tot = 0;
-                        for (let m = 1; m <= 12; m++) { const v = Number(payOf(idx, u.e, y, m).toFixed(2)); row.push(v); tot += v; colTot[m - 1] += v; }
-                        row.push(Number(tot.toFixed(2)), sogliaTxt(tot)); gT += tot; aoa.push(row);
+                        const row = [u.nome], yi = u.yi;
+                        for (let m = 1; m <= 12; m++) { const v = Number(yi.g[m - 1].toFixed(2)); row.push(v); colTot[m - 1] += v; }
+                        row.push(Number(yi.tot.toFixed(2)), Number(yi.tinps.toFixed(2)), Number(yi.tirpef.toFixed(2)), Number(yi.tnet.toFixed(2)), sogliaTxt(yi.tot));
+                        gT += yi.tot; gI += yi.tinps; gR += yi.tirpef; gN += yi.tnet; aoa.push(row);
                     });
-                    aoa.push(['TOTALE', ...colTot.map(v => Number(v.toFixed(2))), Number(gT.toFixed(2)), '']);
-                    XLSX.utils.book_append_sheet(wb, mk(aoa, [26, ...Array(12).fill(12), 14, 16]), `Anno solare ${y}`);
+                    aoa.push(['TOTALE', ...colTot.map(v => Number(v.toFixed(2))), Number(gT.toFixed(2)), Number(gI.toFixed(2)), Number(gR.toFixed(2)), Number(gN.toFixed(2)), '']);
+                    XLSX.utils.book_append_sheet(wb, mk(aoa, [26, ...Array(12).fill(12), 14, 12, 12, 14, 16]), `Anno solare ${y}`);
                 });
             }
-            XLSX.writeFile(wb, seasons.length === 1 ? `Compensi_stagione_${seasons[0]}-${String(seasons[0] + 1).slice(2)}.xlsx` : 'Compensi_stagioni.xlsx');
+            if (!wb.SheetNames.length) return modal("Esporta", "Nessun dato da esportare con le scelte fatte.");
+            const fname = !needS ? (years.length === 1 ? `Compensi_anno_${years[0]}.xlsx` : 'Compensi_anni_solari.xlsx')
+                : seasons.length === 1 ? `Compensi_stagione_${seasons[0]}-${String(seasons[0] + 1).slice(2)}.xlsx` : 'Compensi_stagioni.xlsx';
+            XLSX.writeFile(wb, fname);
             toast("Excel scaricato");
         } catch (e) { modal("Errore export", e.message); }
     };
