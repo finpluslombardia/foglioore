@@ -13,6 +13,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     
+    <script>
+    // Formato italiano: migliaia con il punto, decimali con la virgola
+    window.itGroup = function(i) { return String(i).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
+    window.itDec = function(n, dec) {
+        var v = Number(n) || 0, d = dec == null ? 2 : dec, s = Math.abs(v).toFixed(d), p = s.split('.');
+        return (v < 0 && Number(s) > 0 ? '-' : '') + itGroup(p[0]) + (p[1] ? ',' + p[1] : '');
+    };
+    window.itMoney = function(n) { return itDec(n, 2); };
+    window.itOre = function(n) {
+        var v = Number((Number(n) || 0).toFixed(2)), p = String(Math.abs(v)).split('.');
+        return (v < 0 ? '-' : '') + itGroup(p[0]) + (p[1] ? ',' + p[1] : '');
+    };
+    </script>
     <style>
         /* --- STILI BASE --- */
         :root {
@@ -973,6 +986,12 @@
     };
     window.toggleMyShifts = () => { onlyMyShifts = document.getElementById('collab-me-filter').checked; renderShiftsFromData(); };
 
+    // Anche qui aggiorno l'ultima attività, così tornando al Foglio Ore la sessione non risulta scaduta
+    let _lastAct = 0;
+    const _touchActivity = () => { const n = Date.now(); if (n - _lastAct > 5000) { _lastAct = n; try { localStorage.setItem('lastActivity', String(n)); } catch(e) {} } };
+    ['click', 'keydown', 'touchstart', 'scroll', 'mousemove'].forEach(ev => window.addEventListener(ev, _touchActivity, { passive: true }));
+    _touchActivity();
+
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             currentUser = user;
@@ -1439,7 +1458,7 @@
                     <div class="sum-name">${name}</div>
                     <span class="sum-role">${data.role}</span>
                 </div>
-                <div class="sum-hours">${data.hours.toFixed(2)} h</div>
+                <div class="sum-hours">${itDec(data.hours, 2)} h</div>
             `;
             container.appendChild(card);
         });
